@@ -3,7 +3,7 @@ use Moose;
 
 use MusicBrainz::Server::Entity::Editor;
 
-extends 'MusicBrainz::Server::Data::CoreEntity';
+extends 'MusicBrainz::Server::Data::Entity';
 
 sub _table
 {

@@ -18,4 +18,8 @@ CREATE TABLE editor
     editsfailed         INTEGER DEFAULT 0
 );
 
+ALTER TABLE editor ADD CONSTRAINT editor_pk PRIMARY KEY (id);
+
+CREATE UNIQUE INDEX editor_idx_name ON editor (LOWER(name));
+
 COMMIT;
