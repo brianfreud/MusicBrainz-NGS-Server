@@ -131,6 +131,16 @@ TRUNCATE url CASCADE;
 INSERT INTO url (id, gid, url, description)
     VALUES (1, '9201840b-d810-4e0f-bb75-c791205f5b24', 'http://musicbrainz.org/', 'MusicBrainz');
 
+TRUNCATE editor CASCADE;
+
+-- A full editor
+INSERT INTO
+    editor ( id, name, password, privs, email, website, bio,
+             emailconfirmdate, membersince, lastlogindate, editsaccepted, editsrejected,
+             autoeditsaccepted, editsfailed)
+    VALUES ( 1, 'new_editor', 'password', 1, 'test@editor.org', 'http://musicbrainz.org',
+             'biography', '2005-10-20', '1989-07-23', '2009-01-01', 12, 2, 59, 9 );
+
 SET client_min_messages TO 'NOTICE';
 
 COMMIT;
