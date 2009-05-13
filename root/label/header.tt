@@ -9,6 +9,7 @@
 <div class='entity_header'>
     <div class='title label'>
         [% link_label(label) %]
+        [%- "(${label.comment})" IF label.comment -%]
     </div>
     <div class='info'>
         [% IF label.begin_date.year OR label.end_date.year %]

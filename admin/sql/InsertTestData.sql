@@ -116,9 +116,9 @@ INSERT INTO label
 INSERT INTO label_name (id, name, page) VALUES (2, 'Warp Records', 1234);
 INSERT INTO label (id, gid, name, sortname, type, country, labelcode,
                    begindate_year, begindate_month, begindate_day,
-                   enddate_year, enddate_month, enddate_day)
+                   enddate_year, enddate_month, enddate_day, comment)
      VALUES (2, '46f0f4cd-8aab-4b33-b698-f459faf64190', 2, 2, 1, 1, 2070,
-             1989, 02, 03, 2008, 05, 19);
+             1989, 02, 03, 2008, 05, 19, 'Sheffield based electronica label');
 
 TRUNCATE release CASCADE;
 
