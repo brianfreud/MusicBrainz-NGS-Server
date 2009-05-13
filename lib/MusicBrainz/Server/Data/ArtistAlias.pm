@@ -7,12 +7,12 @@ extends 'MusicBrainz::Server::Data::Entity';
 
 sub _table
 {
-    return 'artist_alias';
+    return 'artist_alias JOIN artist_name name ON artist_alias.name=name.id';
 }
 
 sub _columns
 {
-    return 'id, name, artist, editspending, lastused, timesused';
+    return 'artist_alias.id, name.name, artist, editpending';
 }
 
 sub _column_mapping
@@ -21,10 +21,13 @@ sub _column_mapping
         id            => 'id',
         name          => 'name',
         artist_id     => 'artist',
-        times_used    => 'timesused',
-        last_used     => 'lastused',
-        edits_pending => 'editspending',
+        edits_pending => 'editpending',
     };
+}
+
+sub _id_column
+{
+    return 'artist_alias.id';
 }
 
 sub _entity_class

@@ -1,6 +1,6 @@
 #!/usr/bin/perl
 use strict;
-use Test::More tests => 10;
+use Test::More tests => 8;
 
 BEGIN { use_ok 'MusicBrainz::Server::Data::LabelAlias' }
 
@@ -18,9 +18,7 @@ my $alias = $alias_data->get_by_id(1);
 ok(defined $alias, 'returns an object');
 isa_ok($alias, 'MusicBrainz::Server::Entity::LabelAlias', 'not a label alias');
 is($alias->name, 'Test Label Alias', 'alias name');
-is($alias->label_id, 1, 'artist id');
-is($alias->times_used, 3, 'times used');
-is_deeply($alias->last_used, DateTime->new(year => 2009, month => 5, day => 13), 'last used');
+is($alias->label_id, 1);
 
 my $label_data = MusicBrainz::Server::Data::Label->new(c => $c);
 $label_data->load($alias);

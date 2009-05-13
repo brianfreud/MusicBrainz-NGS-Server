@@ -1,6 +1,6 @@
 #!/usr/bin/perl
 use strict;
-use Test::More tests => 10;
+use Test::More tests => 8;
 
 BEGIN { use_ok 'MusicBrainz::Server::Data::ArtistAlias' }
 
@@ -19,8 +19,6 @@ ok(defined $alias, 'returns an object');
 isa_ok($alias, 'MusicBrainz::Server::Entity::ArtistAlias', 'not an artist alias');
 is($alias->name, 'Test Alias', 'alias name');
 is($alias->artist_id, 1, 'artist id');
-is($alias->times_used, 5, 'times used');
-is_deeply($alias->last_used, DateTime->new(year => 2009, month => 5, day => 13), 'last used');
 
 my $artist_data = MusicBrainz::Server::Data::Artist->new(c => $c);
 $artist_data->load($alias);
