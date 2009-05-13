@@ -1,6 +1,7 @@
 package MusicBrainz::Server::Entity::Alias;
 
 use Moose;
+use MusicBrainz::Server::Types;
 
 extends 'MusicBrainz::Server::Entity::Entity';
 with 'MusicBrainz::Server::Entity::Editable';
@@ -8,6 +9,17 @@ with 'MusicBrainz::Server::Entity::Editable';
 has 'name' => (
     is => 'rw',
     isa => 'Str'
+);
+
+has 'times_used' => (
+    isa => 'Int',
+    is  => 'rw'
+);
+
+has 'last_used' => (
+    isa    => 'DateTime',
+    is     => 'rw',
+    coerce => 1,
 );
 
 __PACKAGE__->meta->make_immutable;

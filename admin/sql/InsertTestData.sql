@@ -169,6 +169,16 @@ INSERT INTO
     VALUES ( 1, 'new_editor', 'password', 1, 'test@editor.org', 'http://musicbrainz.org',
              'biography', '2005-10-20', '1989-07-23', '2009-01-01', 12, 2, 59, 9 );
 
+TRUNCATE artist_alias CASCADE;
+
+INSERT INTO artist_alias (id, name, artist, timesused, lastused, editspending)
+    VALUES (1, 'Test Alias', 1, 5, '2009-05-13', 2);
+
+TRUNCATE label_alias CASCADE;
+
+INSERT INTO label_alias (id, name, label, timesused, lastused, editspending)
+    VALUES (1, 'Test Label Alias', 1, 3, '2009-05-13', 2);
+
 SET client_min_messages TO 'NOTICE';
 
 COMMIT;
