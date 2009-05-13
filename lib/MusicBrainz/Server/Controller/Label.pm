@@ -35,7 +35,7 @@ sub label : Chained('load') PathPart('') CaptureArgs(0)
 {
     my ($self, $c) = @_;
     
-    if ($self->entity->id == $DLABEL_ID)
+    if ($c->stash->{label}->id == $DLABEL_ID)
     {
         $c->detach('/error_404');
     }
@@ -43,11 +43,11 @@ sub label : Chained('load') PathPart('') CaptureArgs(0)
 	if ($c->user_exists)
 	{
     	$c->stash->{subscribed} = $c->model('Subscription')->
-        	is_user_subscribed_to_entity($c->user, $self->entity);
+        	is_user_subscribed_to_entity($c->user, $c->stash->{label});
 	}
 
-	$c->model('LabelType')->load($self->entity);
-	$c->model('Country')->load($self->entity);
+	$c->model('LabelType')->load($c->stash->{label});
+	$c->model('Country')->load($c->stash->{label});
 }
 
 =head2 perma

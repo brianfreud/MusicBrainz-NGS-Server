@@ -1,3 +1,2 @@
-[%- WRAPPER "layout.tt" title=label.name -%]
-    [%- INCLUDE "label/header.tt" -%]
+[%- WRAPPER "label/layout.tt" title=label.name -%]
 [% END %]

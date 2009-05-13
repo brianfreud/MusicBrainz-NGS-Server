@@ -3,10 +3,6 @@ BEGIN { use Moose; extends 'Catalyst::Controller'; }
 
 use MusicBrainz::Server::Validation;
 
-has 'entity' => (
-    is => 'rw',
-);
-
 __PACKAGE__->config(
     form_namespace => 'MusicBrainz::Server::Form'
 );
@@ -41,7 +37,6 @@ sub load : Chained('base') PathPart('') CaptureArgs(1)
         $c->detach('/error_404');
     }
 
-    $self->entity($entity);
     $c->stash->{$self->{entity_name}} = $entity;
 }
 
