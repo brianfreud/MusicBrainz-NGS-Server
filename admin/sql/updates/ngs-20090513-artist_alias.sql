@@ -5,9 +5,7 @@ CREATE TABLE artist_alias
     id                 SERIAL,
     artist             INTEGER NOT NULL, -- references artist.id
     name               INTEGER NOT NULL,
-    editpending        INTEGER,
-    timesused          INTEGER DEFAULT 0,
-    lastused           TIMESTAMP WITH TIME ZONE
+    editpending        INTEGER DEFAULT 0
 );
 
 ALTER TABLE artist_alias ADD CONSTRAINT artist_alias_pk PRIMARY KEY (id);

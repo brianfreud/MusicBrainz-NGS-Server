@@ -5,9 +5,7 @@ CREATE TABLE label_alias
     id                 SERIAL,
     label              INTEGER NOT NULL, -- references label.id
     name               INTEGER NOT NULL, -- references label_name.id
-    editpending        INTEGER,
-    timesused          INTEGER DEFAULT 0,
-    lastused           TIMESTAMP WITH TIME ZONE
+    editpending        INTEGER DEFAULT 0,
 );
 
 ALTER TABLE label_alias ADD CONSTRAINT label_alias_pk PRIMARY KEY (id);
