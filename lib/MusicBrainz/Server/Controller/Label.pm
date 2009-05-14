@@ -47,7 +47,6 @@ sub label : Chained('load') PathPart('') CaptureArgs(0)
 	}
 
 	$c->model('LabelType')->load($c->stash->{label});
-	$c->model('Country')->load($c->stash->{label});
 }
 
 =head2 perma
@@ -117,7 +116,12 @@ that have been released through this label
 
 =cut
 
-sub show : PathPart('') Chained('label') { }
+sub show : PathPart('') Chained('label')
+{
+    my  ($self, $c) = @_;
+    $c->model('Country')->load($c->stash->{label});
+    $c->stash(template => 'label/index.tt');
+}
 
 =head2 details
 
