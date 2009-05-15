@@ -33,12 +33,12 @@
         [%- END -%]
         [%- IF artist.gender -%]
             <div class='infoline'>
-                [% l('Gender: ') %] [% html_escape(artist.gender.name) %]
+                [% l('Gender:') %] [% html_escape(artist.gender.name) %]
             </div>
         [%- END -%]
         [%- IF artist.country -%]
             <div class='infoline'>
-                [% l('Country: ') %] [% html_escape(artist.country.name) %]
+                [% l('Country:') %] [% html_escape(artist.country.name) %]
             </div>
         [%- END -%]
     </div>
