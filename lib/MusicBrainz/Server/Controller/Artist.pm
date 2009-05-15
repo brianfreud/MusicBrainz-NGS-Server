@@ -68,6 +68,8 @@ sub artist : Chained('load') PathPart('') CaptureArgs(0)
 	}
 	
 	$c->model('ArtistType')->load($c->stash->{artist});
+	$c->model('Gender')->load($c->stash->{artist});
+	$c->model('Country')->load($c->stash->{artist});
 }
 
 =head2 similar

@@ -30,7 +30,17 @@
             <div class='infoline'>
                 [% l('Type: {type}', { type=artist.type_name}) %]
             </div>
-        [%- END -%]   
+        [%- END -%]
+        [%- IF artist.gender -%]
+            <div class='infoline'>
+                [% l('Gender: {gender}', { gender=artist.gender.name }) %]
+            </div>
+        [%- END -%]
+        [%- IF artist.country -%]
+            <div class='infoline'>
+                [% l('Country: {country}', { country=artist.country.name }) %]
+            </div>
+        [%- END -%]
     </div>
     <div class='infoLinks'>
         [% INCLUDE 'components/piped-list.tt' list=info_links caption=l('Info:') %]
