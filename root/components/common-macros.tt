@@ -71,15 +71,7 @@ END; -%]
             l('Error: Unknown Type');
     END -%]
 
-[%- MACRO show_artist_credit(ac) BLOCK -%]
-    [%- FOREACH name IN ac.names -%]
-    <a href="/artist/[% name.artist.gid %]" title="[% name.artist.name | html %]">
-        [%- name.name | html -%]
-    </a> [%- name.join_phrase | html -%]
-    [%- END -%]
-[%- END -%]
-
-[%- MACRO show_artist_credit_text(ac, opts) BLOCK -%]
+[%- MACRO artist_credit(ac, opts) BLOCK -%]
     [%- FOREACH name IN ac.names -%]
         [%- opts.plain ? html_escape(name.name) : link_artist(name) -%]
         [%- name.join_phrase | html -%]

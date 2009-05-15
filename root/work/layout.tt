@@ -1,7 +1,7 @@
 [%- title=l('{type} {work} by {artist}', {
         type => work.type_name or "Work",
         work => work.name,
-        artist => show_artist_credit_text(work.artist_credit, plain => 1)
+        artist => artist_credit(work.artist_credit, plain => 1)
     }) -%]
 
 [%- WRAPPER "layout.tt" -%]

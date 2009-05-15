@@ -4,7 +4,7 @@
         [% html_escape("(${artist.comment})") IF artist.comment %]
     </div>
     <div class='info'>
-        [% l('By {artist}', {artist=show_artist_credit_text(work.artist_credit)}) -%]
+        [% l('By {artist}', {artist=artist_credit(work.artist_credit)}) -%]
     </div>
     <div class='editLinks'>
         [%- l('Please {uri|log in} to edit this artist.', {uri = c.uri_for('/user/login')})
