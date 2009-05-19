@@ -121,22 +121,18 @@ sub show : PathPart('') Chained('label')
 {
     my  ($self, $c) = @_;
 
-    my $page = $c->request->query_params->{page} || 1;
-    $page = 1 if $page < 1;
+    my $release_labels = $self->_load_paged($c, sub {
+            $c->model('ReleaseLabel')->find_by_label($c->stash->{label}->id, shift, shift);
+        });
 
-    my ($releases, $total) = $c->model('ReleaseLabel')->find_by_label($c->stash->{label}->id, 50, ($page - 1) * 50);
-    my $pager = Data::Page->new;
-    $pager->entries_per_page(50);
-    $pager->total_entries($total);
-    $pager->current_page($page);
+    my @releases = map { $_->release } @$release_labels;
 
-    $c->model('Country')->load($c->stash->{label});
-    $c->model('ArtistCredit')->load(map { $_->release } @$releases);
+    $c->model('Country')->load($c->stash->{label}, @releases);
+    $c->model('ArtistCredit')->load(@releases);
 
     $c->stash(
         template => 'label/index.tt',
-        releases => $releases,
-        pager    => $pager,
+        releases => $release_labels,
     );
 }
 

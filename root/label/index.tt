@@ -8,6 +8,7 @@
                         <th>[% l('Artist') %]</th>
                         <th>[% l('Catalog Number') %]</th>
                         <th>[% l('Release Date') %]</th>
+                        <th>[% l('Country') %]</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -17,6 +18,7 @@
                         <td>[% artist_credit(release.release.artist_credit) %]</td>
                         <td>[% release.catalog_number %]</td>
                         <td>[% release.release.date.format %]</td>
+                        <td>[% release.release.country.name %]</td>
                     </tr>
                     [%- END -%]
                 </tbody>

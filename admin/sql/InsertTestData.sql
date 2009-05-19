@@ -136,9 +136,9 @@ INSERT INTO release_label (id, release, position, label, catno)
 -- I've had to add these to warp (label id = 2) so I can actually view them in the site
 -- (label id = 1 is a special label). aCiD2.
 INSERT INTO release_label (id, release, position, label, catno)
-    VALUES (1, 1, 0, 1, 'ABC-123');
+    VALUES (5, 1, 0, 2, 'ABC-123');
 INSERT INTO release_label (id, release, position, label, catno)
-    VALUES (2, 1, 1, 1, 'ABC-123-X');
+    VALUES (6, 1, 1, 2, 'ABC-123-X');
 
 TRUNCATE url CASCADE;
 
