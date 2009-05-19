@@ -27,5 +27,5 @@ $mech->content_like(qr/Arrival/, 'has release title');
 $mech->content_like(qr/ABC-123/, 'has catalog of first release');
 $mech->content_like(qr/ABC-123-X/, 'has catalog of second release');
 $mech->content_like(qr/2009-05-08/, 'has release date');
-$mech->content_like(qr{<td>\s*United Kingdom\s*</td>}, 'has country in release list');
+$mech->content_like(qr{GB}, 'has country in release list');
 $mech->content_like(qr{/release/f34c079d-374e-4436-9448-da92dedef3ce}, 'links to correct release');

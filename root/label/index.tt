@@ -18,7 +18,11 @@
                         <td>[% artist_credit(release.release.artist_credit) %]</td>
                         <td>[% release.catalog_number %]</td>
                         <td>[% release.release.date.format %]</td>
-                        <td>[% release.release.country.name %]</td>
+                        <td>
+                            <abbr title="[% release.release.country.name %]">
+                                [% release.release.country.iso_code %]
+                            </abbr>
+                        </td>
                     </tr>
                     [%- END -%]
                 </tbody>
