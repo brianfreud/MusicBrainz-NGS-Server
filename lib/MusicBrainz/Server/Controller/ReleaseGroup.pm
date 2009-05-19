@@ -11,7 +11,7 @@ __PACKAGE__->config(
     namespace   => 'release_group',
 );
 
-sub base : Chained('/') PathPart('release_group') CaptureArgs(0) { }
+sub base : Chained('/') PathPart('release-group') CaptureArgs(0) { }
 
 sub release_group : Chained('load') PathPart('') CaptureArgs(0)
 {
