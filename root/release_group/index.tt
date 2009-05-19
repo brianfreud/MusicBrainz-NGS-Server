@@ -1,3 +1,2 @@
-[%- WRAPPER 'layout.tt' %]
-    [%- INCLUDE 'release_group/header.tt' -%]
+[%- WRAPPER 'release_group/layout.tt' %]
 [%- END -%]
