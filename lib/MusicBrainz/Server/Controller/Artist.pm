@@ -210,47 +210,22 @@ sub show : PathPart('') Chained('artist')
 {
     my ($self, $c) = @_;
 
-    my $release_groups = $self->_load_paged($c, sub {
-            $c->model('ReleaseGroup')->find_by_artist($c->stash->{artist}->id, shift, shift);
-        });
+    my $release_groups;
+    if ($c->stash->{artist}->id == $VARTIST_ID)
+    {
+        $c->stash( template => 'artist/browse_various.tt' );        
+    }
+    else
+    {
+        $release_groups = $self->_load_paged($c, sub {
+                $c->model('ReleaseGroup')->find_by_artist($c->stash->{artist}->id, shift, shift);
+            });
+
+        $c->stash( template => 'artist/index.tt' );
+    }
 
     $c->model('ArtistCredit')->load(@$release_groups);
-
-    $c->stash(
-        template => 'artist/index.tt',
-        release_groups => $release_groups,
-    );
-}
-
-=head2 _show_various
-
-This internal action handles displaying the various artist browse page,
-as there are simply far too many releases to display on one page
-
-=cut
-
-sub _show_various : Private
-{
-    my ($self, $c) = @_;
-    
-    my $page = $c->req->query_params->{page} || 1;
-    
-    my $pager = Data::Page->new;
-    $pager->entries_per_page(50);
-    $pager->current_page($page);
-    
-    my $index = uc $c->req->query_params->{index} || '';
-    
-    my ($count, $releases) = $c->model('Release')->
-        get_browse_selection($index, ($page - 1) * $pager->entries_per_page );
-
-    $pager->total_entries($count);
-
-    $c->stash->{count}    = $count;
-    $c->stash->{releases} = $releases;
-    $c->stash->{pager}    = $pager;
-    
-    $c->stash->{template} = 'artist/browse_various.tt';
+    $c->stash( release_groups => $release_groups );
 }
 
 =head2 WRITE METHODS
