@@ -1,6 +1,6 @@
 #!/usr/bin/perl
 use strict;
-use Test::More tests => 13;
+use Test::More tests => 14;
 
 BEGIN {
     use MusicBrainz::Server::Context;

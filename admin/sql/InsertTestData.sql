@@ -93,7 +93,7 @@ INSERT INTO release_group (id, gid, name, artist_credit, type) VALUES
 
 -- Test multiple release groups on a page
 INSERT INTO artist_credit (id, artistcount) VALUES (4, 1);
-INSERT INTO artist_credit_name (artist_credit, position, artist, name) VALUES (4, 0, 1, 3);
+INSERT INTO artist_credit_name (artist_credit, position, artist, name) VALUES (4, 0, 3, 3);
 
 INSERT INTO release_name (id, name, page) VALUES (3, 'Test RG 1', 1234);
 INSERT INTO release_name (id, name, page) VALUES (4, 'Test RG 2', 1234);
