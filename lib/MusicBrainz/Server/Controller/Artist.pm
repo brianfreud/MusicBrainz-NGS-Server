@@ -209,7 +209,17 @@ folksonomy information (tags).
 sub show : PathPart('') Chained('artist')
 {
     my ($self, $c) = @_;
-    $c->stash(template => 'artist/index.tt');
+
+    my $release_groups = $self->_load_paged($c, sub {
+            $c->model('ReleaseGroup')->find_by_artist($c->stash->{artist}->id, shift, shift);
+        });
+
+    $c->model('ArtistCredit')->load(@$release_groups);
+
+    $c->stash(
+        template => 'artist/index.tt',
+        release_groups => $release_groups,
+    );
 }
 
 =head2 _show_various
