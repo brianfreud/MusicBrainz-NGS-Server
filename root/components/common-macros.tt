@@ -85,6 +85,7 @@ END; -%]
     ELSIF type.search('Entity::Label='); link_label(entity, action, text);
     ELSIF type.search('Entity::Release='); link_release(entity, action, text);
     ELSIF type.search('Entity::ReleaseGroup='); link_release_group(entity, action, text);
+    ELSIF type.search('Entity::Recording='); link_recording(entity, action, text);
     END;
 END -%]
 
@@ -129,3 +130,11 @@ END -%]
     text = text || html_escape(rg.name);
     '<a href="' _ link _ '">' _ text _ '</a>';
 END -%]
+
+[%- MACRO link_recording(recording, action, text) BLOCK;
+    action = action || 'show';
+    link = c.uri_for_action("/recording/$action", [ recording.gid ]);
+    text = text || html_escape(recording.name);
+    '<a href="' _ link _ '">' _ text _ '</a>';
+END -%]
+
