@@ -1,3 +1,4 @@
 [% INCLUDE "components/paginator.tt" %]
+[%- l('Found {n} results', {n=pager.total_entries}) IF total -%]
 [% content %]
 [% INCLUDE "components/paginator.tt" %]

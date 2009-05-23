@@ -1,0 +1,26 @@
+[% extra_js = 'jquery/jquery.tablesorter.min.js searchresults.js' %]
+[% extra_css = 'jquery/tablesort.css' %]
+
+[% WRAPPER "layout.tt" title=l("Search Results") %]
+    [% WRAPPER "components/box.tt" header=l("Search Results") %]
+        [% WRAPPER 'components/with-pager.tt' total=1 %]
+            <table>
+                <thead>
+                    <tr>
+                        <th>Score</th>
+                        <th>[% type | ucfirst %]</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    [%- FOR result=results -%]
+                    <tr>
+                        <td>[% result.score %]</td>
+                        <td>[% link_entity(result.entity) %]</td>
+                    </tr>
+                    [%- END -%]
+                </tbody>
+            </table>
+        [% END %]
+    [% END IF results %]
+    [% INCLUDE "search/form.tt" %]
+[% END %]

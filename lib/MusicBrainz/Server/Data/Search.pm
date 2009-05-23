@@ -25,6 +25,7 @@ Readonly my %TYPE_TO_DATA_CLASS => (
 sub search
 {
     my ($self, $type, $query_str, $limit, $offset) = @_;
+    return ([], 0) unless $query_str && $type;
 
     $offset ||= 0;
 
@@ -124,7 +125,7 @@ sub search
     }
     my $hits = $sql->Rows + $offset;
     $sql->Finish;
-    return (\@result, $hits);
+    return ([ sort { $a->position <=> $b->position } @result ], $hits);
 
 }
 

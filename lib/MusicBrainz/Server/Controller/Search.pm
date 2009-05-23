@@ -29,8 +29,9 @@ sub direct : Local
     });
 
     $c->stash(
-        results => $results,
-        type    => $type,
+        results  => $results,
+        type     => $type,
+        template => 'search/results.tt',
     );
 }
 
