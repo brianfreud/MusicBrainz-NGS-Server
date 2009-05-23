@@ -113,7 +113,7 @@ sub search
     }
 
     my @result;
-    my $pos = 1;
+    my $pos = $offset;
     while ($limit--) {
         my $row = $sql->NextRowHashRef or last;
         my $res = MusicBrainz::Server::Entity::SearchResult->new(
@@ -125,7 +125,7 @@ sub search
     }
     my $hits = $sql->Rows + $offset;
     $sql->Finish;
-    return ([ sort { $a->position <=> $b->position } @result ], $hits);
+    return (\@result, $hits);
 
 }
 
