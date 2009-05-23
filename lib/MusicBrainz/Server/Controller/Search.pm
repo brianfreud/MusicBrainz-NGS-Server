@@ -6,7 +6,7 @@ use warnings;
 use base 'MusicBrainz::Server::Controller';
 
 use LWP::UserAgent;
-use MusicBrainz::Server::Form::Search;
+use MusicBrainz::Server::Form::Search::Direct;
 use URI::Escape qw( uri_escape );
 
 sub editor : Private
@@ -22,7 +22,7 @@ sub direct : Local
 {
     my ($self, $c) = @_;
 
-    my $form = MusicBrainz::Server::Form::Search->new;
+    my $form = MusicBrainz::Server::Form::Search::Direct->new;
     if ($form->process( params => $c->req->query_params ))
     {
         my $results = $self->_load_paged($c, sub {
