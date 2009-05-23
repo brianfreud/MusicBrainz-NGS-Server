@@ -6,6 +6,7 @@ use warnings;
 use base 'MusicBrainz::Server::Controller';
 
 use LWP::UserAgent;
+use MusicBrainz::Server::Form::Search;
 use URI::Escape qw( uri_escape );
 
 sub editor : Private
@@ -21,17 +22,23 @@ sub direct : Local
 {
     my ($self, $c) = @_;
 
-    my $query = $c->req->query_params->{query};
-    my $type = $c->req->query_params->{type};
+    my $form = MusicBrainz::Server::Form::Search->new;
+    if ($form->process( params => $c->req->query_params ))
+    {
+        my $results = $self->_load_paged($c, sub {
+           $c->model('DirectSearch')->search($form->value('type'), $form->value('query'),
+               shift, shift);
+        });
 
-    my $results = $self->_load_paged($c, sub {
-       $c->model('DirectSearch')->search($type, $query, shift, shift);
-    });
+        $c->stash(
+            results => $results, 
+            type    => $form->value('type'),
+        );
+    }
 
     $c->stash(
-        results  => $results,
-        type     => $type,
         template => 'search/results.tt',
+        form     => $form
     );
 }
 
