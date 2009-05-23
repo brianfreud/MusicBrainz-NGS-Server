@@ -8,29 +8,6 @@ use base 'MusicBrainz::Server::Controller';
 use LWP::UserAgent;
 use URI::Escape qw( uri_escape );
 
-=head1 NAME
-
-MusicBrainz::Server::Controller::Search - Handles searching the database
-
-=head1 DESCRIPTION
-
-This control handles searching the database for various data, such as
-artists and releases, but also MusicBrainz specific data, such as editors
-and tags.
-
-=head1 METHODS
-
-=head2 editor
-
-Serach for a MusicBrainz database.
-
-This search is performed right in this action, and is not dispatched to
-one of the MusicBrainz search servers. It searches for a moderator with
-the exact name given, and if found, redirects to their profile page. If
-no moderator could be found, the user is informed.
-
-=cut
-
 sub editor : Private
 {
     my ($self, $c) = @_;
@@ -40,12 +17,22 @@ sub editor : Private
     $c->stash->{template} = 'search/editor.tt';
 }
 
-=head2 external
+sub direct : Local
+{
+    my ($self, $c) = @_;
 
-Search using an external search engine (currently Lucene, but moving
-towards Xapian).
+    my $query = $c->req->query_params->{query};
+    my $type = $c->req->query_params->{type};
 
-=cut
+    my $results = $self->_load_paged($c, sub {
+       $c->model('DirectSearch')->search($type, $query, shift, shift);
+    });
+
+    $c->stash(
+        results => $results,
+        type    => $type,
+    );
+}
 
 sub search : Path('') Form('Search::External')
 {
@@ -189,36 +176,6 @@ sub search : Path('') Form('Search::External')
     }
 }
 
-=head2 filter_artist
-
-Provide a form for users to search for an artist. This is a 3 stage form.
-
-=over 4
-
-=item First, the user is presented with the form and enters a query
-
-=item Then the user is presented with a list of search results
-
-=item Finally, the user selects a result and may continue.
-
-=back
-
-To retrieve the item that the user has selected, you should use the
-C<state> method of the current context. For example:
-
-    $c->forward('/search/fitler_artist');
-    if (defined $c->state)
-    {
-        # Do stuff with the artist
-    }
-    else
-    {
-        # No search result yet, probably want to wait
-        # until we have an artist
-    }
-
-=cut
-
 sub filter_artist : Form('Search::Query')
 {
     my ($self, $c) = @_;
@@ -270,7 +227,65 @@ sub plugins : Local { }
 
 sub links : Local { }
 
+1;
+
+=head1 NAME
+
+MusicBrainz::Server::Controller::Search - Handles searching the database
+
+=head1 DESCRIPTION
+
+This control handles searching the database for various data, such as
+artists and releases, but also MusicBrainz specific data, such as editors
+and tags.
+
+=head1 METHODS
+
+=head2 editor
+
+Serach for a MusicBrainz database.
+
+This search is performed right in this action, and is not dispatched to
+one of the MusicBrainz search servers. It searches for a moderator with
+the exact name given, and if found, redirects to their profile page. If
+no moderator could be found, the user is informed.
+
+=head2 external
+
+Search using an external search engine (currently Lucene, but moving
+towards Xapian).
+
+=head2 filter_artist
+
+Provide a form for users to search for an artist. This is a 3 stage form.
+
+=over 4
+
+=item First, the user is presented with the form and enters a query
+
+=item Then the user is presented with a list of search results
+
+=item Finally, the user selects a result and may continue.
+
+=back
+
+To retrieve the item that the user has selected, you should use the
+C<state> method of the current context. For example:
+
+    $c->forward('/search/fitler_artist');
+    if (defined $c->state)
+    {
+        # Do stuff with the artist
+    }
+    else
+    {
+        # No search result yet, probably want to wait
+        # until we have an artist
+    }
+
 =head1 LICENSE
+
+Copyright (C) 2009 Oliver Charles
 
 This software is provided "as is", without warranty of any kind, express or
 implied, including  but not limited  to the warranties of  merchantability,
@@ -288,5 +303,3 @@ the original  source or any  software  utilizing a GPL  component, such  as
 this, is also licensed under the GPL license.
 
 =cut
-
-1;
