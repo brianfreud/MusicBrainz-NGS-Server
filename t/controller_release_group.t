@@ -1,6 +1,6 @@
 #!/usr/bin/perl
 use strict;
-use Test::More tests => 17;
+use Test::More tests => 23;
 
 BEGIN {
     use MusicBrainz::Server::Context;
@@ -29,7 +29,13 @@ $mech->content_like(qr/7 \+ 9 tracks/, 'correct track count');
 $mech->content_like(qr{/release/f205627f-b70a-409d-adbe-66289b614e80}, 'has uk release');
 $mech->content_like(qr{United Kingdom}, 'has uk release');
 $mech->content_like(qr{2005-11-07}, 'has uk release');
+$mech->content_like(qr{Warp Records}, 'has uk label');
+$mech->content_like(qr{343 960 2}, 'has uk label');
+$mech->content_like(qr{/label/46f0f4cd-8aab-4b33-b698-f459faf64190}, 'has uk label');
 
 $mech->content_like(qr{/release/9b3d9383-3d2a-417f-bfbb-56f7c15f075b}, 'has us release');
 $mech->content_like(qr{United States}, 'has us release');
 $mech->content_like(qr{2005-11-08}, 'has us release');
+$mech->content_like(qr{Warp Records}, 'has uk label');
+$mech->content_like(qr{82796 97772 2}, 'has uk label');
+$mech->content_like(qr{/label/46f0f4cd-8aab-4b33-b698-f459faf64190}, 'has uk label');

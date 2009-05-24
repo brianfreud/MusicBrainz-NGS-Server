@@ -32,6 +32,8 @@ sub show : Chained('release_group') PathPart('')
     $c->model('Medium')->load(@$releases);
     $c->model('MediumFormat')->load(map { @{ $_->mediums } } @$releases);
     $c->model('Country')->load(@$releases);
+    $c->model('ReleaseLabel')->load(@$releases);
+    $c->model('Label')->load(map { @{ $_->labels } } @$releases);
 
     $c->stash(
         template => 'release_group/index.tt',
