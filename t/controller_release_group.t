@@ -1,6 +1,6 @@
 #!/usr/bin/perl
 use strict;
-use Test::More tests => 13;
+use Test::More tests => 17;
 
 BEGIN {
     use MusicBrainz::Server::Context;
@@ -23,7 +23,13 @@ $mech->content_like(qr{/artist/a45c079d-374e-4436-9448-da92dedef3cf}, 'link to a
 
 $mech->get_ok('/release-group/7c3218d7-75e0-4e8c-971f-f097b6c308c5', 'fetch Aerial release group');
 $mech->content_like(qr/Aerial/);
-$mech->content_like(qr{/release/f205627f-b70a-409d-adbe-66289b614e80}, 'links to release');
-$mech->content_like(qr{/release/9b3d9383-3d2a-417f-bfbb-56f7c15f075b}, 'links to release');
 $mech->content_like(qr/2xCD/, 'correct medium format');
 $mech->content_like(qr/7 \+ 9 tracks/, 'correct track count');
+
+$mech->content_like(qr{/release/f205627f-b70a-409d-adbe-66289b614e80}, 'has uk release');
+$mech->content_like(qr{United Kingdom}, 'has uk release');
+$mech->content_like(qr{2005-11-07}, 'has uk release');
+
+$mech->content_like(qr{/release/9b3d9383-3d2a-417f-bfbb-56f7c15f075b}, 'has us release');
+$mech->content_like(qr{United States}, 'has us release');
+$mech->content_like(qr{2005-11-08}, 'has us release');

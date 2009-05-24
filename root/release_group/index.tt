@@ -6,6 +6,8 @@
                     <tr>
                         <th>[% l('Release') %]</th>
                         <th>[% l('Media') %]</th>
+                        <th>[% l('Date') %]</th>
+                        <th>[% l('Country') %]</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -16,6 +18,8 @@
                             [% release.combined_format_name %] &mdash;
                             [% l('{tracks} tracks', {tracks=release.combined_track_count}) %]
                         </td>
+                        <td>[% release.date.format %]</td>
+                        <td>[% release.country.name %]</td>
                     </tr>
                     [%- END -%]
                 </tbody>
