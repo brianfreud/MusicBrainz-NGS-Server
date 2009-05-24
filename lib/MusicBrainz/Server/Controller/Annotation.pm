@@ -5,6 +5,21 @@ use warnings;
 
 use base 'MusicBrainz::Server::Controller';
 
+sub latest : Chained('/') PathPart('annotation') CaptureArgs(2)
+{
+    my ($self, $c, $type, $gid) = @_;
+
+    my $entity = $c->model($type)->get_by_gid($gid);
+    my $annotation = $c->model($type)->annotation->get_latest($entity->id);
+
+    $c->stash(
+        annotation => $annotation,
+        entity => $entity
+    );
+}
+
+sub view : Chained('latest') PathPart('') { }
+
 sub for_entity : Chained('/') PathPart('annotation') CaptureArgs(2)
 {
     my ($self, $c, $type, $id) = @_;

@@ -1,55 +1,19 @@
-package MusicBrainz::Server::Entity::Work;
+package MusicBrainz::Server::Entity::AnnotationRole;
+use Moose::Role;
 
-use Moose;
 use MusicBrainz::Server::Entity::Types;
 
-extends 'MusicBrainz::Server::Entity::CoreEntity';
-with 'MusicBrainz::Server::Entity::Taggable';
-with 'MusicBrainz::Server::Entity::AnnotationRole';
-
-has 'type_id' => (
-    is => 'rw',
-    isa => 'Int'
-    );
-
-has 'type' => (
-    is => 'rw',
-    isa => 'WorkType'
+has 'latest_annotation' => (
+    isa => 'Annotation',
+    is  => 'rw',
 );
 
-sub type_name
-{
-    my ($self) = @_;
-    return $self->type ? $self->type->name : undef;
-}
-
-has 'artist_credit_id' => (
-    is => 'rw',
-    isa => 'Int'
-);
-
-has 'artist_credit' => (
-    is => 'rw',
-    isa => 'ArtistCredit'
-);
-
-has 'iswc' => (
-    is => 'rw',
-    isa => 'Str'
-);
-
-has 'comment' => (
-    is => 'rw',
-    isa => 'Str'
-);
-
-__PACKAGE__->meta->make_immutable;
-no Moose;
+no Moose::Role;
 1;
 
 =head1 COPYRIGHT
 
-Copyright (C) 2009 Lukas Lalinsky
+Copyright (C) 2009 Oliver Charles
 
 This program is free software; you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -66,3 +30,4 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 
 =cut
+

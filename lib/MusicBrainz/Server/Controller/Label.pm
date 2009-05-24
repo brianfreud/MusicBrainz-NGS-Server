@@ -129,6 +129,7 @@ sub show : PathPart('') Chained('label')
 
     $c->model('Country')->load($c->stash->{label}, @releases);
     $c->model('ArtistCredit')->load(@releases);
+    $c->model('Label')->annotation->load_latest($c->stash->{label});
 
     $c->stash(
         template => 'label/index.tt',
