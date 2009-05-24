@@ -30,16 +30,23 @@ sub direct : Local
                shift, shift);
         });
 
+        if ($form->value('type') =~ /(recording|work|release_group)/)
+        {
+            $c->model('ArtistCredit')->load(map { $_->entity } @$results);
+        }
+
         $c->stash(
-            results => $results, 
-            type    => $form->value('type'),
+            template => sprintf ('search/results-%s.tt', $form->value('type')),
+            results  => $results, 
+            type     => $form->value('type'),
         );
     }
+    else
+    {
+        $c->stash( template => 'search/index.tt' );
+    }
 
-    $c->stash(
-        template => 'search/results.tt',
-        form     => $form
-    );
+    $c->stash( form => $form );
 }
 
 sub search : Path('') Form('Search::External')

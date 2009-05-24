@@ -1,6 +1,6 @@
 #!/usr/bin/perl
 use strict;
-use Test::More tests => 25;
+use Test::More tests => 31;
 
 BEGIN {
     use MusicBrainz::Server::Context;
@@ -16,17 +16,21 @@ my $mech = Test::WWW::Mechanize::Catalyst->new(catalyst_app => 'MusicBrainz::Ser
 $mech->get_ok('/search/direct?query=Kate&type=artist', 'perform artist search');
 $mech->content_contains('1 result', 'has result count');
 $mech->content_contains('Kate Bush', 'has correct search result');
+$mech->content_contains('Bush, Kate', 'has artist sortname');
 $mech->content_contains('/artist/4b585938-f271-45e2-b19a-91c634b5e396', 'has link to artist');
 
 $mech->get_ok('/search/direct?query=Warp&type=label', 'perform label search');
 $mech->content_contains('1 result', 'has result count');
 $mech->content_contains('Warp Records', 'has correct search result');
+$mech->content_contains('Sheffield based electronica label', 'has label comment');
 $mech->content_contains('/label/46f0f4cd-8aab-4b33-b698-f459faf64190', 'has link to label');
 
 $mech->get_ok('/search/direct?query=Dancing+Queen&type=work', 'perform works search');
 $mech->content_contains('1 result', 'has result count');
 $mech->content_contains('Dancing Queen', 'has correct search result');
 $mech->content_contains('/work/745c079d-374e-4436-9448-da92dedef3ce', 'has link to work');
+$mech->content_contains('/artist/a45c079d-374e-4436-9448-da92dedef3cf', 'has link to artist');
+$mech->content_contains('ABBA', 'has artist');
 
 $mech->get_ok('/search/direct?query=Sunset&type=recording', 'perform recording search');
 $mech->content_contains('1 result', 'has result count');
@@ -43,3 +47,5 @@ $mech->get_ok('/search/direct?query=Arrival&type=release_group', 'perform releas
 $mech->content_contains('1 result', 'has result count');
 $mech->content_contains('Arrival', 'has correct search result');
 $mech->content_contains('/release-group/234c079d-374e-4436-9448-da92dedef3ce', 'has link to release group');
+$mech->content_contains('/artist/a45c079d-374e-4436-9448-da92dedef3cf', 'has link to artist');
+$mech->content_contains('ABBA', 'has artist');

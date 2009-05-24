@@ -71,6 +71,10 @@ END; -%]
             l('Error: Unknown Type');
     END -%]
 
+[%- MACRO disambiguation(entity) BLOCK;
+    html_escape("(${entity.comment})") IF entity.comment;
+END -%]
+
 [%- MACRO artist_credit(ac, opts) BLOCK -%]
     [%- FOREACH name IN ac.names -%]
         [%- opts.plain ? html_escape(name.name) : link_artist(name.artist) -%]

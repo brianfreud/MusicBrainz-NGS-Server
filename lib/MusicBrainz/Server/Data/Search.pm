@@ -113,7 +113,7 @@ sub search
     }
 
     my @result;
-    my $pos = $offset;
+    my $pos = $offset + 1;
     while ($limit--) {
         my $row = $sql->NextRowHashRef or last;
         my $res = MusicBrainz::Server::Entity::SearchResult->new(

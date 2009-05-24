@@ -1,4 +1,4 @@
-package MusicBrainz::Server::Form::Search;
+package MusicBrainz::Server::Form::Search::Direct;
 use HTML::FormHandler::Moose;
 extends 'HTML::FormHandler';
 
