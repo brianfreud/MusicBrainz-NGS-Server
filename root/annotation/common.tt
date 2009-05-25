@@ -3,7 +3,7 @@
         <div class="body" id="annotation_box_body">
             [% annotation.format_summary  %]
             [% IF annotation.summary_is_short %] 
-                <p><a href="[% c.uri_for_action('/annotation/view', [ type, gid ]) %]">Read more&hellip;</a></p>
+                <p><a href="[% c.uri_for_action("/$type/latest_annotation", [ gid ]) %]">Read more&hellip;</a></p>
             [% END %]
         </div>
         [%- IF show_change_log -%]
@@ -19,8 +19,8 @@
             <div class="options">
                 [%- IF c.user_exists -%]
                     [%- INCLUDE 'components/piped-list.tt' list = [
-                        { link => c.uri_for_action('/annotation/edit', [ type, gid, annotation.id ]), text => l('Edit') },
-                        { link => c.uri_for_action('/annotation/history', [ type, gid ]), text => l('History') }
+                        { link => c.uri_for_action("/$type/edit_annotation", [ gid ], annotation.id), text => l('Edit') },
+                        { link => c.uri_for_action("/$type/annotation_history", [ gid ]), text => l('History') }
                         ] -%]
                 [%- ELSE -%]
                     [% l('Please {uri|log in} to edit this annotation.', {uri => c.uri_for('/user/login')}) %]
@@ -34,7 +34,7 @@
         </div>
         <div class="options">
             [%- IF c.user_exists -%]
-                <a href="[% c.uri_for_action('/annotation/edit', [ type, gid ]) %]">
+                <a href="[% c.uri_for_action("/$type/edit_annotation", [ gid ]) %]">
                     [% l('Add an annotation') %]
                 </a>
             [%- ELSE -%]

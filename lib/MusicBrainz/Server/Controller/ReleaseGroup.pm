@@ -1,9 +1,9 @@
 package MusicBrainz::Server::Controller::ReleaseGroup;
+use Moose;
 
-use strict;
-use warnings;
+BEGIN { extends 'MusicBrainz::Server::Controller'; }
 
-use base 'MusicBrainz::Server::Controller';
+with 'MusicBrainz::Server::Controller::Annotation';
 
 __PACKAGE__->config(
     model       => 'ReleaseGroup',
@@ -13,15 +13,15 @@ __PACKAGE__->config(
 
 sub base : Chained('/') PathPart('release-group') CaptureArgs(0) { }
 
-sub release_group : Chained('load') PathPart('') CaptureArgs(0)
+after 'load' => sub
 {
     my ($self, $c) = @_;
     
     $c->model('ReleaseGroupType')->load($c->stash->{rg});
     $c->model('ArtistCredit')->load($c->stash->{rg});
-}
+};
 
-sub show : Chained('release_group') PathPart('')
+sub show : Chained('load') PathPart('')
 {
     my ($self, $c) = @_;
 

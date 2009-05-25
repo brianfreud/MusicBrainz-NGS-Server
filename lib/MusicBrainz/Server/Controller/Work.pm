@@ -1,9 +1,9 @@
 package MusicBrainz::Server::Controller::Work;
+use Moose;
 
-use strict;
-use warnings;
+BEGIN { extends 'MusicBrainz::Server::Controller'; }
 
-use base 'MusicBrainz::Server::Controller';
+with 'MusicBrainz::Server::Controller::Annotation';
 
 __PACKAGE__->config(
     model       => 'Work',
@@ -20,6 +20,7 @@ sub show : PathPart('') Chained('work')
     my $work = $c->stash->{work};
     $c->model('WorkType')->load($work);
     $c->model('ArtistCredit')->load($work);
+    $c->model('Work')->annotation->load_latest($work);
 
     $c->stash->{template} = 'work/index.tt';
 }
