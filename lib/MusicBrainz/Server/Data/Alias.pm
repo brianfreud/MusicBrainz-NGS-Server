@@ -50,6 +50,12 @@ sub _entity_class
     return shift->entity;
 }
 
+sub get_by_entity_id
+{
+    my ($self, @ids) = @_;
+    return [ values %{ $self->_get_by_keys($self->type, @ids) } ];
+}
+
 no Moose;
 __PACKAGE__->meta->make_immutable;
 1;

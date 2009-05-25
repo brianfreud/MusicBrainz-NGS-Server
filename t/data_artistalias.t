@@ -1,6 +1,6 @@
 #!/usr/bin/perl
 use strict;
-use Test::More tests => 8;
+use Test::More tests => 10;
 
 BEGIN { use_ok 'MusicBrainz::Server::Data::Artist' }
 
@@ -24,3 +24,7 @@ $artist_data->load($alias);
 ok(defined $alias->artist, 'didnt load artist');
 isa_ok($alias->artist, 'MusicBrainz::Server::Entity::Artist', 'not an artist object');
 is($alias->artist->id, $alias->artist_id, 'loaded artist id');
+
+my $alias_set = $artist_data->alias->get_by_entity_id(4);
+is(scalar @$alias_set, 1);
+is($alias_set->[0]->name, 'Test Alias');

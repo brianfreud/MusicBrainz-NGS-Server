@@ -1,6 +1,6 @@
 #!/usr/bin/perl
 use strict;
-use Test::More tests => 8;
+use Test::More tests => 10;
 
 BEGIN { use_ok 'MusicBrainz::Server::Data::Label' }
 
@@ -24,3 +24,7 @@ $label_data->load($alias);
 ok(defined $alias->label, 'didnt load label');
 isa_ok($alias->label, 'MusicBrainz::Server::Entity::Label', 'not a label object');
 is($alias->label->id, $alias->label_id, 'loaded label id');
+
+my $alias_set = $label_data->alias->get_by_entity_id(2);
+is(scalar @$alias_set, 1);
+is($alias_set->[0]->name, 'Test Label Alias');
