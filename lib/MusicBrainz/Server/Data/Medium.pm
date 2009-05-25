@@ -35,9 +35,12 @@ sub _column_mapping
         tracklist_id  => 'tracklist',
         tracklist     => sub {
             my ($row, $prefix) = @_;
+            my $id = $row->{$prefix . 'tracklist'};
+            my $track_count = $row->{$prefix . 'trackcount'};
+            return unless $id && $track_count;
             return MusicBrainz::Server::Entity::Tracklist->new(
-                id          => $row->{$prefix . 'tracklist'},
-                track_count => $row->{$prefix . 'trackcount'},
+                id          => $id,
+                track_count => $track_count,
             );
         },
         release_id    => 'release',
@@ -77,7 +80,6 @@ sub find_by_tracklist
             medium.id AS m_id, medium.format AS m_format,
                 medium.position AS m_position, medium.name AS m_name,
                 medium.tracklist AS m_tracklist,
-                tracklist.trackcount AS m_trackcount,
             release.id AS r_id, release.gid AS r_gid, release_name.name AS r_name,
                 release.artist_credit AS r_artist_credit,
                 release.date_year AS r_date_year,
@@ -87,7 +89,6 @@ sub find_by_tracklist
                 release.packaging AS r_packaging
         FROM
             medium
-            JOIN tracklist ON tracklist.id = medium.tracklist
             JOIN release ON release.id = medium.release
             JOIN release_name ON release.name = release_name.id
         WHERE medium.tracklist = ?
@@ -99,7 +100,6 @@ sub find_by_tracklist
             my $medium = $self->_new_from_row($row, 'm_');
             my $release = MusicBrainz::Server::Data::Release->_new_from_row($row, 'r_');
             $medium->release($release);
-            $medium->tracklist->medium($medium);
             return $medium;
         },
         $query, $tracklist_id, $offset || 0);
