@@ -1,38 +1,53 @@
-package MusicBrainz::Server::Data::LabelAlias;
+package MusicBrainz::Server::Data::Alias;
 use Moose;
-
-use MusicBrainz::Server::Entity::LabelAlias;
 
 extends 'MusicBrainz::Server::Data::Entity';
 
+has 'type' => (
+    isa      => 'Str',
+    is       => 'rw',
+    required => 1
+);
+
+has 'entity' => (
+    isa      => 'Str',
+    is       => 'rw',
+    required => 1,
+);
+
 sub _table
 {
-    return 'label_alias JOIN label_name name ON label_alias.name=name.id';
+    my $self = shift;
+    return sprintf '%s_alias JOIN %s_name name ON %s_alias.name=name.id',
+        $self->type, $self->type, $self->type;
 }
 
 sub _columns
 {
-    return 'label_alias.id, name.name, label, editpending';
+    my $self = shift;
+    return sprintf '%s_alias.id, name.name, %s, editpending',
+        $self->type, $self->type;
 }
 
 sub _column_mapping
 {
+    my $self = shift;
     return {
-        id            => 'id',
-        name          => 'name',
-        label_id      => 'label',
-        edits_pending => 'editpending',
+        id                  => 'id',
+        name                => 'name',
+        $self->type . '_id' => $self->type,
+        edits_pending       => 'editpending',
     };
 }
 
 sub _id_column
 {
-    return 'label_alias.id';
+    return shift->type . '_alias.id';
 }
 
 sub _entity_class
 {
-    return 'MusicBrainz::Server::Entity::LabelAlias';
+    return shift->entity;
 }
 
 no Moose;
@@ -41,12 +56,12 @@ __PACKAGE__->meta->make_immutable;
 
 =head1 NAME
 
-MusicBrainz::Server::Data::LabelAlias - database level loading support for
-label aliases.
+MusicBrainz::Server::Data::ArtistAlias - database level loading support for
+artist aliases.
 
 =head1 DESCRIPTION
 
-Provides support for loading label aliases from the database.
+Provides support for loading artist aliases from the database.
 
 =head1 COPYRIGHT
 
@@ -67,3 +82,4 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 
 =cut
+
