@@ -1,0 +1,16 @@
+<table>
+    <thead>
+        <tr>
+            <th>[%- l('Name') -%]</th>
+            <th>[%- l('Artist') -%]</th>
+        </tr>
+    </thead>
+    <tbody>
+        [%- FOR work=works -%]
+        <tr>
+            <td>[% link_work(work) %]</td>
+            <td>[% artist_credit(work.artist_credit) %]</td>
+        </tr>
+        [%- END -%]
+    </tbody>
+</table>
