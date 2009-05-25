@@ -50,7 +50,7 @@ sub _entity_class
     return shift->entity;
 }
 
-sub get_by_entity_id
+sub find_by_entity_id
 {
     my ($self, @ids) = @_;
     return [ values %{ $self->_get_by_keys($self->type, @ids) } ];
