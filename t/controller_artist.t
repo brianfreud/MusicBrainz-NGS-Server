@@ -1,6 +1,6 @@
 #!/usr/bin/perl
 use strict;
-use Test::More tests => 22;
+use Test::More tests => 29;
 
 BEGIN {
     use MusicBrainz::Server::Context;
@@ -28,6 +28,7 @@ $mech->content_unlike(qr/More annotation/, 'only display summary');
 
 # Header links
 $mech->content_contains('/artist/745c079d-374e-4436-9448-da92dedef3ce/works', 'link to artist works');
+$mech->content_contains('/artist/745c079d-374e-4436-9448-da92dedef3ce/recordings', 'link to artist recordings');
 
 # Basic test for release groups
 $mech->content_like(qr/Test RG 1/, 'release group 1');
@@ -42,3 +43,11 @@ $mech->title_like(qr/ABBA/, 'title has ABBA');
 $mech->title_like(qr/works/i, 'title indicates works listing');
 $mech->content_contains('Dancing Queen');
 $mech->content_contains('/work/745c079d-374e-4436-9448-da92dedef3ce', 'has a link to the work');
+
+# Test /artist/gid/recordings
+$mech->get_ok('/artist/a45c079d-374e-4436-9448-da92dedef3cf/recordings', 'get ABBA page');
+$mech->title_like(qr/ABBA/, 'title has ABBA');
+$mech->title_like(qr/recordings/i, 'title indicates recordings listing');
+$mech->content_contains('Dancing Queen');
+$mech->content_contains('2:03');
+$mech->content_contains('/recording/123c079d-374e-4436-9448-da92dedef3ce', 'has a link to the recording');

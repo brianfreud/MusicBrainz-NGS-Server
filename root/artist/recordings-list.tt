@@ -5,15 +5,17 @@
             [%- IF show_artists -%]
                 <th>[%- l('Artist') -%]</th>
             [%- END -%]
+            <th>[%- l('Length') -%]</th>
         </tr>
     </thead>
     <tbody>
-        [%- FOR work=works -%]
+        [%- FOR recording=recordings -%]
         <tr>
-            <td>[% link_work(work) %]</td>
+            <td>[% link_recording(recording) %]</td>
             [%- IF show_artists -%]
-                <td>[% artist_credit(work.artist_credit) %]</td>
+                <td>[% artist_credit(recording.artist_credit) %]</td>
             [%- END -%]
+            <td>[% recording.length | format_time %]</td>
         </tr>
         [%- END -%]
     </tbody>
