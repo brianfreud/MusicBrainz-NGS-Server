@@ -30,6 +30,12 @@ sub _column_mapping
     return {};
 }
 
+
+sub _attribute_mapping
+{
+    return {};
+}
+
 sub _new_from_row
 {
     my ($self, $row, $prefix) = @_;

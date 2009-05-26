@@ -34,7 +34,7 @@ sub load
 sub insert
 {
     my ($self, @objs) = @_;
-    insert_returning_id($self, [ qw( name ) ], @objs);
+    insert_returning_id($self, @objs);
 }
 
 __PACKAGE__->meta->make_immutable;

@@ -81,31 +81,25 @@ sub query_to_list_limited
 
 sub insert_returning_id
 {
-    my ($data, $columns, @objs) = @_;
-
-    my @values = ("(" . placeholders(@$columns) . ")") x scalar @objs;
-    my $query = "INSERT INTO " . $data->_table .
-                " (" . join(',', @$columns) . ")" .
-                " VALUES " . join(q{, }, @values) .
-                " RETURNING id";
+    my ($data, @objs) = @_;
 
     my $sql = Sql->new($data->c->mb->dbh);
-    my %map = reverse %{$data->_column_mapping};
-    my $ids = $sql->SelectSingleColumnArray($query, map {
-            my %hash = %$_;
-            map { $hash{$map{$_} || $_} } @$columns;
-        } @objs);
-
+    my %map = $data->_attribute_mapping;
     my $class = $data->_entity_class;
     $class->require;
 
     my @created;
-    @objs = zip @objs, @$ids;
-    while (@objs) {
-        push @created, $class->new(
-            %{ shift @objs },
-            id => shift @objs,
-        );
+    for my $obj (@objs)
+    {
+        my @attrs = keys %$obj;
+        my @columns = map { $map{$_} || $_ } @attrs;
+        my $query = "INSERT INTO " . $data->_table .
+                    " (" . join(",", @columns) . ")" .
+                    " VALUES (" . placeholders(@columns) . ") " .
+                    " RETURNING id";
+
+        my $id = $sql->SelectSingleValue($query, map { $obj->{$_} } @attrs);
+        push @created, $class->new( id => $id, %$obj);
     }
 
     return @created == 1 ? $created[0] : @created;
