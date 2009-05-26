@@ -2,13 +2,16 @@ package MusicBrainz::Server::Data::Utils;
 
 use base 'Exporter';
 
-use Sql;
+use List::MoreUtils qw( zip );
 use MusicBrainz::Server::Entity::PartialDate;
+use Sql;
 
 our @EXPORT_OK = qw(
+    column_values
+    insert_returning_id
+    load_subobjects
     partial_date_from_row
     placeholders
-    load_subobjects
     query_to_list
     query_to_list_limited
     uniq
@@ -81,6 +84,37 @@ sub uniq
 {
     my %h = map { $_ => 1 } @_;
     return keys %h;
+}
+
+sub column_values
+{
+    my ($data, $obj, @columns) = @_;
+    my %map = reverse %{$data->_column_mapping};
+    map {
+        my $attr = exists $map{$_} ? $map{$_} : $_;
+        $obj->meta->get_attribute($attr)->get_value($obj)
+    } @columns;
+}
+
+sub insert_returning_id
+{
+    my ($data, $columns, @objs) = @_;
+
+    my @values = ("(" . placeholders(@$columns) . ")") x scalar @objs;
+    my $query = "INSERT INTO " . $data->_table .
+                " (" . join(',', @$columns) . ")" .
+                " VALUES " . join(q{, }, @values) .
+                " RETURNING id";
+
+    my $sql = Sql->new($data->c->mb->dbh);
+    my $ids = $sql->SelectSingleColumnArray($query, map {
+            column_values($data, $_, @$columns)
+        } @objs);
+
+    my @ids = zip @objs, @$ids;
+    while (my $obj = shift @ids) {
+        $obj->id(shift @ids);
+    }
 }
 
 1;
