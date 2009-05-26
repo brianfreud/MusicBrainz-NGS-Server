@@ -102,11 +102,9 @@ sub insert_returning_id
     my @created;
     @objs = zip @objs, @$ids;
     while (@objs) {
-        my $obj = shift @objs;
-        my $id  = shift @objs;
         push @created, $class->new(
-            id => $id,
-            %$obj
+            %{ shift @objs },
+            id => shift @objs,
         );
     }
 
