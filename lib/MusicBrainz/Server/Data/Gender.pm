@@ -31,7 +31,7 @@ sub load
     load_subobjects($self, 'gender', @objs);
 }
 
-sub create
+sub insert
 {
     my ($self, @objs) = @_;
     insert_returning_id($self, [ qw( name ) ], @objs);

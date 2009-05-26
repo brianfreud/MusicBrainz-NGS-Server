@@ -5,9 +5,9 @@ use base 'Exporter';
 use List::MoreUtils qw( zip );
 use MusicBrainz::Server::Entity::PartialDate;
 use Sql;
+use UNIVERSAL::require;
 
 our @EXPORT_OK = qw(
-    column_values
     insert_returning_id
     load_subobjects
     partial_date_from_row
@@ -86,16 +86,6 @@ sub uniq
     return keys %h;
 }
 
-sub column_values
-{
-    my ($data, $obj, @columns) = @_;
-    my %map = reverse %{$data->_column_mapping};
-    map {
-        my $attr = exists $map{$_} ? $map{$_} : $_;
-        $obj->meta->get_attribute($attr)->get_value($obj)
-    } @columns;
-}
-
 sub insert_returning_id
 {
     my ($data, $columns, @objs) = @_;
@@ -107,14 +97,27 @@ sub insert_returning_id
                 " RETURNING id";
 
     my $sql = Sql->new($data->c->mb->dbh);
+    my %map = reverse %{$data->_column_mapping};
     my $ids = $sql->SelectSingleColumnArray($query, map {
-            column_values($data, $_, @$columns)
+            my %hash = %$_;
+            map { $hash{$map{$_} || $_} } @$columns;
         } @objs);
 
-    my @ids = zip @objs, @$ids;
-    while (my $obj = shift @ids) {
-        $obj->id(shift @ids);
+    my $class = $data->_entity_class;
+    $class->require;
+
+    my @created;
+    @objs = zip @objs, @$ids;
+    while (@objs) {
+        my $obj = shift @objs;
+        my $id  = shift @objs;
+        push @created, $class->new(
+            id => $id,
+            %$obj
+        );
     }
+
+    return @created == 1 ? $created[0] : @created;
 }
 
 1;
