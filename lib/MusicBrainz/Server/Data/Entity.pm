@@ -1,7 +1,8 @@
 package MusicBrainz::Server::Data::Entity;
-
 use Moose;
-use MusicBrainz::Server::Data::Utils qw( placeholders uniq );
+
+use List::MoreUtils qw( uniq );
+use MusicBrainz::Server::Data::Utils qw( placeholders );
 use UNIVERSAL::require;
 
 has 'c' => (

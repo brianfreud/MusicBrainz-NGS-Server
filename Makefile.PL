@@ -39,6 +39,7 @@ requires 'JSON'                                        => '2.120';
 requires 'Locale::Maketext'                            => '1.090';
 requires 'Locale::Maketext::Extract::Plugin::TT2';
 requires 'Locale::TextDomain';
+requires 'List::MoreUtils';
 requires 'MIME::Lite'                                  => '3.023';
 requires 'Moose'                                       => '0.640';
 requires 'MooseX::AttributeHelpers'                    => '0.140';
