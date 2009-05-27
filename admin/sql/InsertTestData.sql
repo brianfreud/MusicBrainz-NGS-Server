@@ -416,6 +416,7 @@ INSERT INTO work_gid_redirect VALUES ('28e73402-5666-4d74-80ab-c3734dc699ea', 1)
 -- Restart sequences
 ALTER SEQUENCE gender_id_seq RESTART 3;
 ALTER SEQUENCE artist_id_seq RESTART 10;
+ALTER SEQUENCE artist_credit_id_seq RESTART 5;
 ALTER SEQUENCE label_id_seq RESTART 3;
 
 ALTER SEQUENCE artist_name_id_seq RESTART 11;

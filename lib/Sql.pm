@@ -211,7 +211,7 @@ sub InsertRow
 	local $" = ", ";
     my $query = "INSERT INTO $tab (@columns) VALUES (@expressions)";
     $query .= " RETURNING $returning" if $returning;
-	my $id = $returning 
+	my $id = $returning
         ? $this->SelectSingleValue($query, @values)
         : $this->Do($query, @values);
 
