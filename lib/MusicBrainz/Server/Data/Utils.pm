@@ -8,7 +8,7 @@ use Sql;
 use UNIVERSAL::require;
 
 our @EXPORT_OK = qw(
-    insert_returning_id
+    insert_and_create
     load_subobjects
     partial_date_from_row
     placeholders
@@ -79,30 +79,24 @@ sub query_to_list_limited
     return (\@result, $hits);
 }
 
-sub insert_returning_id
+sub insert_and_create
 {
     my ($data, @objs) = @_;
-
-    my $sql = Sql->new($data->c->mb->dbh);
-    my %map = $data->_attribute_mapping;
     my $class = $data->_entity_class;
     $class->require;
-
-    my @created;
+    my $sql = Sql->new($data->c->mb->dbh);
+    my %map = $data->_attribute_mapping;
+    my @ret;
+    $sql->Begin;
     for my $obj (@objs)
     {
-        my @attrs = keys %$obj;
-        my @columns = map { $map{$_} || $_ } @attrs;
-        my $query = "INSERT INTO " . $data->_table .
-                    " (" . join(",", @columns) . ")" .
-                    " VALUES (" . placeholders(@columns) . ") " .
-                    " RETURNING id";
-
-        my $id = $sql->SelectSingleValue($query, map { $obj->{$_} } @attrs);
-        push @created, $class->new( id => $id, %$obj);
+        my %row = map { ($map{$_} || $_) => $obj->{$_} } keys %$obj;
+        my $id = $sql->InsertRow($data->_table, \%row);
+        push @ret, $class->new( id => $id, %$obj);
     }
+    $sql->Commit;
 
-    return @created == 1 ? $created[0] : @created;
+    return wantarray ? @ret : $ret[0];
 }
 
 1;

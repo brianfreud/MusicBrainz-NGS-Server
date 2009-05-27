@@ -3,7 +3,7 @@ use Moose;
 
 use MusicBrainz::Server::Entity::Gender;
 use MusicBrainz::Server::Data::Utils qw(
-    insert_returning_id
+    insert_and_create
     load_subobjects
     placeholders
 );
@@ -34,7 +34,7 @@ sub load
 sub insert
 {
     my ($self, @objs) = @_;
-    insert_returning_id($self, @objs);
+    insert_and_create($self, @objs);
 }
 
 __PACKAGE__->meta->make_immutable;

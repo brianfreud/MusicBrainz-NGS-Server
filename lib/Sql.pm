@@ -193,7 +193,7 @@ sub Do
 
 sub InsertRow
 {
-	my ($this, $tab, $row) = @_;
+	my ($this, $tab, $row, $returning) = @_;
 	(ref($row) eq "HASH" and %$row)
 		or croak "Missing or empty row";
 
@@ -209,10 +209,14 @@ sub InsertRow
 	}
 
 	local $" = ", ";
-	$this->Do("INSERT INTO $tab (@columns) VALUES (@expressions)", @values);
+    my $query = "INSERT INTO $tab (@columns) VALUES (@expressions)";
+    $query .= " RETURNING $returning" if $returning;
+	my $id = $returning 
+        ? $this->SelectSingleValue($query, @values)
+        : $this->Do($query, @values);
 
 	return if not defined wantarray;
-	$this->GetLastInsertId($tab);
+    return $id;
 }
 
 sub GetLastInsertId
