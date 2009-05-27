@@ -219,12 +219,6 @@ sub InsertRow
     return $id;
 }
 
-sub GetLastInsertId
-{
-	my ($this, $table) = @_;
-	$this->SelectSingleValue("SELECT CURRVAL(?)", $table . "_id_seq");
-}
-
 sub Begin
 {
 	my $this = $_[0];
