@@ -1,9 +1,11 @@
 package MusicBrainz::Server::Data::ArtistCredit;
-
 use Moose;
+
+use List::MoreUtils qw( part zip );
 use MusicBrainz::Server::Entity::Artist;
 use MusicBrainz::Server::Entity::ArtistCredit;
 use MusicBrainz::Server::Entity::ArtistCreditName;
+use MusicBrainz::Server::Data::Artist;
 use MusicBrainz::Server::Data::Utils qw( placeholders load_subobjects );
 
 extends 'MusicBrainz::Server::Data::Entity';
