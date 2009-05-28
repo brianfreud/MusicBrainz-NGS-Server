@@ -118,10 +118,8 @@ sub update
 sub _hash_to_row
 {
     my ($self, $artist, $names) = @_;
-    no warnings 'uninitialized';
+
     my $row = {
-        name => $names->{$artist->{name}},
-        sortname => $names->{$artist->{sort_name}} || $names->{$artist->{name}},
         begindate_year => $artist->{begin_date}->{year},
         begindate_month => $artist->{begin_date}->{month},
         begindate_day => $artist->{begin_date}->{day},
@@ -133,6 +131,15 @@ sub _hash_to_row
         gender => $artist->{gender},
         comment => $artist->{comment},
     };
+
+    if ($artist->{name}) {
+        $row->{name} = $names->{ $artist->{name} };
+    }
+
+    if ($artist->{sort_name}) {
+        $row->{sortname} = $names->{ $artist->{sort_name} };
+    }
+
     return {
         map { $_ => $row->{$_}}
         grep { defined $row->{$_} }
