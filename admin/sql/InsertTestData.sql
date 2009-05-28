@@ -413,6 +413,11 @@ INSERT INTO release_gid_redirect VALUES ('71dc55d8-0fc6-41c1-94e0-85ff2404997d',
 INSERT INTO release_group_gid_redirect VALUES ('77637e8c-be66-46ea-87b3-73addc722fc9', 1);
 INSERT INTO work_gid_redirect VALUES ('28e73402-5666-4d74-80ab-c3734dc699ea', 1);
 
+-- Restart sequences
+ALTER SEQUENCE gender_id_seq RESTART 3;
+ALTER SEQUENCE artist_name_id_seq RESTART 11;
+ALTER SEQUENCE release_name_id_seq RESTART 5;
+
 SET client_min_messages TO 'NOTICE';
 
 COMMIT;

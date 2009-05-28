@@ -1,6 +1,6 @@
 use strict;
 use warnings;
-use Test::More tests => 33;
+use Test::More tests => 37;
 use_ok 'MusicBrainz::Server::Data::Release';
 use MusicBrainz::Server::Data::ReleaseLabel;
 
@@ -56,3 +56,10 @@ is ( $annotation->text, "Test annotation 4." );
 
 $release = $release_data->get_by_gid('71dc55d8-0fc6-41c1-94e0-85ff2404997d');
 is ( $release->id, 1 );
+
+my %names = $release_data->find_or_insert_names('Arrival', 'Aerial', 'Protection');
+is(keys %names, 3);
+is($names{'Arrival'}, 1);
+is($names{'Aerial'}, 2);
+ok($names{'Protection'} > 4);
+diag($names{'Protection'});
