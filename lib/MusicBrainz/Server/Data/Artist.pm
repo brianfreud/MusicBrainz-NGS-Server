@@ -87,26 +87,36 @@ sub insert
     my @created;
     for my $artist (@artists)
     {
-        my %row = (
-            gid => $artist->{gid} || generate_gid(),
-            name => $names{$artist->{name}},
-            sortname => $names{$artist->{sort_name}} || $names{$artist->{name}},
-            begindate_year => $artist->{begin_date}->{year},
-            begindate_month => $artist->{begin_date}->{month},
-            begindate_day => $artist->{begin_date}->{day},
-            enddate_year => $artist->{end_date}->{year},
-            enddate_month => $artist->{end_date}->{month},
-            enddate_day => $artist->{end_date}->{day},
-            country => $artist->{country},
-            type => $artist->{type},
-            gender => $artist->{gender},
-            comment => $artist->{comment},
-        );
-        %row = map { $_ => $row{$_}} grep { defined $row{$_} } keys %row;
-        my $id = $sql->InsertRow('artist', \%row, 'id');
+        my $row = $self->_hash_to_row($artist, \%names);
+        my $id = $sql->InsertRow('artist', $row, 'id');
         push @created, $id;
     }
     return wantarray ? @created : $created[0];
+}
+
+sub _hash_to_row
+{
+    my ($self, $artist, $names) = @_;
+    my $row = {
+        gid => $artist->{gid} || generate_gid(),
+        name => $names->{$artist->{name}},
+        sortname => $names->{$artist->{sort_name}} || $names->{$artist->{name}},
+        begindate_year => $artist->{begin_date}->{year},
+        begindate_month => $artist->{begin_date}->{month},
+        begindate_day => $artist->{begin_date}->{day},
+        enddate_year => $artist->{end_date}->{year},
+        enddate_month => $artist->{end_date}->{month},
+        enddate_day => $artist->{end_date}->{day},
+        country => $artist->{country},
+        type => $artist->{type},
+        gender => $artist->{gender},
+        comment => $artist->{comment},
+    };
+    return {
+        map { $_ => $row->{$_}}
+        grep { defined $row->{$_} }
+        keys %$row
+    };
 }
 
 __PACKAGE__->meta->make_immutable;
