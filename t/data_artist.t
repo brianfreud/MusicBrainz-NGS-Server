@@ -1,6 +1,6 @@
 use strict;
 use warnings;
-use Test::More tests => 48;
+use Test::More tests => 49;
 use_ok 'MusicBrainz::Server::Data::Artist';
 use MusicBrainz::Server::Data::Search;
 
@@ -89,3 +89,7 @@ $artist = $artist_data->get_by_id($artist_id);
 is($artist->sort_name, 'Kate Bush');
 ok(!$artist->end_date->is_empty);
 is($artist->end_date->year, 2009);
+
+$artist_data->delete($artist);
+$artist = $artist_data->get_by_id($artist_id);
+ok(!defined $artist);

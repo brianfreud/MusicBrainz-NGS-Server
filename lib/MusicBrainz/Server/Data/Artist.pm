@@ -115,6 +115,16 @@ sub update
     $sql->Commit;
 }
 
+sub delete
+{
+    my ($self, @artists) = @_;
+    my $query = 'DELETE FROM artist WHERE id IN (' . placeholders(@artists) . ')';
+    my $sql = Sql->new($self->c->mb->dbh);
+    $sql->Begin;
+    $sql->Do($query, map { $_->id } @artists);
+    $sql->Commit;
+}
+
 sub _hash_to_row
 {
     my ($self, $artist, $names) = @_;
