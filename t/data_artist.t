@@ -1,6 +1,6 @@
 use strict;
 use warnings;
-use Test::More tests => 45;
+use Test::More tests => 48;
 use_ok 'MusicBrainz::Server::Data::Artist';
 use MusicBrainz::Server::Data::Search;
 
@@ -77,3 +77,15 @@ is($artist->begin_date->month, 1);
 is($artist->begin_date->day, undef);
 ok($artist->end_date->is_empty);
 is($artist->type_id, 2);
+is($artist->id, $artist_id);
+ok(defined $artist->gid);
+
+$artist_data->update($artist, {
+        sort_name => 'Kate Bush',
+        end_date => { year => 2009 }
+    });
+
+$artist = $artist_data->get_by_id($artist_id);
+is($artist->sort_name, 'Kate Bush');
+ok(!$artist->end_date->is_empty);
+is($artist->end_date->year, 2009);

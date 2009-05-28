@@ -1,6 +1,7 @@
 package MusicBrainz::Server::Data::Artist;
 use Moose;
 
+use Carp;
 use List::MoreUtils qw( uniq );
 use MusicBrainz::Server::Entity::Artist;
 use MusicBrainz::Server::Data::Utils qw(
@@ -88,17 +89,37 @@ sub insert
     for my $artist (@artists)
     {
         my $row = $self->_hash_to_row($artist, \%names);
+        $row->{gid} = $artist->{gid} || generate_gid();
+
         my $id = $sql->InsertRow('artist', $row, 'id');
         push @created, $id;
     }
+    $sql->Commit;
     return wantarray ? @created : $created[0];
+}
+
+sub update
+{
+    my ($self, $artist, $update) = @_;
+    croak '$artist must be defined and have an id'
+        unless defined $artist && $artist->id > 0;
+    my $sql = Sql->new($self->c->mb->dbh);
+    $sql->Begin;
+    my %names = $self->find_or_insert_names($update->{name}, $update->{sort_name});
+    my $row = $self->_hash_to_row($update, \%names);
+    my @columns = keys %$row;
+    my $query = "UPDATE artist SET " .
+                join(", ", map { "$_ = ?" } @columns) .
+                " WHERE id = ?";
+    $sql->Do($query, (map { $row->{$_} } @columns), $artist->id);
+    $sql->Commit;
 }
 
 sub _hash_to_row
 {
     my ($self, $artist, $names) = @_;
+    no warnings 'uninitialized';
     my $row = {
-        gid => $artist->{gid} || generate_gid(),
         name => $names->{$artist->{name}},
         sortname => $names->{$artist->{sort_name}} || $names->{$artist->{name}},
         begindate_year => $artist->{begin_date}->{year},
