@@ -1,6 +1,6 @@
 use strict;
 use warnings;
-use Test::More tests => 36;
+use Test::More tests => 45;
 use_ok 'MusicBrainz::Server::Data::Artist';
 use MusicBrainz::Server::Data::Search;
 
@@ -59,3 +59,21 @@ is(keys %names, 3);
 is($names{'Kate Bush'}, 9);
 is($names{'Bush, Kate'}, 10);
 ok($names{'Massive Attack'} > 10);
+
+my $artist_id = $artist_data->insert({
+        name => 'Queen',
+        sort_name => 'David Bowie',
+        type => 2,
+        begin_date => { year => 2000, month => 1 },
+    });
+ok($artist_id > 9);
+
+$artist = $artist_data->get_by_id($artist_id);
+is($artist->name, 'Queen');
+is($artist->sort_name, 'David Bowie');
+ok(!$artist->begin_date->is_empty);
+is($artist->begin_date->year, 2000);
+is($artist->begin_date->month, 1);
+is($artist->begin_date->day, undef);
+ok($artist->end_date->is_empty);
+is($artist->type_id, 2);

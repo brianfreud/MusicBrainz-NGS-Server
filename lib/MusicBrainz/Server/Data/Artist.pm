@@ -1,8 +1,14 @@
 package MusicBrainz::Server::Data::Artist;
-
 use Moose;
+
+use List::MoreUtils qw( uniq );
 use MusicBrainz::Server::Entity::Artist;
-use MusicBrainz::Server::Data::Utils qw( partial_date_from_row load_subobjects );
+use MusicBrainz::Server::Data::Utils qw(
+    generate_gid
+    partial_date_from_row
+    placeholders
+    load_subobjects
+);
 
 extends 'MusicBrainz::Server::Data::CoreEntity';
 with 'MusicBrainz::Server::Data::AnnotationRole';
@@ -70,6 +76,37 @@ sub load
 {
     my ($self, @objs) = @_;
     load_subobjects($self, 'artist', @objs);
+}
+
+sub insert
+{
+    my ($self, @artists) = @_;
+    my $sql = Sql->new($self->c->mb->dbh);
+    $sql->Begin;
+    my %names = $self->find_or_insert_names(map { $_->{name}, $_->{sort_name} } @artists);
+    my @created;
+    for my $artist (@artists)
+    {
+        my %row = (
+            gid => $artist->{gid} || generate_gid(),
+            name => $names{$artist->{name}},
+            sortname => $names{$artist->{sort_name}} || $names{$artist->{name}},
+            begindate_year => $artist->{begin_date}->{year},
+            begindate_month => $artist->{begin_date}->{month},
+            begindate_day => $artist->{begin_date}->{day},
+            enddate_year => $artist->{end_date}->{year},
+            enddate_month => $artist->{end_date}->{month},
+            enddate_day => $artist->{end_date}->{day},
+            country => $artist->{country},
+            type => $artist->{type},
+            gender => $artist->{gender},
+            comment => $artist->{comment},
+        );
+        %row = map { $_ => $row{$_}} grep { defined $row{$_} } keys %row;
+        my $id = $sql->InsertRow('artist', \%row, 'id');
+        push @created, $id;
+    }
+    return wantarray ? @created : $created[0];
 }
 
 __PACKAGE__->meta->make_immutable;
