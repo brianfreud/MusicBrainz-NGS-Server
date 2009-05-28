@@ -7,6 +7,7 @@ use MusicBrainz::Server::Data::Utils qw( partial_date_from_row load_subobjects )
 extends 'MusicBrainz::Server::Data::CoreEntity';
 with 'MusicBrainz::Server::Data::AnnotationRole';
 with 'MusicBrainz::Server::Data::AliasRole';
+with 'MusicBrainz::Server::Data::Role::Name' => { name_table => 'label_name' };
 
 sub _annotation_type
 {

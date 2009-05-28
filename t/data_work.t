@@ -1,6 +1,6 @@
 use strict;
 use warnings;
-use Test::More tests => 27;
+use Test::More tests => 30;
 use_ok 'MusicBrainz::Server::Data::Work';
 use MusicBrainz::Server::Data::WorkType;
 use MusicBrainz::Server::Data::Search;
@@ -56,3 +56,8 @@ is( $hits, 1 );
 is( scalar(@$results), 1 );
 is( $results->[0]->position, 1 );
 is( $results->[0]->entity->name, "Dancing Queen" );
+
+my %names = $work_data->find_or_insert_names('Dancing Queen', 'Traits');
+is(keys %names, 2);
+is($names{'Dancing Queen'}, 1);
+ok($names{'Traits'} > 1);

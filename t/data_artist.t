@@ -1,6 +1,6 @@
 use strict;
 use warnings;
-use Test::More tests => 32;
+use Test::More tests => 36;
 use_ok 'MusicBrainz::Server::Data::Artist';
 use MusicBrainz::Server::Data::Search;
 
@@ -53,3 +53,9 @@ is( scalar(@$results), 3 );
 is( $results->[0]->position, 1 );
 is( $results->[0]->entity->name, "Kate Bush" );
 is( $results->[0]->entity->sort_name, "Bush, Kate" );
+
+my %names = $artist_data->find_or_insert_names('Kate Bush', 'Bush, Kate', 'Massive Attack');
+is(keys %names, 3);
+is($names{'Kate Bush'}, 9);
+is($names{'Bush, Kate'}, 10);
+ok($names{'Massive Attack'} > 10);

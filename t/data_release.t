@@ -62,4 +62,3 @@ is(keys %names, 3);
 is($names{'Arrival'}, 1);
 is($names{'Aerial'}, 2);
 ok($names{'Protection'} > 4);
-diag($names{'Protection'});

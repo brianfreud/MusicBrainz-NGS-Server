@@ -1,6 +1,6 @@
 use strict;
 use warnings;
-use Test::More tests => 23;
+use Test::More tests => 26;
 use_ok 'MusicBrainz::Server::Data::Label';
 use MusicBrainz::Server::Data::Search;
 
@@ -42,3 +42,8 @@ is( scalar(@$results), 1 );
 is( $results->[0]->position, 1 );
 is( $results->[0]->entity->name, "Warp Records" );
 is( $results->[0]->entity->sort_name, "Warp Records" );
+
+my %names = $label_data->find_or_insert_names('Warp Records', 'RAM Records');
+is(keys %names, 2);
+is($names{'Warp Records'}, 2);
+ok($names{'RAM Records'} > 2);
