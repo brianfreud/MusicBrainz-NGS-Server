@@ -19,7 +19,6 @@ role
     {
         my ($self, @names) = @_;
         my $sql = Sql->new($self->c->mb->dbh);
-        $sql->Begin;
         my $query = "SELECT id, name FROM $table" .
                     ' WHERE name IN (' . placeholders(@names) . ')';
         my $found = $sql->SelectListOfHashes($query, @names);
@@ -32,7 +31,6 @@ role
                 }, 'id');
             $found_names{$new_name} = $id;
         }
-        $sql->Commit;
         return %found_names; 
     }
 };
