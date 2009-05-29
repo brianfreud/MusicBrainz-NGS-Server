@@ -1,6 +1,7 @@
 package MusicBrainz::Server::Data::Role::Name;
 use MooseX::Role::Parameterized;
 
+use List::MoreUtils qw( uniq );
 use MusicBrainz::Server::Data::Utils qw( placeholders );
 
 parameter 'name_table' => (
@@ -18,6 +19,7 @@ role
     method 'find_or_insert_names' => sub
     {
         my ($self, @names) = @_;
+        @names = uniq grep { defined } @names or return;
         my $sql = Sql->new($self->c->mb->dbh);
         my $query = "SELECT id, name FROM $table" .
                     ' WHERE name IN (' . placeholders(@names) . ')';
