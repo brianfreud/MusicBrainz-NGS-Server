@@ -1,6 +1,6 @@
 use strict;
 use warnings;
-use Test::More tests => 26;
+use Test::More tests => 35;
 use_ok 'MusicBrainz::Server::Data::Label';
 use MusicBrainz::Server::Data::Search;
 
@@ -47,3 +47,23 @@ my %names = $label_data->find_or_insert_names('Warp Records', 'RAM Records');
 is(keys %names, 2);
 is($names{'Warp Records'}, 2);
 ok($names{'RAM Records'} > 2);
+
+my $label_id = $label_data->insert({
+        name => 'RAM Records',
+        sort_name => 'RAM Records',
+        type => 1,
+        country => 1,
+        end_date => { year => 2000, month => 05 }
+    });
+ok(defined $label_id);
+ok($label_id > 2);
+
+$label = $label_data->get_by_id($label_id);
+is($label->name, 'RAM Records');
+is($label->sort_name, 'RAM Records');
+is($label->type_id, 1);
+is($label->country_id, 1);
+ok(!$label->end_date->is_empty);
+is($label->end_date->year, 2000);
+is($label->end_date->month, 5);
+

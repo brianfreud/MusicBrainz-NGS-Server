@@ -4,11 +4,13 @@ use base 'Exporter';
 
 use List::MoreUtils qw( zip );
 use MusicBrainz::Server::Entity::PartialDate;
+use OSSP::UUID;
 use Sql;
 use UNIVERSAL::require;
 
 our @EXPORT_OK = qw(
     insert_and_create
+    generate_gid
     load_subobjects
     partial_date_from_row
     placeholders
@@ -97,6 +99,13 @@ sub insert_and_create
     $sql->Commit;
 
     return wantarray ? @ret : $ret[0];
+}
+
+sub generate_gid
+{
+    my $uuid = new OSSP::uuid;
+    $uuid->make("v4");
+    return $uuid->export("str");
 }
 
 1;
