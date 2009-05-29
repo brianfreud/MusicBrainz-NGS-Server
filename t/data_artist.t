@@ -1,6 +1,6 @@
 use strict;
 use warnings;
-use Test::More tests => 49;
+use Test::More tests => 51;
 use_ok 'MusicBrainz::Server::Data::Artist';
 use MusicBrainz::Server::Data::Search;
 
