@@ -107,6 +107,21 @@ sub insert
     return wantarray ? @created : $created[0];
 }
 
+sub update
+{
+    my ($self, $release, $update) = @_;
+    my $sql = Sql->new($self->c->mb->dbh);
+    $sql->Begin;
+    my %names = $self->find_or_insert_names($update->{name});
+    my $row = $self->_hash_to_row($update, \%names);
+    my @columns = keys %$row;
+    my $query = 'UPDATE release SET ' .
+                join(', ', map { "$_ = ?" } @columns) .
+                ' WHERE id = ?';
+    $sql->Do($query, (map { $row->{$_} } @columns), $release->id);
+    $sql->Commit;
+}
+
 sub _hash_to_row
 {
     my ($self, $release, $names) = @_;

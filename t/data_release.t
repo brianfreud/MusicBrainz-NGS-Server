@@ -1,6 +1,6 @@
 use strict;
 use warnings;
-use Test::More tests => 48;
+use Test::More tests => 59;
 use_ok 'MusicBrainz::Server::Data::Release';
 use MusicBrainz::Server::Data::ReleaseLabel;
 
@@ -85,3 +85,21 @@ is($release->date->year, 2001);
 is($release->date->month, 2);
 is($release->date->day, 15);
 is($release->country_id, 2);
+
+$release_data->update($release, {
+        name => 'Blue Lines',
+        country => 1,
+        date => { year => 2002 },
+    });
+$release = $release_data->get_by_id($release_id);
+ok(defined $release);
+is($release->name, 'Blue Lines');
+is($release->artist_credit_id, 1);
+is($release->release_group_id, 1);
+is($release->packaging_id, 1);
+is($release->status_id, 1);
+ok(!$release->date->is_empty);
+is($release->date->year, 2002);
+is($release->date->month, 2);
+is($release->date->day, 15);
+is($release->country_id, 1);
