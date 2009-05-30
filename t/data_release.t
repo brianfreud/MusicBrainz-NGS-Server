@@ -1,6 +1,6 @@
 use strict;
 use warnings;
-use Test::More tests => 59;
+use Test::More tests => 60;
 use_ok 'MusicBrainz::Server::Data::Release';
 use MusicBrainz::Server::Data::ReleaseLabel;
 
@@ -103,3 +103,7 @@ is($release->date->year, 2002);
 is($release->date->month, 2);
 is($release->date->day, 15);
 is($release->country_id, 1);
+
+$release_data->delete($release);
+$release = $release_data->get_by_id($release_id);
+ok(!defined $release);

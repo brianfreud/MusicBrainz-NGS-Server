@@ -5,6 +5,7 @@ use MusicBrainz::Server::Entity::Release;
 use MusicBrainz::Server::Data::Utils qw(
     generate_gid
     partial_date_from_row
+    placeholders
     query_to_list_limited
 );
 
@@ -120,6 +121,17 @@ sub update
                 ' WHERE id = ?';
     $sql->Do($query, (map { $row->{$_} } @columns), $release->id);
     $sql->Commit;
+}
+
+sub delete
+{
+    my ($self, @releases) = @_;
+    my $sql = Sql->new($self->c->mb->dbh);
+    $sql->Begin;
+    $sql->Do('DELETE FROM release WHERE id IN (' . placeholders(@releases) . ')',
+        map { $_->id } @releases);
+    $sql->Commit;
+    return;
 }
 
 sub _hash_to_row
