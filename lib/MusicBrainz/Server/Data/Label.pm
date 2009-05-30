@@ -109,6 +109,16 @@ sub update
     return $label;
 }
 
+sub delete
+{
+    my ($self, $label) = @_;
+    my $sql = Sql->new($self->c->mb->dbh);
+    $sql->Begin;
+    $sql->Do('DELETE FROM label WHERE id = ?', $label->id);
+    $sql->Commit;
+    return;
+}
+
 sub _hash_to_row
 {
     my ($self, $label, $names) = @_;
@@ -125,11 +135,11 @@ sub _hash_to_row
         labelcode => $label->{label_code},
     };
 
-    if (exists $names->{$label->{name}}) {
+    if ($label->{name}) {
         $row->{name} = $names->{$label->{name}};
     }
 
-    if (exists $names->{$label->{sort_name}}) {
+    if ($label->{sort_name}) {
         $row->{sortname} = $names->{$label->{sort_name}};
     }
 

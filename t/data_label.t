@@ -1,6 +1,6 @@
 use strict;
 use warnings;
-use Test::More tests => 43;
+use Test::More tests => 44;
 use_ok 'MusicBrainz::Server::Data::Label';
 use MusicBrainz::Server::Data::Search;
 
@@ -82,3 +82,7 @@ ok(!$label->end_date->is_empty);
 is($label->begin_date->year, 1990);
 is($label->end_date->year, 2000);
 is($label->end_date->month, 5);
+
+$label_data->delete($label);
+$label = $label_data->get_by_id($label_id);
+ok(!defined $label);
