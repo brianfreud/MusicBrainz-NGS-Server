@@ -1,6 +1,6 @@
 use strict;
 use warnings;
-use Test::More tests => 37;
+use Test::More tests => 48;
 use_ok 'MusicBrainz::Server::Data::Release';
 use MusicBrainz::Server::Data::ReleaseLabel;
 
@@ -62,3 +62,26 @@ is(keys %names, 3);
 is($names{'Arrival'}, 1);
 is($names{'Aerial'}, 2);
 ok($names{'Protection'} > 4);
+
+my $release_id = $release_data->insert({
+        name => 'Protection',
+        artist_credit => 1,
+        release_group => 1,
+        packaging => 1,
+        status => 1,
+        date => { year => 2001, month => 2, day => 15 },
+        barcode => '0123456789',
+        country => 2
+    });
+$release = $release_data->get_by_id($release_id);
+ok(defined $release);
+is($release->name, 'Protection');
+is($release->artist_credit_id, 1);
+is($release->release_group_id, 1);
+is($release->packaging_id, 1);
+is($release->status_id, 1);
+ok(!$release->date->is_empty);
+is($release->date->year, 2001);
+is($release->date->month, 2);
+is($release->date->day, 15);
+is($release->country_id, 2);

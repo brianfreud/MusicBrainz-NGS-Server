@@ -9,6 +9,7 @@ use Sql;
 use UNIVERSAL::require;
 
 our @EXPORT_OK = qw(
+    generate_gid
     insert_and_create
     generate_gid
     load_subobjects
