@@ -89,7 +89,24 @@ sub insert
         $row->{gid} = $label->{gid} || generate_gid();
         push @created, $sql->InsertRow('label', $row, 'id');
     }
+    $sql->Commit;
     return wantarray ? @created : $created[0];
+}
+
+sub update
+{
+    my ($self, $label, $update) = @_;
+    my $sql = Sql->new($self->c->mb->dbh);
+    $sql->Begin;
+    my %names = $self->find_or_insert_names($update->{name}, $update->{sort_name});
+    my $row = $self->_hash_to_row($update, \%names);
+    my @columns = keys %$row;
+    my $query = "UPDATE label SET " .
+                join(", ", map { "$_ = ?" } @columns) .
+                " WHERE id = ?";
+    $sql->Do($query, (map { $row->{$_} } @columns), $label->id);
+    $sql->Commit;
+    return $label;
 }
 
 sub _hash_to_row

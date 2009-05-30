@@ -1,6 +1,6 @@
 use strict;
 use warnings;
-use Test::More tests => 35;
+use Test::More tests => 43;
 use_ok 'MusicBrainz::Server::Data::Label';
 use MusicBrainz::Server::Data::Search;
 
@@ -67,3 +67,18 @@ ok(!$label->end_date->is_empty);
 is($label->end_date->year, 2000);
 is($label->end_date->month, 5);
 
+$label_data->update($label, {
+        sort_name => 'Records, RAM',
+        begin_date => { year => 1990 },
+        comment => 'Drum & bass label'
+    });
+
+$label = $label_data->get_by_id($label_id);
+is($label->name, 'RAM Records');
+is($label->sort_name, 'Records, RAM');
+is($label->comment, 'Drum & bass label');
+ok(!$label->begin_date->is_empty);
+ok(!$label->end_date->is_empty);
+is($label->begin_date->year, 1990);
+is($label->end_date->year, 2000);
+is($label->end_date->month, 5);
