@@ -81,32 +81,28 @@ sub insert
 {
     my ($self, @labels) = @_;
     my $sql = Sql->new($self->c->mb->dbh);
-    $sql->Begin;
     my %names = $self->find_or_insert_names(map { $_->{name}, $_->{sort_name } } @labels);
+    my $class = $self->_entity_class;
     my @created;
     for my $label (@labels)
     {
         my $row = $self->_hash_to_row($label, \%names);
         $row->{gid} = $label->{gid} || generate_gid();
-        push @created, $sql->InsertRow('label', $row, 'id');
+        push @created, $class->new(
+            id => $sql->InsertRow('label', $row, 'id'),
+            gid => $row->{gid}
+        );
     }
-    $sql->Commit;
-    return wantarray ? @created : $created[0];
+    return @labels > 1 ? @created : $created[0];
 }
 
 sub update
 {
     my ($self, $label, $update) = @_;
     my $sql = Sql->new($self->c->mb->dbh);
-    $sql->Begin;
     my %names = $self->find_or_insert_names($update->{name}, $update->{sort_name});
     my $row = $self->_hash_to_row($update, \%names);
-    my @columns = keys %$row;
-    my $query = "UPDATE label SET " .
-                join(", ", map { "$_ = ?" } @columns) .
-                " WHERE id = ?";
-    $sql->Do($query, (map { $row->{$_} } @columns), $label->id);
-    $sql->Commit;
+    $sql->Update('label', $row, { id => $label->id });
     return $label;
 }
 
@@ -114,9 +110,7 @@ sub delete
 {
     my ($self, $label) = @_;
     my $sql = Sql->new($self->c->mb->dbh);
-    $sql->Begin;
     $sql->Do('DELETE FROM label WHERE id = ?', $label->id);
-    $sql->Commit;
     return;
 }
 

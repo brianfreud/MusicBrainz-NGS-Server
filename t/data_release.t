@@ -6,6 +6,7 @@ use MusicBrainz::Server::Data::ReleaseLabel;
 
 use MusicBrainz::Server::Context;
 use MusicBrainz::Server::Test;
+use Sql;
 
 my $c = MusicBrainz::Server::Context->new();
 MusicBrainz::Server::Test->prepare_test_database($c);
@@ -63,7 +64,9 @@ is($names{'Arrival'}, 1);
 is($names{'Aerial'}, 2);
 ok($names{'Protection'} > 4);
 
-my $release_id = $release_data->insert({
+my $sql = Sql->new($c->mb->dbh);
+$sql->Begin;
+$release = $release_data->insert({
         name => 'Protection',
         artist_credit => 1,
         release_group => 1,
@@ -73,7 +76,7 @@ my $release_id = $release_data->insert({
         barcode => '0123456789',
         country => 2
     });
-$release = $release_data->get_by_id($release_id);
+$release = $release_data->get_by_id($release->id);
 ok(defined $release);
 is($release->name, 'Protection');
 is($release->artist_credit_id, 1);
@@ -91,7 +94,7 @@ $release_data->update($release, {
         country => 1,
         date => { year => 2002 },
     });
-$release = $release_data->get_by_id($release_id);
+$release = $release_data->get_by_id($release->id);
 ok(defined $release);
 is($release->name, 'Blue Lines');
 is($release->artist_credit_id, 1);
@@ -105,5 +108,6 @@ is($release->date->day, 15);
 is($release->country_id, 1);
 
 $release_data->delete($release);
-$release = $release_data->get_by_id($release_id);
+$release = $release_data->get_by_id($release->id);
 ok(!defined $release);
+$sql->Commit;

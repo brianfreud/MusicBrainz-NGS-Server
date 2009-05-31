@@ -84,19 +84,20 @@ sub insert
 {
     my ($self, @artists) = @_;
     my $sql = Sql->new($self->c->mb->dbh);
-    $sql->Begin;
     my %names = $self->find_or_insert_names(map { $_->{name}, $_->{sort_name} } @artists);
+    my $class = $self->_entity_class;
     my @created;
     for my $artist (@artists)
     {
         my $row = $self->_hash_to_row($artist, \%names);
         $row->{gid} = $artist->{gid} || generate_gid();
 
-        my $id = $sql->InsertRow('artist', $row, 'id');
-        push @created, $id;
+        push @created, $class->new(
+            id => $sql->InsertRow('artist', $row, 'id'),
+            gid => $row->{gid}
+        );
     }
-    $sql->Commit;
-    return wantarray ? @created : $created[0];
+    return @artists > 1 ? @created : $created[0];
 }
 
 sub update
@@ -105,15 +106,9 @@ sub update
     croak '$artist must be defined and have an id'
         unless defined $artist && $artist->id > 0;
     my $sql = Sql->new($self->c->mb->dbh);
-    $sql->Begin;
     my %names = $self->find_or_insert_names($update->{name}, $update->{sort_name});
     my $row = $self->_hash_to_row($update, \%names);
-    my @columns = keys %$row;
-    my $query = "UPDATE artist SET " .
-                join(", ", map { "$_ = ?" } @columns) .
-                " WHERE id = ?";
-    $sql->Do($query, (map { $row->{$_} } @columns), $artist->id);
-    $sql->Commit;
+    $sql->Update('artist', $row, { id => $artist->id });
 }
 
 sub delete
@@ -121,9 +116,7 @@ sub delete
     my ($self, @artists) = @_;
     my $query = 'DELETE FROM artist WHERE id IN (' . placeholders(@artists) . ')';
     my $sql = Sql->new($self->c->mb->dbh);
-    $sql->Begin;
     $sql->Do($query, map { $_->id } @artists);
-    $sql->Commit;
 }
 
 sub _hash_to_row

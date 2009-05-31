@@ -96,16 +96,18 @@ sub insert
 {
     my ($self, @releases) = @_;
     my $sql = Sql->new($self->c->mb->dbh);
-    $sql->Begin;
     my @created;
     my %names = $self->find_or_insert_names(map { $_->{name} } @releases);
+    my $class = $self->_entity_class;
     for my $release (@releases)
     {
         my $row = $self->_hash_to_row($release, \%names);
         $row->{gid} = $release->{gid} || generate_gid();
-        push @created, $sql->InsertRow('release', $row, 'id');
+        push @created, $class->new(
+            id => $sql->InsertRow('release', $row, 'id'),
+            gid => $row->{gid},
+        );
     }
-    $sql->Commit;
     return wantarray ? @created : $created[0];
 }
 
@@ -113,25 +115,17 @@ sub update
 {
     my ($self, $release, $update) = @_;
     my $sql = Sql->new($self->c->mb->dbh);
-    $sql->Begin;
     my %names = $self->find_or_insert_names($update->{name});
     my $row = $self->_hash_to_row($update, \%names);
-    my @columns = keys %$row;
-    my $query = 'UPDATE release SET ' .
-                join(', ', map { "$_ = ?" } @columns) .
-                ' WHERE id = ?';
-    $sql->Do($query, (map { $row->{$_} } @columns), $release->id);
-    $sql->Commit;
+    $sql->Update('release', $row, { id => $release->id });
 }
 
 sub delete
 {
     my ($self, @releases) = @_;
     my $sql = Sql->new($self->c->mb->dbh);
-    $sql->Begin;
     $sql->Do('DELETE FROM release WHERE id IN (' . placeholders(@releases) . ')',
         map { $_->id } @releases);
-    $sql->Commit;
     return;
 }
 

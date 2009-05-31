@@ -6,6 +6,7 @@ use MusicBrainz::Server::Data::Search;
 
 use MusicBrainz::Server::Context;
 use MusicBrainz::Server::Test;
+use Sql;
 
 my $c = MusicBrainz::Server::Context->new();
 MusicBrainz::Server::Test->prepare_test_database($c);
@@ -48,17 +49,19 @@ is(keys %names, 2);
 is($names{'Warp Records'}, 2);
 ok($names{'RAM Records'} > 2);
 
-my $label_id = $label_data->insert({
+my $sql = Sql->new($c->mb->dbh);
+$sql->Begin;
+$label = $label_data->insert({
         name => 'RAM Records',
         sort_name => 'RAM Records',
         type => 1,
         country => 1,
         end_date => { year => 2000, month => 05 }
     });
-ok(defined $label_id);
-ok($label_id > 2);
+isa_ok($label, 'MusicBrainz::Server::Entity::Label');
+ok($label->id > 2);
 
-$label = $label_data->get_by_id($label_id);
+$label = $label_data->get_by_id($label->id);
 is($label->name, 'RAM Records');
 is($label->sort_name, 'RAM Records');
 is($label->type_id, 1);
@@ -73,7 +76,7 @@ $label_data->update($label, {
         comment => 'Drum & bass label'
     });
 
-$label = $label_data->get_by_id($label_id);
+$label = $label_data->get_by_id($label->id);
 is($label->name, 'RAM Records');
 is($label->sort_name, 'Records, RAM');
 is($label->comment, 'Drum & bass label');
@@ -84,5 +87,6 @@ is($label->end_date->year, 2000);
 is($label->end_date->month, 5);
 
 $label_data->delete($label);
-$label = $label_data->get_by_id($label_id);
+$label = $label_data->get_by_id($label->id);
 ok(!defined $label);
+$sql->Commit;
