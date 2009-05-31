@@ -219,6 +219,18 @@ sub InsertRow
     return $id;
 }
 
+sub Update
+{
+    my ($self, $table, $update, $conditions) = @_;
+    my @update_columns = keys %$update;
+    my @condition_columns = keys %$conditions;
+    my $query = "UPDATE $table SET " . join(', ', map { "$_ = ?" } @update_columns) .
+                ' WHERE ' . join(' AND ', map { "$_ = ?" } @condition_columns);
+    $self->Do($query,
+        (map { $update->{$_} } @update_columns),
+        (map { $conditions->{$_} } @condition_columns));
+}
+
 sub Begin
 {
 	my $this = $_[0];
