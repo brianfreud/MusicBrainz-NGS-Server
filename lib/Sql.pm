@@ -30,7 +30,7 @@ use DBDefs;
 use Carp qw(cluck croak carp);
 use utf8 ();
 
-use constant SQL_DEBUG => 1;
+use constant SQL_DEBUG => 0;
 
 sub new
 {
