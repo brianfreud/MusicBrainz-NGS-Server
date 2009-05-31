@@ -44,6 +44,7 @@ requires 'MIME::Lite'                                  => '3.023';
 requires 'Moose'                                       => '0.640';
 requires 'MooseX::AttributeHelpers'                    => '0.140';
 requires 'MooseX::MethodAttributes'                    => '0.11_03';
+requires 'MooseX::Role::Parameterized';
 requires 'MooseX::Storage'                             => '0.150';
 requires 'MRO::Compat';
 requires 'OSSP::uuid'                                  => '1.060200';
