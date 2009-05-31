@@ -5,6 +5,7 @@ use Carp;
 use List::MoreUtils qw( uniq );
 use MusicBrainz::Server::Entity::Artist;
 use MusicBrainz::Server::Data::Utils qw(
+    defined_hash
     generate_gid
     partial_date_from_row
     placeholders
@@ -129,7 +130,7 @@ sub _hash_to_row
 {
     my ($self, $artist, $names) = @_;
 
-    my $row = {
+    my %row = (
         begindate_year => $artist->{begin_date}->{year},
         begindate_month => $artist->{begin_date}->{month},
         begindate_day => $artist->{begin_date}->{day},
@@ -140,21 +141,17 @@ sub _hash_to_row
         type => $artist->{type},
         gender => $artist->{gender},
         comment => $artist->{comment},
-    };
+    );
 
     if ($artist->{name}) {
-        $row->{name} = $names->{ $artist->{name} };
+        $row{name} = $names->{ $artist->{name} };
     }
 
     if ($artist->{sort_name}) {
-        $row->{sortname} = $names->{ $artist->{sort_name} };
+        $row{sortname} = $names->{ $artist->{sort_name} };
     }
 
-    return {
-        map { $_ => $row->{$_}}
-        grep { defined $row->{$_} }
-        keys %$row
-    };
+    return { defined_hash(%row) };
 }
 
 __PACKAGE__->meta->make_immutable;

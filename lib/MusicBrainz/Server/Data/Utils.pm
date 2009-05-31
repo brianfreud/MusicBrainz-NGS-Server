@@ -9,6 +9,7 @@ use Sql;
 use UNIVERSAL::require;
 
 our @EXPORT_OK = qw(
+    defined_hash
     generate_gid
     insert_and_create
     generate_gid
@@ -107,6 +108,12 @@ sub generate_gid
     my $uuid = new OSSP::uuid;
     $uuid->make("v4");
     return $uuid->export("str");
+}
+
+sub defined_hash
+{
+    my %hash = @_;
+    return map { $_ => $hash{$_} } grep { defined $hash{$_} } keys %hash;
 }
 
 1;

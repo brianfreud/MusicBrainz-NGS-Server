@@ -3,6 +3,7 @@ package MusicBrainz::Server::Data::Label;
 use Moose;
 use MusicBrainz::Server::Entity::Label;
 use MusicBrainz::Server::Data::Utils qw(
+    defined_hash
     generate_gid
     partial_date_from_row
     load_subobjects
@@ -122,7 +123,7 @@ sub delete
 sub _hash_to_row
 {
     my ($self, $label, $names) = @_;
-    my $row = {
+    my %row = (
         begindate_year => $label->{begin_date}->{year},
         begindate_month => $label->{begin_date}->{month},
         begindate_day => $label->{begin_date}->{day},
@@ -133,17 +134,17 @@ sub _hash_to_row
         country => $label->{country},
         type => $label->{type},
         labelcode => $label->{label_code},
-    };
+    );
 
     if ($label->{name}) {
-        $row->{name} = $names->{$label->{name}};
+        $row{name} = $names->{$label->{name}};
     }
 
     if ($label->{sort_name}) {
-        $row->{sortname} = $names->{$label->{sort_name}};
+        $row{sortname} = $names->{$label->{sort_name}};
     }
 
-    return { map { $_ => $row->{$_} } grep { defined $row->{$_} } keys %$row };
+    return { defined_hash(%row) };
 }
 
 __PACKAGE__->meta->make_immutable;

@@ -3,6 +3,7 @@ package MusicBrainz::Server::Data::Release;
 use Moose;
 use MusicBrainz::Server::Entity::Release;
 use MusicBrainz::Server::Data::Utils qw(
+    defined_hash
     generate_gid
     partial_date_from_row
     placeholders
@@ -137,7 +138,7 @@ sub delete
 sub _hash_to_row
 {
     my ($self, $release, $names) = @_;
-    my $row = {
+    my %row = (
         artist_credit => $release->{artist_credit},
         release_group => $release->{release_group},
         status => $release->{status},
@@ -148,14 +149,14 @@ sub _hash_to_row
         barcode => $release->{barcode},
         comment => $release->{comment},
         country => $release->{country},
-    };
+    );
 
     if ($release->{name})
     {
-        $row->{name} = $names->{$release->{name}};
+        $row{name} = $names->{$release->{name}};
     }
 
-    return { map { $_ => $row->{$_} } grep { defined $row->{$_} } keys %$row };
+    return { defined_hash(%row) };
 }
 
 __PACKAGE__->meta->make_immutable;
