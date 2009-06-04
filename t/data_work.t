@@ -61,3 +61,37 @@ my %names = $work_data->find_or_insert_names('Dancing Queen', 'Traits');
 is(keys %names, 2);
 is($names{'Dancing Queen'}, 1);
 ok($names{'Traits'} > 1);
+
+my $sql = Sql->new($c->mb->dbh);
+$sql->Begin;
+$work = $work_data->insert({
+        name => 'Traits',
+        artist_credit => 2,
+        type => 1,
+        iswc => 'ISWC',
+        comment => 'Drum & bass track',
+    });
+isa_ok($work, 'MusicBrainz::Server::Entity::Work');
+ok($work->id > 1);
+
+$work = $work_data->get_by_id($work->id);
+is($work->name, 'Traits');
+is($work->artist_credit_id, 2);
+is($work->comment, 'Drum & bass track');
+is($work->iswc, 'ISWC');
+is($work->type_id, 1);
+ok(defined $work->gid);
+
+$work_data->update($work, {
+        name => 'Traits (remix)',
+        iswc => 'ISWC ISWC',
+    });
+
+$work = $work_data->get_by_id($work->id);
+is($work->sort_name, 'Traits (remix)');
+is($work->type_id, 'ISWC ISWC');
+
+$work_data->delete($work);
+$work = $work_data->get_by_id($work->id);
+ok(!defined $work);
+$sql->Commit;

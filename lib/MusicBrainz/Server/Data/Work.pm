@@ -55,6 +55,60 @@ sub find_by_artist
         $query, $artist_id, $offset || 0);
 }
 
+sub insert
+{
+    my ($self, @works) = @_;
+    my $sql = Sql->new($self->c->mb->dbh);
+    my %names = $self->find_or_insert_names(map { $_->{name} } @works);
+    my $class = $self->_entity_class;
+    my @created;
+    for my $work (@works)
+    {
+        my $row = $self->_hash_to_row($work, \%names);
+        $row->{gid} = $work->{gid} || generate_gid();
+        push @created, $class->new(
+            id => $sql->InsertRow('work', $row, 'id'),
+            gid => $row->{gid}
+        );
+    }
+    return @works > 1 ? @created : $created[0];
+}
+
+sub update
+{
+    my ($self, $work, $update) = @_;
+    my $sql = Sql->new($self->c->mb->dbh);
+    my %names = $self->find_or_insert_names($update->{name}, $update->{sort_name});
+    my $row = $self->_hash_to_row($update, \%names);
+    $sql->Update('work', $row, { id => $work->id });
+    return $work;
+}
+
+sub delete
+{
+    my ($self, $work) = @_;
+    my $sql = Sql->new($self->c->mb->dbh);
+    $sql->Do('DELETE FROM work WHERE id = ?', $work->id);
+    return;
+}
+
+sub _hash_to_row
+{
+    my ($self, $work, $names) = @_;
+    my %row = (
+        artist_credit => $work->{artist_credit},
+        type => $work->{type},
+        iswc => $work->{iswc},
+        comment => $work->{comment},
+    );
+
+    if ($work->{name}) {
+        $row{name} = $names->{$work->{name}};
+    }
+
+    return { defined_hash(%row) };
+}
+
 __PACKAGE__->meta->make_immutable;
 no Moose;
 1;
