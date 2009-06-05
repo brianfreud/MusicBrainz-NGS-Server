@@ -83,7 +83,7 @@ sub update
 {
     my ($self, $work, $update) = @_;
     my $sql = Sql->new($self->c->mb->dbh);
-    my %names = $self->find_or_insert_names($update->{name}, $update->{sort_name});
+    my %names = $self->find_or_insert_names($update->{name});
     my $row = $self->_hash_to_row($update, \%names);
     $sql->Update('work', $row, { id => $work->id });
     return $work;
