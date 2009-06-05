@@ -29,7 +29,6 @@ role
         {
             my $id = $sql->InsertRow($table, {
                     name => $new_name,
-                    page => 1234,
                 }, 'id');
             $found_names{$new_name} = $id;
         }

@@ -2,7 +2,12 @@ package MusicBrainz::Server::Data::Work;
 
 use Moose;
 use MusicBrainz::Server::Entity::Work;
-use MusicBrainz::Server::Data::Utils qw( query_to_list_limited );
+use MusicBrainz::Server::Data::Utils qw(
+    defined_hash
+    generate_gid
+    placeholders
+    query_to_list_limited
+);
 
 extends 'MusicBrainz::Server::Data::CoreEntity';
 with 'MusicBrainz::Server::Data::AnnotationRole';

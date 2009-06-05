@@ -1,6 +1,6 @@
 use strict;
 use warnings;
-use Test::More tests => 30;
+use Test::More tests => 41;
 use_ok 'MusicBrainz::Server::Data::Work';
 use MusicBrainz::Server::Data::WorkType;
 use MusicBrainz::Server::Data::Search;
@@ -68,7 +68,7 @@ $work = $work_data->insert({
         name => 'Traits',
         artist_credit => 2,
         type => 1,
-        iswc => 'ISWC',
+        iswc => 'T-000.000.001-0',
         comment => 'Drum & bass track',
     });
 isa_ok($work, 'MusicBrainz::Server::Entity::Work');
@@ -78,18 +78,18 @@ $work = $work_data->get_by_id($work->id);
 is($work->name, 'Traits');
 is($work->artist_credit_id, 2);
 is($work->comment, 'Drum & bass track');
-is($work->iswc, 'ISWC');
+is($work->iswc, 'T-000.000.001-0');
 is($work->type_id, 1);
 ok(defined $work->gid);
 
 $work_data->update($work, {
         name => 'Traits (remix)',
-        iswc => 'ISWC ISWC',
+        iswc => 'T-100.000.001-0',
     });
 
 $work = $work_data->get_by_id($work->id);
-is($work->sort_name, 'Traits (remix)');
-is($work->type_id, 'ISWC ISWC');
+is($work->name, 'Traits (remix)');
+is($work->iswc, 'T-100.000.001-0');
 
 $work_data->delete($work);
 $work = $work_data->get_by_id($work->id);

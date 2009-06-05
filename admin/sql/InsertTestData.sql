@@ -420,6 +420,7 @@ ALTER SEQUENCE artist_credit_id_seq RESTART 5;
 ALTER SEQUENCE label_id_seq RESTART 3;
 ALTER SEQUENCE release_id_seq RESTART 4;
 ALTER SEQUENCE release_group_id_seq RESTART 5;
+ALTER SEQUENCE work_id_seq RESTART 2;
 
 ALTER SEQUENCE artist_name_id_seq RESTART 11;
 ALTER SEQUENCE label_name_id_seq RESTART 4;
