@@ -108,7 +108,7 @@ sub insert
             gid => $row->{gid},
         );
     }
-    return wantarray ? @created : $created[0];
+    return @releases > 1 ? @created : $created[0];
 }
 
 sub update

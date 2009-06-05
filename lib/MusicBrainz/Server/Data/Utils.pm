@@ -91,14 +91,12 @@ sub insert_and_create
     my $sql = Sql->new($data->c->mb->dbh);
     my %map = $data->_attribute_mapping;
     my @ret;
-    $sql->Begin;
     for my $obj (@objs)
     {
         my %row = map { ($map{$_} || $_) => $obj->{$_} } keys %$obj;
         my $id = $sql->InsertRow($data->_table, \%row);
         push @ret, $class->new( id => $id, %$obj);
     }
-    $sql->Commit;
 
     return wantarray ? @ret : $ret[0];
 }

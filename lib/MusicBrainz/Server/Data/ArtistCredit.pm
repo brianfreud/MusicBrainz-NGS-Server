@@ -91,7 +91,6 @@ sub find_or_insert
 
     if(!defined $id)
     {
-        $sql->Begin;
         $id = $sql->InsertRow('artist_credit', { artistcount => scalar @names }, 'id');
         my $artist_data = MusicBrainz::Server::Data::Artist->new(c => $self->c);
         my %names_id = $artist_data->find_or_insert_names(@names);
@@ -102,10 +101,9 @@ sub find_or_insert
                     position => $i,
                     artist => $artists[$i],
                     name => $names_id{$names[$i]},
-                    joinphrase => $join_phrases->[$i] || 'NULL',
+                    joinphrase => $join_phrases->[$i],
                 });
         }
-        $sql->Commit;
     }
 
     return $id;
