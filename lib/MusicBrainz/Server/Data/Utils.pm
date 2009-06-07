@@ -94,7 +94,7 @@ sub insert_and_create
     for my $obj (@objs)
     {
         my %row = map { ($map{$_} || $_) => $obj->{$_} } keys %$obj;
-        my $id = $sql->InsertRow($data->_table, \%row);
+        my $id = $sql->InsertRow($data->_table, \%row, 'id');
         push @ret, $class->new( id => $id, %$obj);
     }
 
