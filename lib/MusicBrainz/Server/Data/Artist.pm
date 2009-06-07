@@ -14,13 +14,8 @@ use MusicBrainz::Server::Data::Utils qw(
 
 extends 'MusicBrainz::Server::Data::CoreEntity';
 with 'MusicBrainz::Server::Data::AnnotationRole' => { type => 'artist' };
-with 'MusicBrainz::Server::Data::AliasRole';
+with 'MusicBrainz::Server::Data::AliasRole' => { type => 'artist' };
 with 'MusicBrainz::Server::Data::Role::Name' => { name_table => 'artist_name' };
-
-sub _alias_type
-{
-    return 'artist';
-}
 
 sub _table
 {
