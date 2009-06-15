@@ -3,7 +3,9 @@ use Moose;
 
 use Carp;
 use List::MoreUtils qw( uniq );
+use Moose::Util::TypeConstraints qw( find_type_constraint );
 use MusicBrainz::Server::Entity::Artist;
+use MusicBrainz::Server::Data::Types;
 use MusicBrainz::Server::Data::Utils qw(
     defined_hash
     generate_gid
@@ -70,6 +72,12 @@ sub load
     load_subobjects($self, 'artist', @objs);
 }
 
+has '_type_constraint' => (
+    is => 'ro',
+    lazy => 1,
+    default => sub { find_type_constraint('ArtistHash') }
+);
+
 sub insert
 {
     my ($self, @artists) = @_;
@@ -79,6 +87,7 @@ sub insert
     my @created;
     for my $artist (@artists)
     {
+        $self->_type_constraint->check($artist);
         my $row = $self->_hash_to_row($artist, \%names);
         $row->{gid} = $artist->{gid} || generate_gid();
 

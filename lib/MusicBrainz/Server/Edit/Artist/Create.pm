@@ -1,8 +1,6 @@
 package MusicBrainz::Server::Edit::Artist::Create;
 use Moose;
 
-use MooseX::Types::Moose qw( Int Str );
-use MooseX::Types::Structured qw( Dict Optional );
 use MusicBrainz::Server::Constants qw( $EDIT_ARTIST_CREATE );
 use MusicBrainz::Server::Data::Artist;
 use MusicBrainz::Server::Types qw( :edit_status );
@@ -22,15 +20,7 @@ has 'artist' => (
     is => 'rw'
 );
 
-has '+data' => (
-    isa => Dict[
-        name => Str,
-        sort_name => Optional[Str],
-        gender => Optional[Int],
-        country => Optional[Int],
-        comment => Optional[Str],
-    ]
-);
+has '+data' => ( isa => 'ArtistHash' );
 
 before 'insert' => sub
 {
