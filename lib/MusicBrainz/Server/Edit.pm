@@ -1,8 +1,10 @@
 package MusicBrainz::Server::Edit;
 use Moose;
 
+use DateTime;
+use MusicBrainz::Server::Edit::Exceptions;
 use MusicBrainz::Server::Entity::Types;
-use MusicBrainz::Server::Types qw( $STATUS_OPEN $STATUS_APPLIED );
+use MusicBrainz::Server::Types qw( $STATUS_OPEN );
 
 has 'c' => (
     isa => 'Object',
@@ -14,13 +16,18 @@ has [qw( yes_votes no_votes )] => (
     is => 'rw',
 );
 
-has [qw( id editor_id )] => (
+has [qw( id editor_id language_id )] => (
     isa => 'Int',
     is => 'rw',
 );
 
 has 'editor' => (
     isa => 'Editor',
+    is => 'rw'
+);
+
+has 'language' => (
+    isa => 'Language',
     is => 'rw'
 );
 
@@ -33,7 +40,7 @@ has [qw( created_time expires_time close_time )] => (
 has 'status' => (
     isa => 'EditStatus',
     is => 'rw',
-    default => sub { shift->is_auto_edit ? $STATUS_APPLIED : $STATUS_OPEN },
+    default => $STATUS_OPEN,
 );
 
 has 'data' => (
@@ -41,10 +48,18 @@ has 'data' => (
     is => 'rw',
 );
 
+has 'auto_edit' => (
+    isa => 'Bool',
+    is => 'rw',
+    default => sub { shift->edit_auto_edit }
+);
+
 sub edit_type { die 'Not implemented' }
 sub edit_name { '' }
-sub is_auto_edit { return }
+sub edit_auto_edit { return }
+sub edit_voting_period { DateTime::Duration->new(days => 7) }
 
+sub entities { return {} }
 sub accept { }
 sub reject { }
 sub insert { }

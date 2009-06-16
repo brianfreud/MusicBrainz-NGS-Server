@@ -15,14 +15,16 @@ use Sql;
 my $c = MusicBrainz::Server::Context->new();
 MusicBrainz::Server::Test->prepare_test_database($c);
 my $edit_data = MusicBrainz::Server::Data::Edit->new(c => $c);
+my $sql = Sql->new($c->raw_dbh);
+$sql->Begin;
 
-my $edit = MusicBrainz::Server::Edit::Artist::Create->new(
-    c => $c,
-    data => {
+my $edit = MusicBrainz::Server::Edit::Artist::Create->create(
+    {
         name => 'Junior Boys',
         gender => 1,
         comment => 'Canadian electronica duo',
     },
+    c => $c,
     editor_id => 1
 );
 
@@ -35,3 +37,5 @@ is_deeply($edit->to_hash, {
         comment => 'Canadian electronica duo',
         artist_id => $edit->artist_id,
     });
+
+$sql->Commit;

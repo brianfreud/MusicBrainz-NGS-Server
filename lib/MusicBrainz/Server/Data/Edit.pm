@@ -2,7 +2,10 @@ package MusicBrainz::Server::Data::Edit;
 use Moose;
 
 use DateTime;
+use List::MoreUtils qw( zip );
 use MusicBrainz::Server::Edit;
+use MusicBrainz::Server::Edit::Exceptions;
+use MusicBrainz::Server::Types qw( $STATUS_APPLIED $STATUS_ERROR );
 use XML::Simple;
 
 extends 'MusicBrainz::Server::Data::Entity';
@@ -14,9 +17,8 @@ sub _table
 
 sub _columns
 {
-    return 'edit.id, edit.editor, edit.opentime, edit.expiretime, 
-            edit.closetime, edit.data, edit.language, edit.type,
-            edit.yesvotes, edit.novotes';
+    return 'id, editor, opentime, expiretime, closetime, data, language, type,
+            yesvotes, novotes, autoedit';
 }
 
 sub _dbh
@@ -38,10 +40,12 @@ sub _new_from_row
         yes_votes => $row->{yesvotes},
         no_votes => $row->{novotes},
         editor_id => $row->{editor},
+        created_time => $row->{opentime},
+        expires_time => $row->{expiretime},
+        language_id => $row->{language},
+        auto_edit => $row->{autoedit}
     );
     $edit->restore($data);
-    $edit->created_time($row->{opentime});
-    $edit->expires_time($row->{expiretime});
     $edit->close_time($row->{closetime}) if defined $row->{closetime};
     return $edit;
 }
@@ -54,29 +58,45 @@ sub insert
     {
         $edit->insert;
 
-        my $row = $self->_to_row($edit);
-        my $open = DateTime->now;
-        my $expire = $open + DateTime::Duration->new(days => 7);
+        # Automatically accept auto-edits on insert
+        if($edit->auto_edit)
+        {
+            my $status = eval { $edit->accept };
+            if ($@)
+            {
+                # XXX Exception classes should specificy the status
+                $edit->status($STATUS_ERROR);
+            }
+            else
+            {
+                $edit->status($STATUS_APPLIED);
+            }
+        };
 
-        $row->{opentime} = $open;
-        $row->{expiretime} = $expire;
-        $row->{closetime} = DateTime->now if $edit->is_auto_edit;
+        my $now = DateTime->now;
+        my $row = {
+            editor => $edit->editor_id,
+            data => XMLout($edit->to_hash, NoAttr => 1),
+            status => $edit->status,
+            type => $edit->edit_type,
+            opentime => $now,
+            expiretime => $now + $edit->edit_voting_period,
+        };
 
         my $edit_id = $sql->InsertRow('edit', $row, 'id');
         $edit->id($edit_id);
+
+        my $ents = $edit->entities;
+        for my $type (keys %$ents)
+        {
+            my @ids = @{ $ents->{$type} };
+            my $query = "INSERT INTO edit_$type (edit, $type) VALUES ";
+            $query .= ("(?, ?)" x @ids);
+            my @all_ids = ($edit_id) x @ids;
+            $sql->Do($query, zip @all_ids, @ids); 
+        }
     }
     return @edits > 1 ? @edits : $edits[0];
-}
-
-sub _to_row
-{
-    my ($self, $edit) = @_;
-    return {
-        editor => $edit->editor_id,
-        data => XMLout($edit->to_hash, NoAttr => 1),
-        status => $edit->status,
-        type => $edit->edit_type,
-    };
 }
 
 __PACKAGE__->meta->make_immutable;
