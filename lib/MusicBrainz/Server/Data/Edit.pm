@@ -60,6 +60,7 @@ sub insert
 
         $row->{opentime} = $open;
         $row->{expiretime} = $expire;
+        $row->{closetime} = DateTime->now if $edit->is_auto_edit;
 
         my $edit_id = $sql->InsertRow('edit', $row, 'id');
         $edit->id($edit_id);

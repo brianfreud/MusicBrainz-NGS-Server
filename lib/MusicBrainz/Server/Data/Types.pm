@@ -9,7 +9,7 @@ subtype 'DateHash'
             year => Int,
             month => Optional[Int],
             day => Optional[Int],
-        ]];
+        ];
 
 subtype 'ArtistHash'
     => as Dict[
@@ -19,8 +19,8 @@ subtype 'ArtistHash'
         gender => Optional[Int],
         country => Optional[Int],
         comment => Optional[Str],
-        begin_date => Optional[DateHash],
-        end_date => Optional[DateHash],
+        begin_date => Optional['DateHash'],
+        end_date => Optional['DateHash'],
     ];
 
 1;

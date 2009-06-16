@@ -9,6 +9,7 @@ extends 'MusicBrainz::Server::Edit';
 
 sub edit_type { $EDIT_ARTIST_CREATE }
 sub edit_name { "Create Artist" }
+sub is_auto_edit { 1 }
 
 has 'artist_id' => (
     isa => 'Int',
@@ -34,15 +35,6 @@ before 'insert' => sub
     $self->artist($artist);
     $self->artist_id($artist->id);
 };
-
-sub accept
-{
-    return $STATUS_APPLIED;
-}
-
-sub reject
-{
-}
 
 around 'to_hash' => sub
 {

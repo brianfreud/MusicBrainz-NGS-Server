@@ -2,7 +2,7 @@ package MusicBrainz::Server::Edit;
 use Moose;
 
 use MusicBrainz::Server::Entity::Types;
-use MusicBrainz::Server::Types qw( $STATUS_OPEN );
+use MusicBrainz::Server::Types qw( $STATUS_OPEN $STATUS_APPLIED );
 
 has 'c' => (
     isa => 'Object',
@@ -33,7 +33,7 @@ has [qw( created_time expires_time close_time )] => (
 has 'status' => (
     isa => 'EditStatus',
     is => 'rw',
-    default => $STATUS_OPEN,
+    default => sub { shift->is_auto_edit ? $STATUS_APPLIED : $STATUS_OPEN },
 );
 
 has 'data' => (
@@ -43,6 +43,7 @@ has 'data' => (
 
 sub edit_type { die 'Not implemented' }
 sub edit_name { '' }
+sub is_auto_edit { return }
 
 sub accept { }
 sub reject { }
