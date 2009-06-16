@@ -13,7 +13,6 @@ extends 'MusicBrainz::Server::Edit';
 
 sub edit_type { $EDIT_ARTIST_EDIT }
 sub edit_name { "Create Artist" }
-sub is_auto_edit { 1 }
 
 sub artist_id { shift->data->{artist} }
 
@@ -21,6 +20,14 @@ has 'artist' => (
     isa => 'Artist',
     is => 'rw'
 );
+
+sub entities
+{
+    my $self = shift;
+    return {
+        artist => [ $self->artist_id ],
+    };
+}
 
 subtype 'ArtistHash'
     => as Dict[
@@ -70,29 +77,29 @@ sub _mapping
     );
 }
 
-override 'BUILDARGS' => sub
+sub create
 {
-    my $self = shift;
-    my $args = super(@_);
-    my $artist = $args->{artist};
-    if (defined $artist)
-    {
-        my %mapping = $self->_mapping;
-        my %old = map {
-            my $mapped = exists $mapping{$_} ? $mapping{$_} : $_;
-            $_ => ref $mapped eq 'CODE' ? $mapped->($artist) : $artist->$mapped;
-        } keys %{ $args->{data}->{new} };
-        $args->{data}->{old} = \%old;
-        $args->{data}->{artist} = $artist->id;
-    }
-    return $args;
+    my ($class, $artist, $edit, @args) = @_;
+    die "You must specify the artist object to edit" unless defined $artist;
+
+    my %mapping = $class->_mapping;
+    my %old = map {
+        my $mapped = exists $mapping{$_} ? $mapping{$_} : $_;
+        $_ => ref $mapped eq 'CODE' ? $mapped->($artist) : $artist->$mapped;
+    } keys %$edit;
+
+    return $class->new(data => {
+            old => \%old,
+            new => $edit,
+            artist => $artist->id
+        }, @args);
 };
 
 override 'accept' => sub
 {
     my $self = shift;
     my $artist_data = MusicBrainz::Server::Data::Artist->new(c => $self->c);
-    $artist_data->update($self->data->{artist}, $self->data->{new});
+    $artist_data->update($self->artist_id, $self->data->{new});
 };
 
 __PACKAGE__->meta->make_immutable;
