@@ -33,6 +33,7 @@ Readonly our $VARTIST_GID => '89ad4ac3-39f7-470e-963a-56509c546377';
 Readonly our $VARTIST_ID  => 1;
 
 Readonly our $EDIT_ARTIST_CREATE => 1;
+Readonly our $EDIT_ARTIST_EDIT => 2;
 
 =head1 NAME
 
