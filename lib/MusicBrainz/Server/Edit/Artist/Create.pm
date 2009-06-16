@@ -58,10 +58,12 @@ before 'insert' => sub
     $self->artist_id($artist->id);
 };
 
-around 'to_hash' => sub
+# artist_id is handled separately, as it should not be copied if the edit is cloned
+# (a new different artist_id would be used)
+override 'to_hash' => sub
 {
-    my ($orig, $self) = @_;
-    my $hash = $self->$orig;
+    my $self = shift;
+    my $hash = super(@_);
     $hash->{artist_id} = $self->artist_id;
     return $hash;
 };
