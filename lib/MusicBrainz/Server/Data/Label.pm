@@ -6,6 +6,7 @@ use MusicBrainz::Server::Data::Utils qw(
     defined_hash
     generate_gid
     partial_date_from_row
+    placeholders
     load_subobjects
 );
 
@@ -99,9 +100,15 @@ sub update
 
 sub delete
 {
-    my ($self, $label_id) = @_;
+    my ($self, @label_ids) = @_;
+    my $can_delete = 1;
+    # XXX Checks to see if label is in use
+    return unless $can_delete;
+
+    $self->annotation->delete(@label_ids);
+    $self->alias->delete(@label_ids);
     my $sql = Sql->new($self->c->mb->dbh);
-    $sql->Do('DELETE FROM label WHERE id = ?', $label_id);
+    $sql->Do('DELETE FROM label WHERE id IN (' . placeholders(@label_ids) . ')', @label_ids);
     return 1;
 }
 

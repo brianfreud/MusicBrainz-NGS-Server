@@ -25,7 +25,7 @@ $sql->Begin;
 $sql_raw->Begin;
 
 my $edit = MusicBrainz::Server::Edit::Label::Delete->create(
-    3,
+    2,
     c => $c,
     editor_id => 1
 );
