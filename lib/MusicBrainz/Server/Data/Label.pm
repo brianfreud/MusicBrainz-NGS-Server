@@ -99,10 +99,10 @@ sub update
 
 sub delete
 {
-    my ($self, $label) = @_;
+    my ($self, $label_id) = @_;
     my $sql = Sql->new($self->c->mb->dbh);
-    $sql->Do('DELETE FROM label WHERE id = ?', $label->id);
-    return;
+    $sql->Do('DELETE FROM label WHERE id = ?', $label_id);
+    return 1;
 }
 
 sub _hash_to_row
