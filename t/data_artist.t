@@ -1,6 +1,6 @@
 use strict;
 use warnings;
-use Test::More tests => 51;
+use Test::More tests => 52;
 use_ok 'MusicBrainz::Server::Data::Artist';
 use MusicBrainz::Server::Data::Search;
 
@@ -54,6 +54,8 @@ ok(!defined $annotation);
 $artist = $artist_data->get_by_gid('a4ef1d08-962e-4dd6-ae14-e42a6a97fc11');
 is ( $artist->id, 4 );
 
+$sql->Commit;
+
 my $search = MusicBrainz::Server::Data::Search->new(c => $c);
 my ($results, $hits) = $search->search("artist", "bush", 10);
 is( $hits, 3 );
@@ -61,6 +63,8 @@ is( scalar(@$results), 3 );
 is( $results->[0]->position, 1 );
 is( $results->[0]->entity->name, "Kate Bush" );
 is( $results->[0]->entity->sort_name, "Bush, Kate" );
+
+$sql->Begin;
 
 my %names = $artist_data->find_or_insert_names('Kate Bush', 'Bush, Kate', 'Massive Attack');
 is(keys %names, 3);
