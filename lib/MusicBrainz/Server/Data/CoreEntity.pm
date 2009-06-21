@@ -1,6 +1,7 @@
 package MusicBrainz::Server::Data::CoreEntity;
 
 use Moose;
+use MusicBrainz::Server::Data::Utils qw( placeholders );
 use Sql;
 
 extends 'MusicBrainz::Server::Data::Entity';
@@ -26,6 +27,24 @@ sub get_by_gid
         }
     }
     return undef;
+}
+
+sub remove_gid_redirects
+{
+    my ($self, @ids) = @_;
+    my $sql = Sql->new($self->c->dbh);
+    my $table = $self->_gid_redirect_table;
+    $sql->Do("DELETE FROM $table WHERE newid IN (" . placeholders(@ids) . ')', @ids);
+}
+
+sub add_gid_redirects
+{
+    my ($self, %redirects) = @_;
+    my $sql = Sql->new($self->c->dbh);
+    my $table = $self->_gid_redirect_table;
+    my $query = "INSERT INTO $table (gid, newid) VALUES " .
+                (join ", ", ('(?, ?)') x keys %redirects);
+    $sql->Do($query, %redirects);
 }
 
 __PACKAGE__->meta->make_immutable;
