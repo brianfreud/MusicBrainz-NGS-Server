@@ -89,4 +89,12 @@ is($label->end_date->month, 5);
 $label_data->delete($label->id);
 $label = $label_data->get_by_id($label->id);
 ok(!defined $label);
+
+$label_data->merge(2, 1);
+$label = $label_data->get_by_id(2);
+ok(!defined $label);
+
+$label = $label_data->get_by_id(1);
+ok(defined $label);
+
 $sql->Commit;
