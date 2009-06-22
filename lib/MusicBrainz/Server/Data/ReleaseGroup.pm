@@ -94,10 +94,11 @@ sub update
 
 sub delete
 {
-    my ($self, @groups) = @_;
+    my ($self, @group_ids) = @_;
+    $self->annotation->delete(@group_ids);
+    $self->remove_gid_redirects(@group_ids);
     my $sql = Sql->new($self->c->mb->dbh);
-    $sql->Do('DELETE FROM release_group WHERE id IN (' . placeholders(@groups) . ')',
-        map { $_->id } @groups);
+    $sql->Do('DELETE FROM release_group WHERE id IN (' . placeholders(@group_ids) . ')', @group_ids);
     return;
 }
 
