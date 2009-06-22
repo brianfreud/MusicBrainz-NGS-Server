@@ -47,6 +47,14 @@ sub add_gid_redirects
     $sql->Do($query, %redirects);
 }
 
+sub update_gid_redirects
+{
+    my ($self, $old_id, $new_id) = @_; 
+    my $sql = Sql->new($self->c->dbh);
+    my $table = $self->_gid_redirect_table;
+    $sql->Do("UPDATE $table SET newid = ? WHERE newid = ?", $new_id, $old_id);
+}
+
 __PACKAGE__->meta->make_immutable;
 no Moose;
 1;

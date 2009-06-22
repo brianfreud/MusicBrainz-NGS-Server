@@ -1,6 +1,6 @@
 use strict;
 use warnings;
-use Test::More tests => 54;
+use Test::More tests => 55;
 use_ok 'MusicBrainz::Server::Data::Artist';
 use MusicBrainz::Server::Data::Search;
 
@@ -111,5 +111,10 @@ is($artist->id, 3);
 
 $artist = $artist_data->get_by_gid('2adff2b0-5dbf-11de-8a39-0800200c9a66');
 is($artist->id, 5);
+
+$artist_data->update_gid_redirects(5, 3);
+
+$artist = $artist_data->get_by_gid('2adff2b0-5dbf-11de-8a39-0800200c9a66');
+is($artist->id, 3);
 
 $sql->Commit;
