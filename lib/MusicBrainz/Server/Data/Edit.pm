@@ -56,7 +56,7 @@ sub create
     my ($self, %opts) = @_;
     my $sql = Sql->new($self->c->raw_dbh);
 
-    my $type = delete $opts{edit_type} or croak "Type required";
+    my $type = delete $opts{edit_type} or croak "edit_type required";
     my $editor_id = delete $opts{editor_id} or croak "editor_id required";
     my $class = MusicBrainz::Server::Edit->class_from_type($type);
 
