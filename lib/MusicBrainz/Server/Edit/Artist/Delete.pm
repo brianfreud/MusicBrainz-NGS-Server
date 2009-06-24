@@ -11,14 +11,16 @@ extends 'MusicBrainz::Server::Edit';
 
 sub edit_type { $EDIT_ARTIST_DELETE }
 sub edit_name { "Delete Artist" }
+sub entity_model { 'Artist' }
+sub entity_id { shift->artist_id }
 
 has '+data' => (
     isa => Dict[
-        artist => Int
+        artist_id => Int
     ]
 );
 
-sub artist_id { return shift->data->{artist} }
+sub artist_id { return shift->data->{artist_id} }
 has 'artist' => (
     isa => 'Artist',
     is => 'rw',
@@ -32,17 +34,11 @@ sub entities
     }
 }
 
-sub create
-{
-    my ($class, $artist_id, @args) = @_;
-    return $class->new(data => { artist => $artist_id }, @args);
-}
-
 override 'accept' => sub
 {
     my $self = shift;
     my $artist_data = MusicBrainz::Server::Data::Artist->new(c => $self->c);
-    $artist_data->delete($self->data->{artist});
+    $artist_data->delete($self->artist_id);
 };
 
 __PACKAGE__->register_type;
