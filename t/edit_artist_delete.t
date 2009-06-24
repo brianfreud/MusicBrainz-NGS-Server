@@ -1,7 +1,7 @@
 #!/usr/bin/perl
 use strict;
 use warnings;
-use Test::More tests => 5;
+use Test::More tests => 8;
 
 BEGIN {
     use_ok 'MusicBrainz::Server::Data::Edit';
@@ -10,6 +10,7 @@ BEGIN {
 
 use MusicBrainz::Server::Data::Artist;
 use MusicBrainz::Server::Context;
+use MusicBrainz::Server::Constants qw( $EDIT_ARTIST_DELETE );
 use MusicBrainz::Server::Test;
 use Sql;
 
@@ -24,17 +25,18 @@ my $sql = Sql->new($c->dbh);
 $sql->Begin;
 $sql_raw->Begin;
 
-my $edit = MusicBrainz::Server::Edit::Artist::Delete->create(
-    3,
-    c => $c,
+my $edit = $edit_data->create(
+    edit_type => $EDIT_ARTIST_DELETE,
+    artist_id => 3,
     editor_id => 1
 );
 is_deeply($edit->entities, { artist => [ 3 ] });
-
-$edit_data->insert($edit);
+is($edit->entity_model, 'Artist');
+is($edit->entity_id, $edit->artist_id);
 
 my $artist = $artist_data->get_by_id(3);
 ok(defined $artist);
+is($artist->edits_pending, 1);
 
 $edit->accept;
 $artist = $artist_data->get_by_id(3);
