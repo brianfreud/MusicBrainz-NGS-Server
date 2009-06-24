@@ -110,7 +110,7 @@ sub delete
 
     $self->annotation->delete(@artist_ids);
     $self->alias->delete(@artist_ids);
-    $self->delete_gid_redirects(@artist_ids);
+    $self->remove_gid_redirects(@artist_ids);
     my $query = 'DELETE FROM artist WHERE id IN (' . placeholders(@artist_ids) . ')';
     my $sql = Sql->new($self->c->mb->dbh);
     $sql->Do($query, @artist_ids);

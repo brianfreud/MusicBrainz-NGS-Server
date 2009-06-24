@@ -3,6 +3,7 @@ use Moose;
 
 use MusicBrainz::Server::Constants qw( $EDIT_ARTIST_DELETE );
 use MusicBrainz::Server::Data::Artist;
+use MusicBrainz::Server::Entity::Types;
 use MooseX::Types::Moose qw( Int );
 use MooseX::Types::Structured qw( Dict );
 
@@ -16,6 +17,20 @@ has '+data' => (
         artist => Int
     ]
 );
+
+sub artist_id { return shift->data->{artist} }
+has 'artist' => (
+    isa => 'Artist',
+    is => 'rw',
+);
+
+sub entities
+{
+    my $self = shift;
+    return {
+        artist => [ $self->artist_id ],
+    }
+}
 
 sub create
 {

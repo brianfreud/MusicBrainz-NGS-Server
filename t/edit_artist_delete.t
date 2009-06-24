@@ -29,6 +29,7 @@ my $edit = MusicBrainz::Server::Edit::Artist::Delete->create(
     c => $c,
     editor_id => 1
 );
+is_deeply($edit->entities, { artist => [ 3 ] });
 
 $edit_data->insert($edit);
 
