@@ -38,7 +38,7 @@ my $artist = $artist_data->get_by_id(3);
 ok(defined $artist);
 is($artist->edits_pending, 1);
 
-$edit->accept;
+$edit_data->accept($edit);
 $artist = $artist_data->get_by_id(3);
 ok(!defined $artist);
 
