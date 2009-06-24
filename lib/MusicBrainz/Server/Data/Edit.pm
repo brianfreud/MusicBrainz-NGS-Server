@@ -102,7 +102,7 @@ sub create
         $sql->Do($query, zip @all_ids, @ids); 
     }
 
-    if (defined $edit->entity_model && $edit->entity_id)
+    if (defined $edit->entity_model && $edit->entity_id && $edit->is_open)
     {
         my $model = $self->c->model($edit->entity_model);
         $model->does('MusicBrainz::Server::Data::Editable')
@@ -111,6 +111,29 @@ sub create
     }
 
     return $edit;
+}
+
+sub accept
+{
+    my ($self, $edit) = @_;
+    eval { $edit->accept };
+    $self->_close($edit => $@ ? $STATUS_ERROR : $STATUS_APPLIED);
+}
+
+sub _close
+{
+    my ($self, $edit, $status) = @_;
+    my $sql = Sql->new($self->c->raw_dbh);
+    my $query = "UPDATE edit SET status = ? WHERE id = ?";
+    $sql->Do($query, $status, $edit->id);
+
+    if (defined $edit->entity_model && $edit->entity_id)
+    {
+        my $model = $self->c->model($edit->entity_model);
+        $model->does('MusicBrainz::Server::Data::Editable')
+            or croak "Model must do MusicBrainz::Server::Data::Editable";
+        $model->dec_edits_pending($edit->entity_id);
+    }
 }
 
 __PACKAGE__->meta->make_immutable;

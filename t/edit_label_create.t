@@ -1,7 +1,7 @@
 #!/usr/bin/perl
 use strict;
 use warnings;
-use Test::More tests => 14;
+use Test::More tests => 15;
 
 BEGIN {
     use_ok 'MusicBrainz::Server::Edit::Label::Create';
@@ -51,6 +51,7 @@ is($label->sort_name, '!K7 Recordings');
 is($label->type_id, 1);
 is($label->comment, "Funky record label");
 is($label->label_code, 7306);
+is($label->edits_pending, 0);
 
 $sql_raw->Commit;
 $sql->Commit;

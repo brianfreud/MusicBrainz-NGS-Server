@@ -1,7 +1,7 @@
 #!/usr/bin/perl
 use strict;
 use warnings;
-use Test::More tests => 14;
+use Test::More tests => 15;
 
 BEGIN {
     use_ok 'MusicBrainz::Server::Edit::Artist::Create';
@@ -10,6 +10,7 @@ BEGIN {
 
 use MusicBrainz::Server::Context;
 use MusicBrainz::Server::Constants qw( $EDIT_ARTIST_CREATE );
+use MusicBrainz::Server::Types qw( $STATUS_APPLIED );
 use MusicBrainz::Server::Test;
 use Sql;
 
@@ -35,6 +36,7 @@ isa_ok($edit, 'MusicBrainz::Server::Edit::Artist::Create');
 is_deeply($edit->entities, { artist => [ $edit->artist_id ] });
 is($edit->entity_model, 'Artist');
 is($edit->entity_id, $edit->artist_id);
+is($edit->status, $STATUS_APPLIED);
 
 ok(defined $edit->artist_id);
 ok(defined $edit->id);
@@ -51,7 +53,7 @@ ok(defined $artist);
 is($artist->name, 'Junior Boys');
 is($artist->gender_id, 1);
 is($artist->comment, 'Canadian electronica duo');
-is($artist->edits_pending, 1);
+is($artist->edits_pending, 0);
 
 $sql->Commit;
 $sql_raw->Commit;
