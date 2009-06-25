@@ -11,16 +11,15 @@ has 'h' => (
 
 sub render_field
 {
-    my ($self, $field) = @_;
+    my ($self, $field, %attrs) = @_;
     if ($field->does('MusicBrainz::Server::Form::FieldRenderer'))
     {
         $field->render($self);
     }
     else
     {
-        warn "Rendering " . $field->name;
         my $render = 'render_' . $field->widget;
-        $self->can($render) ? $self->$render($field) : warn "Cannot find $render";
+        $self->can($render) ? $self->$render($field, %attrs) : warn "Cannot find $render";
     }
 }
 
@@ -53,7 +52,8 @@ sub render_textarea
     my ($self, $field, %attrs) = @_;
     return $self->h->textarea({
             name => $field->full_name,
-            id => $field->id
+            id => $field->id,
+            %attrs
         });
 }
 
@@ -93,10 +93,10 @@ sub render_select
 
 sub render_row
 {
-    my ($self, $field) = @_;
+    my ($self, $field, %attrs) = @_;
     return $self->h->p([
             $self->render_label($field),
-            $self->h->div({ class => 'row' }, [$self->render_field($field)])
+            $self->h->div({ class => 'row' }, [$self->render_field($field, %attrs)])
         ]);
 }
 
