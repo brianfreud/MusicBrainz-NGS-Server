@@ -107,28 +107,6 @@ sub is_newbie
     return $self->registration_date > $date;
 }
 
-# For Catalyst::Plugin::Authentication
-sub supports
-{
-    my ($self, @spec) = @_;
-    my $supported = { session => 1 };
-    for (@spec) {
-        return unless exists $supported->{$_};
-    }
-    return 1;
-}
-
-sub get
-{
-    my ($self, $key) = @_;
-    return $self->can($key) ? $self->$key : undef;
-}
-
-has 'auth_realm' => (
-    isa => 'Str',
-    is => 'rw'
-);
-
 no Moose;
 __PACKAGE__->meta->make_immutable;
 1;
