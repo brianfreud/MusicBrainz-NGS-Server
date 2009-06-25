@@ -16,19 +16,16 @@ has_field 'sort_name' => (
     required => 1,
 );
 
-has_field 'gender' => (
+has_field 'gender_id' => (
     type => 'Select',
-    accessor => 'gender_id',
 );
 
-has_field 'type' => (
+has_field 'type_id' => (
     type => 'Select',
-    accessor => 'type_id',
 );
 
-has_field 'country' => (
+has_field 'country_id' => (
     type => 'Select',
-    accessor => 'country_id',
 );
 
 has_field 'begin_date' => (

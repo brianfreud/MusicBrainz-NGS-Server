@@ -19,6 +19,8 @@ use MusicBrainz::Server::Rating;
 use ModDefs;
 use UserSubscription;
 
+use MusicBrainz::Server::Constants qw( $EDIT_ARTIST_CREATE );
+use MusicBrainz::Server::Edit::Artist::Create;
 use MusicBrainz::Server::Form::Artist;
 
 =head1 NAME
@@ -346,6 +348,34 @@ sub create : Local RequireAuth
 
     my $form = MusicBrainz::Server::Form::Artist->new(ctx => $c);
     $c->stash( form => $form );
+
+    if ($c->form_posted && $form->process(params => $c->req->params))
+    {
+        if(!$form->field('not_dupe')->required)
+        {
+        }
+
+        my $sql = Sql->new($c->dbh);
+        my $sql_raw = Sql->new($c->raw_dbh);
+
+        $sql->Begin;
+        $sql_raw->Begin;
+
+        my %edit = map { $_ => $form->field($_)->value }
+            qw( name sort_name gender_id type_id country_id begin_date end_date comment);
+
+        my $edit = $c->model('Edit')->create(
+            edit_type => $EDIT_ARTIST_CREATE,
+            editor_id => $c->user->id,
+            %edit
+        );
+
+        if ($edit->artist)
+        {
+            $c->redirect($c->uri_for_action('/artist/show', [ $edit->artist->gid ]));
+            $c->detach;
+        }
+    }
 }
 
 =head2 edit
