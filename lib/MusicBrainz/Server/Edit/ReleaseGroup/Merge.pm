@@ -11,7 +11,12 @@ extends 'MusicBrainz::Server::Edit';
 sub edit_name { "Merge Release Groups" }
 sub edit_type { $EDIT_RELEASEGROUP_MERGE }
 sub entity_model { 'ReleaseGroup' }
-sub entity_id { shift->old_release_group_id }
+
+sub entity_id
+{
+    my $self = shift;
+    return [ $self->old_release_group_id, $self->new_release_group_id ]
+}
 
 sub old_release_group_id { shift->data->{old_group} }
 sub new_release_group_id { shift->data->{new_group} }

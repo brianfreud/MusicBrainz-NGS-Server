@@ -1,7 +1,7 @@
 #!/usr/bin/perl
 use strict;
 use warnings;
-use Test::More tests => 10;
+use Test::More tests => 11;
 
 BEGIN { use_ok 'MusicBrainz::Server::Edit::ReleaseGroup::Merge' }
 use MusicBrainz::Server::Context;
@@ -30,11 +30,14 @@ my $edit = $edit_data->create(
 );
 isa_ok($edit, 'MusicBrainz::Server::Edit::ReleaseGroup::Merge');
 is($edit->entity_model, 'ReleaseGroup');
-is($edit->entity_id, 2);
+is_deeply($edit->entity_id, [2, 1]);
 is_deeply($edit->entities, { release_group => [ 2, 1 ] });
 
 my $rg = $rg_data->get_by_id(2);
 ok(defined $rg);
+is($rg->edits_pending, 1);
+
+$rg = $rg_data->get_by_id(1);
 is($rg->edits_pending, 1);
 
 $edit_data->accept($edit);

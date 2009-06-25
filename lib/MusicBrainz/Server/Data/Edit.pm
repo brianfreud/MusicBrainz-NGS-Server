@@ -107,7 +107,8 @@ sub create
         my $model = $self->c->model($edit->entity_model);
         $model->does('MusicBrainz::Server::Data::Editable')
             or croak "Model must do MusicBrainz::Server::Data::Editable";
-        $model->inc_edits_pending($edit->entity_id);
+        my @ids = ref $edit->entity_id ? @{ $edit->entity_id } : ($edit->entity_id);
+        $model->inc_edits_pending(@ids);
     }
 
     return $edit;
@@ -132,7 +133,8 @@ sub _close
         my $model = $self->c->model($edit->entity_model);
         $model->does('MusicBrainz::Server::Data::Editable')
             or croak "Model must do MusicBrainz::Server::Data::Editable";
-        $model->dec_edits_pending($edit->entity_id);
+        my @ids = ref $edit->entity_id ? @{ $edit->entity_id } : ($edit->entity_id);
+        $model->dec_edits_pending(@ids);
     }
 }
 
