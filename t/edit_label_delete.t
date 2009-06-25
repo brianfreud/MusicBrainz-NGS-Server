@@ -1,7 +1,7 @@
 #!/usr/bin/perl
 use strict;
 use warnings;
-use Test::More tests => 8;
+use Test::More tests => 9;
 
 BEGIN {
     use_ok 'MusicBrainz::Server::Data::Edit';
@@ -37,6 +37,7 @@ is_deeply($edit->entities, { label => [ 1 ] });
 
 my $label = $label_data->get_by_id(1);
 ok(defined $label);
+is($label->edits_pending, 1);
 
 $edit_data->accept($edit);
 $label = $label_data->get_by_id(1);
