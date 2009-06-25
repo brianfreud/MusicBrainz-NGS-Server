@@ -19,6 +19,8 @@ use MusicBrainz::Server::Rating;
 use ModDefs;
 use UserSubscription;
 
+use MusicBrainz::Server::Form::Artist;
+
 =head1 NAME
 
 MusicBrainz::Server::Controller::Artist - Catalyst Controller for working
@@ -338,33 +340,12 @@ is done via L<MusicBrainz::Server::Form::Artist>
 
 =cut
 
-sub create : Local Form
+sub create : Local RequireAuth
 {
     my ($self, $c) = @_;
 
-    $c->forward('/user/login');
-
-    my $form = $self->form;
-
-    if ($c->form_posted) {
-        $form->validate($c->req->params);
-
-        my $dupes = $c->model('Artist')->search_by_name($form->value('name'));
-        $c->stash->{dupes} = $dupes;
-    }
-
-    return unless $self->submit_and_validate($c);
-
-    my $created_artist = $form->create;
-
-    if ($created_artist)
-    {
-        $c->flash->{ok} = "Thanks! The artist has been added to the " .
-                          "database, and we have redirected you to " .
-                          "their landing page";
-
-        $c->response->redirect($c->entity_url($created_artist, 'show'));
-    }
+    my $form = MusicBrainz::Server::Form::Artist->new(ctx => $c);
+    $c->stash( form => $form );
 }
 
 =head2 edit
