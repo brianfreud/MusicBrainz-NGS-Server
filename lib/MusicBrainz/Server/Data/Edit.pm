@@ -97,7 +97,7 @@ sub create
     {
         my @ids = @{ $ents->{$type} };
         my $query = "INSERT INTO edit_$type (edit, $type) VALUES ";
-        $query .= ("(?, ?)" x @ids);
+        $query .= join ", ", ("(?, ?)") x @ids;
         my @all_ids = ($edit_id) x @ids;
         $sql->Do($query, zip @all_ids, @ids); 
     }

@@ -10,9 +10,22 @@ extends 'MusicBrainz::Server::Edit';
 
 sub edit_name { "Merge Release Groups" }
 sub edit_type { $EDIT_RELEASEGROUP_MERGE }
+sub entity_model { 'ReleaseGroup' }
+sub entity_id { shift->old_release_group_id }
 
 sub old_release_group_id { shift->data->{old_group} }
 sub new_release_group_id { shift->data->{new_group} }
+
+sub entities
+{
+    my $self = shift;
+    return {
+        release_group => [
+            $self->old_release_group_id,
+            $self->new_release_group_id
+        ]
+    }
+}
 
 has [qw( old_release_group new_release_group )] => (
     isa => 'ReleaseGroup',
@@ -26,10 +39,13 @@ has '+data' => (
     ]
 );
 
-sub create
+sub initialize
 {
-    my ($class, $old_id, $new_id, %args) = @_;
-    return $class->new(data => { old_group => $old_id, new_group => $new_id }, %args);
+    my ($self, %args) = @_;
+    $self->data({
+        old_group => $args{old_release_group_id},
+        new_group => $args{new_release_group_id}
+    });
 }
 
 override 'accept' => sub
