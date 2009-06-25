@@ -1,7 +1,7 @@
 #!/usr/bin/perl
 use strict;
 use warnings;
-use Test::More tests => 4;
+use Test::More tests => 8;
 
 BEGIN {
     use_ok 'MusicBrainz::Server::Data::Edit';
@@ -10,6 +10,7 @@ BEGIN {
 
 use MusicBrainz::Server::Data::Label;
 use MusicBrainz::Server::Context;
+use MusicBrainz::Server::Constants qw( $EDIT_LABEL_DELETE );
 use MusicBrainz::Server::Test;
 use Sql;
 
@@ -24,19 +25,21 @@ my $sql = Sql->new($c->dbh);
 $sql->Begin;
 $sql_raw->Begin;
 
-my $edit = MusicBrainz::Server::Edit::Label::Delete->create(
-    2,
-    c => $c,
+my $edit = $edit_data->create(
+    edit_type => $EDIT_LABEL_DELETE,
+    label_id => 1,
     editor_id => 1
 );
+isa_ok($edit, 'MusicBrainz::Server::Edit::Label::Delete');
+is($edit->entity_model, 'Label');
+is($edit->entity_id, 1);
+is_deeply($edit->entities, { label => [ 1 ] });
 
-$edit_data->insert($edit);
-
-my $label = $label_data->get_by_id(2);
+my $label = $label_data->get_by_id(1);
 ok(defined $label);
 
-$edit->accept;
-$label = $label_data->get_by_id(2);
+$edit_data->accept($edit);
+$label = $label_data->get_by_id(1);
 ok(!defined $label);
 
 $sql->Commit;

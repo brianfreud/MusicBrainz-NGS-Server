@@ -107,6 +107,7 @@ sub delete
 
     $self->annotation->delete(@label_ids);
     $self->alias->delete(@label_ids);
+    $self->remove_gid_redirects(@label_ids);
     my $sql = Sql->new($self->c->mb->dbh);
     $sql->Do('DELETE FROM label WHERE id IN (' . placeholders(@label_ids) . ')', @label_ids);
     return 1;
