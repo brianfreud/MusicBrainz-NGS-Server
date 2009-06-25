@@ -32,7 +32,6 @@ sub artist_credit_to_ref
 
         @credit;
     } @{ $artist_credit->names } ];
-    warn Dumper $ac;
     return $ac;
 }
 

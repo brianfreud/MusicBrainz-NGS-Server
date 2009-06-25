@@ -16,6 +16,8 @@ extends 'MusicBrainz::Server::Edit';
 
 sub edit_type { $EDIT_RELEASEGROUP_EDIT }
 sub edit_name { "Edit ReleaseGroup" }
+sub entity_model { 'ReleaseGroup' }
+sub entity_id { shift->release_group_id }
 
 sub release_group_id { shift->data->{release_group} }
 
@@ -52,34 +54,35 @@ sub _mapping
 {
     return (
         type => 'type_id',
-        gender => 'gender_id',
-        country => 'country_id',
+        comment => 'comment',
         artist_credit => sub { artist_credit_to_ref(shift->artist_credit) }
     );
 }
 
-sub create
+sub initialize
 {
-    my ($class, $release_group, $edit, %args) = @_;
+    my ($self, %args) = @_;
+    my $release_group = delete $args{release_group};
     die "You must specify the release group object to edit" unless defined $release_group;
 
     if (!$release_group->artist_credit_loaded)
     {
-        my $ac_data = MusicBrainz::Server::Data::ArtistCredit->new(c => $args{c});
+        my $ac_data = MusicBrainz::Server::Data::ArtistCredit->new(c => $self->c);
         $ac_data->load($release_group);
     }
 
-    my %mapping = $class->_mapping;
+    my %mapping = $self->_mapping;
     my %old = map {
         my $mapped = exists $mapping{$_} ? $mapping{$_} : $_;
         $_ => ref $mapped eq 'CODE' ? $mapped->($release_group) : $release_group->$mapped;
-    } keys %$edit;
+    } keys %args;
 
-    return $class->new(data => {
-            old => \%old,
-            new => $edit,
-            release_group => $release_group->id
-        }, %args);
+    $self->release_group($release_group);
+    $self->data({
+        old => \%old,
+        new => \%args,
+        release_group => $release_group->id
+    });
 };
 
 override 'accept' => sub
