@@ -1,7 +1,7 @@
 #!/usr/bin/perl
 use strict;
 use warnings;
-use Test::More tests => 4;
+use Test::More tests => 9;
 
 BEGIN {
     use_ok 'MusicBrainz::Server::Data::Edit';
@@ -10,6 +10,7 @@ BEGIN {
 
 use MusicBrainz::Server::Data::ReleaseGroup;
 use MusicBrainz::Server::Context;
+use MusicBrainz::Server::Constants qw( $EDIT_RELEASEGROUP_DELETE );
 use MusicBrainz::Server::Test;
 use Sql;
 
@@ -24,18 +25,21 @@ my $sql = Sql->new($c->dbh);
 $sql->Begin;
 $sql_raw->Begin;
 
-my $edit = MusicBrainz::Server::Edit::ReleaseGroup::Delete->create(
-    3,
-    c => $c,
+my $edit = $edit_data->create(
+    edit_type => $EDIT_RELEASEGROUP_DELETE,
+    release_group_id => 3,
     editor_id => 1
 );
-
-$edit_data->insert($edit);
+isa_ok($edit, 'MusicBrainz::Server::Edit::ReleaseGroup::Delete');
+is($edit->entity_model, 'ReleaseGroup');
+is($edit->entity_id, 3);
+is_deeply($edit->entities, { release_group => [ 3 ] });
 
 my $rg = $rg_data->get_by_id(3);
 ok(defined $rg);
+is($rg->edits_pending, 1);
 
-$edit->accept;
+$edit_data->accept($edit);
 $rg = $rg_data->get_by_id(3);
 ok(!defined $rg);
 

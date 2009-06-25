@@ -11,6 +11,16 @@ extends 'MusicBrainz::Server::Edit';
 
 sub edit_type { $EDIT_RELEASEGROUP_DELETE }
 sub edit_name { "Delete Release Group" }
+sub entity_model { 'ReleaseGroup' }
+sub entity_id { shift->release_group_id }
+
+sub entities
+{
+    my $self = shift;
+    return {
+        release_group => [ $self->release_group_id ]
+    }
+}
 
 has '+data' => (
     isa => Dict[
@@ -28,10 +38,10 @@ sub release_group_id
     return shift->data->{release_group};
 }
 
-sub create
+sub initialize
 {
-    my ($class, $release_group_id, @args) = @_;
-    return $class->new(data => { release_group => $release_group_id }, @args);
+    my ($self, %args) = @_;
+    $self->data({ release_group => $args{release_group_id} });
 }
 
 override 'accept' => sub
