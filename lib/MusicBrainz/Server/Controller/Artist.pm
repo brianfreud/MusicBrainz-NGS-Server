@@ -22,6 +22,7 @@ use UserSubscription;
 use MusicBrainz::Server::Constants qw( $EDIT_ARTIST_CREATE );
 use MusicBrainz::Server::Edit::Artist::Create;
 use MusicBrainz::Server::Form::Artist;
+use Sql;
 
 =head1 NAME
 
@@ -370,9 +371,12 @@ sub create : Local RequireAuth
             %edit
         );
 
+        $sql->Commit;
+        $sql_raw->Commit;
+
         if ($edit->artist)
         {
-            $c->redirect($c->uri_for_action('/artist/show', [ $edit->artist->gid ]));
+            $c->response->redirect($c->uri_for_action('/artist/show', [ $edit->artist->gid ]));
             $c->detach;
         }
     }
