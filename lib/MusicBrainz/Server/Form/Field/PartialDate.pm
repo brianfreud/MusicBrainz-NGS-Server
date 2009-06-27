@@ -1,8 +1,6 @@
 package MusicBrainz::Server::Form::Field::PartialDate;
 use HTML::FormHandler::Moose;
 
-use MusicBrainz::Server::Entity::PartialDate;
-
 extends 'HTML::FormHandler::Field::Compound';
 with 'MusicBrainz::Server::Form::FieldRenderer';
 
@@ -22,21 +20,6 @@ has_field 'day' => (
     range_start => 1,
     range_end => 31,
 );
-
-sub validate
-{
-    my $self = shift;
-
-    my $date = MusicBrainz::Server::Entity::PartialDate->new;
-    for my $field ($self->fields)
-    {
-        next unless $field->value;
-        my $accessor = $field->accessor;
-        $date->$accessor($field->value);
-    }
-
-    $self->value($date);
-}
 
 sub render
 {
