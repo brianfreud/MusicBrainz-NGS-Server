@@ -1,25 +1,48 @@
-package MusicBrainz::Server::Form::Renderer;
-use Moose;
+package MusicBrainz::Server::Plugin::FormRenderer;
 
+use strict;
+use warnings;
+
+use base 'Template::Plugin';
+
+use Carp;
 use HTML::Tiny;
-use Switch;
 
-has 'h' => (
-    is => 'ro',
-    default => sub { HTML::Tiny->new }
-);
+sub new
+{
+    my ($class, $context, $form) = @_;
+    warn "Created";
+    return bless {
+        form => $form,
+        h => HTML::Tiny->new
+    }, $class;
+}
+
+sub form
+{
+    my $self = shift;
+    return $self->{form};
+}
+
+sub h
+{
+    my $self = shift;
+    return $self->{h};
+}
+
+sub _lookup_field
+{
+    my ($self, $field_name) = @_;
+    return $self->form->field($field_name);
+}
 
 sub render_field
 {
-    my ($self, $field, %attrs) = @_;
+    my ($self, $field_name, %attrs) = @_;
+    my $field = $self->_lookup_field($field_name) or return;
     if ($field->does('MusicBrainz::Server::Form::FieldRenderer'))
     {
         $field->render($self);
-    }
-    else
-    {
-        my $render = 'render_' . $field->widget;
-        $self->can($render) ? $self->$render($field, %attrs) : warn "Cannot find $render";
     }
 }
 
@@ -37,19 +60,22 @@ sub _render_input
 
 sub render_text
 {
-    my ($self, $field, %attrs) = @_;
+    my ($self, $field_name, %attrs) = @_;
+    my $field = $self->_lookup_field($field_name) or return;
     return $self->_render_input($field, 'text', %attrs);
 }
 
 sub render_password
 {
-    my ($self, $field, %attrs) = @_;
+    my ($self, $field_name, %attrs) = @_;
+    my $field = $self->_lookup_field($field_name) or return;
     return $self->_render_input($field, 'password', %attrs);
 }
 
 sub render_textarea
 {
-    my ($self, $field, %attrs) = @_;
+    my ($self, $field_name, %attrs) = @_;
+    my $field = $self->_lookup_field($field_name) or return;
     return $self->h->textarea({
             name => $field->full_name,
             id => $field->id,
@@ -59,7 +85,8 @@ sub render_textarea
 
 sub render_label
 {
-    my ($self, $field, %attr) = @_;
+    my ($self, $field_name, %attr) = @_;
+    my $field = $self->_lookup_field($field_name) or return;
     return $self->h->label({
             id => 'label-' . $field->id,
             for => $field->id,
@@ -69,7 +96,8 @@ sub render_label
 
 sub render_select
 {
-    my ($self, $field, %attr) = @_;
+    my ($self, $field_name, %attr) = @_;
+    my $field = $self->_lookup_field($field_name) or return;
 
     my @options = map {
         $self->h->option({
@@ -93,11 +121,14 @@ sub render_select
 
 sub render_row
 {
-    my ($self, $field, %attrs) = @_;
+    my ($self, $field_name, $type, %attrs) = @_;
+    my $field = $self->_lookup_field($field_name) or return;
+    my $renderer = "render_$type";
+    $self->can($renderer) or croak "No renderer $renderer";
     return $self->h->p([
-            $self->render_label($field),
-            $self->h->div({ class => 'row' }, [$self->render_field($field, %attrs)])
-        ]);
+        $self->render_label($field_name),
+        $self->$renderer($field_name, %attrs),
+    ]);
 }
 
 sub render_submit
