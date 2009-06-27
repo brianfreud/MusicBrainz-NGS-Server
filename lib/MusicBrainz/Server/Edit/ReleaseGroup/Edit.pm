@@ -71,15 +71,9 @@ sub initialize
         $ac_data->load($release_group);
     }
 
-    my %mapping = $self->_mapping;
-    my %old = map {
-        my $mapped = exists $mapping{$_} ? $mapping{$_} : $_;
-        $_ => ref $mapped eq 'CODE' ? $mapped->($release_group) : $release_group->$mapped;
-    } keys %args;
-
     $self->release_group($release_group);
     $self->data({
-        old => \%old,
+        old => $self->_change_hash($release_group, keys %args),
         new => \%args,
         release_group => $release_group->id
     });
