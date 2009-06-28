@@ -380,30 +380,16 @@ into the MusicBrainz database.
 
 =cut
 
-sub edit : Chained('load') Form
+sub edit : Chained('load') RequireAuth
 {
     my ($self, $c, $mbid) = @_;
 
-    $c->forward('/user/login');
+    my $form = MusicBrainz::Server::Form::Artist->new(ctx => $c, item => $c->stash->{artist});
+    $c->stash( form => $form );
 
-    my $form = $self->form;
-    $form->init($self->entity);
-
-    if ($c->form_posted) {
-        $form->validate($c->req->params);
-        
-        my $dupes = $c->model('Artist')->search_by_name($form->value('name'));
-        $c->stash->{dupes} = [ grep { $_->id != $self->entity->id } @$dupes ];
+    if ($c->form_posted && $form->process(params => $c->req->params))
+    {
     }
-
-    return unless $self->submit_and_validate($c);
-
-    $form->apply_edit;
-
-    $c->flash->{ok} = "Thanks, your artist edit has been entered " .
-                      "into the moderation queue";
-
-    $c->response->redirect($c->entity_url($self->entity, 'show'));
 }
 
 =head2 add_release
