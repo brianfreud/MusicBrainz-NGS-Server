@@ -8,9 +8,15 @@
             [% IF login_form.has_errors -%]
                 <p><strong>[% l('Incorrect log in or password') %]</strong></p>
             [%- END %]
-            [% r.render_row('username', 'text') %]
-            [% r.render_row('password', 'password') %]
-            [% r.render_submit(l('Log in')) %]
+            <p>
+                [% r.label('username', l('Username:')) %]
+                [% r.text('username') %]
+            </p>
+            <p>
+                [% r.label('password', l('Password:')) %]
+                [% r.password('password') %]
+            </p>
+            [% form_submit(l('Log in')) %]
         </form>
         <ul>
             <li>

@@ -32,8 +32,8 @@ sub h
 
 sub _lookup_field
 {
-    my ($self, $field_name) = @_;
-    return $self->form->field($field_name);
+    my ($self, $field) = @_;
+    return ref $field ? $field : $self->form->field($field);
 }
 
 sub _render_input
@@ -144,9 +144,9 @@ sub date
     my ($self, $field_name) = @_;
     my $field = $self->_lookup_field($field_name) or return;
     return $self->h->span({ class => 'partial-date' }, [
-        $self->render_text($field->field('year'), size => 4), ' - ',
-        $self->render_text($field->field('month'), size => 2), ' - ',
-        $self->render_text($field->field('day'), size => 2),
+        $self->text($field->field('year'), { size => 4 }), ' - ',
+        $self->text($field->field('month'), { size => 2 }), ' - ',
+        $self->text($field->field('day'), { size => 2 }),
     ]);
 }
 
