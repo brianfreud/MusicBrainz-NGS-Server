@@ -29,7 +29,7 @@ is ( $genders->{2}->id, 2 );
 is ( $genders->{2}->name, "Female" );
 
 does_ok($gender_data, 'MusicBrainz::Server::Data::SelectAll');
-my @gs = $gender_data->all;
+my @gs = $gender_data->get_all;
 is(@gs, 2);
 is($gs[0]->id, 1);
 is($gs[1]->id, 2);
