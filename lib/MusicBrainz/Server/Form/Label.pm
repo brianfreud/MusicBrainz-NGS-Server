@@ -14,9 +14,8 @@ has_field 'sort_name' => (
     required => 1,
 );
 
-has_field 'type' => (
+has_field 'type_id' => (
     type => 'Select',
-    accessor => 'type_id',
 );
 
 has_field 'label_code' => (
@@ -32,9 +31,8 @@ has_field 'end_date' => (
     type => '+MusicBrainz::Server::Form::Field::PartialDate',
 );
 
-has_field 'country' => (
+has_field 'country_id' => (
     type => 'Select',
-    accessor => 'country_id',
 );
 
 has_field 'comment' => (

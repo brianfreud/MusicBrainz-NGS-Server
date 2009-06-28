@@ -7,10 +7,12 @@ with 'MusicBrainz::Server::Controller::Annotation';
 with 'MusicBrainz::Server::Controller::Alias';
 with 'MusicBrainz::Server::Controller::RelationshipRole';
 
-use MusicBrainz::Server::Constants qw( $DLABEL_ID );
+use MusicBrainz::Server::Constants qw( $DLABEL_ID $EDIT_LABEL_CREATE );
 use Data::Page;
 
+use MusicBrainz::Server::Edit::Label::Create;
 use MusicBrainz::Server::Form::Label;
+use Sql;
 
 __PACKAGE__->config(
     model       => 'Label',
@@ -202,6 +204,24 @@ sub create : Local RequireAuth
 
     my $form = MusicBrainz::Server::Form::Label->new(ctx => $c);
     $c->stash( form => $form );
+
+    if ($c->form_posted && $form->process( params => $c->req->params ))
+    {
+        my %edit = map { $_ => $form->field($_)->value }
+            qw( name sort_name type_id label_code country_id begin_date end_date comment );
+
+        my $edit = $c->model('Edit')->create(
+            edit_type => $EDIT_LABEL_CREATE,
+            editor_id => $c->user->id,
+            %edit
+        );
+
+        if ($edit->label)
+        {
+            $c->response->redirect($c->uri_for_action('/label/show', [ $edit->label->gid ]));
+            $c->detach;
+        }
+    }
 }
 
 =head2 subscribe
