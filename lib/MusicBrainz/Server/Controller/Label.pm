@@ -7,11 +7,12 @@ with 'MusicBrainz::Server::Controller::Annotation';
 with 'MusicBrainz::Server::Controller::Alias';
 with 'MusicBrainz::Server::Controller::RelationshipRole';
 
-use MusicBrainz::Server::Constants qw( $DLABEL_ID $EDIT_LABEL_CREATE $EDIT_LABEL_DELETE );
+use MusicBrainz::Server::Constants qw( $DLABEL_ID $EDIT_LABEL_CREATE $EDIT_LABEL_DELETE $EDIT_LABEL_EDIT );
 use Data::Page;
 
 use MusicBrainz::Server::Edit::Label::Create;
 use MusicBrainz::Server::Edit::Label::Delete;
+use MusicBrainz::Server::Edit::Label::Edit;
 use MusicBrainz::Server::Form::Confirm;
 use MusicBrainz::Server::Form::Label;
 use Sql;
@@ -179,25 +180,32 @@ sub merge_into : Chained('load') PathPart('into') Args(1) Form('Label::Merge')
     $c->response->redirect($c->entity_url($new_label, 'show'));
 }
 
-sub edit : Chained('load') Form
+sub edit : Chained('load') RequireAuth
 {
     my ($self, $c) = @_;
 
-    $c->forward('/user/login');
+    my $label = $c->stash->{label};
+    my $form = MusicBrainz::Server::Form::Label->new(ctx => $c, item => $label);
+    $c->stash( form => $form );
 
-    my $label = $self->entity;
+    if ($c->form_posted && $form->process( params => $c->req->params ))
+    {
+        my %edit = map { $_ => $form->field($_)->value }
+            qw( name sort_name type_id label_code country_id begin_date end_date comment );
 
-    my $form = $self->form;
-    $form->init($label);
+        my $edit = $c->model('Edit')->create(
+            edit_type => $EDIT_LABEL_EDIT,
+            editor_id => $c->user->id,
+            label => $label,
+            %edit
+        );
 
-    return unless $self->submit_and_validate($c);
-
-    $form->edit;
-
-    $c->flash->{ok} = "Thanks, your label edit has been entered " .
-                      "into the moderation queue";
-
-    $c->response->redirect($c->entity_url($label, 'show'));
+        if ($edit->label)
+        {
+            $c->response->redirect($c->uri_for_action('/label/show', [ $edit->label->gid ]));
+            $c->detach;
+        }
+    }
 }
 
 sub create : Local RequireAuth
