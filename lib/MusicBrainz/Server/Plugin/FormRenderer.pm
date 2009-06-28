@@ -141,4 +141,15 @@ sub render_submit
         }) ]);
 }
 
+sub render_date
+{
+    my ($self, $field_name) = @_;
+    my $field = $self->_lookup_field($field_name) or return;
+    return $self->h->span({ class => 'partial-date' }, [
+        $renderer->render_text($self->field('year'), size => 4), ' - ',
+        $renderer->render_text($self->field('month'), size => 2), ' - ',
+        $renderer->render_text($self->field('day'), size => 2),
+    ]);
+}
+
 1;
