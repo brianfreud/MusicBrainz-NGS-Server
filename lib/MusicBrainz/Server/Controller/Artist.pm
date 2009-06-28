@@ -20,8 +20,9 @@ use MusicBrainz::Server::Rating;
 use ModDefs;
 use UserSubscription;
 
-use MusicBrainz::Server::Constants qw( $EDIT_ARTIST_CREATE );
+use MusicBrainz::Server::Constants qw( $EDIT_ARTIST_CREATE $EDIT_ARTIST_EDIT );
 use MusicBrainz::Server::Edit::Artist::Create;
+use MusicBrainz::Server::Edit::Artist::Edit;
 use MusicBrainz::Server::Form::Artist;
 use Sql;
 
@@ -389,6 +390,26 @@ sub edit : Chained('load') RequireAuth
 
     if ($c->form_posted && $form->process(params => $c->req->params))
     {
+        my %edit = map { $_ => $form->field($_)->value }
+            qw( name sort_name gender_id type_id country_id begin_date end_date comment);
+
+        my $edit = $c->model('Edit')->create(
+            edit_type => $EDIT_ARTIST_CREATE,
+            editor_id => $c->user->id,
+        );
+
+        my $edit = $c->model('Edit')->create(
+            edit_type => $EDIT_ARTIST_EDIT,
+            editor_id => $c->user->id,
+            artist => $c->stash->{artist},
+            %edit
+        );
+
+        if ($edit->artist)
+        {
+            $c->response->redirect($c->uri_for_action('/artist/show', [ $edit->artist->gid ]));
+            $c->detach;
+        }
     }
 }
 
