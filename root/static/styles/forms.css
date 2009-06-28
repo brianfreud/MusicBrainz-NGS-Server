@@ -35,3 +35,8 @@ textarea.edit-note {
     width: 45em;
     height: 6em;
 }
+
+label.inline {
+    float: none;
+    width: auto;
+}

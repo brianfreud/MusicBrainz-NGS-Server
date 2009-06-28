@@ -36,16 +36,6 @@ sub _lookup_field
     return $self->form->field($field_name);
 }
 
-sub render_field
-{
-    my ($self, $field_name, %attrs) = @_;
-    my $field = $self->_lookup_field($field_name) or return;
-    if ($field->does('MusicBrainz::Server::Form::FieldRenderer'))
-    {
-        $field->render($self);
-    }
-}
-
 sub _render_input
 {
     my ($self, $field, $type, %attrs) = @_;
@@ -58,45 +48,64 @@ sub _render_input
         });
 }
 
-sub render_text
+sub text
 {
-    my ($self, $field_name, %attrs) = @_;
+    my ($self, $field_name, $attrs) = @_;
     my $field = $self->_lookup_field($field_name) or return;
-    return $self->_render_input($field, 'text', %attrs);
+    return $self->_render_input($field, 'text', %$attrs);
 }
 
-sub render_password
+sub password
 {
-    my ($self, $field_name, %attrs) = @_;
+    my ($self, $field_name, $attrs) = @_;
     my $field = $self->_lookup_field($field_name) or return;
-    return $self->_render_input($field, 'password', %attrs);
+    return $self->_render_input($field, 'password', %$attrs);
 }
 
-sub render_textarea
+sub textarea
 {
-    my ($self, $field_name, %attrs) = @_;
+    my ($self, $field_name, $attrs) = @_;
     my $field = $self->_lookup_field($field_name) or return;
     return $self->h->textarea({
             name => $field->full_name,
             id => $field->id,
-            %attrs
+            %$attrs
         });
 }
 
-sub render_label
+sub label
 {
-    my ($self, $field_name, %attr) = @_;
-    my $field = $self->_lookup_field($field_name) or return;
-    return $self->h->label({
+    my ($self, $field_name, $label, $attrs) = @_;
+    my $fake_label = delete $attrs->{fake};
+    if ($fake_label)
+    {
+        return $self->h->div({
+            class => 'label',
+            %$attrs
+        }, $label);
+    }
+    else
+    {
+        my $field = $self->_lookup_field($field_name);
+        return $self->h->label({
             id => 'label-' . $field->id,
             for => $field->id,
-            class => $field->required ? "required" : undef
-        }, $field->label);
+            class => $field->required ? "required" : undef,
+            %$attrs
+        }, $label);
+    }
 }
 
-sub render_select
+sub inline_label
 {
-    my ($self, $field_name, %attr) = @_;
+    my ($self, $field_name, $label, $attrs) = @_;
+    my $class = delete $attrs->{class} || '';
+    return $self->label($field_name, $label, { class => "inline $class", %$attrs });
+}
+
+sub select
+{
+    my ($self, $field_name, $attrs) = @_;
     my $field = $self->_lookup_field($field_name) or return;
 
     my @options = map {
@@ -115,40 +124,29 @@ sub render_select
 
     return $self->h->select({
         id => $field->id,
-        name => $field->name
+        name => $field->name,
+        %{ $attrs || {} }
     }, \@options);
 }
 
-sub render_row
+sub checkbox
 {
-    my ($self, $field_name, $type, %attrs) = @_;
+    my ($self, $field_name, $attrs) = @_;
     my $field = $self->_lookup_field($field_name) or return;
-    my $renderer = "render_$type";
-    $self->can($renderer) or croak "No renderer $renderer";
-    return $self->h->p([
-        $self->render_label($field_name),
-        $self->$renderer($field_name, %attrs),
-    ]);
+    return $self->_render_input($field, 'checkbox',
+        checked => $field->value ? "checked" : undef,
+        %$attrs
+    );
 }
 
-sub render_submit
-{
-    my ($self, $label) = @_;
-    return $self->h->p({ class => 'no-label' }, [
-        $self->h->input({
-            type => 'submit',
-            value => $label
-        }) ]);
-}
-
-sub render_date
+sub date
 {
     my ($self, $field_name) = @_;
     my $field = $self->_lookup_field($field_name) or return;
     return $self->h->span({ class => 'partial-date' }, [
-        $renderer->render_text($self->field('year'), size => 4), ' - ',
-        $renderer->render_text($self->field('month'), size => 2), ' - ',
-        $renderer->render_text($self->field('day'), size => 2),
+        $self->render_text($field->field('year'), size => 4), ' - ',
+        $self->render_text($field->field('month'), size => 2), ' - ',
+        $self->render_text($field->field('day'), size => 2),
     ]);
 }
 
