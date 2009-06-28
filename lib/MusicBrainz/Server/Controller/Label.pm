@@ -10,6 +10,8 @@ with 'MusicBrainz::Server::Controller::RelationshipRole';
 use MusicBrainz::Server::Constants qw( $DLABEL_ID );
 use Data::Page;
 
+use MusicBrainz::Server::Form::Label;
+
 __PACKAGE__->config(
     model       => 'Label',
     entity_name => 'label',
@@ -194,29 +196,12 @@ sub edit : Chained('load') Form
     $c->response->redirect($c->entity_url($label, 'show'));
 }
 
-sub create : Local Form
+sub create : Local RequireAuth
 {
     my ($self, $c) = @_;
 
-    $c->forward('/user/login');
-
-    my $form = $self->form;
-
-    if ($c->form_posted) {
-        $form->validate($c->req->params);
-
-        my $dupes = $c->model('Label')->search_by_name($form->value('name'));
-        $c->stash->{dupes} = $dupes;
-    }
-
-    return unless $self->submit_and_validate($c);
-
-    my $created_label = $form->create;
-
-    if (defined $created_label)
-    {
-        $c->response->redirect($c->entity_url($created_label, 'show'));
-    }
+    my $form = MusicBrainz::Server::Form::Label->new(ctx => $c);
+    $c->stash( form => $form );
 }
 
 =head2 subscribe
