@@ -51,6 +51,14 @@ sub _new_from_row
     return $edit;
 }
 
+sub merge_entities
+{
+    my ($self, $type, $old_id, $new_id) = @_;
+    my $sql = Sql->new($self->c->raw_dbh);
+    my $query = "UPDATE edit_$type SET $type = ? WHERE $type = ?";
+    $sql->Do($query, $new_id, $old_id);
+}
+
 sub create
 {
     my ($self, %opts) = @_;
