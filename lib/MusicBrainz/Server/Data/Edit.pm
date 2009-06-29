@@ -43,9 +43,9 @@ sub _new_from_row
         editor_id => $row->{editor},
         created_time => $row->{opentime},
         expires_time => $row->{expiretime},
-        language_id => $row->{language},
         auto_edit => $row->{autoedit}
     );
+    $edit->language_id($row->{language}) if $row->{language};
     $edit->restore($data);
     $edit->close_time($row->{closetime}) if defined $row->{closetime};
     return $edit;
