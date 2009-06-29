@@ -394,11 +394,6 @@ sub edit : Chained('load') RequireAuth
             qw( name sort_name gender_id type_id country_id begin_date end_date comment);
 
         my $edit = $c->model('Edit')->create(
-            edit_type => $EDIT_ARTIST_CREATE,
-            editor_id => $c->user->id,
-        );
-
-        my $edit = $c->model('Edit')->create(
             edit_type => $EDIT_ARTIST_EDIT,
             editor_id => $c->user->id,
             artist => $c->stash->{artist},
