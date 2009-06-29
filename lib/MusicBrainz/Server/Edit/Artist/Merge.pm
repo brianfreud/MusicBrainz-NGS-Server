@@ -10,6 +10,18 @@ extends 'MusicBrainz::Server::Edit';
 
 sub edit_type { $EDIT_ARTIST_MERGE }
 sub edit_name { "Merge Artists" }
+sub entity_model { 'Artist' }
+sub entity_id {
+    my $self = shift;
+    return [ $self->old_artist_id, $self->new_artist_id ]
+}
+
+sub entities
+{
+    return {
+        artist => shift->entity_id
+    }
+}
 
 sub old_artist_id
 {
@@ -33,10 +45,13 @@ has '+data' => (
     ]
 );
 
-sub create
+sub initialize
 {
-    my ($class, $old_artist, $new_artist, @args) = @_;
-    return $class->new(data => { old_artist => $old_artist, new_artist => $new_artist }, @args);
+    my ($self, %args) = @_;
+    $self->data({
+        old_artist => $args{old_artist_id},
+        new_artist => $args{new_artist_id}
+    });
 }
 
 override 'accept' => sub
