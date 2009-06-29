@@ -1,6 +1,6 @@
 use strict;
 use warnings;
-use Test::More tests => 60;
+use Test::More tests => 62;
 use Test::Moose;
 use_ok 'MusicBrainz::Server::Data::Artist';
 use MusicBrainz::Server::Data::Search;
@@ -55,6 +55,12 @@ ok(!defined $annotation);
 
 $annotation = $artist_data->annotation->get_latest(4);
 like ( $annotation->text, qr/Test annotation 1/ );
+
+TODO: {
+    local $TODO = 'Merging annotations should concatenate or combine them';
+    like($annotation->text, qr/Test annotation 1/);
+    like($annotation->text, qr/Test annotation 7/);
+}
 
 $artist_data->annotation->delete(4);
 $annotation = $artist_data->annotation->get_latest(4);
