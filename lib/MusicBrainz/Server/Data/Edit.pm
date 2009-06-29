@@ -55,8 +55,8 @@ sub merge_entities
 {
     my ($self, $type, $old_id, $new_id) = @_;
     my $sql = Sql->new($self->c->raw_dbh);
-    my $query = "UPDATE edit_$type SET $type = ? WHERE $type = ?";
-    $sql->Do($query, $new_id, $old_id);
+    $sql->Do("DELETE FROM edit_$type WHERE edit IN (SELECT edit FROM edit_$type WHERE $type = ?) AND $type = ?", $new_id, $old_id);
+    $sql->Do("UPDATE edit_$type SET $type = ? WHERE $type = ?", $new_id, $old_id);
 }
 
 sub create
