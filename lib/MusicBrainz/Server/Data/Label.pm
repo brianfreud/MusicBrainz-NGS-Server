@@ -127,8 +127,8 @@ sub merge
     $rl_data->merge_labels($old_id => $new_id);
 
     $sql->Do('DELETE FROM label_meta WHERE id = ?', $old_id);
-    my $old_gid = $sql->Do('DELETE FROM label WHERE id = ? RETURNING gid', $old_id);
-    $self->add_gid_redirects($old_gid => $new_label->gid);
+    my $old_gid = $sql->SelectSingleValue('DELETE FROM label WHERE id = ? RETURNING gid', $old_id);
+    $self->add_gid_redirects($old_gid => $new_id);
 
     return 1;
 }
