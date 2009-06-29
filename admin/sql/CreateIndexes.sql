@@ -7,6 +7,7 @@ CREATE INDEX artist_idx_sortname ON artist (sortname);
 
 CREATE INDEX artist_alias_idx_name ON artist_alias (name);
 CREATE INDEX artist_alias_idx_artist ON artist_alias (artist);
+CREATE UNIQUE INDEX artist_alias_idx_name_artist ON artist_alias (name, artist);
 
 CREATE UNIQUE INDEX artist_name_idx_name ON artist_name (name);
 CREATE INDEX artist_name_idx_page ON artist_name (page_index(name));
@@ -23,6 +24,7 @@ CREATE INDEX label_idx_sortname ON label (sortname);
 
 CREATE INDEX label_alias_idx_name ON label_alias (name);
 CREATE INDEX label_alias_idx_label ON label_alias (label);
+CREATE UNIQUE INDEX label_alias_idx_name_label ON label_alias (name, label);
 
 CREATE UNIQUE INDEX label_name_idx_name ON label_name (name);
 CREATE INDEX label_name_idx_page ON label_name (page_index(name));

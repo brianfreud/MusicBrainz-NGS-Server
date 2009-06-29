@@ -214,6 +214,9 @@ INSERT INTO artist_name (id, name) VALUES (8, 'Test Alias');
 INSERT INTO artist_alias (id, name, artist, editpending)
     VALUES (1, 8, 4, 2);
 
+INSERT INTO artist_alias (id, name, artist)
+    VALUES (2, 8, 5);
+
 TRUNCATE label_alias CASCADE;
 
 INSERT INTO label_name (id, name) VALUES (3, 'Test Label Alias');
