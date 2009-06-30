@@ -59,7 +59,7 @@ $mech->submit_form( with_fields => { username => 'new_editor', password => 'pass
 $mech->get_ok('/release-group/234c079d-374e-4436-9448-da92dedef3ce/delete');
 my $response = $mech->submit_form(
     with_fields => {
-        edit_note => ' ',    
+        'confirm.edit_note' => ' ',    
     }
 );
 ok($mech->success);
