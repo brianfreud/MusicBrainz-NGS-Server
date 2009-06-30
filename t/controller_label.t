@@ -89,7 +89,7 @@ is_deeply($edit->data, {
 $mech->get_ok('/label/46f0f4cd-8aab-4b33-b698-f459faf64190/delete');
 my $response = $mech->submit_form(
     with_fields => {
-        edit_note => ' ',    
+        'confirm.edit_note' => ' ',    
     }
 );
 ok($mech->success);
