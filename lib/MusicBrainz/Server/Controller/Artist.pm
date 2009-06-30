@@ -377,11 +377,13 @@ sub delete : Chained('load') RequireAuth
     my ($self, $c) = @_;
 
     my $artist = $c->stash->{artist};
-    my $can_delete = 1 or return;
-    my $form = MusicBrainz::Server::Form::Confirm->new(ctx => $c);
-    $c->stash( form => $form, can_delete => $can_delete );
+    my $can_delete = 1;
+    return unless $can_delete;
 
-    if ($c->form_posted && $form->process(params => $c->req->params))
+    my $form = $c->form( form => 'Confirm' );
+    $c->stash( can_delete => 1 );
+
+    if ($c->form_posted && $form->submitted_and_valid($c->req->params))
     {
         my $edit = $c->model('Edit')->create(
             editor_id => $c->user->id,
