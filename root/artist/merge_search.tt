@@ -6,7 +6,5 @@
         [%- create_guideline(l('When you have found the artist that you would like to merge {artist} into, please select that entity and click <em>merge</em>.', {artist => artist_link(artist)})) -%]
     [%- END -%]
 
-    <form action="[% c.req.uri %]" method="post">
-        [%- INCLUDE "components/search.tt" confirm_label=l('Merge') -%]
-    </form>
+    [%- INCLUDE "components/search.tt" confirm_label=l('Merge') -%]
 [% END %]

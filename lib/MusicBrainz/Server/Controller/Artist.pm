@@ -15,7 +15,7 @@ __PACKAGE__->config(
 );
 
 use Data::Page;
-use MusicBrainz::Server::Constants qw( $DARTIST_ID $VARTIST_ID );
+use MusicBrainz::Server::Constants qw( $DARTIST_ID $VARTIST_ID $EDIT_ARTIST_MERGE );
 use MusicBrainz::Server::Adapter qw(Google);
 use MusicBrainz::Server::Rating;
 use ModDefs;
@@ -25,6 +25,7 @@ use MusicBrainz::Server::Constants qw( $EDIT_ARTIST_CREATE $EDIT_ARTIST_EDIT $ED
 use MusicBrainz::Server::Edit::Artist::Create;
 use MusicBrainz::Server::Edit::Artist::Edit;
 use MusicBrainz::Server::Edit::Artist::Delete;
+use MusicBrainz::Server::Edit::Artist::Merge;
 use MusicBrainz::Server::Form::Artist;
 use MusicBrainz::Server::Form::Confirm;
 use Sql;
@@ -465,7 +466,14 @@ sub merge : Chained('load') RequireAuth
 
     if ($c->form_posted && $form->submitted_and_valid($c->req->params))
     {
-        die "Enter edit";
+        my $edit = $c->model('Edit')->create(
+            editor_id => $c->user->id,
+            edit_type => $EDIT_ARTIST_MERGE,
+            old_artist_id => $old_artist->id,
+            new_artist_id => $new_artist->id
+        );
+
+        $c->response->redirect($c->uri_for_action('/artist/show', [ $new_artist->gid ]));
     }
 }
 

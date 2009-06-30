@@ -198,21 +198,23 @@ sub filter : Private
 {
     my ($self, $c, $type, $model, $default) = @_;
 
-    my $form = $c->form( filter_form => 'Search::Query' );
+    my $query = $c->form( query_form => 'Search::Query', name => 'filter' );
+    my $results = $c->form( results_form => 'Search::Results' );
 
-    if ($c->form_posted && $form->submitted_and_valid($c->req->params))
+    if ($c->form_posted)
     {
-        if (my $id = $form->field('selected_id')->value)
+        if ($results->submitted_and_valid($c->req->params))
         {
-            return $c->model($model)->get_by_id($id);
+            return $c->model($model)->get_by_id($results->field('selected_id')->value);
         }
-        else
+        elsif ($query->submitted_and_valid($c->req->params))
         {
-           $c->stash(
-               search_results => $self->_load_paged($c, sub {
-                       $c->model('DirectSearch')->search($type, $form->field('query')->value, shift, shift)
-                   })
-           );
+            my $q = $query->field('query')->value;
+            $c->stash(
+                search_results => $self->_load_paged($c, sub {
+                        $c->model('DirectSearch')->search($type, $q, shift, shift)
+                    })
+            );
         }
     }
 
