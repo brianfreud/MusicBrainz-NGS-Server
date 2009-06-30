@@ -1,19 +1,16 @@
 package MusicBrainz::Server::Form::Search::Query;
-
-use base 'MusicBrainz::Server::Form';
-
-use strict;
-use warnings;
+use HTML::FormHandler::Moose;
+extends 'MusicBrainz::Server::Form';
 
 sub name { 'search-query' }
 
-sub profile
-{
-    return {
-        required => {
-            query => 'Text',
-        },
-    };
-}
+has_field 'query' => (
+    type => 'Text',
+    required => 1
+);
+
+has_field 'selected_id' => (
+    type => 'Integer',
+);
 
 1;

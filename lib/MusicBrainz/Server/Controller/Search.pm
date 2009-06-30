@@ -6,6 +6,7 @@ use warnings;
 use base 'MusicBrainz::Server::Controller';
 
 use LWP::UserAgent;
+use MusicBrainz::Server::Form::Search::Query;
 use MusicBrainz::Server::Form::Search::Search;
 use URI::Escape qw( uri_escape );
 
@@ -193,51 +194,29 @@ sub external : Private
     }
 }
 
-sub filter_artist : Form('Search::Query')
+sub filter : Private
 {
-    my ($self, $c) = @_;
-    my $form = $self->form;
+    my ($self, $c, $type, $model, $default) = @_;
 
-    if ($c->form_posted)
+    my $form = $c->form( filter_form => 'Search::Query' );
+
+    if ($c->form_posted && $form->submitted_and_valid($c->req->params))
     {
-        my $id = $c->req->params->{'search-id'};
-        if (defined $id)
+        if (my $id = $form->field('selected_id')->value)
         {
-            $c->stash->{search_result} = $c->model('Artist')->load($id);
+            return $c->model($model)->get_by_id($id);
         }
         else
         {
-           return unless $c->req->params->{do_search} && $form->validate($c->req->params);
-           my $artists = $c->model('Artist')->direct_search($form->value('query'));
-           $c->stash->{artists} = $artists;
-
-	   return;
+           $c->stash(
+               search_results => $self->_load_paged($c, sub {
+                       $c->model('DirectSearch')->search($type, $form->field('query')->value, shift, shift)
+                   })
+           );
         }
     }
-}
 
-sub filter_label : Form('Search::Query')
-{
-    my ($self, $c) = @_;
-
-    my $form = $self->form;
-
-    if ($c->form_posted)
-    {
-        my $id = $c->req->params->{'search-id'};
-        if (defined $id)
-        {
-            $c->stash->{search_result} = $c->model('Label')->load($id);
-        }
-        else
-        {
-           return unless $c->req->params->{do_search} && $form->validate($c->req->params);
-           my $labels = $c->model('Label')->direct_search($form->value('query'));
-           $c->stash->{labels} = $labels;
-
-	   return;
-        }
-    }
+    $c->detach;
 }
 
 sub plugins : Local { }
