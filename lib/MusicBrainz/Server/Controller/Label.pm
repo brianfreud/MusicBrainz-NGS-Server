@@ -185,9 +185,7 @@ sub edit : Chained('load') RequireAuth
     my ($self, $c) = @_;
 
     my $label = $c->stash->{label};
-    my $form = MusicBrainz::Server::Form::Label->new(ctx => $c, item => $label);
-    $c->stash( form => $form );
-
+    my $form = $c->form( form => 'Label', item => $label );
     if ($c->form_posted && $form->process( params => $c->req->params ))
     {
         my %edit = map { $_ => $form->field($_)->value }

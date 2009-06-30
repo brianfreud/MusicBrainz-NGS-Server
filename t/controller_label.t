@@ -103,18 +103,18 @@ is_deeply($edit->data, { label => 2 });
 $mech->get_ok('/label/46f0f4cd-8aab-4b33-b698-f459faf64190/edit');
 my $response = $mech->submit_form(
     with_fields => {
-        name => 'controller label',
-        sort_name => 'label, controller',
-        type_id => 2,
-        label_code => 12345,
-        country_id => 1,
-        'begin_date.year' => 1990,
-        'begin_date.month' => 01,
-        'begin_date.day' => 02,
-        'end_date.year' => 2003,
-        'end_date.month' => 4,
-        'end_date.day' => 15,
-        comment => 'label created in controller_label.t',
+        'edit-label.name' => 'controller label',
+        'edit-label.sort_name' => 'label, controller',
+        'edit-label.type_id' => 2,
+        'edit-label.label_code' => 12345,
+        'edit-label.country_id' => 1,
+        'edit-label.begin_date.year' => 1990,
+        'edit-label.begin_date.month' => 01,
+        'edit-label.begin_date.day' => 02,
+        'edit-label.end_date.year' => 2003,
+        'edit-label.end_date.month' => 4,
+        'edit-label.end_date.day' => 15,
+        'edit-label.comment' => 'label created in controller_label.t',
     }
 );
 
