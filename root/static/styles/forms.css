@@ -10,6 +10,7 @@ fieldset legend {
     padding: 0 0.5em;
 }
 
+form div.row,
 form p {
     clear: left;
 }
@@ -22,8 +23,15 @@ form p div.label {
     margin-right: 1em;
 }
 
+form div.no-label,
+ul.radio-list,
 form p.no-label {
     margin-left: 11em;
+}
+
+ul.radio-list {
+    list-style-type: none;
+    padding: 0;
 }
 
 textarea {
@@ -38,6 +46,8 @@ textarea.edit-note {
 }
 
 label.inline {
-    float: none;
-    width: auto;
+    float: none !important;
+    width: auto !important;
 }
+
+div.row

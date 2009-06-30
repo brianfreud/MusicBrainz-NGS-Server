@@ -43,7 +43,7 @@ sub _render_input
             type => $type,
             id => $field->id,
             value => $field->fif,
-            name => $field->full_name,
+            name => $field->html_name,
             %attrs
         });
 }
@@ -67,7 +67,7 @@ sub textarea
     my ($self, $field_name, $attrs) = @_;
     my $field = $self->_lookup_field($field_name) or return;
     return $self->h->textarea({
-            name => $field->full_name,
+            name => $field->html_name,
             id => $field->id,
             %$attrs
         });
@@ -124,7 +124,7 @@ sub select
 
     return $self->h->select({
         id => $field->id,
-        name => $field->name,
+        name => $field->html_name,
         %{ $attrs || {} }
     }, \@options);
 }
