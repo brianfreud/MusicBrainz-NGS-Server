@@ -347,10 +347,8 @@ sub create : Local RequireAuth
 {
     my ($self, $c) = @_;
 
-    my $form = MusicBrainz::Server::Form::Artist->new(ctx => $c);
-    $c->stash( form => $form );
-
-    if ($c->form_posted && $form->process(params => $c->req->params))
+    my $form = $c->form(form => 'Artist');
+    if ($c->form_posted && $form->submitted_and_valid($c->req->params))
     {
         if(!$form->field('not_dupe')->required)
         {

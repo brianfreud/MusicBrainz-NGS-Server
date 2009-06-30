@@ -80,18 +80,18 @@ $mech->submit_form( with_fields => { username => 'new_editor', password => 'pass
 $mech->get_ok('/artist/create');
 my $response = $mech->submit_form(
     with_fields => {
-        name => 'controller artist',
-        sort_name => 'artist, controller',
-        type_id => 1,
-        country_id => 2,
-        gender_id => 2,
-        'begin_date.year' => 1990,
-        'begin_date.month' => 01,
-        'begin_date.day' => 02,
-        'end_date.year' => 2003,
-        'end_date.month' => 4,
-        'end_date.day' => 15,
-        comment => 'artist created in controller_artist.t',
+        'edit-artist.name' => 'controller artist',
+        'edit-artist.sort_name' => 'artist, controller',
+        'edit-artist.type_id' => 1,
+        'edit-artist.country_id' => 2,
+        'edit-artist.gender_id' => 2,
+        'edit-artist.begin_date.year' => 1990,
+        'edit-artist.begin_date.month' => 01,
+        'edit-artist.begin_date.day' => 02,
+        'edit-artist.end_date.year' => 2003,
+        'edit-artist.end_date.month' => 4,
+        'edit-artist.end_date.day' => 15,
+        'edit-artist.comment' => 'artist created in controller_artist.t',
     }
 );
 ok($mech->success);

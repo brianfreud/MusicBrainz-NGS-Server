@@ -4,7 +4,7 @@ use HTML::FormHandler::Moose;
 extends 'MusicBrainz::Server::Form';
 with 'MusicBrainz::Server::Form::Edit';
 
-has '+name' => ( default => 'create-artist-' );
+has '+name' => ( default => 'edit-artist' );
 
 has_field 'name' => (
     type => 'Text',
