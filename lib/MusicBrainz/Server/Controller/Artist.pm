@@ -385,10 +385,8 @@ sub edit : Chained('load') RequireAuth
 {
     my ($self, $c, $mbid) = @_;
 
-    my $form = MusicBrainz::Server::Form::Artist->new(ctx => $c, item => $c->stash->{artist});
-    $c->stash( form => $form );
-
-    if ($c->form_posted && $form->process(params => $c->req->params))
+    my $form = $c->form( form => 'Artist', item => $c->stash->{artist});
+    if ($c->form_posted && $form->submitted_and_valid($c->req->params))
     {
         my %edit = map { $_ => $form->field($_)->value }
             qw( name sort_name gender_id type_id country_id begin_date end_date comment);
