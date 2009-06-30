@@ -4,6 +4,8 @@ extends 'MusicBrainz::Server::Form';
 
 with 'MusicBrainz::Server::Form::Edit';
 
+has '+name' => ( default => 'edit-label' );
+
 has_field 'name' => (
     type => 'Text',
     required => 1,

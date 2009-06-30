@@ -202,10 +202,8 @@ sub create : Local RequireAuth
 {
     my ($self, $c) = @_;
 
-    my $form = MusicBrainz::Server::Form::Label->new(ctx => $c);
-    $c->stash( form => $form );
-
-    if ($c->form_posted && $form->process( params => $c->req->params ))
+    my $form = $c->form( form => 'Label' );
+    if ($c->form_posted && $form->submitted_and_valid($c->req->params))
     {
         my %edit = map { $_ => $form->field($_)->value }
             qw( name sort_name type_id label_code country_id begin_date end_date comment );
