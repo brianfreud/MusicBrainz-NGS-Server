@@ -1,6 +1,6 @@
 #!/usr/bin/perl
 use strict;
-use Test::More tests => 29;
+use Test::More tests => 32;
 
 BEGIN {
     use MusicBrainz::Server::Context;
@@ -98,3 +98,64 @@ ok($mech->uri =~ qr{/label/46f0f4cd-8aab-4b33-b698-f459faf64190}, 'should redire
 my $edit = MusicBrainz::Server::Test->get_latest_edit($c);
 isa_ok($edit, 'MusicBrainz::Server::Edit::Label::Delete');
 is_deeply($edit->data, { label => 2 });
+
+# Test editing labels
+$mech->get_ok('/label/46f0f4cd-8aab-4b33-b698-f459faf64190/edit');
+my $response = $mech->submit_form(
+    with_fields => {
+        name => 'controller label',
+        sort_name => 'label, controller',
+        type_id => 2,
+        label_code => 12345,
+        country_id => 1,
+        'begin_date.year' => 1990,
+        'begin_date.month' => 01,
+        'begin_date.day' => 02,
+        'end_date.year' => 2003,
+        'end_date.month' => 4,
+        'end_date.day' => 15,
+        comment => 'label created in controller_label.t',
+    }
+);
+
+$edit = MusicBrainz::Server::Test->get_latest_edit($c);
+isa_ok($edit, 'MusicBrainz::Server::Edit::Label::Edit');
+is_deeply($edit->data, {
+        label => 2,
+        new => {
+            name => 'controller label',
+            sort_name => 'label, controller',
+            type_id => 2,
+            country_id => 1,
+            label_code => 12345,
+            comment => 'label created in controller_label.t',
+            begin_date => {
+                year => 1990,
+                month => 01,
+                day => 02
+            },
+            end_date => {
+                year => 2003,
+                month => 4,
+                day => 15
+            },
+        },
+        old => {
+            name => 'Warp Records',
+            sort_name => 'Warp Records',
+            type_id => 1,
+            country_id => 1,
+            label_code => 2070,
+            comment => 'Sheffield based electronica label',
+            begin_date => {
+                year => 1989,
+                month => 2,
+                day => 3
+            },
+            end_date => {
+                year => 2008,
+                month => 05,
+                day => 19
+            },
+        }
+    });
