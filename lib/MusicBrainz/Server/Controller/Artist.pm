@@ -354,12 +354,6 @@ sub create : Local RequireAuth
         {
         }
 
-        my $sql = Sql->new($c->dbh);
-        my $sql_raw = Sql->new($c->raw_dbh);
-
-        $sql->Begin;
-        $sql_raw->Begin;
-
         my %edit = map { $_ => $form->field($_)->value }
             qw( name sort_name gender_id type_id country_id begin_date end_date comment);
 
@@ -368,9 +362,6 @@ sub create : Local RequireAuth
             editor_id => $c->user->id,
             %edit
         );
-
-        $sql->Commit;
-        $sql_raw->Commit;
 
         if ($edit->artist)
         {
