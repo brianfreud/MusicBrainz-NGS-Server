@@ -1,6 +1,8 @@
 package MusicBrainz::Server::Form::Artist;
 use HTML::FormHandler::Moose;
 
+use MooseX::AttributeHelpers;
+
 extends 'MusicBrainz::Server::Form';
 with 'MusicBrainz::Server::Form::Edit';
 
@@ -47,5 +49,26 @@ has_field 'not_dupe' => (
 sub options_gender_id   { shift->_select_all('Gender') }
 sub options_type_id     { shift->_select_all('ArtistType') }
 sub options_country_id  { shift->_select_all('Country') }
+
+has 'duplicates' => (
+    metaclass => 'Collection::List',
+    isa => 'ArrayRef',
+    is => 'rw',
+    default => sub { [] },
+    provides => {
+        empty => 'has_duplicates',
+    }
+);
+
+sub validate
+{
+    my $self = shift;
+    return if $self->field('not_dupe')->value;
+
+    $self->duplicates([ $self->ctx->model('Artist')->find_by_name($self->field('name')->value) ]);
+
+    $self->field('not_dupe')->required($self->has_duplicates);
+    $self->field('not_dupe')->validate_field;
+}
 
 1;

@@ -350,10 +350,6 @@ sub create : Local RequireAuth
     my $form = $c->form(form => 'Artist');
     if ($c->form_posted && $form->submitted_and_valid($c->req->params))
     {
-        if(!$form->field('not_dupe')->required)
-        {
-        }
-
         my %edit = map { $_ => $form->field($_)->value }
             qw( name sort_name gender_id type_id country_id begin_date end_date comment);
 
