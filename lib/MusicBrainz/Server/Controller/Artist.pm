@@ -391,7 +391,9 @@ sub delete : Chained('load') RequireAuth
             artist_id => $artist->id
         );
 
-        $c->response->redirect($c->uri_for_action('/artist/show', [ $artist->gid ]));
+        my $url = $edit->is_open ? $c->uri_for_action('/artist/show', [ $artist->gid ])
+                                 : $c->uri_for_action('/search');
+        $c->response->redirect($url);
         $c->detach;
     }
 }
