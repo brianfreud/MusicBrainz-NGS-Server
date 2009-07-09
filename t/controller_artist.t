@@ -1,6 +1,6 @@
 #!/usr/bin/perl
 use strict;
-use Test::More tests => 53;
+use Test::More tests => 56;
 
 BEGIN {
     use MusicBrainz::Server::Context;
@@ -131,7 +131,7 @@ is_deeply($edit->data, {
 $mech->get_ok('/artist/745c079d-374e-4436-9448-da92dedef3ce/edit');
 my $response = $mech->submit_form(
     with_fields => {
-        'edit-artist.name' => 'controller artist',
+        'edit-artist.name' => 'edit artist',
         'edit-artist.sort_name' => 'artist, controller',
         'edit-artist.type_id' => 2,
         'edit-artist.country_id' => 2,
@@ -153,7 +153,7 @@ isa_ok($edit, 'MusicBrainz::Server::Edit::Artist::Edit');
 is_deeply($edit->data, {
         artist => 3,
         new => {
-            name => 'controller artist',
+            name => 'edit artist',
             sort_name => 'artist, controller',
             type_id => 2,
             country_id => 2,
