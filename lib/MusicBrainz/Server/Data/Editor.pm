@@ -66,6 +66,7 @@ sub load_preferences
     my $prefs = $sql->SelectListOfHashes($query, $editor->id);
     for my $pref (@$prefs) {
         my ($key, $value) = ($pref->{name}, $pref->{value});
+        next unless $editor->preferences->can($key);
         $editor->preferences->$key($value);
     }
 }
