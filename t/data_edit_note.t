@@ -1,7 +1,7 @@
 #!/usr/bin/perl
 use strict;
 use warnings;
-use Test::More tests => 19;
+use Test::More tests => 25;
 BEGIN { use_ok 'MusicBrainz::Server::Data::Gender' };
 
 use MusicBrainz::Server::Context;
@@ -44,6 +44,9 @@ INSERT INTO edit_note (id, editor, edit, text)
 
 INSERT INTO edit_note (id, editor, edit, text)
     VALUES (3, 1, 2, 'Another edit note');
+
+ALTER SEQUENCE edit_note_id_seq RESTART 4;
+
 RAWSQL
 
 my $c = MusicBrainz::Server::Test->create_test_context();
@@ -79,6 +82,19 @@ check_note($edit->edit_notes->[0], 'MusicBrainz::Server::Entity::EditNote',
 $edit = $edit_data->get_by_id(3);
 $en_data->load($edit);
 is(@{ $edit->edit_notes }, 0);
+
+# Insert a new edit note
+$en_data->insert($edit->id, {
+        editor_id => 3,
+        text => 'This is a new edit note',
+    });
+
+$en_data->load($edit);
+is(@{ $edit->edit_notes }, 1);
+check_note($edit->edit_notes->[0], 'MusicBrainz::Server::Entity::EditNote',
+        editor_id => 3,
+        edit_id => 3,
+        text => 'This is a new edit note');
 
 sub check_note {
     my ($note, $class, %attrs) = @_;

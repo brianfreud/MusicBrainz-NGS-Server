@@ -55,6 +55,20 @@ sub load
     }
 }
 
+sub insert
+{
+    my ($self, $edit_id, $note_hash) = @_;
+    my $mapping = $self->_column_mapping;
+    my %r = map {
+        my $key = $mapping->{$_} || $_;
+        $key => $note_hash->{$_};
+    } keys %$note_hash;
+    $r{edit} = $edit_id;
+    my $sql = Sql->new($self->c->raw_dbh);
+    $sql->AutoCommit(1);
+    $sql->InsertRow('edit_note', \%r);
+}
+
 no Moose;
 __PACKAGE__->meta->make_immutable;
 1;
