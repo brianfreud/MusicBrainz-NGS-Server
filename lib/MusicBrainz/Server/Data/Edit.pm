@@ -64,6 +64,22 @@ sub find
         }, $query, map { $p->{$_} } @params);
 }
 
+sub find_by_entity
+{
+    my ($self, $type, $id, $p, $offset, $limit) = @_;
+    my @params = keys %$p;
+    my @pred = ("id IN (SELECT edit FROM edit_$type WHERE $type = ?)");
+    push @pred, "$_ = ?" for @params;
+
+    my $query = 'SELECT ' . $self->_columns . ' FROM ' . $self->_table;
+    $query .= ' WHERE ' . join ' AND ', @pred;
+    $query .= ' ORDER BY id DESC';
+
+    return query_to_list_limited($self->c->raw_dbh, $offset, $limit, sub {
+            return $self->_new_from_row(shift);
+        }, $query, $id, map { $p->{$_} } @params);
+}
+
 sub merge_entities
 {
     my ($self, $type, $old_id, $new_id) = @_;
