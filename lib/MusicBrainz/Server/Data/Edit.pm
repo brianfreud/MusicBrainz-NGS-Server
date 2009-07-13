@@ -7,6 +7,7 @@ use List::MoreUtils qw( zip );
 use MusicBrainz::Server::Edit;
 use MusicBrainz::Server::Edit::Exceptions;
 use MusicBrainz::Server::Types qw( $STATUS_APPLIED $STATUS_ERROR );
+use MusicBrainz::Server::Data::Utils qw( query_to_list_limited );
 use XML::Simple;
 
 extends 'MusicBrainz::Server::Data::Entity';
@@ -49,6 +50,18 @@ sub _new_from_row
     $edit->restore($data);
     $edit->close_time($row->{closetime}) if defined $row->{closetime};
     return $edit;
+}
+
+sub find
+{
+    my ($self, $p, $offset, $limit) = @_;
+    my @params = keys %$p;
+    my $query = 'SELECT ' . $self->_columns . ' FROM ' . $self->_table;
+    $query .= ' WHERE ' . (join ' AND ', map { "$_ = ?" } @params) if @params;
+    $query .= ' ORDER BY id DESC';
+    return query_to_list_limited($self->c->raw_dbh, $offset, $limit, sub {
+            return $self->_new_from_row(shift);
+        }, $query, map { $p->{$_} } @params);
 }
 
 sub merge_entities
