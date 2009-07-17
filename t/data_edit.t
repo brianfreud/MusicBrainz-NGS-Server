@@ -1,6 +1,6 @@
 use strict;
 use warnings;
-use Test::More tests => 29;
+use Test::More tests => 32;
 
 BEGIN { use_ok 'MusicBrainz::Server::Data::Edit' };
 
@@ -38,6 +38,7 @@ INSERT INTO edit (id, editor, type, status, data, expiretime)
 
 INSERT INTO edit_artist (edit, artist) VALUES (1, 1);
 INSERT INTO edit_artist (edit, artist) VALUES (4, 1);
+INSERT INTO edit_artist (edit, artist) VALUES (4, 2);
 
 RAWSQL
 
@@ -80,14 +81,19 @@ is($hits, 0);
 is(scalar @$edits, 0);
 
 # Find edits by a certain artist
-($edits, $hits) = $edit_data->find_by_entity('artist', 1, {}, 0, 10);
+($edits, $hits) = $edit_data->find({ artist => 1 }, 0, 10);
 is($hits, 2);
 is(scalar @$edits, 2);
 is($edits->[0]->id, 4);
 is($edits->[1]->id, 1);
 
-($edits, $hits) = $edit_data->find_by_entity('artist', 1, { status => $STATUS_APPLIED },
-    0, 10);
+($edits, $hits) = $edit_data->find({ artist => 1, status => $STATUS_APPLIED }, 0, 10);
+is($hits, 1);
+is(scalar @$edits, 1);
+is($edits->[0]->id, 4);
+
+# Find edits over multiple entities
+($edits, $hits) = $edit_data->find({ artist => [1,2] }, 0, 10);
 is($hits, 1);
 is(scalar @$edits, 1);
 is($edits->[0]->id, 4);

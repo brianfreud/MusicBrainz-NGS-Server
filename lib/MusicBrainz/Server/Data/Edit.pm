@@ -7,7 +7,7 @@ use List::MoreUtils qw( zip );
 use MusicBrainz::Server::Edit;
 use MusicBrainz::Server::Edit::Exceptions;
 use MusicBrainz::Server::Types qw( $STATUS_APPLIED $STATUS_ERROR );
-use MusicBrainz::Server::Data::Utils qw( query_to_list_limited );
+use MusicBrainz::Server::Data::Utils qw( placeholders query_to_list_limited );
 use XML::Simple;
 
 extends 'MusicBrainz::Server::Data::Entity';
@@ -55,29 +55,34 @@ sub _new_from_row
 sub find
 {
     my ($self, $p, $offset, $limit) = @_;
-    my @params = keys %$p;
-    my $query = 'SELECT ' . $self->_columns . ' FROM ' . $self->_table;
-    $query .= ' WHERE ' . (join ' AND ', map { "$_ = ?" } @params) if @params;
-    $query .= ' ORDER BY id DESC';
-    return query_to_list_limited($self->c->raw_dbh, $offset, $limit, sub {
-            return $self->_new_from_row(shift);
-        }, $query, map { $p->{$_} } @params);
-}
 
-sub find_by_entity
-{
-    my ($self, $type, $id, $p, $offset, $limit) = @_;
+    my (@pred, @args);
+    for my $type (qw( artist label release release_group recording work)) {
+        next unless exists $p->{$type};
+        my $ids = delete $p->{$type};
+
+        my @ids = ref $ids ? @$ids : $ids;
+        my $placeholders = placeholders(@ids);
+        my $subquery = "SELECT edit FROM
+                            (SELECT edit, $type FROM edit_$type GROUP BY edit, $type)
+                            AS $type WHERE $type IN ($placeholders) GROUP BY edit
+                            HAVING count(*) = ?";
+
+        push @pred, "id IN ($subquery)";
+        push @args, @ids, scalar @ids;
+    }
+
     my @params = keys %$p;
-    my @pred = ("id IN (SELECT edit FROM edit_$type WHERE $type = ?)");
     push @pred, "$_ = ?" for @params;
+    push @args, $p->{$_} for @params;
 
     my $query = 'SELECT ' . $self->_columns . ' FROM ' . $self->_table;
-    $query .= ' WHERE ' . join ' AND ', @pred;
+    $query .= ' WHERE ' . join ' AND ', @pred if @pred;
     $query .= ' ORDER BY id DESC';
 
     return query_to_list_limited($self->c->raw_dbh, $offset, $limit, sub {
             return $self->_new_from_row(shift);
-        }, $query, $id, map { $p->{$_} } @params);
+        }, $query, @args);
 }
 
 sub merge_entities
