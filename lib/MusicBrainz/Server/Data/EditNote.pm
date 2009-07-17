@@ -47,12 +47,11 @@ sub load
     my @notes = query_to_list($self->c->raw_dbh, sub {
             my $r = shift;
             my $note = $self->_new_from_row($r);
-            $note->edit($id_to_edit{ $r->{edit} });
+            my $edit = $id_to_edit{ $r->{edit} };
+            $note->edit($edit);
+            $edit->add_edit_note($note);
             return $note;
         }, $query, @ids);
-    foreach my $note (@notes) {
-        $id_to_edit{ $note->edit_id }->add_edit_note($note);
-    }
 }
 
 sub insert
@@ -65,7 +64,7 @@ sub insert
     } keys %$note_hash;
     $r{edit} = $edit_id;
     my $sql = Sql->new($self->c->raw_dbh);
-    $sql->AutoCommit(1);
+    $sql->AutoCommit(1) if !$sql->IsInTransaction;
     $sql->InsertRow('edit_note', \%r);
 }
 

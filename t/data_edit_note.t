@@ -1,7 +1,8 @@
 #!/usr/bin/perl
 use strict;
 use warnings;
-use Test::More tests => 25;
+use Test::More tests => 26;
+use Test::Exception;
 BEGIN { use_ok 'MusicBrainz::Server::Data::Gender' };
 
 use MusicBrainz::Server::Context;
@@ -95,6 +96,16 @@ check_note($edit->edit_notes->[0], 'MusicBrainz::Server::Entity::EditNote',
         editor_id => 3,
         edit_id => 3,
         text => 'This is a new edit note');
+
+# Make sure we can insert edit notes while already in a transaction
+my $sql = Sql->new($c->raw_dbh);
+$sql->Begin;
+lives_ok {
+    $en_data->insert($edit->id, {
+            editor_id => 3,
+            text => 'Note' })
+};
+$sql->Commit;
 
 sub check_note {
     my ($note, $class, %attrs) = @_;
