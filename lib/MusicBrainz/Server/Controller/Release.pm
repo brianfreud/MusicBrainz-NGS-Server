@@ -206,13 +206,15 @@ sub edit : Chained('load') RequireAuth
     my $form = $c->form(form => 'Release', item => $release);
 
     if ($form->submitted_and_valid($c->req->params)) {
+        my %args = map { $_ => $form->field($_)->value }
+            qw( name comment packaging_id status_id script_id language_id
+                country_id barcode artist_credit date );
+
         my $edit = $c->model('Edit')->create(
             edit_type => $EDIT_RELEASE_EDIT,
             editor_id => $c->user->id,
-            release => $release
-            map { $_ => $form->field($_)->value }
-                qw( name comment artist_credit status_id packaging_id script_id
-                    language_id country_id date barcode )
+            release => $release,
+            %args
         );
 
         $c->response->redirect($c->uri_for_action('/release/show', [ $release->gid ]));
