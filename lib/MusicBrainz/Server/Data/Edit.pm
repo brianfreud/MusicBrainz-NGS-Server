@@ -62,14 +62,22 @@ sub find
         my $ids = delete $p->{$type};
 
         my @ids = ref $ids ? @$ids : $ids;
-        my $placeholders = placeholders(@ids);
-        my $subquery = "SELECT edit FROM
-                            (SELECT edit, $type FROM edit_$type GROUP BY edit, $type)
-                            AS $type WHERE $type IN ($placeholders) GROUP BY edit
-                            HAVING count(*) = ?";
+        push @args, @ids;
+
+        my $subquery;
+        if (@ids == 1) {
+            $subquery = "SELECT edit FROM edit_$type WHERE $type = ?";
+        }
+        else {
+            my $placeholders = placeholders(@ids);
+            $subquery = "SELECT edit FROM
+                                (SELECT edit, $type FROM edit_$type)
+                                AS $type WHERE $type IN ($placeholders) GROUP BY edit
+                                HAVING count(*) = ?";
+            push @args, scalar @ids;
+        }
 
         push @pred, "id IN ($subquery)";
-        push @args, @ids, scalar @ids;
     }
 
     my @params = keys %$p;
