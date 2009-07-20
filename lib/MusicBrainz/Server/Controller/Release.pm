@@ -195,12 +195,16 @@ Edit a release in release editor
 
 =cut
 
-sub edit : Chained('load')
+sub edit : Chained('load') RequireAuth
 {
     my ($self, $c) = @_;
-    $c->forward('/user/login');
-    $c->forward('_load_related');
-    $c->forward('/release_editor/edit_release');
+
+    my $release = $c->stash->{release};
+    my $form = $c->form(form => 'Release', item => $release);
+
+    if ($form->submitted_and_valid($c->req->params)) {
+        
+    }
 }
 
 =head2 duplicate
