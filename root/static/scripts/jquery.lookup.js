@@ -1,10 +1,7 @@
-/** Shit to do:
+/** TODO
  *
- * o Correct GID link after lookup
- * o Better support for initial-locked state
- * o Allow "new artist" choice
  * o Pagination
- * o Show more information in search results
+ * o Hide on <input> blur
  *
  */
 
@@ -37,20 +34,42 @@ $.autocomplete = function(input, options)
         ajaxBase: '/ajax/',
         initial_object: {name: ''},
         formatResult: formatResult,
+        perPage: 10
     };
     jQuery.extend(settings, options);
 
     var $query = $(input).val(settings.initial_object.name);
-    $query.focus(show)
-//        .blur(function() { hide(); })
+    $query.focus(show)//.blur(function() { hide(); })
         .val(settings.initial_query);
-
-    var $search = $('<button/>').text('Search').blur(hide);
 
     // Main results box (show/hide depending on $input focus)
     var $resultsBox = $('<div/>').addClass('ajax-lookup').css('position', 'absolute').hide()
         .mouseover(function() { dontHide = true }).mouseout(function() { dontHide = false })
         .appendTo($query.parent());
+
+    // Search button
+    var $opts = $('<div>').addClass('options').appendTo($resultsBox);
+    var $search = $('<button/>').text('Search').blur(hide).css('float', 'left')
+        .appendTo($opts);
+
+    // Pagination controls
+    var $prevPage = $('<button>').html('&laquo;')
+        .click(function(event) {
+            event.preventDefault();
+            offset -= settings.perPage;
+            offset = Math.max(offset, 0);
+            search();
+        });
+
+    var $nextPage = $('<button>').html('&raquo;')
+        .click(function(event) {
+            event.preventDefault()
+            offset += settings.perPage;
+            search();
+        });
+
+    var $offset = $('<span>').text('0-0 of 0');
+    $('<div>').css({float:'right', textAlign:'right'}).append($prevPage).append($offset).append($nextPage).appendTo($opts);
 
     // Hold search results
     var $results = $('<ul>').appendTo($resultsBox);
@@ -61,9 +80,7 @@ $.autocomplete = function(input, options)
     });
     settings.initial_object.name.length > 0 ? $createNew.show() : $createNew.hide();
 
-    // Options box - for the lookup button
-    $('<div>').addClass('options').append($search).appendTo($resultsBox);
-
+    var offset = 0;
     var dontHide = false;
     var currentIndex = -1;
     var currentSelection = null;
@@ -89,30 +106,7 @@ $.autocomplete = function(input, options)
     // Perform lookup
     $search.click(function(event) {
         event.preventDefault();
-
-        currentSelection = null;
-        currentIndex = -1;
-
-        var query = $query.val();
-        var url = settings.ajaxBase + "search?type=" + settings.type + "&query=" + query;
-        clearResults();
-        $results.append($('<li>').text('Searching...'));
-        $query.focus();
-
-        $.getJSON(url, function(data) {
-            clearResults();
-
-            if (data.hits > 0)
-            {
-                $.each(data.results, function(i, result) {
-                    $results.append(createSearchResult(i + 1, result));
-                });
-            }
-            else
-            {
-                $results.append($('<li>').text('No results'));
-            }
-        });
+        search()
     });
 
     $query.bind('autocomplete.reset', function() {
@@ -123,6 +117,33 @@ $.autocomplete = function(input, options)
         currentSelection = null;
         currentIndex = -1;
     });
+
+    function search() {
+        currentSelection = null;
+        currentIndex = -1;
+
+        var url = settings.ajaxBase + "search";
+        clearResults();
+        $results.append($('<li>').text('Searching...'));
+        $query.focus();
+
+        $.getJSON(url, {type:settings.type, query:$query.val(), offset:offset, limit:settings.perPage}, function(data) {
+            clearResults();
+
+            if (data.hits > 0)
+            {
+                $offset.html(offset + "-" + (data.results.length + offset) + "/" + data.hits);
+                $.each(data.results, function(i, result) {
+                    $results.append(createSearchResult(i + 1, result));
+                });
+            }
+            else
+            {
+                $offset.html("0-0/0");
+                $results.append($('<li>').text('No results'));
+            }
+        });
+    }
 
     function clearResults()
     {
