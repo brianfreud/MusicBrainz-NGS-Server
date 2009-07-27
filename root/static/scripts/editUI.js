@@ -13,7 +13,7 @@ var MusicBrainz = {
                 /* Get URL from helpArray[i][2]. */
                 setTimeout(function () {
                     $("#wikiHelp").lorem({ type: 'words',amount:'500',ptags:true});
-                    $("#wikiHelpBox").slideDown();
+                    $("#wikiHelpBox").slideDown(1000);
                     MusicBrainz.setStatus("Documentation loaded.");
                 }, 1000);
                 /* END */
@@ -232,7 +232,7 @@ var MusicBrainz = {
 $(function () {
 
     /* Insert help icons. */
-    $(".datumItem dt, th.release").prepend('<img src="/static/images/icon/12px-Circle-question-blue.svg.png" class="helpIcon"/>&nbsp;');
+    $(".datumItem dt, th.release").prepend('<img src="/static/images/blank.gif" class="helpIcon"/>&nbsp;');
     $("th.release:first").css({width: "3em"});
     $("th.release:last").css({width: "6em"});
 
@@ -243,10 +243,10 @@ $(function () {
     MusicBrainz.setStatus(text.LoadingJS, true);
 
    /* Create and attach click event for the documentation display close button. */
-    var closeButton = $('<img src="/static/images/icon/16px-Gnome-window-close.svg.png" style="float: right;"/>');
+    var closeButton = $('<img src="/static/images/blank.gif" class="closeButton"/>');
     $("#wikiTitle").prepend(closeButton);
     closeButton.click(function() {
-        $("#wikiHelpBox").slideUp();
+        $("#wikiHelpBox").slideUp(1000);
     });
 
     /* Disable default behaviour for anchor links. */
@@ -350,7 +350,7 @@ $(function () {
                                        ["th.release:eq(0)", text.displayTrackNumber, "http://"],
                                        ["th.release:eq(1)", text.displayTrackTitle, "http://"],
                                        ["th.release:eq(2)", text.displayTrackArtist, "http://"],
-                                       ["th.release:eq(3)", text.displayTrackDuration, "http://"],
+                                       ["th.release:eq(3)", text.displayTrackDuration, "http://"]
                                        ]);
 
 

@@ -322,9 +322,9 @@ label.overlabel-apply {
 }
 
 #wikiHelpBox {
+ background: #736DAB; 
  padding: 1px;
  margin: 1em 2px 2px 2px;
- background: #736DAB;
  display: none;
 }
 
@@ -333,6 +333,29 @@ label.overlabel-apply {
  margin: 6px;
 }
 
+#wikiHelpBox hr {
+ border-color: #736DAB;
+}
+
 .helpIcon {
  cursor: pointer;
+ height: 12px;
+ width: 12px;
+ background: url(/static/images/icon/q.blue.png) top left no-repeat;
+}
+
+.helpIcon:hover {
+ background: url(/static/images/icon/q.orange.png) top left no-repeat;
+}
+
+.closeButton {
+ cursor: pointer;
+ height: 16px;
+ width: 16px;
+ float: right;
+ background: url(/static/images/icon/close.grey.png) top left no-repeat;
+}
+
+.closeButton:hover {
+ background: url(/static/images/icon/close.red.png) top left no-repeat;
 }
