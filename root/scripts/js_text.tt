@@ -93,6 +93,7 @@ text.Loading               = "[% l("Page is loading") %]";
 text.Loaded                = "[% l("Page loaded.") %]";
 text.LoadingJS             = "[% l("Loading JavaScript&hellip;") %]";
 text.Manipulators          = "[% l("Toggle track manipulation controls") %]";
+text.MBdocs                = "[% l("MusicBrainz documentation") %]";
 text.MonthMask             = "[% l("MM") %]";
 text.MoveDown              = "[% l("Move track down one in the track order.") %]";
 text.MoveUp                = "[% l("Move track up one in the track order.") %]";

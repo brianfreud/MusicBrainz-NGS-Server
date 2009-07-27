@@ -1,6 +1,5 @@
 [%- WRAPPER 'release/layout.tt' page='index' -%]
     [%- IF edit -%]
-        <div id="editMsgBox"><div id="editMsg"><div id="editStatusMsg"></div><div id="editHelpMsg"></div></div></div><div id="wikiHelpBox" class="hidden"><div id="wikiHelpInnerBox"><div id="wikiTitle">MusicBrainz documentation: <span id="wikiDocName"/></div><hr /><div id="wikiHelp"></div></div></div>
         [%- INCLUDE 'scripts/module_track_parser.tt' -%]
     [%- ELSE -%]
         <h2>Track listing</h2>

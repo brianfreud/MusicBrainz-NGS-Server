@@ -1,5 +1,25 @@
 var MusicBrainz = {
 
+    roundness : "round 6px",
+
+    attachHelpButtonEvents : function (helpArray) {
+        $.each(helpArray, function (i) {
+            $(helpArray[i][0] + " img").click(function() {
+                $("#wikiDocName").html(helpArray[i][1]);
+                MusicBrainz.setStatus("Loading documentation, please wait.");
+                $("#wikiHelp").html("")
+                              .slideDown();
+                /* START: Junk stub code to simulate downloading text. */
+                /* Get URL from helpArray[i][2]. */
+                setTimeout(function () {
+                    $("#wikiHelp").lorem({ type: 'words',amount:'500',ptags:true});
+                    $("#wikiHelpBox").slideDown();
+                    MusicBrainz.setStatus("Documentation loaded.");
+                }, 1000);
+                /* END */
+            });
+        })
+    },
     clearHelpMsg : function () {
         $("#editHelpMsg").html("");
     },
@@ -59,8 +79,8 @@ var MusicBrainz = {
                          '<div id="editMenuPullout">' +
                              '<span>»</span>' +
                          '</div>');
-        $("#editMenuPullout").corner("round tr")
-                             .corner("round br")
+        $("#editMenuPullout").corner(MusicBrainz.roundness + " tr")
+                             .corner(MusicBrainz.roundness + " br")
                              .mouseover(function () {
                                                     $("#editMenuPullout").hide();
                                                     $("#editMenu").unbind("mouseleave")
@@ -105,6 +125,28 @@ var MusicBrainz = {
                        .removeClass("shiftSelect", "normal");
             });
         }
+    },
+    makeStatusAndDocsBox : function() {
+        $(".tabs:eq(0)").after('<div id="editMsgBox">' +
+                                   '<div id="editMsg">' +
+                                       '<div id="editStatusMsg"> </div>' +
+                                       '<div id="editHelpMsg"> </div>' +
+                                   '</div>' +
+                               '</div>' +
+                               '<div id="wikiHelpBox">' +
+                                   '<div id="wikiHelpInnerBox">' +
+                                       '<div id="wikiTitle">' +
+                                           text.MBdocs + ':&nbsp;' +
+                                           '<span id="wikiDocName"/>' +
+                                       '</div>' +
+                                       '<hr />' +
+                                       '<div id="wikiHelp"></div>' +
+                                   '</div>' +
+                               '</div>');
+        $("#editMsgBox").corner(MusicBrainz.roundness);
+        $("#editMsg").corner(MusicBrainz.roundness);
+        $("#wikiHelpBox").corner(MusicBrainz.roundness);
+        $("#wikiHelpInnerBox").corner(MusicBrainz.roundness);
     },
     makeSwappableSelectList : function (entity, toSwap, swapArray) {
         var swapList = "#select-edit-" + entity + "-" + toSwap,
@@ -194,10 +236,18 @@ $(function () {
     $("th.release:first").css({width: "3em"});
     $("th.release:last").css({width: "6em"});
 
-   /* Initialize the display text box. */
-    $("#editMsgBox").corner("round 6px");
-    $("#editMsg").corner("round 6px");
+    /* Insert the status and heads-up display box. */
+    MusicBrainz.makeStatusAndDocsBox();
+
+    /* Initialize the display text box. */
     MusicBrainz.setStatus(text.LoadingJS, true);
+
+   /* Create and attach click event for the documentation display close button. */
+    var closeButton = $('<img src="/static/images/icon/16px-Gnome-window-close.svg.png" style="float: right;"/>');
+    $("#wikiTitle").prepend(closeButton);
+    closeButton.click(function() {
+        $("#wikiHelpBox").slideUp();
+    });
 
     /* Disable default behaviour for anchor links. */
     $(".editable a").bind("click.blocked", function (event) {
@@ -283,6 +333,26 @@ $(function () {
     /* Initialize the editor modules. */
     MusicBrainz.initializeTrackParser();
 
+    /* Attach click events to the help buttons. */
+    MusicBrainz.attachHelpButtonEvents([
+                                       ["#release-date-dt", text.displayReleaseDate, "http://"],
+                                       ["#release-type-dt", text.displayReleaseType, "http://"],
+                                       ["#release-format-dt", text.displayReleaseFormat, "http://"],
+                                       ["#release-packaging-dt", text.displayReleasePackaging, "http://"],
+                                       ["#release-status-dt", text.displayReleaseStatus, "http://"],
+                                       ["#release-language-dt", text.displayReleaseLanguage, "http://"],
+                                       ["#release-script-dt", text.displayReleaseScript, "http://"],
+                                       ["dt[id^=release-label]", text.displayLabel, "http://"],
+                                       ["dt[id^=release-catalog]", text.displayCatalogNumber, "http://"],
+                                       ["dt[id^=release-barcode]", text.displayBarcode, "http://"],
+                                       ["dt[id^=release-country]", text.displayCountry, "http://"],
+                                       ["th.release:eq(0)", text.displayTrackNumber, "http://"],
+                                       ["th.release:eq(1)", text.displayTrackTitle, "http://"],
+                                       ["th.release:eq(2)", text.displayTrackArtist, "http://"],
+                                       ["th.release:eq(3)", text.displayTrackDuration, "http://"],
+                                       ]);
+
+
 
 // TODO   /* Set click behaviour for editable fields (where there is more than one of that field type). */
     MusicBrainz.makeTogglable([
@@ -293,55 +363,6 @@ $(function () {
                               ]);
 
 
-    $("#wikiHelpInnerBox").css({padding: "2px", background: "white"});
-    $("#wikiHelp").css({height: "25em", padding: "6px 0 6px 6px", overflowY: "scroll", overflowX: "hidden", marginBottom: ".3em"});
-    $("#wikiHelpBox").css({padding: "1px", margin: "2px", background: "black"});
-    $("#wikiTitle").css({fontWeight: "bolder", margin: "6px"})
-    var closeButton = $('<img src="/static/images/icon/16px-Gnome-window-close.svg.png" style="float: right;"/>');
-    $("#wikiTitle").prepend(closeButton);
-    closeButton.click(function() {
-        $("#wikiHelpBox").slideUp();
-    });
-    $("#wikiHelpBox").corner("round 6px");
-    $("#wikiHelpInnerBox").corner("round 6px");
-
-$("#wikiHelpBox").hide();
-
-var attachHelpButtonEvents = function (helpArray) {
-    $.each(helpArray, function (i) {
-        $(helpArray[i][0] + " img").click(function() {
-            $("#wikiDocName").html(helpArray[i][1]);
-            MusicBrainz.setStatus("Loading documentation, please wait.");
-            $("#wikiHelpBox").slideDown();
-            /* START: Junk stub code to simulate downloading text. */
-            /* Get URL from helpArray[i][2]. */
-            setTimeout(function () {
-                $("#wikiHelp").lorem({ type: 'words',amount:'500',ptags:true});
-                $("#wikiHelpBox").slideDown();
-                MusicBrainz.setStatus("Documentation loaded.");
-            }, 1000);
-            /* END */
-        });
-    })
-}
-
-attachHelpButtonEvents([
-                       ["#release-date-dt", text.displayReleaseDate, "http://"],
-                       ["#release-type-dt", text.displayReleaseType, "http://"],
-                       ["#release-format-dt", text.displayReleaseFormat, "http://"],
-                       ["#release-packaging-dt", text.displayReleasePackaging, "http://"],
-                       ["#release-status-dt", text.displayReleaseStatus, "http://"],
-                       ["#release-language-dt", text.displayReleaseLanguage, "http://"],
-                       ["#release-script-dt", text.displayReleaseScript, "http://"],
-                       ["dt[id^=release-label]", text.displayLabel, "http://"],
-                       ["dt[id^=release-catalog]", text.displayCatalogNumber, "http://"],
-                       ["dt[id^=release-barcode]", text.displayBarcode, "http://"],
-                       ["dt[id^=release-country]", text.displayCountry, "http://"],
-                       ["th.release:eq(0)", text.displayTrackNumber, "http://"],
-                       ["th.release:eq(1)", text.displayTrackTitle, "http://"],
-                       ["th.release:eq(2)", text.displayTrackArtist, "http://"],
-                       ["th.release:eq(3)", text.displayTrackDuration, "http://"],
-                       ]);
 
 // TODO : Test using makeTogglableEachInGroup instead here, once loading release data is function.
     $(".editable.trackposition").each(function (i) {
