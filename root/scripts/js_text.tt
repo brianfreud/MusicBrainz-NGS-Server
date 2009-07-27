@@ -74,6 +74,7 @@ text.hoverCatNumber        = "[% l("Click here to edit the catalog number.") %]"
 text.hoverCountry          = "[% l("Click here to edit the county.") %]";
 text.hoverDate             = "[% l("Click here to edit the date.") %]";
 text.hoverFormat           = "[% l("Click here to edit the format.") %]";
+text.hoverHelp             = "[% l("Click here to read the help for this field.") %]";
 text.hoverLanguage         = "[% l("Click here to edit the language.") %]";
 text.hoverScript           = "[% l("Click here to edit the script.") %]";
 text.hoverLabel            = "[% l("Click here to edit the label.") %]";

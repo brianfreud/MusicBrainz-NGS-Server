@@ -232,7 +232,7 @@ var MusicBrainz = {
 $(function () {
 
     /* Insert help icons. */
-    $(".datumItem dt, th.release").prepend('<img src="/static/images/icon/12px-Circle-question-blue.svg.png"/>&nbsp;');
+    $(".datumItem dt, th.release").prepend('<img src="/static/images/icon/12px-Circle-question-blue.svg.png" class="helpIcon"/>&nbsp;');
     $("th.release:first").css({width: "3em"});
     $("th.release:last").css({width: "6em"});
 
@@ -324,9 +324,10 @@ $(function () {
                             [".editable.release-packaging", text.hoverPackaging],
                             [".editable.release-status", text.hoverStatus],
                             [".editable.release-type", text.hoverType],
+                            [".helpIcon", text.hoverHelp],
                             ["#btnTrackParser", text.hoverTP]
                             ]);
-    $(".editable, #btnTrackParser").mouseout(function () {
+    $(".editable, .helpIcon, #btnTrackParser").mouseout(function () {
                                                          MusicBrainz.clearHelpMsg();
                                                          });
 

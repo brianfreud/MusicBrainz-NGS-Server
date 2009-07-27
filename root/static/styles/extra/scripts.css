@@ -332,3 +332,7 @@ label.overlabel-apply {
  font-weight: bolder;
  margin: 6px;
 }
+
+.helpIcon {
+ cursor: pointer;
+}
