@@ -104,7 +104,6 @@ sub _hash_to_row
     my ($self, $work, $names) = @_;
     my %row = (
         artist_credit => $work->{artist_credit},
-        type => $work->{type},
         iswc => $work->{iswc},
         comment => $work->{comment},
         type => $work->{type_id},

@@ -93,6 +93,8 @@ override 'accept' => sub
     $work_data->update($self->work_id, \%data);
 };
 
+sub _xml_arguments { ForceArray => [ 'artist_credit' ] }
+
 __PACKAGE__->meta->make_immutable;
 __PACKAGE__->register_type;
 no Moose;
