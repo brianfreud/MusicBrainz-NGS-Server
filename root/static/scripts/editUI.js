@@ -82,6 +82,7 @@ var MusicBrainz = {
                                                                                                           $("#editMenu").children()
                                                                                                                         .hide();
                                                                                                           $("#editMenuPullout").show();
+                                                                                                          $("#editMenu").hide();
                                                                                     });
                                                             });
                                                         }, 250);
