@@ -1,7 +1,19 @@
+[%- IF edit -%]
+    [%- list.last.1 = '<span>' _ l('Currently editing&hellip;') _ '</span>' -%]
+[%- END -%]
 <div class="tabs">
     <ul class="tabs">
         [%- FOREACH link IN list -%]
-            <li[% IF link.0 == page %] class="sel"[% END %]>[% link.1 %]</li>
+            <li
+                [% IF link.0 == page %] class="sel"
+                [% ELSIF link.0 == 'edit' %]
+                     class="edit
+                    [% IF !edit -%]
+                        hidden
+                    [%- END -%]
+                    	" id="editToggle"
+                [%- END -%]
+            >[% link.1 %]</li>
         [%- END -%]
     </ul>
 </div>

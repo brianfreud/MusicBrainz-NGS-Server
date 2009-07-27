@@ -1,63 +1,48 @@
 [%- WRAPPER 'layout.tt' title=l('Release “{name}” by {artist}', {
-        artist => artist_credit(release.artist_credit, plain => 1),
+        artist => artist-credit(release.artist_credit, plain => 1),
         name => release.name
     })-%]
-
 <div class="sidebar">
-    <p class="nfo">
-        [%- UNLESS release.date.is_empty -%]
-            <span><strong>[% l('Date:') %]</strong> [% release.date.format %]</span>
-        [%- END -%]
-        [%- IF release.country -%]
-            <span><strong>[% l('Country:') %]</strong> [% html_escape(release.country.name) %]</span>
-        [%- END -%]
+    [%- dataCollection = [
+        { field="release.date.year"          title => l('Released')  edit => 'date'      type='date'   data => release.date.format 
+          plaintext => [ release.date.year, release.date.month, release.date.day ],
+        },
+        { field="release.release_group.type" title => l('Type')      edit => 'type'      type='option' data => html_escape(release.release_group.type.name) },
+        { field="release.combined_format"    title => l('Format')    edit => 'format'    type='option' data => release.combined_format_name },
+        { field="release.packaging"          title => l('Packaging') edit => 'packaging' type='option' data => html_escape(release.packaging.name) },
+        { field="release.status"             title => l('Status')    edit => 'status'    type='option' data => html_escape(release.status.name) },
+        { field="release.language"           title => l('Language')  edit => 'language'  type='option' data => html_escape(release.language.name) },
+        { field="release.script"             title => l('Script')    edit => 'script'    type='option' data => html_escape(release.script.name) },
+    ] -%]
+    [%- PROCESS "components/sidebar-data.tt" entity="release" -%]
+    [%#- Ensure that one empty RE is created, in edit mode, if no RE exists. -%]
+    [%- IF edit && release.labels.size == 0 -%]
+        [%- dataCollection = [
+            { field="" title => l('Label')     edit => 'label'   type='text'   data => "" number => "0" },
+            { field="" title => l('Catalog #') edit => 'catalog' type='text'   data => "" number => "0" },
+            { field="" title => l('Barcode')   edit => 'barcode' type='text'   data => "" number => "0" },
+            { field="" title => l('Country')   edit => 'country' type='option' data => "" number => "0" },
+        ] -%]
+        [%- PROCESS "components/sidebar-data.tt" entity="release" -%]
+    [%- ELSE -%]
         [%- FOR label=release.labels -%]
-            [%- IF label.label -%]
-                <span><strong>[% l('Label:') %]</strong> [% link_label(label.label) %]</span>
-            [%- END -%]
-            [%- IF label.catalog_number -%]
-                <span><strong>[% l('Catalog number:') %]</strong> [% html_escape(label.catalog_number) %]</span>
-            [%- END -%]
+            [%- dataCollection = [
+                { field="label.label"            title => l('Label')     edit => 'label' type='text'   data => link_label(label.label) number => loop.count
+                  plaintext => [ html_escape(label.label.name) ]
+                },
+                { field="label.catalog_number"   title => l('Catalog #') edit => 'catalog' type='text'   data => html_escape(label.catalog_number) number => loop.count },
+                { field="release.barcode"        title => l('Barcode')   edit => 'barcode' type='text'   data => html_escape(release.barcode) number => loop.count },
+                { field="release.country"        title => l('Country')   edit => 'country' type='option' data => html_escape(release.country.name) number => loop.count },
+            ] -%]
+            [%- PROCESS "components/sidebar-data.tt" entity="release" -%]
         [%- END -%]
-        [%- IF release.barcode -%]
-            <span><strong>[% l('Barcode:') %]</strong> [% html_escape(release.barcode) %]</span>
-        [%- END -%]
-        [%- IF release.language -%]
-            <span><strong>[% l('Language:') %]</strong> [% html_escape(release.language.name) %]</span>
-        [%- END -%]
-        [%- IF release.script -%]
-            <span><strong>[% l('Script:') %]</strong> [% html_escape(release.script.name) %]</span>
-        [%- END -%]
-        [%- IF release.combined_format_name -%]
-            <span><strong>[% l('Format:') %]</strong> [% release.combined_format_name %]</span>
-        [%- END -%]
-        [%- IF release.packaging -%]
-            <span><strong>[% l('Packaging:') %]</strong> [% html_escape(release.packaging.name) %]</span>
-        [%- END -%]
-        [%- IF release.release_group.type -%]
-            <span><strong>[% l('Type:') %]</strong> [% html_escape(release.release_group.type.name) %]</span>
-        [%- END -%]
-        [%- IF release.status -%]
-            <span><strong>[% l('Status:') %]</strong> [% html_escape(release.status.name) %]</span>
-        [%- END -%]
-    </p>
-
-    [%- INCLUDE "components/sidebar-rating.tt" entity=release.release_group -%]
-    [%- INCLUDE "components/sidebar-tags.tt" tags=top_tags entity=release.release_group -%]
-
-    <p>
-        <a href="[% c.uri_for_action('/release_group/show', [release.release_group.gid]) %]">
-            See other versions of this release
-        </a>
-    </p>
-
+    [%- END -%]
+    [%- INCLUDE "components/sidebar-rating.tt" entity=release -%]
+    [%- INCLUDE "components/sidebar-tags.tt" entity=release tags=top_tags -%]
     [%- INCLUDE "components/sidebar-lastupdate.tt" entity=release -%]
-
 </div>
-
 <div class="content">
     [%- INCLUDE "release/header.tt" -%]
     [%- content -%]
 </div>
-
 [% END %]

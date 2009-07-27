@@ -1,0 +1,1068 @@
+var mb                   = [];
+
+[% INCLUDE 'scripts/js_text.tt' %]
+
+mb.commonLangs           = [9,18,41,68,76,366,98,100,113,120,123,131,134,145,159,166,167,171,176,180,189,195,198,224,238,239,243,309,330,338,340,351,353,363,377,378,393,403,433,441,448,284];
+mb.commonScripts         = [18,31,22,92,93,94,11,85,84,43,28,65];
+mb.macNames              = ["apostrophe","a","b","c","d","e","f","g","h","i","j","k","l","m","n","o","p","q","r","s","t","u","v","w","x","y","z"];
+mb.macNames.apostrophe   = "(a'challies|a'phearsain|a'phearsoin|o'Shannaig|o'shenag|o'shennaig)";
+mb.macNames.a            = "(abe|abee|abin|absolon|achaine|achallies|achan|achane|acharn|achern|acherne|achin|" +
+                           "achine|achounich|ada|adaidh|adaim|adam|adame|adams|addam|addame|addie|ade|adie|adoo|afee|affe|affer|affie|aichan|aid|" +
+                           "aig|aige|ailein|ailin|ailpein|ain|aindra|aindreis|ainish|ainsh|aiskill|aitchen|ala|alach|alar|alasdair|alastair|" +
+                           "alaster|alay|albea|aldonich|aldowie|aldowrie|aldowy|alduie|alear|aleerie|alees|alestar|alestare|alester|alestere|" +
+                           "alestir|alestre|alexander|aliece|alinden|alinton|alistair|alister|all|allan|allane|allar|allaster|allay|allestair|" +
+                           "allestar|allester|allestyr|alley|allister|allum|alman|almant|almont|alonan|aloney|alonie|alowne|alpain|alpie|alpin|" +
+                           "alpine|alpy|alpyne|alshonair|alshoner|alstar|alwraith|alyschandir|amelyne|amhaoir|amlain|anaba|anally|ance|andeoir|" +
+                           "andlish|andrew|andrie|andro|andy|ane|angus|anish|ann|annally|ansh|anstalcair|anstalkair|aoidh|aomlin|aonghus|aphie|" +
+                           "appersone|ara|ardie|ardle|ardy|aree|arlich|arliche|armick|arorie|arory|arquhar|arra|array|arthur|artnay|artney|" +
+                           "asgaill|asgill|asguill|ash|askel|askie|askill|askin|askle|aslan|asland|aslen|aslin|atee|ath|auchin|aughtrie|aughtry|" +
+                           "auihlay|aula|aulay|auld|aule|auley|auliffe|aull|aulla|aullay|aully|auselan|auslan|ausland|auslane|auslin|aver|avery|" +
+                           "aves|avis|avish|avoy|aw|awis|awishe|awla|awlay|aws|ay|aychin)";
+mb.macNames.b            = "(ba|bae|bain|baine|baith|bane|bard|bardie|barron|bartny|bathe|baxtar|baxter|bay|bayne|bea|bean|beane|beath|beatha|" +
+                           "beathy|bee|behan|beith|ben|beolain|berkny|bertny|beth|betha|bey|bheath|bheatha|bheathain|birney|birnie|birtny|blain|" +
+                           "blair|blane|braid|brain|braine|brair|braire|braten|bratney|bratnie|brayan|brayne|breck|breive|brennan|bretnach|" +
+                           "bretney|bretnie|bretny|breyane|breyne|briar|brid|bridan|bride|brieve|broom|bryd|bryde|bryne|burie|burney|burnie|byrne)";
+mb.macNames.c            = "(ca|caa|cabe|cachane|cachie|cachin|cadam|cadame|caddam|caddame|caddim|cadie|cadu|caell|caffe|caffer|cafferty|caffie|" +
+                           "caffir|caffrey|cagy|caibe|caichrane|caidh|caig|caige|cail|caill|cain|caincollough|caine|cainsh|cairlich|cairlie|" +
+                           "cairly|cairn|caish|caishe|cala|cale|caleb|calim|calister|call|calla|callan|callane|callar|callaster|callay|calley|" +
+                           "callie|callien|callion|callister|callman|callome|calloun|callow|callpin|callum|cally|calmain|calman|calme|calmin|" +
+                           "calmon|calmont|calpie|calpin|calppin|calpy|calpyne|caluim|calume|calvine|calvyn|calzean|camant|cambil|cambridge|" +
+                           "came|camey|camie|camiey|cammell|cammie|cammon|cammond|camon|cance|canch|canchie|candless|candlish|cane|canish|" +
+                           "caniss|cann|cannally|cannan|cannel|cannell|cannon|canrig|canrik|cans|canse|cansh|cants|caoidh|cara|carday|cardie|" +
+                           "cardney|cardy|cargo|carlach|carley|carlich|carliche|carlie|carlycht|carmick|carmike|carnochan|carquhar|carra|" +
+                           "carracher|carres|carron|carson|cartair|carter|carthy|cartnay|cartney|carty|cary|casgill|casguill|cash|caskall|" +
+                           "caskel|caskell|caskie|caskil|caskill|caskin|caskle|caskull|caslan|casland|caslane|caslen|caslin|casline|cathail|" +
+                           "cathay|cathie|cathy|cauchquharn|caueis|caug|caughan|caughtrie|caughtry|cauish|caul|caula|caulaw|caulay|cauley|" +
+                           "caull|cauly|cause|causland|cavat|cavell|cavis|cavish|cavss|caw|cawe|caweis|cawis|cawley|caws|cay|cayne|ceachan|" +
+                           "ceachie|ceallaich|ceasag|ceasaig|cellaich|cellair|celler|cenzie|ceol|cersie|cey|chaddy|chaffie|chananaich|chardaidh|" +
+                           "chardy|charles|charlie|cheachan|cheachie|cherlich|chesney|cheyne|chlerich|chlery|choiter|chomay|chombeich|chombich|" +
+                           "chomich|chonachy|chord|chormaig|chray|christian|christie|christy|chritter|chruimb|chruitar|chruiter|chrummen|" +
+                           "chruter|chruytor|chrynnell|chrystal|chrytor|chullach|churteer|chuthais|cill|cisaig|clachan|clachane|clacharty|" +
+                           "clacherty|clachlane|clachlene|clae|claffirdy|clagan|clagane|clagnan|claichlane|clain|claine|clairtick|clallane|" +
+                           "claman|clamon|clamroch|clan|clanachan|clanaghan|clanahan|clanan|clanaquhen|clandon|clane|clannachan|clannochan|" +
+                           "clannochane|clannoquhen|clanochan|clanochane|clanohan|clanoquhen|clansburgh|claran|claren|clarence|clarene|clarens|" +
+                           "claring|clarren|clarron|clarsair|clartie|clarty|clary|clatchie|clatchy|clathan|clauchlan|clauchlane|clauchlin|" +
+                           "claugan|clave|clawrane|clay|clayne|cleallane|clean|cleane|clearen|clearey|cleary|cleave|cleay|cleche|clees|cleiche|" +
+                           "cleilane|cleisch|cleish|cleishe|cleisich|clelan|clellan|clelland|clement|clements|clemont|clen|clenachan|clenaghan|" +
+                           "clenaghen|clenahan|clenane|clenden|clendon|cleneghan|clenighan|clennaghan|clennan|clennochan|clennoquhan|clennoquhen|" +
+                           "clenoquhan|cleod|cleoyd|clerich|cleriche|clerie|cleron|clery|clese|clester|cleud|cleve|clew|cleys|cliesh|climents|" +
+                           "climont|clingan|clinie|clinighan|clinnie|clintoch|clintock|clinton|clirie|cloaud|cloid|cloide|clonachan|clone|cloo|" +
+                           "cloor|clorty|clory|closkey|cloud|clour|cloy|cloyd|clucas|clue|clugash|clugass|clugeis|cluie|cluir|cluire|clullich|" +
+                           "clumpha|clung|clunochen|clure|clurg|clurich|cluskey|cluskie|clusky|clymond|clymont|clynyne|coag|coage|coaig|coal|" +
+                           "coan|coard|coasam|coch|cochran|cock|codruim|codrum|coel|coid|coinnich|coirry|coiseam|cole|coleis|colem|coleman|coll|" +
+                           "collea|colleis|collister|colloch|collom|collum|colly|colm|colmain|colman|colme|colmie|colmy|colum|comaidh|comais|" +
+                           "comas|comash|comb|combe|comber|combich|combie|combs|come|comes|comey|comiche|comick|comie|comish|comiskey|comok|" +
+                           "comtosh|comy|conacher|conachie|conachy|conaghy|conche|concher|conchie|conchy|condach|condachie|condachy|condie|" +
+                           "condochie|condoquhy|condy|conechie|conechy|conell|conich|conil|conile|conill|coniquhy|conkey|conl|conlea|connach|" +
+                           "connacher|connachie|connaghy|connal|connchye|connechie|connechy|connel|connell|connichie|connil|connill|connochie|" +
+                           "connoquhy|connquhy|connyll|conochey|conochie|conoughey|conquhar|conquhie|conquhy|conquy|cooish|cook|cool|corc|corcadail|" +
+                           "corcadale|corcadill|cord|cordadill|coren|cork|corkell|corker|corkie|corkil|corkill|corkindale|corkle|corley|cormack|" +
+                           "cormaic|cormaig|cormick|cormock|cormok|cornack|cornick|cornock|cornok|corqudill|corquell|corquhedell|corquidall|" +
+                           "corquidill|corquidle|corquodale|corquodill|corquydill|corrie|corron|corry|corvie|corwis|cory|cosch|cosh|cosham|" +
+                           "coshan|coshen|coshim|coshin|cosker|coskery|coskrie|coskry|cosram|coubray|coubrey|coubrie|couck|coug|couil|couk|" +
+                           "couke|coul|coulach|coulagh|coulaghe|coule|coull|coun|courich|court|couyll|cowag|cowan|cowatt|cowbyn|cowell|cowen|" +
+                           "cowig|cowil|cowir|cowis|cowl|cowlach|cowle|cowley|cown|cowne|coy|coyle|coynich|cra|crabit|craccan|crach|crachan|" +
+                           "crachen|crackan|cracken|crae|craich|craie|craikane|crain|craing|craith|craken|cran|crane|crary|crastyne|crath|cravey|" +
+                           "craw|cray|crea|creaddie|creadie|cready|creary|creath|creavie|creavy|creddan|credie|cree|creerie|creery|creich|creiff|" +
+                           "creigh|creight|creire|creirie|creitche|creith|crekan|crekane|crendill|crenild|creory|crerie|crery|crevey|crewer|crewir|" +
+                           "crie|crime|crimmon|crimmor|crindell|crindill|crindle|crire|cririck|cririe|cristal|criste|cristie|cristin|cristine|" +
+                           "criuer|crivag|criver|crobert|crobie|crokane|crom|cron|crone|crore|crorie|crory|croskie|crossan|crotter|crouder|" +
+                           "crouther|crow|crowther|croy|cruar|cruimein|cruithein|crum|crumb|crume|crumen|crumie|crundle|crunnell|cryndill|" +
+                           "cryndle|crynell|crynill|crynnell|crynnill|cuabain|cuag|cuaig|cuail|cuaill|cualraig|cuaraig|cubben|cubbin|cubbine|" +
+                           "cubbing|cubbon|cubein|cubeine|cuben|cubene|cubine|cubyn|cubyne|cucheon|cudden|cudie|cue|cueish|cuffie|cug|cuiag|" +
+                           "cuidhean|cuig|cuilam|cuile|cuimrid|cuinn|cuir|cuish|cuishe|cuistan|cuisten|cuistion|cuiston|cuithean|cuithein|cuk|" +
+                           "culey|culican|culigan|culigin|culikan|culiken|cullach|cullagh|cullaghe|cullaigh|cullan|cullauch|cullen|culley|" +
+                           "culliam|cullie|cullin|cullion|cullo|culloch|cullocht|cullogh|culloh|cullom|cullough|cullum|cully|culzian|cune|" +
+                           "cunn|cuoch|cur|curchie|curdie|curdy|cure|curich|curie|currach|curragh|currich|currie|curry|curtain|curthy|cusack|" +
+                           "cusker|cutchan|cutchen|cutcheon|cutchion|cuthaig|cuthan|cutheon|cwne|callum)";
+mb.macNames.d            = "(dade|daid|daniell|david|dermid|diarmid|donachie|donald|donalds|donleavy|donnell|dougall|drain|duff|duffie|dulothe|" +
+                           "dairmid|dairmint|danel|daniel|darmid|dearmid|dearmont|dermaid|dermand|derment|dermont|dermot|dermott|dhiarmaid|" +
+                           "dhomhnuill|dhonchaidh|dhonnachie|dhugal|dhughaill|diarmond|dill|dimslea|doaniel|dogall|dole|doll|donach|donachy|" +
+                           "donagh|donart|donchy|donell|donill|donnach|donnchaidh|donnel|donnill|donnslae|donnyle|donochie|donol|donoll|donough|" +
+                           "donquhy|donyll|dool|dormond|douagh|doual|douall|douell|dougal|dougald|doughal|dougle|doul|douny|douwille|douyl|dovall|" +
+                           "dovele|doville|dovylle|dowal|dowale|dowall|dowalle|dowele|dowell|dowelle|dowile|dowille|dowilt|dowll|dowylle|doyle|" +
+                           "dual|duall|duel|duffee|duffy|dugal|dugald|duhile|dule|dull|duncan|dunlane|dunleavy|dunlewe|dunslea|duoel|duphe|duthie|" +
+                           "duwell|duwyl)";
+mb.macNames.e            = "(eachan|eachern|eachin|eachran|earachar|elfrish|elheran|eoin|eol|erracher|ewan|eachain|eachainn|eachane|eacharin|" +
+                           "eacharne|eachearn|eachen|eacheran|eachine|eachnie|eachny|eachren|ealair|ean|eane|eanruig|eantailyeour|earacher|" +
+                           "echan|echeny|echern|echerns|echnie|eda|eddie|egie|einzie|eiver|elduff|eleary|eletyn|elfresh|elhatton|elherran|" +
+                           "ellar|ellere|elligatt|elpersoun|elrath|elroy|elvain|elveen|elwain|emlinn|enrick|entyre|enzie|eogan|eoghainn|" +
+                           "eoghann|eracher|erar|erchar|errocher|esayg|eth|ethe|etterick|ettrick|euchine|euen|euer|euir|eun|eur|eure|evan|" +
+                           "evar|even|ever|evin|evine|evoy|ewen|ewer|ewin|ewine|ewing|ewingstoun|ewir|ewn|ewyre)";
+mb.macNames.f            = "(fadzean|fall|farlane|farquhar|fater|feat|fergus|fie|fadden|faddrik|fade|faden|fadin|fadion|fadrick|fadwyn|" +
+                           "fadyean|fadyen|fadyon|fadzan|fadzein|fadzeon|faell|fagan|faid|fail|fait|faitt|faktur|fal|fale|fargus|farlan|" +
+                           "farland|farlen|farlin|farling|farquher|farsane|farsne|farson|fate|father|fatridge|fattin|faul|fauld|faull|" +
+                           "fayden|fayle|fead|feate|featers|fedden|federan|fedran|fedrice|fee|feeters|fegan|ferchar|ferlane|ferquhair|" +
+                           "ferquhare|ferries|ferson|fersoune|fetridge|fey|feyden|feye|fingan|fingon|fingone|finnan|finnen|finnon|fleger|" +
+                           "foill|forsoun|forsyth|frederick|frizzel|frizzell|frizzle|fuirigh|fuktor|fuktur|fun|funie|funn|fyall|fydeane|" +
+                           "fyngoun)";
+mb.macNames.g            = "(gaw|geachie|geachin|geoch|ghee|ghie|gilbert|gilchrist|gill|gilledon|gillegowie|gillivantic|gillivour|gillivray|" +
+                           "gillonie|gilp|gilroy|gilvernock|gilvra|gilvray|glashan|glasrich|gorrie|gorry|goun|gowan|gown|grath|gregor|" +
+                           "greusich|grewar|grime|grory|growther|gruder|gruer|gruther|guaran|guffie|gugan|guire|gaa|gabhawn|gachan|" +
+                           "gachand|gacharne|gachen|gachey|gachie|gachyn|gaghen|gaichan|gaithan|gal|gall|gannet|garadh|garaidh|garmorie|" +
+                           "garmory|garra|garrow|garva|garvey|garvie|gaskell|gaskill|gauchan|gauchane|gauchin|gaughrin|gaugie|gaukie|" +
+                           "gaulay|gavin|gawley|gaychin|ge|geachan|geachen|geachy|geaghy|geak|gechan|gechie|gee|geechan|geever|gehee|" +
+                           "geil|georaidh|george|geouch|germorie|geth|gethe|getrick|gettrich|gettrick|geuchie|gey|ghey|ghillefhiondaig|" +
+                           "ghilleghuirm|ghittich|ghobhainn|ghoill|ghowin|ghye|gibbon|gibbone|gibboney|gibon|gibonesoun|giboun|gibson|" +
+                           "gie|gigh|gilbothan|gilbride|gilcallum|gilchatton|gilchois|gilcreist|gilcrist|gildhui|gilduff|gildui|gile|" +
+                           "gilelan|gilevie|gilewe|gilfatrick|gilfatrik|gilfinan|gilfud|gilhosche|giligan|giliver|gilladubh|gillalane|" +
+                           "gillanders|gillandras|gillandrew|gillandrish|gillane|gillas|gillavary|gillavery|gillavrach|gillayne|gilldowie|" +
+                           "gille|gilleanan|gilleathain|gillebeatha|gillechallum|gillechaluim|gillechattan|gillecoan|gillecongall|" +
+                           "gilledow|gilleduf|gilleduibh|gillefatrik|gillefedder|gilleghuirm|gilleglash|gillegrum|gilleis|gillelan|" +
+                           "gillelane|gillemartin|gillemertin|gillemhicheil|gillemichael|gillemichel|gillemitchell|gillemithel|gillenan|" +
+                           "gilleoin|gilleon|gilleone|gilleoun|gilleoune|gillepartik|gillepatrick|gillepatrik|gillephadrick|gillephadruig|" +
+                           "gillequhoan|gillequhoane|gillereach|gillereith|gillereoch|gillery|gillese|gillevary|gillevoray|gillevorie|" +
+                           "gillevray|gillewe|gillewey|gillewhome|gillewie|gillewra|gillewray|gillewriche|gillewy|gillewye|gillfhaolain|" +
+                           "gillhois|gillibride|gillican|gillichalloum|gillichoan|gillichoane|gilliduffi|gilliegorm|gillies|gilliewie|" +
+                           "gillifudricke|gilligain|gilligan|gilligin|gilligowie|gilligowy|gillimichael|gillinnein|gilliondaig|gillip|" +
+                           "gilliphatrick|gilliquhome|gillirick|gillis|gillish|gilliue|gillivary|gilliveide|gilliver|gillivoor|gillivraid|" +
+                           "gillivrie|gillivry|gilliwie|gillmichell|gillmitchell|gillochoaine|gillogowy|gillolane|gillon|gillony|gillop|" +
+                           "gillowray|gilloyne|gillphatrik|gillreavy|gillreick|gillvane|gillvary|gillveray|gillvery|gillvra|gillvray|" +
+                           "gillyane|gilmartine|gilmichal|gilmichel|gilmor|gilnew|gilparick|gilphadrick|gilpharick|gilrey|gilroye|gilvane|" +
+                           "gilvar|gilvary|gilveil|gilvern|gilvernoel|gilvery|gilvie|gilvory|gilweane|gilwrey|gimpsie|gimpsy|ginnis|girr|" +
+                           "giver|givern|glade|gladrie|glagan|glashen|glashin|glassan|glasserig|glassin|glasson|glassrich|glauchlin|" +
+                           "glauflin|gleane|gledrie|gleish|glenaghan|glenan|glennon|glew|glone|glugas|goldrick|gomerie|gomery|gonnal|" +
+                           "gonnel|gooch|gorie|gorlick|gormick|gormock|gorre|gory|gouan|gougan|goune|govin|gow|gowen|gowne|gowy|gra|" +
+                           "grader|grae|grail|grain|granahan|grane|grasaych|grassych|grassycht|grasycht|graw|grayych|greagh|greal|green|" +
+                           "gregare|gregur|greigor|greil|greill|greische|greish|gresche|gresich|gressich|gressiche|greusach|greusaich|" +
+                           "grevar|grewer|griger|grigor|grigour|grimen|grimmon|grindal|groary|grouther|growder|gruaig|gruar|grudaire|" +
+                           "grudder|grundle|grury|gruthar|guaig|guarie|guarrie|gubb|gubbin|guckin|guffey|guffoc|guffock|guffog|guigan|" +
+                           "guill|guilvery|guin|guistan|gulican|gumeraitt|gunnion|guoga|gurgh|gurk|gurkich|gy|gybbon|gye|gyll|gyllepatric)";
+mb.macNames.h            = "(haffie|hardie|hardy|harold|hendrie|hendry|howell|hugh|hutchen|hutcheon|hael|haffey|haffine|hamish|hans|" +
+                           "harday|harg|harrie|harrold|harry|harvie|hatton|hay|hee|hendric|henish|henrie|henrik|henry|herlick|herloch|" +
+                           "herres|herries|heth|hethrick|hgie|hieson|hilliegowie|hillies|hilmane|hinch|hinzie|hlachlan|hnight|hoiter|" +
+                           "homas|homash|homie|honel|honichy|houat|houl|houle|houston|houtton|hpatrick|hquan|hquhan|hray|hrudder|hruder|" +
+                           "hrurter|hruter|huat|hucheon|hucheoun|huin|huiston|huitcheon|hulagh|hullie|hutchin|hutchison|hutchon|hutchoun|" +
+                           "hyntoys)";
+mb.macNames.i            = "(ian|ildowie|ilduy|illeriach|ilreach|ilrevie|ilriach|ilvain|ilvora|ilvrae|ilvride|ilwhom|ilwraith|ilzegowie|" +
+                           "immey|inally|indeor|indoe|innes|inroy|instalker|intosh|intyre|iock|issac|iver|ivor|iain|ikin|ilaine|ilandick|" +
+                           "ilaraith|ilarith|ilbowie|ilbraie|ilbreid|ilbrick|ilbryd|ilbuie|ilchattan|ilchoan|ilchoane|ilchoen|ilchombie|" +
+                           "ilchomhghain|ilchomich|ilchomie|ilchomy|ilchreist|ilchrom|ilchrum|ilchrumie|ilcrist|ilday|ildeu|ildeus|ildew|" +
+                           "ildonich|ildoui|ildowy|ildue|ilduf|ilduff|ilees|ileish|ilelan|ilendrish|ileollan|ilergan|ilerith|ileur|ilewe|" +
+                           "ilfadrich|ilfatrik|ilfun|ilghuie|ilglegane|ilguie|ilguy|ilhaffie|ilhagga|ilhane|ilhaos|ilhatton|ilhauch|ilhaugh|" +
+                           "ilhench|ilheran|ilherran|ilhois|ilhoise|ilhose|ilhouse|iliphadrick|ilishe|iliwray|illaine|illandarish|illandick|" +
+                           "illayn|illbride|illeain|illechallum|illees|illeese|illeglass|illeish|illeland|illenane|illepatrick|illephadrick|" +
+                           "illephedder|illepheder|illephudrick|illereoch|illereoche|illergin|illevorie|illewe|illewie|illfatrick|illfreish|" +
+                           "illfrice|illhois|illhos|illhose|illhuy|illichoan|illiduy|illimhier|illiruaidh|illon|illory|illreach|illreave|" +
+                           "illrevie|illrick|illvain|illveyan|illvra|illwrick|ilmanus|ilmartine|ilmeane|ilmeine|ilmertin|ilmeyne|ilmichael|" +
+                           "ilmichaell|ilmichall|ilmichell|ilmorie|ilmorrow|ilmoun|ilmune|ilmunn|ilna|ilnae|ilnaey|ilneive|ilnew|iloray|" +
+                           "iloure|ilpadrick|ilpatrick|ilpedder|ilquham|ilquhan|ilra|ilraich|ilraith|ilravey|ilravie|ilray|ilreath|ilreave|" +
+                           "ilrie|ilrith|ilrivich|ilroy|ilroych|iluraick|iluray|ilurick|ilvail|ilvaine|ilvane|ilvar|ilvayne|ilvean|ilveane|" +
+                           "ilveen|ilveerie|ilvern|ilvernock|ilvery|ilvian|ilvoray|ilvory|ilvra|ilvrach|ilvraith|ilvray|ilvreed|ilwain|" +
+                           "ilwaine|ilweine|ilwham|ilwhannel|ilwra|ilwraithe|ilwrathe|ilwray|ilwrick|ilwrith|immie|inair|inas|inayr|incaird|" +
+                           "inchruter|inclerich|inclerie|inclerycht|indeoir|indoer|inechy|ineskair|inesker|inferson|ingvale|inisker|inkaird|" +
+                           "inkeard|inlaintaig|inleaster|inleister|inlester|inlister|innesh|inneskar|innesker|inness|innis|innisch|innish|" +
+                           "innocater|innon|innowcater|innowcatter|innuer|innugatour|innuier|innyeir|inocader|instokir|instray|instrie|" +
+                           "instry|instucker|intagart|intagerit|intailyeour|intargart|intayleor|intaylor|inteer|inthosse|intioch|intire|" +
+                           "intoch|intoschecht|intoschie|intoschye|inturner|intyir|intyller|intylor|intyr|inuair|inuar|inuctar|inucter|" +
+                           "inuire|inuyer|invaille|invale|invalloch|inville|invine|iosaig|iphie|irvine|isaac|isaak|isack|isaick|isak|iseik|" +
+                           "ish|istalkir|ittrick|ivar|iverach|ivirach|iye)";
+mb.macNames.j            = "(james|jamis|janet|jannet|jarrow|jerrow|jiltroch|jock|jore)";
+mb.macNames.k            = "(kail|kames|kaskill|kay|keachan|keamish|kean|kechnie|kee|keggie|keith|kellachie|kellaig|kellaigh|kellar|kelloch|" +
+                           "kelvie|kendrick|kenrick|kenzie|keochan|kerchar|kerlich|kerracher|kerras|kersey|kessock|kichan|kieson|kiggan|" +
+                           "killigan|killop|kim|kimmie|kindlay|kinlay|kinley|kinnell|kinney|kinning|kinnon|kintosh|kinven|kirdy|kissock|" +
+                           "knight||k|ka|kaa|kaay|kadam|kadem|kadie|kaggie|kai|kaig|kaige|kaigh|kaill|kain|kainzie|kairlie|kairly|kaiscal|" +
+                           "kaiskill|kalar|kale|kalexander|kall|kalla|kallan|kallay|kallister|kalpie|kalpin|kame|kance|kandrew|kane|kanrig|" +
+                           "kantoiss|kants|kanyss|kanze|karas|kardie|karlich|kascal|kaskil|kaskin|kau|kaula|kauley|kaw|kawe|kawes|kbayth|" +
+                           "kbrid|kcaige|kchonchie|kcline|kconil|kconnell|kcook|kcoul|kcrae|kcrain|kcrow|kcrumb|kculloch|kdowall|ke|keachie|" +
+                           "keachy|keag|keand|keandla|keane|keanzie|kearass|keardie|kearlie|kearly|kearrois|kearsie|keaver|keay|kecherane|" +
+                           "kechern|kechran|kechrane|kechren|keddey|keddie|kedy|keech|keechan|keeg|keekine|keenan|keesick|keever|keevor" +
+                           "|kegg|keich|keig|keihan|keil|kein|keinezie|keinzie|keissik|keithan|keithen|keiver|keiy|kelar|kelbride|keldey|" +
+                           "keldowie|kelecan|kelegan|kelein|keleran|kelican|kell|kellaich|kellayr|keller|kellor|kelly|kelpin|kelrae|kelvain|" +
+                           "kelvey|kemie|kemmie|kemy|kena|kenabry|kendric|kendrich|kendrie|kendrig|kendry|kenen|keney|kenezie|kenich|kenie|" +
+                           "kenmie|kenna|kennah|kennan|kennane|kennay|kenney|kentase|kentyre|kenyee|kenyie|kenzy|keon|keowan|keown|keracher|" +
+                           "keracken|keraish|keras|kercher|kerdie|kerichar|kericher|kerley|kerliche|kerlie|kerloch|kermick|kern|kernock|" +
+                           "kerral|kerrel|kerricher|kerrin|kerris|kerron|kerrow|kersie|kersy|kesek|kesk|kessack|kessick|kessog|kessogg|" +
+                           "keswal|kethan|kethe|kethrick|ketterick|kettrick|keur|keurtain|kever|kevin|kevor|kevors|kew|kewan|kewer|kewin|" +
+                           "kewish|kewn|kewnie|kewyne|kewyr|key|keyoche|kfarlen|kghie|kgil|kglesson|khardie|khimy|khonachy|kiachan|kiaran|" +
+                           "kiarran|kibbin|kibbon|kick|kiddie|kie|kiech|kiehan|kigg|kildaiye|kildash|kilday|kilferson|kilhaffy|kilhoise|" +
+                           "kilican|kilikin|kill|killaig|kille|killeane|killenane|killhose|killiam|killib|killican|killicane|killichane|" +
+                           "killichoan|killigane|killigin|killimichael|killip|killmartine|killmichaell|killor|kilmichael|kilmichel|kilmine|" +
+                           "kilmon|kilmoun|kilmun|kilmune|kilmurray|kilpatrick|kilquhone|kilrae|kilrea|kilroy|kiltosche|kilvain|kilvane|" +
+                           "kilven|kilvie|kilwein|kilweyan|kilwraith|kilwrath|kilwyan|kimmy|kindel|kindew|kindle|kinfarsoun|kinin|kinish|" +
+                           "kinla|kinna|kinnay|kinnel|kinnen|kinnes|kinneskar|kinness|kinnie|kinnis|kinnoch|kinoun|kinsagart|kinshe|" +
+                           "kinstay|kinstrey|kinstrie|kinstry|kintaggart|kintaylzeor|kintishie|kintoch|kintoche|kintoisch|kintorss|kintyre|" +
+                           "kinyie|kinze|kinzie|kiock|kirchan|kirdie|kirsty|kisack|kiseck|kissack|kissek|kissick|kissoch|kistock|kithan|" +
+                           "kitterick|kittrick|kiver|kivers|kivirrich|kiynnan|kjames|klagan|klain|klan|klanachen|klanan|klane|klannan|" +
+                           "klarain|klawchlane|klawklane|klechreist|klehois|kleiry|klellan|klellane|klemin|klemurray|klen|klenden|klendon|" +
+                           "kleod|kleroy|klewain|klewraith|klin|klinnan|klowis|kluire|kmaster|kmillan|kmorran|kmunish|kmurrie|knabe|knach|" +
+                           "knacht|knae|knaer|knaight|knair|knaire|knaught|knaughtane|knawcht|knaycht|knayt|kne|kneach|kneale|knedar|knee|" +
+                           "kneicht|kneis|kneische|kneishe|knellan|kness|knicht|knie|knilie|knily|knish|knitt|knockater|knocker|knockiter|" +
+                           "knokaird|koen|komash|komie|kommie|komy|konald|kondachy|kone|konnell|konochie|kork|korkitill|korkyll|kornock|" +
+                           "kornok|kouchane|koull|koun|kowean|kowen|kowie|kowin|kowle|kowloch|kowloche|kowne|kownne|kowyne|kperson|kphaill|" +
+                           "kpharsone|kqueane|kquyne|kra|krachin|krae|kraith|kraken|kray|krayth|kreath|kree|kreiche|krekane|krenald|krenele|" +
+                           "krie|kritchy|krory|kuen|kuenn|kuerdy|kuffie|kuinn|kuir|kuish|kukan|kulagh|kulican|kullie|kulloch|kullouch|kune|" +
+                           "kuntosche|kunuchie|kure|kurerdy|kurkull|kurrich|kury|kush|kusick|kussack|kwarrathy|kwatt|kwhinney|kwilliam|ky|" +
+                           "kye|kygo|kym|kymmie|kynich|kynioyss|kynnair|kynnay|kynnayr|kynnell|kynnie|kyntagart|kyntaggart|kyntalyhur|" +
+                           "kyntoich|kyntossche|kyntoys|kyrnele)";
+mb.macNames.l            = "(lachlan|lae|lagan|laghlan|laine|lairish|lamond|lardie|lardy|laren|larty|laverty|laws|lea|lean|leay|lehose|" +
+                           "leish|leister|lennan|leod|lergain|lerie|leverty|lewis|lintock|lise|liver|lucas|lugash|lulich|lure|lymont|" +
+                           "labhrain|labhruinn|lachan|lachie|lachlainn|lachlane|lachlin|lackie|laerigh|laerike|laertigh|laffertie|lafferty|" +
+                           "lagain|lagane|lagen|laggan|laggen|lagine|laglan|laglen|lagone|laiman|lain|laine|lairen|lairtie|lalan|lalland|" +
+                           "lallen|lammie|lamon|lamont|lamroch|lanachan|lanaghan|lanaghen|landsborough|lane|lannachen|lanochen|lanoquhen|" +
+                           "laomuinm|laran|larin|laring|lartie|lartych|latchie|latchy|lauchan|lauchlan|lauchlane|lauchleine|lauchlen|" +
+                           "lauchlin|lauchrie|laugas|laughan|laughlan|laughland|laughlane|laughlin|lauren|laurent|laurin|laurine|lavor|" +
+                           "lawchtlane|lawhorn|lawmane|lawran|lawrin|lawrine|lay|layne|leand|leane|leannaghain|lear|leary|leash|leaver|" +
+                           "leerie|lees|leesh|leever|lefrish|lehoan|leich|lein|lelan|leland|lelane|lelann|lelen|lellan|lelland|lellane|" +
+                           "leman|lemme|lemon|lemond|len|lenaghan|lenane|lenden|lendon|lene|lenechen|lenochan|lentick|leoad|leoid|leot|" +
+                           "leougas|leran|lergan|lerich|lern|leron|leroy|lese|less|letchie|leud|leur|lewain|lewd|ley|lglesson|limont|lin|" +
+                           "linden|linein|linnen|lintoch|lish|liss|llauchland|lochlainn|lochlin|lockie|lode|loed|loghlin|loid|loir|lokie|" +
+                           "lolan|lolane|lonachin|lonvie|loon|loor|lorn|louchlan|loud|lougas|loughlin|louis|louvie|low|lowe|lowkas|loy|" +
+                           "loyde|lroy|lucais|lucase|luckie|lucky|lude|lugaish|lugane|lugas|lugeis|lugers|luggan|lugish|luguis|luir|luke|" +
+                           "lulaghe|lulaich|lulli|lullich|lullick|lumfa|lumpha|lung|lur|lurg|luskey|luskie|lusky|lwannell|lwhannel|lyn|" +
+                           "lyndon)";
+mb.macNames.m            = "(manus|martin|master|math|maurice|menzies|michael|millan|minn|monies|morran|munn|murchie|murchy|murdo|murdoch|" +
+                           "murray|murrich|mutrie||maghnuis|magister|magnus|mahon|main|maines|mainess|mains|malduff|man|manamy|manaway|" +
+                           "manes|manis|mann|mannas|mannes|mannus|mark|marquis|marten|martun|martyne|mathon|mayne|meachie|mean|means|" +
+                           "meechan|meekan|meeken|meekin|meeking|meikan|mein|meinn|men|menamie|menamin|menemie|menemy|menigall|mertein|" +
+                           "mertene|mertin|mhannis|mhaolain|mhathain|mhourich|mhuireadhaigh|mhuirich|mhuirrich|mhurchaidh|michan|micheil|" +
+                           "michell|michie|mickan|micken|mickin|micking|migatour|mikan|miken|milane|milland|millen|millin|millon|min|" +
+                           "mina|mine|minne|minnies|minnis|mitchel|mitchell|moil|molan|molane|molland|monagle|monnies|moran|morane|" +
+                           "mordoch|moreland|moren|morice|mories|morin|morine|moris|morland|moroquhy|morrane|morrin|moryn|moryne|" +
+                           "mowtrie|muckater|muiredhaigh|muiredhuigh|muirigh|mukrich|mulan|mulane|mullan|mullen|mullin|mullon|mulron|" +
+                           "munagle|muncater|muncatter|mune|mungatour|murachy|murchaidh|murchou|murd|murdon|murdy|muredig|murich|murphy|" +
+                           "murquhe|murquhie|murre|murree|murriche|murrie|murrin|murry|murrycht|murrye|murtchie|murtery|murtie|murtrie|" +
+                           "mury|mychel|mychele|mylan|myllan|myllane|myn|myne|mynneis)";
+mb.macNames.n            = "(nab|nair|namell|naughton|nayer|nee|neil|neilage|neiledge|neilly|neish|neur|ney|nider|nie|nish|niter|niven|" +
+                           "nuir|nuyer|nabb|nachdan|nacht|nachtan|nachtane|nachtin|nachton|nae|naght|naghtane|naghten|naicht|naichtane|" +
+                           "naight|nail|naill|nairn|nait|nakaird|nale|nally|namaoile|namil|namill|naoimhin|naois|naoise|nap|nar|nare|" +
+                           "narin|natt|naucater|nauch|nauche|nauchtan|nauchtane|nauchton|naught|naughtan|naughten|nauth|nauton|nay|" +
+                           "nayair|nayr|nayre|nea|neacail|neacain|neacden|neachdainn|neachden|neadair|neal|neale|neall|near|necaird|" +
+                           "nedair|nedar|nedyr|neel|neelie|neer|nees|neice|neid|neigh|neight|neill|neille|neillie|neir|neis|neische|" +
+                           "neiss|neit|neiving|nekard|nele|nelly|nely|nesche|neskar|nesker|ness|nett|nettar|nevin|newer|neyll|nial|" +
+                           "nicail|niccoll|nichol|nichole|nicholl|nicht|nickle|nicol|nicoll|nidder|niel|nielie|niff|night|nikord|" +
+                           "nillie|nily|nische|nitt|nivaine|noah|noaise|noble|nocaird|noder|nokaird|nokard|nokerd|nokord|nomiolle|" +
+                           "nomoille|norcard|norton|nougard|nowcater|nowcatter|noyar|noyare|noyiar|nucadair|nucater|nucator|nucatter|" +
+                           "nuctar|nuer|nuicator|nuire|nure|nutt|nvyr|nychol|nychole|nycholl|nysche)";
+mb.macNames.o            = "(|omie|omish|onie|oran|oull|ourlic|owen|owl|obyn|ochtery|ochtrie|ochtry|odrum|oisein|olaine|oldonich|oleane|" +
+                           "olmichaell|ologhe|olonie|olony|olphatrick|olrig|omelyne|onachie|onachy|onchie|ondochie|ondoquhy|onechy|onee|" +
+                           "oneill|onele|onhale|onill|onlay|onochie|onohie|orkill|ormack|orquidill|orquodale|oseanag|osenage|osennag|" +
+                           "osham|oshennag|oshenog|ostrich|ostrick|oual|ouat|ouhir|oul|oulie|oulric|oulroy|ourich|owan|owat|owis|owlache)";
+mb.macNames.p            = "(patrick|petrie|phadden|phater|phedran|phedron|pheidiran|pherson|phillip|phorich|phun|padane|paden|paid|paill|" +
+                           "parlan|parland|parlane|parlin|partick|patre|paul|paule|pawle|pearson|peeters|person|persone|personn|peter|" +
+                           "petir|petre|petri|phadan|phaddion|phade|phadein|phaden|phadraig|phadrick|phadrig|phadrik|phadruck|phadruig|" +
+                           "phadryk|phadzen|phael|phaell|phaid|phaide|phaidein|phaiden|phaidin|phail|phaile|phaill|phait|phale|pharheline|" +
+                           "pharick|pharlain|pharlane|pharson|phate|phatrick|phatricke|phatryk|phaul|phaull|phayll|pheadair|pheadarain|" +
+                           "phearson|pheat|phedar|pheddair|pheddrin|phedearain|phederan|phedrein|phee|pheidearain|pheidran|pheidron|" +
+                           "phell|phersen|phersone|phete|phial|phie|phiel|philib|philip|philipps|phingone|phoid|phune|phuney|phunie|" +
+                           "phunn|phuny|phyden|pilips)";
+mb.macNames.q            = "(qha|qhardies|qharter|qherter|qua|quaben|quade|quaid|quain|quaker|qualter|quan|quarie|quarrane|quarrey|" +
+                           "quarter|quat|quater|quatter|quattie|quatty|quay|quaynes|quckian|que|quean|queane|quee|queeban|queen|queeney|" +
+                           "queenie|quein|queine|queir|queiston|quen|quene|questen|queston|queyn|queyne|quhae|quhalter|quhan|quhannil|" +
+                           "quharrane|quharrie|quharry|quhartoune|quhat|quhatti|quhattie|quheen|quhen|quhenn|quhenne|quhenzie|quheritie|" +
+                           "quheyne|quhine|quhinny|quhinze|quhir|quhirertie|quhirirtie|quhirrie|quhirtir|quhirtour|quhirtoure|quhoire|" +
+                           "quhollastar|quhonale|quhonyle|quhore|quhorie|quhorre|quhorter|quhoull|quhriter|quhyn|quhyne|quhynze|quibben|" +
+                           "quibbon|quiben|quid|quie|quien|quikan|quilkan|quilliam|quiltroch|quin|quine|quinne|quinnes|quiod|quirter|" +
+                           "quistin|quiston|quithean|quitheane|quithen|quorcadaill|quore|quorie|quorn|quorne|quorquhordell|quorquodale|" +
+                           "quorquordill|quorrie|qurrie|quyre|qwaker|quaire|quarrie|quartie|quey|quhirr|quire|quistan|quisten|quoid)";
+mb.macNames.r            = "(rad|rah|raht|raill|railt|rain|raine|raing|ralte|ranal|ranald|randal|randall|randell|ranich|ranie|rankein|" +
+                           "rankine|ranking|rankyne|rannal|rannald|rau|raurie|ravey|raw|ray|rayne|re|rea|readie|ready|rearie|reary|" +
+                           "reath|reay|redie|ree|reekie|reiche|reil|reill|reirie|reith|renald|renold|rerie|reth|reull|revey|revie|rey|" +
+                           "reynald|reynold|reynolds|riche|richie|rie|rikie|rimmon|rindle|rinnell|rinnyl|ririck|riridh|ririe|ritchey|" +
+                           "ritchy|rither|robe|roberts|robi|robin|roderick|roe|roithrich|ronald|ronall|rone|rotherick|rourie|row|rowat|" +
+                           "rowatt|roy|royre|royree|royri|ruairidh|ruar|ruaraidh|ruary|rudder|rudrie|ruidhri|rurry|ruter|ryche|rynald|" +
+                           "rynall|ryndill|rynell|rynild|rypert|ryrie|ra|rach|rae|raild|raith|rankin|rath|ritchie|rob|robb|robbie|" +
+                           "robert|robie|rorie|rory|ruer|rurie|rury)";
+mb.macNames.s            = "(shannachan|shimes|simon|sorley|sporran|swan|sween|swen|symon|sagart|sata|sayde|scamble|scilling|setree|" +
+                           "seveney|sherry|shille|shimidh|shimie|shimmie|shirie|shirrie|shuibhne|skellie|skelly|skimming|sloy|soirle|" +
+                           "sorle|sorlet|sorlie|sorll|sorlle|sorrill|sorrle|souarl|staker|stalker|steven|stokker|suain|suin|swain|" +
+                           "swaine|swane|swanney|sweyne|swigan|swiggan|swyde|swyne)";
+mb.macNames.t            = "(taggart|tary|tause|tavish|tear|thomas|tier|tire|taevis|tagart|taggard|taggate|taggert|taggit|taldrach|" +
+                           "taldridge|taldroch|talzyr|tamhais|tarlach|tarlich|tarmayt|taveis|tawisch|tawys|teer|teir|ter|tere|terlach|" +
+                           "teyr|thamais|thamhais|thavish|thearlaich|thom|thomaidh|thomais|thome|thomie|thorcadail|thorcuill|thurkill|" +
+                           "toiche|tomais|torquedil|torquil|toschy|toshy|turk|tyr|tyre)";
+mb.macNames.u            = "(ulric|ure|ualraig|ualtair|uaraig|ubein|ubin|ubine|uidhir|uilam|uilleim|uir|uirigh|uish|uiston|ulagh|ulaghe|" +
+                           "ullie|ulloch|ulrich|ulrick|ulrig|une|urchie|urchy|urich)";
+mb.macNames.v            = "(vinie|vinnie|virrich|virriche|virrist|vitie|vittae|vittie|voerich|vorchie|voreis|voreiss|voreist|vorich|" +
+                           "voriche|voris|vorish|vorist|vorrich|vourich|vretny|vrettny|vurarthie|vurarthy|vurchie|vurirch|vuririch|" +
+                           "vurist|vurrich|vurriche|vurrish|vain|vaine|vale|vane|vannan|vannel|vararthy|vararty|varraich|varrais|" +
+                           "varrich|varrish|varrist|varthie|vat|vater|vaxter|vay|veane|veay|vee|veigh|veirrich|venish|vennie|verrathie|" +
+                           "vicker|vie|villie|vail|vanish|varish|veagh|vean|vey|vicar|vinish|vurich|vurie)";
+mb.macNames.w            = "(wade|waltir|warie|warish|wat|water|watt|watte|watter|wattir|watty|wean|weane|weeny|werarthe|werarthie|wete|" +
+                           "wha|whae|whan|whaneall|whanell|whanle|whanlie|whannall|whanne|whannel|whannil|whanrall|wharrie|whaugh|whaw|" +
+                           "wheir|whey|whin|whinn|whinney|whinnie|whir|whire|whirrie|whirtour|whiston|whonnell|whorter|whrurter|whunye|" +
+                           "why|whynie|whyrter|wiccar|wiggan|williame|williams|willie|winney|wirrich|wirriche|wirter|withean|withy|" +
+                           "worthie|wrarthie|wray|wrerdie|wurchie|wurie|wyllie|walrick|walter|wattie|whannell|whirr|whirter|william)";
+mb.macNames.x            = "";
+mb.macNames.y            = "(ye|yewin|yllecrist|ylory|ylroy|ylroye|ylveine|ynniel|ynstalker|ynthosche|ynthose|yntoch|yntoisch|yntyre|" +
+                           "ynwiss|yowin|ysaac|ysac|yuir|ywene)";
+mb.macNames.z            = "";
+
+[%# Everything below should eventually be auto-populated via a script. %]
+mb.country               = {
+                           "1" : "[%- l("Afghanistan") -%]",
+                           "2" : "[%- l("Albania") -%]",
+                           "3" : "[%- l("Algeria") -%]",
+                           "4" : "[%- l("American Samoa") -%]",
+                           "5" : "[%- l("Andorra") -%]",
+                           "6" : "[%- l("Angola") -%]",
+                           "7" : "[%- l("Anguilla") -%]",
+                           "8" : "[%- l("Antarctica") -%]",
+                           "9" : "[%- l("Antigua and Barbuda") -%]",
+                           "10" : "[%- l("Argentina") -%]",
+                           "11" : "[%- l("Armenia") -%]",
+                           "12" : "[%- l("Aruba") -%]",
+                           "13" : "[%- l("Australia") -%]",
+                           "14" : "[%- l("Austria") -%]",
+                           "15" : "[%- l("Azerbaijan") -%]",
+                           "16" : "[%- l("Bahamas") -%]",
+                           "17" : "[%- l("Bahrain") -%]",
+                           "18" : "[%- l("Bangladesh") -%]",
+                           "19" : "[%- l("Barbados") -%]",
+                           "20" : "[%- l("Belarus") -%]",
+                           "21" : "[%- l("Belgium") -%]",
+                           "22" : "[%- l("Belize") -%]",
+                           "23" : "[%- l("Benin") -%]",
+                           "24" : "[%- l("Bermuda") -%]",
+                           "25" : "[%- l("Bhutan") -%]",
+                           "26" : "[%- l("Bolivia") -%]",
+                           "27" : "[%- l("Bosnia and Herzegovina") -%]",
+                           "28" : "[%- l("Botswana") -%]",
+                           "29" : "[%- l("Bouvet Island") -%]",
+                           "30" : "[%- l("Brazil") -%]",
+                           "31" : "[%- l("British Indian Ocean Territory") -%]",
+                           "32" : "[%- l("Brunei Darussalam") -%]",
+                           "33" : "[%- l("Bulgaria") -%]",
+                           "34" : "[%- l("Burkina Faso") -%]",
+                           "35" : "[%- l("Burundi") -%]",
+                           "36" : "[%- l("Cambodia") -%]",
+                           "37" : "[%- l("Cameroon") -%]",
+                           "38" : "[%- l("Canada") -%]",
+                           "39" : "[%- l("Cape Verde") -%]",
+                           "40" : "[%- l("Cayman Islands") -%]",
+                           "41" : "[%- l("Central African Republic") -%]",
+                           "42" : "[%- l("Chad") -%]",
+                           "43" : "[%- l("Chile") -%]",
+                           "44" : "[%- l("China") -%]",
+                           "45" : "[%- l("Christmas Island") -%]",
+                           "46" : "[%- l("Cocos (Keeling) Islands") -%]",
+                           "47" : "[%- l("Colombia") -%]",
+                           "48" : "[%- l("Comoros") -%]",
+                           "49" : "[%- l("Congo") -%]",
+                           "236" : "[%- l("Congo, The Democratic Republic of the") -%]",
+                           "50" : "[%- l("Cook Islands") -%]",
+                           "51" : "[%- l("Costa Rica") -%]",
+                           "53" : "[%- l("Croatia") -%]",
+                           "54" : "[%- l("Cuba") -%]",
+                           "55" : "[%- l("Cyprus") -%]",
+                           "56" : "[%- l("Czech Republic") -%]",
+                           "245" : "[%- l("Czechoslovakia (historical, 1918-1992)") -%]",
+                           "52" : "[%- l("Côte d'Ivoire") -%]",
+                           "57" : "[%- l("Denmark") -%]",
+                           "58" : "[%- l("Djibouti") -%]",
+                           "59" : "[%- l("Dominica") -%]",
+                           "60" : "[%- l("Dominican Republic") -%]",
+                           "244" : "[%- l("East Germany (historical, 1949-1990)") -%]",
+                           "62" : "[%- l("Ecuador") -%]",
+                           "63" : "[%- l("Egypt") -%]",
+                           "64" : "[%- l("El Salvador") -%]",
+                           "65" : "[%- l("Equatorial Guinea") -%]",
+                           "66" : "[%- l("Eritrea") -%]",
+                           "67" : "[%- l("Estonia") -%]",
+                           "68" : "[%- l("Ethiopia") -%]",
+                           "241" : "[%- l("Europe") -%]",
+                           "69" : "[%- l("Falkland Islands (Malvinas)") -%]",
+                           "70" : "[%- l("Faroe Islands") -%]",
+                           "71" : "[%- l("Fiji") -%]",
+                           "72" : "[%- l("Finland") -%]",
+                           "73" : "[%- l("France") -%]",
+                           "75" : "[%- l("French Guiana") -%]",
+                           "76" : "[%- l("French Polynesia") -%]",
+                           "77" : "[%- l("French Southern Territories") -%]",
+                           "78" : "[%- l("Gabon") -%]",
+                           "79" : "[%- l("Gambia") -%]",
+                           "80" : "[%- l("Georgia") -%]",
+                           "81" : "[%- l("Germany") -%]",
+                           "82" : "[%- l("Ghana") -%]",
+                           "83" : "[%- l("Gibraltar") -%]",
+                           "84" : "[%- l("Greece") -%]",
+                           "85" : "[%- l("Greenland") -%]",
+                           "86" : "[%- l("Grenada") -%]",
+                           "87" : "[%- l("Guadeloupe") -%]",
+                           "88" : "[%- l("Guam") -%]",
+                           "89" : "[%- l("Guatemala") -%]",
+                           "251" : "[%- l("Guernsey") -%]",
+                           "90" : "[%- l("Guinea") -%]",
+                           "91" : "[%- l("Guinea-Bissau") -%]",
+                           "92" : "[%- l("Guyana") -%]",
+                           "93" : "[%- l("Haiti") -%]",
+                           "94" : "[%- l("Heard Island and McDonald Islands") -%]",
+                           "95" : "[%- l("Honduras") -%]",
+                           "96" : "[%- l("Hong Kong") -%]",
+                           "97" : "[%- l("Hungary") -%]",
+                           "98" : "[%- l("Iceland") -%]",
+                           "99" : "[%- l("India") -%]",
+                           "100" : "[%- l("Indonesia") -%]",
+                           "101" : "[%- l("Iran, Islamic Republic of") -%]",
+                           "102" : "[%- l("Iraq") -%]",
+                           "103" : "[%- l("Ireland") -%]",
+                           "252" : "[%- l("Isle of Man") -%]",
+                           "104" : "[%- l("Israel") -%]",
+                           "105" : "[%- l("Italy") -%]",
+                           "106" : "[%- l("Jamaica") -%]",
+                           "107" : "[%- l("Japan") -%]",
+                           "253" : "[%- l("Jersey") -%]",
+                           "108" : "[%- l("Jordan") -%]",
+                           "109" : "[%- l("Kazakhstan") -%]",
+                           "110" : "[%- l("Kenya") -%]",
+                           "111" : "[%- l("Kiribati") -%]",
+                           "112" : "[%- l("Korea (North), Democratic People's Republic of") -%]",
+                           "113" : "[%- l("Korea (South), Republic of") -%]",
+                           "114" : "[%- l("Kuwait") -%]",
+                           "115" : "[%- l("Kyrgyzstan") -%]",
+                           "116" : "[%- l("Lao People's Democratic Republic") -%]",
+                           "117" : "[%- l("Latvia") -%]",
+                           "118" : "[%- l("Lebanon") -%]",
+                           "119" : "[%- l("Lesotho") -%]",
+                           "120" : "[%- l("Liberia") -%]",
+                           "121" : "[%- l("Libyan Arab Jamahiriya") -%]",
+                           "122" : "[%- l("Liechtenstein") -%]",
+                           "123" : "[%- l("Lithuania") -%]",
+                           "124" : "[%- l("Luxembourg") -%]",
+                           "125" : "[%- l("Macao") -%]",
+                           "126" : "[%- l("Macedonia, The Former Yugoslav Republic of") -%]",
+                           "127" : "[%- l("Madagascar") -%]",
+                           "128" : "[%- l("Malawi") -%]",
+                           "129" : "[%- l("Malaysia") -%]",
+                           "130" : "[%- l("Maldives") -%]",
+                           "131" : "[%- l("Mali") -%]",
+                           "132" : "[%- l("Malta") -%]",
+                           "133" : "[%- l("Marshall Islands") -%]",
+                           "134" : "[%- l("Martinique") -%]",
+                           "135" : "[%- l("Mauritania") -%]",
+                           "136" : "[%- l("Mauritius") -%]",
+                           "137" : "[%- l("Mayotte") -%]",
+                           "138" : "[%- l("Mexico") -%]",
+                           "139" : "[%- l("Micronesia, Federated States of") -%]",
+                           "140" : "[%- l("Moldova") -%]",
+                           "141" : "[%- l("Monaco") -%]",
+                           "142" : "[%- l("Mongolia") -%]",
+                           "247" : "[%- l("Montenegro") -%]",
+                           "143" : "[%- l("Montserrat") -%]",
+                           "144" : "[%- l("Morocco") -%]",
+                           "145" : "[%- l("Mozambique") -%]",
+                           "146" : "[%- l("Myanmar") -%]",
+                           "147" : "[%- l("Namibia") -%]",
+                           "148" : "[%- l("Nauru") -%]",
+                           "149" : "[%- l("Nepal") -%]",
+                           "150" : "[%- l("Netherlands") -%]",
+                           "151" : "[%- l("Netherlands Antilles") -%]",
+                           "152" : "[%- l("New Caledonia") -%]",
+                           "153" : "[%- l("New Zealand") -%]",
+                           "154" : "[%- l("Nicaragua") -%]",
+                           "155" : "[%- l("Niger") -%]",
+                           "156" : "[%- l("Nigeria") -%]",
+                           "157" : "[%- l("Niue") -%]",
+                           "158" : "[%- l("Norfolk Island") -%]",
+                           "159" : "[%- l("Northern Mariana Islands") -%]",
+                           "160" : "[%- l("Norway") -%]",
+                           "161" : "[%- l("Oman") -%]",
+                           "162" : "[%- l("Pakistan") -%]",
+                           "163" : "[%- l("Palau") -%]",
+                           "249" : "[%- l("Palestinian Territory") -%]",
+                           "164" : "[%- l("Panama") -%]",
+                           "165" : "[%- l("Papua New Guinea") -%]",
+                           "166" : "[%- l("Paraguay") -%]",
+                           "167" : "[%- l("Peru") -%]",
+                           "168" : "[%- l("Philippines") -%]",
+                           "169" : "[%- l("Pitcairn") -%]",
+                           "170" : "[%- l("Poland") -%]",
+                           "171" : "[%- l("Portugal") -%]",
+                           "172" : "[%- l("Puerto Rico") -%]",
+                           "173" : "[%- l("Qatar") -%]",
+                           "174" : "[%- l("Reunion") -%]",
+                           "175" : "[%- l("Romania") -%]",
+                           "176" : "[%- l("Russian Federation") -%]",
+                           "177" : "[%- l("Rwanda") -%]",
+                           "255" : "[%- l("Saint Barthélemy") -%]",
+                           "196" : "[%- l("Saint Helena") -%]",
+                           "178" : "[%- l("Saint Kitts and Nevis") -%]",
+                           "179" : "[%- l("Saint Lucia") -%]",
+                           "256" : "[%- l("Saint Martin") -%]",
+                           "197" : "[%- l("Saint Pierre and Miquelon") -%]",
+                           "180" : "[%- l("Saint Vincent and The Grenadines") -%]",
+                           "181" : "[%- l("Samoa") -%]",
+                           "182" : "[%- l("San Marino") -%]",
+                           "183" : "[%- l("Sao Tome and Principe") -%]",
+                           "184" : "[%- l("Saudi Arabia") -%]",
+                           "185" : "[%- l("Senegal") -%]",
+                           "254" : "[%- l("Serbia") -%]",
+                           "242" : "[%- l("Serbia and Montenegro (historical, 2003-2006)") -%]",
+                           "186" : "[%- l("Seychelles") -%]",
+                           "187" : "[%- l("Sierra Leone") -%]",
+                           "188" : "[%- l("Singapore") -%]",
+                           "189" : "[%- l("Slovakia") -%]",
+                           "190" : "[%- l("Slovenia") -%]",
+                           "191" : "[%- l("Solomon Islands") -%]",
+                           "192" : "[%- l("Somalia") -%]",
+                           "193" : "[%- l("South Africa") -%]",
+                           "248" : "[%- l("South Georgia and the South Sandwich Islands") -%]",
+                           "243" : "[%- l("Soviet Union (historical, 1922-1991)") -%]",
+                           "194" : "[%- l("Spain") -%]",
+                           "195" : "[%- l("Sri Lanka") -%]",
+                           "198" : "[%- l("Sudan") -%]",
+                           "199" : "[%- l("Suriname") -%]",
+                           "200" : "[%- l("Svalbard and Jan Mayen") -%]",
+                           "201" : "[%- l("Swaziland") -%]",
+                           "202" : "[%- l("Sweden") -%]",
+                           "203" : "[%- l("Switzerland") -%]",
+                           "204" : "[%- l("Syrian Arab Republic") -%]",
+                           "205" : "[%- l("Taiwan") -%]",
+                           "206" : "[%- l("Tajikistan") -%]",
+                           "207" : "[%- l("Tanzania, United Republic of") -%]",
+                           "208" : "[%- l("Thailand") -%]",
+                           "61" : "[%- l("Timor-Leste") -%]",
+                           "209" : "[%- l("Togo") -%]",
+                           "210" : "[%- l("Tokelau") -%]",
+                           "211" : "[%- l("Tonga") -%]",
+                           "212" : "[%- l("Trinidad and Tobago") -%]",
+                           "213" : "[%- l("Tunisia") -%]",
+                           "214" : "[%- l("Turkey") -%]",
+                           "215" : "[%- l("Turkmenistan") -%]",
+                           "216" : "[%- l("Turks and Caicos Islands") -%]",
+                           "217" : "[%- l("Tuvalu") -%]",
+                           "218" : "[%- l("Uganda") -%]",
+                           "219" : "[%- l("Ukraine") -%]",
+                           "220" : "[%- l("United Arab Emirates") -%]",
+                           "221" : "[%- l("United Kingdom") -%]",
+                           "222" : "[%- l("United States") -%]",
+                           "223" : "[%- l("United States Minor Outlying Islands") -%]",
+                           "224" : "[%- l("Uruguay") -%]",
+                           "225" : "[%- l("Uzbekistan") -%]",
+                           "226" : "[%- l("Vanuatu") -%]",
+                           "227" : "[%- l("Vatican City State (Holy See)") -%]",
+                           "228" : "[%- l("Venezuela") -%]",
+                           "229" : "[%- l("Viet Nam") -%]",
+                           "230" : "[%- l("Virgin Islands, British") -%]",
+                           "231" : "[%- l("Virgin Islands, U.S.") -%]",
+                           "232" : "[%- l("Wallis and Futuna") -%]",
+                           "233" : "[%- l("Western Sahara") -%]",
+                           "234" : "[%- l("Yemen") -%]",
+                           "235" : "[%- l("Yugoslavia (historical, 1918-2003)") -%]",
+                           "237" : "[%- l("Zambia") -%]",
+                           "238" : "[%- l("Zimbabwe") -%]",
+                           "239" : "[%- l("[Unknown Country]") -%]",
+                           "240" : "[%- l("[Worldwide]") -%]",
+                           "250" : "[%- l("Åland Islands") -%]"
+                           };
+// [ RowID, Start Date, Format Name ]
+mb.format                = [
+                           [1,1982,"[%- l("CD") -%]"],
+                           [2,1995,"[%- l("DVD") -%]"],
+                           [3,1999,"[%- l("SACD") -%]"],
+                           [4,2004,"[%- l("DualDisc") -%]"],
+                           [5,1978,"[%- l("LaserDisc") -%]"],
+                           [6,1992,"[%- l("MiniDisc") -%]"],
+                           [7,1895,"[%- l("Vinyl") -%]"],
+                           [8,1964,"[%- l("Cassette") -%]"],
+                           [9,1962,"[%- l("Cartridge (4/8-tracks)") -%]"],
+                           [10,1935,"[%- l("Reel-to-reel") -%]"],
+                           [11,1976,"[%- l("DAT") -%]"],
+                           [12,1978,"[%- l("Digital Media") -%]"],
+                           [13,"","[%- l("Other") -%]"],
+                           [14,1877,"[%- l("Wax Cylinder") -%]"],
+                           [15,1883,"[%- l("Piano Roll") -%]"],
+                           [16,2000,"[%- l("DVD Audio") -%]"],
+                           [17,2006,"[%- l("Blu-ray") -%]"],
+                           [18,2006,"[%- l("HD-DVD") -%]"]
+                           ];
+mb.releasetype           = {
+                           "1" : "[%- l("Album") -%]",
+                           "2" : "[%- l("Single") -%]",
+                           "3" : "[%- l("EP") -%]",
+                           "4" : "[%- l("Compilation") -%]",
+                           "5" : "[%- l("Soundtrack") -%]",
+                           "6" : "[%- l("Spokenword") -%]",
+                           "7" : "[%- l("Interview") -%]",
+                           "8" : "[%- l("Audiobook") -%]",
+                           "9" : "[%- l("Live") -%]",
+                           "10" : "[%- l("Remix") -%]",
+                           "11" : "[%- l("Other") -%]"
+                           };
+mb.releasestatus         = {
+                           "100" : "[%- l("Official") -%]",
+                           "101" : "[%- l("Promotion") -%]",
+                           "102" : "[%- l("Bootleg") -%]",
+                           "103" : "[%- l("Pseudo-Release") -%]"
+                           };
+mb.language              = {
+                           "2" : "[%- l("Abkhazian") -%]",
+                           "3" : "[%- l("Achinese") -%]",
+                           "4" : "[%- l("Acoli") -%]",
+                           "5" : "[%- l("Adangme") -%]",
+                           "6" : "[%- l("Adyghe") -%]",
+                           "1" : "[%- l("Afar") -%]",
+                           "8" : "[%- l("Afrihili") -%]",
+                           "9" : "[%- l("Afrikaans") -%]",
+                           "473" : "[%- l("Ainu") -%]",
+                           "10" : "[%- l("Akan") -%]",
+                           "12" : "[%- l("Albanian") -%]",
+                           "13" : "[%- l("Aleut") -%]",
+                           "15" : "[%- l("Amharic") -%]",
+                           "475" : "[%- l("Angika") -%]",
+                           "18" : "[%- l("Arabic") -%]",
+                           "20" : "[%- l("Aragonese") -%]",
+                           "23" : "[%- l("Arapaho") -%]",
+                           "25" : "[%- l("Arawak") -%]",
+                           "21" : "[%- l("Armenian") -%]",
+                           "479" : "[%- l("Aromanian") -%]",
+                           "26" : "[%- l("Assamese") -%]",
+                           "27" : "[%- l("Asturian") -%]",
+                           "30" : "[%- l("Avaric") -%]",
+                           "31" : "[%- l("Avestan") -%]",
+                           "32" : "[%- l("Awadhi") -%]",
+                           "33" : "[%- l("Aymara") -%]",
+                           "34" : "[%- l("Azerbaijani") -%]",
+                           "40" : "[%- l("Balinese") -%]",
+                           "38" : "[%- l("Baluchi") -%]",
+                           "39" : "[%- l("Bambara") -%]",
+                           "42" : "[%- l("Basa") -%]",
+                           "37" : "[%- l("Bashkir") -%]",
+                           "41" : "[%- l("Basque") -%]",
+                           "44" : "[%- l("Beja") -%]",
+                           "45" : "[%- l("Belarusian") -%]",
+                           "46" : "[%- l("Bemba") -%]",
+                           "47" : "[%- l("Bengali") -%]",
+                           "49" : "[%- l("Bhojpuri") -%]",
+                           "50" : "[%- l("Bihari") -%]",
+                           "51" : "[%- l("Bikol") -%]",
+                           "52" : "[%- l("Bini") -%]",
+                           "53" : "[%- l("Bislama") -%]",
+                           "64" : "[%- l("Blin") -%]",
+                           "56" : "[%- l("Bosnian") -%]",
+                           "57" : "[%- l("Braj") -%]",
+                           "58" : "[%- l("Breton") -%]",
+                           "61" : "[%- l("Buginese") -%]",
+                           "62" : "[%- l("Bulgarian") -%]",
+                           "60" : "[%- l("Buriat") -%]",
+                           "63" : "[%- l("Burmese") -%]",
+                           "65" : "[%- l("Caddo") -%]",
+                           "68" : "[%- l("Catalan") -%]",
+                           "70" : "[%- l("Cebuano") -%]",
+                           "75" : "[%- l("Chagatai") -%]",
+                           "72" : "[%- l("Chamorro") -%]",
+                           "74" : "[%- l("Chechen") -%]",
+                           "82" : "[%- l("Cherokee") -%]",
+                           "85" : "[%- l("Cheyenne") -%]",
+                           "73" : "[%- l("Chibcha") -%]",
+                           "313" : "[%- l("Chichewa") -%]",
+                           "76" : "[%- l("Chinese") -%]",
+                           "79" : "[%- l("Chinook jargon") -%]",
+                           "81" : "[%- l("Chipewyan") -%]",
+                           "80" : "[%- l("Choctaw") -%]",
+                           "83" : "[%- l("Church Slavic") -%]",
+                           "77" : "[%- l("Chuukese") -%]",
+                           "84" : "[%- l("Chuvash") -%]",
+                           "87" : "[%- l("Coptic") -%]",
+                           "88" : "[%- l("Cornish") -%]",
+                           "89" : "[%- l("Corsican") -%]",
+                           "93" : "[%- l("Cree") -%]",
+                           "286" : "[%- l("Creek") -%]",
+                           "94" : "[%- l("Crimean Tatar") -%]",
+                           "366" : "[%- l("Croatian") -%]",
+                           "98" : "[%- l("Czech") -%]",
+                           "99" : "[%- l("Dakota") -%]",
+                           "100" : "[%- l("Danish") -%]",
+                           "101" : "[%- l("Dargwa") -%]",
+                           "103" : "[%- l("Delaware") -%]",
+                           "106" : "[%- l("Dinka") -%]",
+                           "107" : "[%- l("Divehi") -%]",
+                           "108" : "[%- l("Dogri") -%]",
+                           "105" : "[%- l("Dogrib") -%]",
+                           "111" : "[%- l("Duala") -%]",
+                           "113" : "[%- l("Dutch") -%]",
+                           "114" : "[%- l("Dyula") -%]",
+                           "115" : "[%- l("Dzongkha") -%]",
+                           "116" : "[%- l("Efik") -%]",
+                           "118" : "[%- l("Ekajuk") -%]",
+                           "119" : "[%- l("Elamite") -%]",
+                           "120" : "[%- l("English") -%]",
+                           "290" : "[%- l("Erzya") -%]",
+                           "122" : "[%- l("Esperanto") -%]",
+                           "123" : "[%- l("Estonian") -%]",
+                           "124" : "[%- l("Ewe") -%]",
+                           "125" : "[%- l("Ewondo") -%]",
+                           "126" : "[%- l("Fang") -%]",
+                           "128" : "[%- l("Fanti") -%]",
+                           "127" : "[%- l("Faroese") -%]",
+                           "129" : "[%- l("Fijian") -%]",
+                           "130" : "[%- l("Filipino") -%]",
+                           "131" : "[%- l("Finnish") -%]",
+                           "133" : "[%- l("Fon") -%]",
+                           "134" : "[%- l("French") -%]",
+                           "485" : "[%- l("Frisian, Eastern") -%]",
+                           "484" : "[%- l("Frisian, Northern") -%]",
+                           "137" : "[%- l("Frisian, Western") -%]",
+                           "139" : "[%- l("Friulian") -%]",
+                           "138" : "[%- l("Fulah") -%]",
+                           "140" : "[%- l("Ga") -%]",
+                           "67" : "[%- l("Galibi Carib") -%]",
+                           "150" : "[%- l("Galician") -%]",
+                           "249" : "[%- l("Ganda") -%]",
+                           "141" : "[%- l("Gayo") -%]",
+                           "142" : "[%- l("Gbaya") -%]",
+                           "146" : "[%- l("Geez") -%]",
+                           "144" : "[%- l("Georgian") -%]",
+                           "145" : "[%- l("German") -%]",
+                           "299" : "[%- l("German, Low") -%]",
+                           "476" : "[%- l("German, Swiss") -%]",
+                           "147" : "[%- l("Gilbertese") -%]",
+                           "154" : "[%- l("Gondi") -%]",
+                           "155" : "[%- l("Gorontalo") -%]",
+                           "156" : "[%- l("Gothic") -%]",
+                           "157" : "[%- l("Grebo") -%]",
+                           "159" : "[%- l("Greek") -%]",
+                           "204" : "[%- l("Greenlandic") -%]",
+                           "160" : "[%- l("Guarani") -%]",
+                           "161" : "[%- l("Gujarati") -%]",
+                           "162" : "[%- l("Gwich'in") -%]",
+                           "163" : "[%- l("Haida") -%]",
+                           "164" : "[%- l("Haitian Creole") -%]",
+                           "165" : "[%- l("Hausa") -%]",
+                           "166" : "[%- l("Hawaiian") -%]",
+                           "167" : "[%- l("Hebrew") -%]",
+                           "168" : "[%- l("Herero") -%]",
+                           "169" : "[%- l("Hiligaynon") -%]",
+                           "170" : "[%- l("Himachali") -%]",
+                           "171" : "[%- l("Hindi") -%]",
+                           "174" : "[%- l("Hiri Motu") -%]",
+                           "173" : "[%- l("Hmong") -%]",
+                           "176" : "[%- l("Hungarian") -%]",
+                           "177" : "[%- l("Hupa") -%]",
+                           "178" : "[%- l("Iban") -%]",
+                           "180" : "[%- l("Icelandic") -%]",
+                           "181" : "[%- l("Ido") -%]",
+                           "179" : "[%- l("Igbo") -%]",
+                           "186" : "[%- l("Iloko") -%]",
+                           "189" : "[%- l("Indonesian") -%]",
+                           "191" : "[%- l("Ingush") -%]",
+                           "187" : "[%- l("Interlingua") -%]",
+                           "185" : "[%- l("Interlingue") -%]",
+                           "184" : "[%- l("Inuktitut") -%]",
+                           "192" : "[%- l("Inupiaq") -%]",
+                           "149" : "[%- l("Irish") -%]",
+                           "195" : "[%- l("Italian") -%]",
+                           "198" : "[%- l("Japanese") -%]",
+                           "196" : "[%- l("Javanese") -%]",
+                           "200" : "[%- l("Judeo - Arabic") -%]",
+                           "199" : "[%- l("Judeo-Persian") -%]",
+                           "212" : "[%- l("Kabardian") -%]",
+                           "202" : "[%- l("Kabyle") -%]",
+                           "203" : "[%- l("Kachin") -%]",
+                           "459" : "[%- l("Kalmyk") -%]",
+                           "205" : "[%- l("Kamba") -%]",
+                           "206" : "[%- l("Kannada") -%]",
+                           "209" : "[%- l("Kanuri") -%]",
+                           "201" : "[%- l("Kara-Kalpak") -%]",
+                           "227" : "[%- l("Karachay - Balkar") -%]",
+                           "477" : "[%- l("Karelian") -%]",
+                           "208" : "[%- l("Kashmiri") -%]",
+                           "96" : "[%- l("Kashubian") -%]",
+                           "211" : "[%- l("Kazakh") -%]",
+                           "213" : "[%- l("Khasi") -%]",
+                           "215" : "[%- l("Khmer, Central") -%]",
+                           "217" : "[%- l("Kikuyu") -%]",
+                           "220" : "[%- l("Kimbundu") -%]",
+                           "218" : "[%- l("Kinyarwanda") -%]",
+                           "219" : "[%- l("Kirghiz") -%]",
+                           "421" : "[%- l("Klingon") -%]",
+                           "222" : "[%- l("Komi") -%]",
+                           "223" : "[%- l("Kongo") -%]",
+                           "221" : "[%- l("Konkani") -%]",
+                           "224" : "[%- l("Korean") -%]",
+                           "225" : "[%- l("Kosraean") -%]",
+                           "226" : "[%- l("Kpelle") -%]",
+                           "230" : "[%- l("Kuanyama") -%]",
+                           "231" : "[%- l("Kumyk") -%]",
+                           "232" : "[%- l("Kurdish") -%]",
+                           "229" : "[%- l("Kurukh") -%]",
+                           "233" : "[%- l("Kutenai") -%]",
+                           "234" : "[%- l("Ladino") -%]",
+                           "235" : "[%- l("Lahnda") -%]",
+                           "236" : "[%- l("Lamba") -%]",
+                           "237" : "[%- l("Lao") -%]",
+                           "238" : "[%- l("Latin") -%]",
+                           "239" : "[%- l("Latvian") -%]",
+                           "240" : "[%- l("Lezghian") -%]",
+                           "241" : "[%- l("Limburgish") -%]",
+                           "242" : "[%- l("Lingala") -%]",
+                           "243" : "[%- l("Lithuanian") -%]",
+                           "197" : "[%- l("Lojban") -%]",
+                           "245" : "[%- l("Lozi") -%]",
+                           "248" : "[%- l("Luba-Katanga") -%]",
+                           "247" : "[%- l("Luba - Lulua") -%]",
+                           "250" : "[%- l("Luiseno") -%]",
+                           "251" : "[%- l("Lunda") -%]",
+                           "252" : "[%- l("Luo") -%]",
+                           "253" : "[%- l("Lushai") -%]",
+                           "246" : "[%- l("Luxembourgish") -%]",
+                           "254" : "[%- l("Macedonian") -%]",
+                           "255" : "[%- l("Madurese") -%]",
+                           "256" : "[%- l("Magahi") -%]",
+                           "258" : "[%- l("Maithili") -%]",
+                           "259" : "[%- l("Makasar") -%]",
+                           "275" : "[%- l("Malagasy") -%]",
+                           "266" : "[%- l("Malay") -%]",
+                           "260" : "[%- l("Malayalam") -%]",
+                           "276" : "[%- l("Maltese") -%]",
+                           "277" : "[%- l("Manchu") -%]",
+                           "268" : "[%- l("Mandar") -%]",
+                           "261" : "[%- l("Mandingo") -%]",
+                           "278" : "[%- l("Manipuri") -%]",
+                           "151" : "[%- l("Manx") -%]",
+                           "262" : "[%- l("Maori") -%]",
+                           "22" : "[%- l("Mapudungun") -%]",
+                           "264" : "[%- l("Marathi") -%]",
+                           "78" : "[%- l("Mari") -%]",
+                           "257" : "[%- l("Marshallese") -%]",
+                           "288" : "[%- l("Marwari") -%]",
+                           "265" : "[%- l("Masai") -%]",
+                           "269" : "[%- l("Mende") -%]",
+                           "271" : "[%- l("Mi 'kmaq") -%]",
+                           "272" : "[%- l("Minangkabau") -%]",
+                           "287" : "[%- l("Mirandese") -%]",
+                           "280" : "[%- l("Mohawk") -%]",
+                           "267" : "[%- l("Moksha") -%]",
+                           "244" : "[%- l("Mongo") -%]",
+                           "282" : "[%- l("Mongolian") -%]",
+                           "283" : "[%- l("Mossi") -%]",
+                           "478" : "[%- l("N' Ko") -%]",
+                           "294" : "[%- l("Nauru") -%]",
+                           "295" : "[%- l("Navajo") -%]",
+                           "297" : "[%- l("Ndebele, North") -%]",
+                           "296" : "[%- l("Ndebele, South") -%]",
+                           "298" : "[%- l("Ndonga") -%]",
+                           "293" : "[%- l("Neapolitan") -%]",
+                           "301" : "[%- l("Nepal Bhasa") -%]",
+                           "300" : "[%- l("Nepali") -%]",
+                           "302" : "[%- l("Nias") -%]",
+                           "304" : "[%- l("Niuean") -%]",
+                           "307" : "[%- l("Nogai") -%]",
+                           "308" : "[%- l("Norse, Old") -%]",
+                           "309" : "[%- l("Norwegian") -%]",
+                           "306" : "[%- l("Norwegian Bokmål") -%]",
+                           "305" : "[%- l("Norwegian Nynorsk") -%]",
+                           "314" : "[%- l("Nyamwezi") -%]",
+                           "315" : "[%- l("Nyankole") -%]",
+                           "316" : "[%- l("Nyoro") -%]",
+                           "317" : "[%- l("Nzima") -%]",
+                           "318" : "[%- l("Occitan") -%]",
+                           "319" : "[%- l("Ojibwa") -%]",
+                           "320" : "[%- l("Oriya") -%]",
+                           "321" : "[%- l("Oromo") -%]",
+                           "322" : "[%- l("Osage") -%]",
+                           "323" : "[%- l("Ossetian") -%]",
+                           "332" : "[%- l("Palauan") -%]",
+                           "337" : "[%- l("Pali") -%]",
+                           "329" : "[%- l("Pampanga") -%]",
+                           "327" : "[%- l("Pangasinan") -%]",
+                           "330" : "[%- l("Panjabi") -%]",
+                           "331" : "[%- l("Papiamento") -%]",
+                           "334" : "[%- l("Persian") -%]",
+                           "339" : "[%- l("Pohnpeian") -%]",
+                           "338" : "[%- l("Polish") -%]",
+                           "340" : "[%- l("Portuguese") -%]",
+                           "343" : "[%- l("Pushto") -%]",
+                           "344" : "[%- l("Quechua") -%]",
+                           "345" : "[%- l("Rajasthani") -%]",
+                           "346" : "[%- l("Rapanui") -%]",
+                           "347" : "[%- l("Rarotongan") -%]",
+                           "351" : "[%- l("Romanian") -%]",
+                           "349" : "[%- l("Romansh") -%]",
+                           "350" : "[%- l("Romany") -%]",
+                           "352" : "[%- l("Rundi") -%]",
+                           "353" : "[%- l("Russian") -%]",
+                           "359" : "[%- l("Samaritan Aramaic") -%]",
+                           "383" : "[%- l("Sami, Inari") -%]",
+                           "382" : "[%- l("Sami, Lule") -%]",
+                           "380" : "[%- l("Sami, Northern") -%]",
+                           "385" : "[%- l("Sami, Skolt") -%]",
+                           "379" : "[%- l("Sami, Southern") -%]",
+                           "384" : "[%- l("Samoan") -%]",
+                           "354" : "[%- l("Sandawe") -%]",
+                           "355" : "[%- l("Sango") -%]",
+                           "360" : "[%- l("Sanskrit") -%]",
+                           "362" : "[%- l("Santali") -%]",
+                           "394" : "[%- l("Sardinian") -%]",
+                           "361" : "[%- l("Sasak") -%]",
+                           "365" : "[%- l("Scots") -%]",
+                           "148" : "[%- l("Scottish Gaelic") -%]",
+                           "367" : "[%- l("Selkup") -%]",
+                           "363" : "[%- l("Serbian") -%]",
+                           "395" : "[%- l("Serer") -%]",
+                           "371" : "[%- l("Shan") -%]",
+                           "386" : "[%- l("Shona") -%]",
+                           "182" : "[%- l("Sichuan Yi") -%]",
+                           "364" : "[%- l("Sicilian") -%]",
+                           "372" : "[%- l("Sidamo") -%]",
+                           "54" : "[%- l("Siksika") -%]",
+                           "387" : "[%- l("Sindhi") -%]",
+                           "373" : "[%- l("Sinhala") -%]",
+                           "104" : "[%- l("Slave(Athapascan)") -%]",
+                           "377" : "[%- l("Slovak") -%]",
+                           "378" : "[%- l("Slovenian") -%]",
+                           "390" : "[%- l("Somali") -%]",
+                           "388" : "[%- l("Soninke") -%]",
+                           "110" : "[%- l("Sorbian, Lower") -%]",
+                           "175" : "[%- l("Sorbian, Upper") -%]",
+                           "310" : "[%- l("Sotho, Northern") -%]",
+                           "392" : "[%- l("Sotho, Southern") -%]",
+                           "474" : "[%- l("Southern Altai") -%]",
+                           "393" : "[%- l("Spanish") -%]",
+                           "480" : "[%- l("Sranan Tongo") -%]",
+                           "398" : "[%- l("Sukuma") -%]",
+                           "399" : "[%- l("Sundanese") -%]",
+                           "400" : "[%- l("Susu") -%]",
+                           "402" : "[%- l("Swahili") -%]",
+                           "397" : "[%- l("Swati") -%]",
+                           "403" : "[%- l("Swedish") -%]",
+                           "404" : "[%- l("Syriac") -%]",
+                           "414" : "[%- l("Tagalog") -%]",
+                           "405" : "[%- l("Tahitian") -%]",
+                           "413" : "[%- l("Tajik") -%]",
+                           "423" : "[%- l("Tamashek") -%]",
+                           "407" : "[%- l("Tamil") -%]",
+                           "408" : "[%- l("Tatar") -%]",
+                           "409" : "[%- l("Telugu") -%]",
+                           "411" : "[%- l("Tereno") -%]",
+                           "412" : "[%- l("Tetum") -%]",
+                           "415" : "[%- l("Thai") -%]",
+                           "416" : "[%- l("Tibetan") -%]",
+                           "417" : "[%- l("Tigre") -%]",
+                           "418" : "[%- l("Tigrinya") -%]",
+                           "410" : "[%- l("Timne") -%]",
+                           "419" : "[%- l("Tiv") -%]",
+                           "422" : "[%- l("Tlingit") -%]",
+                           "426" : "[%- l("Tok Pisin") -%]",
+                           "420" : "[%- l("Tokelau") -%]",
+                           "424" : "[%- l("Tonga (Nyasa)") -%]",
+                           "425" : "[%- l("Tonga(Tonga Islands)") -%]",
+                           "427" : "[%- l("Tsimshian") -%]",
+                           "429" : "[%- l("Tsonga") -%]",
+                           "428" : "[%- l("Tswana") -%]",
+                           "431" : "[%- l("Tumbuka") -%]",
+                           "433" : "[%- l("Turkish") -%]",
+                           "324" : "[%- l("Turkish, Ottoman") -%]",
+                           "430" : "[%- l("Turkmen") -%]",
+                           "435" : "[%- l("Tuvalu") -%]",
+                           "437" : "[%- l("Tuvinian") -%]",
+                           "436" : "[%- l("Twi") -%]",
+                           "438" : "[%- l("Udmurt") -%]",
+                           "440" : "[%- l("Uighur") -%]",
+                           "441" : "[%- l("Ukrainian") -%]",
+                           "442" : "[%- l("Umbundu") -%]",
+                           "444" : "[%- l("Urdu") -%]",
+                           "445" : "[%- l("Uzbek") -%]",
+                           "446" : "[%- l("Vai") -%]",
+                           "447" : "[%- l("Venda") -%]",
+                           "448" : "[%- l("Vietnamese") -%]",
+                           "449" : "[%- l("Volapük") -%]",
+                           "450" : "[%- l("Votic") -%]",
+                           "457" : "[%- l("Walloon") -%]",
+                           "453" : "[%- l("Waray") -%]",
+                           "454" : "[%- l("Washo") -%]",
+                           "455" : "[%- l("Welsh") -%]",
+                           "452" : "[%- l("Wolaitta") -%]",
+                           "458" : "[%- l("Wolof") -%]",
+                           "460" : "[%- l("Xhosa") -%]",
+                           "356" : "[%- l("Yakut") -%]",
+                           "461" : "[%- l("Yao") -%]",
+                           "462" : "[%- l("Yapese") -%]",
+                           "463" : "[%- l("Yiddish") -%]",
+                           "464" : "[%- l("Yoruba") -%]",
+                           "466" : "[%- l("Zapotec") -%]",
+                           "483" : "[%- l("Zaza") -%]",
+                           "467" : "[%- l("Zenaga") -%]",
+                           "468" : "[%- l("Zhuang") -%]",
+                           "470" : "[%- l("Zulu") -%]",
+                           "471" : "[%- l("Zuni") -%]",
+                           "24" : "[%- l("[Artificial(Other)]") -%]",
+                           "284" : "[%- l("[Multiple languages]") -%]"
+                           };
+mb.script                = {
+                           "18" : "[%- l("Arabic") -%]",
+                           "35" : "[%- l("Armenian") -%]",
+                           "72" : "[%- l("Balinese") -%]",
+                           "53" : "[%- l("Bengali") -%]",
+                           "42" : "[%- l("Bopomofo") -%]",
+                           "75" : "[%- l("Buginese") -%]",
+                           "78" : "[%- l("Buhid") -%]",
+                           "87" : "[%- l("Canadian Syllabics") -%]",
+                           "108" : "[%- l("Carian") -%]",
+                           "71" : "[%- l("Cham") -%]",
+                           "88" : "[%- l("Cherokee") -%]",
+                           "23" : "[%- l("Coptic") -%]",
+                           "1" : "[%- l("Cuneiform, Sumero-Akkadian") -%]",
+                           "82" : "[%- l("Cypriot") -%]",
+                           "31" : "[%- l("Cyrillic") -%]",
+                           "37" : "[%- l("Deseret") -%]",
+                           "50" : "[%- l("Devanagari") -%]",
+                           "86" : "[%- l("Ethiopic") -%]",
+                           "36" : "[%- l("Georgian") -%]",
+                           "33" : "[%- l("Glagolitic") -%]",
+                           "24" : "[%- l("Gothic") -%]",
+                           "22" : "[%- l("Greek") -%]",
+                           "52" : "[%- l("Gujarati") -%]",
+                           "49" : "[%- l("Gurmukhi") -%]",
+                           "92" : "[%- l("Han (Hanzi, Kanji, Hanja)") -%]",
+                           "93" : "[%- l("Han (Simplified variant)") -%]",
+                           "94" : "[%- l("Han (Traditional variant)") -%]",
+                           "101" : "[%- l("Hangul") -%]",
+                           "77" : "[%- l("Hanunoo") -%]",
+                           "11" : "[%- l("Hebrew") -%]",
+                           "83" : "[%- l("Hiragana") -%]",
+                           "100" : "[%- l("Hiragana + Katakana") -%]",
+                           "85" : "[%- l("Japanese") -%]",
+                           "60" : "[%- l("Kannada") -%]",
+                           "84" : "[%- l("Katakana") -%]",
+                           "70" : "[%- l("Kayah Li") -%]",
+                           "48" : "[%- l("Kharoshthi") -%]",
+                           "68" : "[%- l("Khmer") -%]",
+                           "102" : "[%- l("Khutsuri") -%]",
+                           "43" : "[%- l("Korean") -%]",
+                           "69" : "[%- l("Lao") -%]",
+                           "28" : "[%- l("Latin") -%]",
+                           "57" : "[%- l("Lepcha") -%]",
+                           "58" : "[%- l("Limbu") -%]",
+                           "81" : "[%- l("Linear B") -%]",
+                           "109" : "[%- l("Lycian") -%]",
+                           "110" : "[%- l("Lydian") -%]",
+                           "62" : "[%- l("Malayalam") -%]",
+                           "111" : "[%- l("Mathematical notation") -%]",
+                           "17" : "[%- l("Mongolian") -%]",
+                           "64" : "[%- l("Myanmar") -%]",
+                           "103" : "[%- l("N' ko") -%]",
+                           "27" : "[%- l("Ogham") -%]",
+                           "104" : "[%- l("Ol Chiki") -%]",
+                           "25" : "[%- l("Old Italic") -%]",
+                           "2" : "[%- l("Old Persian") -%]",
+                           "54" : "[%- l("Oriya") -%]",
+                           "38" : "[%- l("Osmanya") -%]",
+                           "56" : "[%- l("Phags-pa") -%]",
+                           "9" : "[%- l("Phoenician") -%]",
+                           "105" : "[%- l("Rejang") -%]",
+                           "26" : "[%- l("Runic") -%]",
+                           "106" : "[%- l("Saurashtra") -%]",
+                           "40" : "[%- l("Shavian") -%]",
+                           "63" : "[%- l("Sinhala") -%]",
+                           "107" : "[%- l("Sundanese") -%]",
+                           "51" : "[%- l("Syloti Nagri") -%]",
+                           "112" : "[%- l("Symbols") -%]",
+                           "12" : "[%- l("Syriac") -%]",
+                           "76" : "[%- l("Tagalog") -%]",
+                           "79" : "[%- l("Tagbanwa") -%]",
+                           "66" : "[%- l("Tai Le") -%]",
+                           "67" : "[%- l("Tai Lue") -%]",
+                           "61" : "[%- l("Tamil") -%]",
+                           "59" : "[%- l("Telugu") -%]",
+                           "19" : "[%- l("Thaana") -%]",
+                           "65" : "[%- l("Thai") -%]",
+                           "55" : "[%- l("Tibetan") -%]",
+                           "10" : "[%- l("Tifinagh") -%]",
+                           "3" : "[%- l("Ugaritic") -%]",
+                           "91" : "[%- l("Vai") -%]",
+                           "90" : "[%- l("Yi") -%]"
+                           };
+mb.packaging             = {
+                           };
+

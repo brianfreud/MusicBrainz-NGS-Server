@@ -6,9 +6,13 @@
     tag_links.push(link_entity(entity, 'tags', l('more&hellip;')));
     tag_links.join(', ');
 END -%]
-
-[% IF tags.size %]
-<p>
-    <strong>[% l('Tags:') %]</strong> [% tag_list(tags, entity) %]
-</p>
-[% END %]
+<div class="datumGroup">
+    <dl class="datumList">
+        <dt class="exp datumLabels">
+            [% l('Tags:') %]
+        </dt>
+        <dd class="exp">
+            [% tag_list(tags, entity) %]
+        </dd>
+    </dl>
+</div>

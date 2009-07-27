@@ -83,9 +83,9 @@ sub error_500 : Private
     $c->detach;
 }
 
-sub js_text : Path('/js_text') {
+sub js_arrays : Path('/MBarrays.js') {
     my ($self, $c) = @_;
-    $c->stash->{template} = 'scripts/js_text.tt';
+    $c->stash->{template} = 'scripts/MBarrays.tt';
 }
 
 sub begin : Private

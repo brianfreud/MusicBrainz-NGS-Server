@@ -1,7 +1,13 @@
-<p>
-    <strong>[% l('Rating:') %]</strong>
-    [% rating_stars(entity) %]
-    [%- IF entity.rating_count -%]
-    <br />[% link_entity(entity, "ratings", l("Show user ratings")) %]
-    [%- END -%]
-</p>
+<div class="datumGroup">
+    <dl class="datumList">
+        <dt class="exp datumLabels">
+            [% l('Rating:') %]
+        </dt>
+        <dd class="exp">
+            [% rating_stars(entity) %]
+        </dd>
+    </dl>
+</div>
+[%- IF entity.rating_count -%]
+    [% link_entity(entity, "ratings", l("Show user ratings")) %]
+[%- END -%]

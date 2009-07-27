@@ -1,23 +1,24 @@
+[% IF edit %]
+    [% extra_js = "jquery/jquery.corner.js editUI.js" %]
+[% END %]
 [%- WRAPPER 'layout.tt' title=l('Recording “{name}” by {artist}', {
         artist => artist_credit(recording.artist_credit, plain => 1),
         name => recording.name
     })-%]
-
 <div class="sidebar">
-    <p class="nfo">
-        <span><strong>[% l('Artist:') %]</strong> [% artist_credit(recording.artist_credit) %]</span>
-        [%- IF recording.length -%]
-            <span><strong>[% l('Length:') %]</strong> [% recording.length | format_time %]</span>
-        [%- END -%]
-    </p>
+    [%- dataCollection = [
+        { field="recording.artist_credit" title => l('Artist') edit => 'artist' type='text' data => artist_credit(recording.artist_credit)
+          plaintext => html_escape(recording.artist_credit)
+        },
+        { field="recording.length"        title => l('Length') edit => 'length'   type='text' data => format_time(recording.length) },
+    ] -%]
+    [%- PROCESS "components/sidebar-data.tt" element="recording" -%]
     [%- INCLUDE "components/sidebar-rating.tt" entity=recording -%]
     [%- INCLUDE "components/sidebar-tags.tt" entity=recording tags=top_tags -%]
     [%- INCLUDE "components/sidebar-lastupdate.tt" entity=recording -%]
 </div>
-
 <div class="content">
-    [%- INCLUDE 'recording/header.tt' %]
+    [%- INCLUDE "recording/header.tt" -%]
     [%- content -%]
 </div>
-
-[%- END -%]
+[% END %]

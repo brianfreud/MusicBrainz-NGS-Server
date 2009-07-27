@@ -1,28 +1,26 @@
+[% IF edit %]
+    [% extra_js = "jquery/jquery.corner.js editUI.js" %]
+[% END %]
 [%- WRAPPER "layout.tt" title="${label.name} - ${title}" -%]
-
 <div class="sidebar">
-    <p class="nfo">
-        [%- IF label.type -%]
-            <span><strong>[% l('Type:') %]</strong> [% html_escape(label.type_name) %]</span>
-        [%- END -%]
-        [%- UNLESS label.begin_date.is_empty AND label.end_date.is_empty -%]
-            <span><strong>[% l('Active:') %]</strong>
-                [% label.begin_date.format or l("present") %] &mdash;
-                [% label.end_date.format or l("present") %]
-            </span>
-        [%- END -%]
-        [%- IF label.country -%]
-            <span><strong>[% l('Country:') %]</strong> [% html_escape(label.country.name) %]</span>
-        [%- END -%]
-    </p>
+    [%- dataCollection = [
+        { field="label.name"        title => l('Name')      edit => 'name'      type='text' data => html_escape(label.name) },
+        { field="label.sort_name"   title => l('Sort Name') edit => 'sortname'  type='text' data => html_escape(label.sort_name) },
+    ] -%]
+    [%- PROCESS "components/sidebar-data.tt" element="label" -%]
+    [%- dataCollection = [
+        { field="label.type"        title => l('Type')      edit => 'type'      type='text' data => html_escape(label.type_name) },
+        { field="label.begin_date"  title => l('Start')     edit => 'begindate' type='text' data => html_escape(label.begin_date.format) },
+        { field="label.end_date"    title => l('End')       edit => 'enddate'   type='text' data => html_escape(label.end_date.format) },
+        { field="label.country"     title => l('Country')   edit => 'country'   type='text' data => html_escape(label.country.name) },
+    ] -%]
+    [%- PROCESS "components/sidebar-data.tt" entity="label" -%]
     [%- INCLUDE "components/sidebar-rating.tt" entity=label -%]
     [%- INCLUDE "components/sidebar-tags.tt" entity=label tags=top_tags -%]
     [%- INCLUDE "components/sidebar-lastupdate.tt" entity=label -%]
 </div>
-
 <div class="content">
     [%- INCLUDE "label/header.tt" -%]
     [%- content -%]
 </div>
-
-[%- END -%]
+[% END %]

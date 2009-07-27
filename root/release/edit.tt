@@ -1,55 +1,22 @@
-[% extra_js = 'jquery.lookup.js jquery.artistcredits.js jquery.glow.js jquery.toggle.js jquery.undo.js' %]
-
-[%- WRAPPER 'layout.tt' full_width=1 -%]
-    <script>
-        $(document).ready(function() {
-            new jQuery.artistcredits('.container');
-        });
-    </script>
-    <h2>[% l('Edit Release') %]</h2>
-    <form action="[% c.req.uri %]" method="post">
-        [% USE r = FormRenderer(form) %]
-        <div class="row">
-            [% r.label('artist_credit', l('Artist:'), fake => 1) %]
-            [% r.artist_credit_editor('artist_credit') %]
-        </div>
-        <p>
-            [% r.label('name', 'Name:') %]
-            [% r.text('name') %]
-        </p>
-        <p>
-            [% r.label('comment', 'Comment:') %]
-            [% r.text('comment') %]
-        </p>
-        <p>
-            [% r.label('status_id', 'Status:') %]
-            [% r.select('status_id') %]
-        </p>
-        <p>
-            [% r.label('packaging_id', 'Packaging:') %]
-            [% r.select('packaging_id') %]
-        </p>
-        <p>
-            [% r.label('language_id', 'Language:') %]
-            [% r.select('language_id') %]
-        </p>
-        <p>
-            [% r.label('script_id', 'Script:') %]
-            [% r.select('script_id') %]
-        </p>
-        <p>
-            [% r.label('country_id', 'Country:') %]
-            [% r.select('country_id') %]
-        </p>
-        <p>
-            [% r.label('date', 'Release Date:') %]
-            [% r.date('date') %]
-        </p>
-        <p>
-            [% r.label('barcode', 'Barcode:') %]
-            [% r.text('barcode') %]
-        </p>
-        [%- INCLUDE 'forms/edit-note.tt' -%]
-        [% form_submit(l('Edit')) %]
-    </form>
+[%- IF browserIsIE -%]
+    [%- extra_js = "jquery/jquery.corner.js jquery/jquery.selectboxes.js jquery/jquery.hoverintent.js jquery/jquery.autotab.js libraries/excanvas.js jquery/jquery.bt.js jquery/jquery.bgiframe.min.js jquery/jquery.lorem.js editUI.js" -%]
+[%- ELSE -%]
+    [%- extra_js = "jquery/jquery.corner.js jquery/jquery.selectboxes.js jquery/jquery.hoverintent.js jquery/jquery.autotab.js jquery/jquery.bt.js jquery/jquery.lorem.js editUI.js" -%]
 [%- END -%]
+
+[%- edit=1 -%]
+
+[%- USE CGI -%]
+[%#- Note, the next line is not in the TT docs. However, it is the required workaround  -#%]
+[%#- for http://mail.template-toolkit.org/pipermail/templates/2009-February/010605.html -#%]
+[%- SET dontIncludeReturnCode =	 CGI.initialize_globals() -%]
+
+[%- SWITCH CGI.param('tab') -%]
+    [%- CASE 'relationships' -%]
+        [%- PROCESS "release/relationships.tt" -%]
+    [%- CASE 'details' -%]
+        [%- PROCESS "release/index.tt" -%]
+    [%- CASE -%]
+        [%- PROCESS "release/index.tt" -%]
+[%- END -%]
+

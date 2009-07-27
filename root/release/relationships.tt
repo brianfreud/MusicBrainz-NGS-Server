@@ -1,3 +1,7 @@
+[%- whereami = 'relationships' -%]
 [%- WRAPPER 'release/layout.tt' title=l("Relationships") page='relationships' -%]
+[%- IF edit -%]
+<br/><strong>TODO</strong>: Editing mode not yet implemented for this tab.
+[%- END -%]
     [%- INCLUDE "components/relationships.tt" -%]
 [%- END -%]
