@@ -1,0 +1,18 @@
+[% extra_js = "switch.js switchcontrols.js" %]
+[%- SET styleGuidelines=1 guessAll=1 undoRevert=1 -%]
+[%- PROCESS 'scripts/suitereqs.tt' -%]
+
+es=1
+re=1
+
+    [%- INCLUDE 'scripts/module_load_status.tt' -%]
+    [%- INCLUDE 'scripts/module_search_replace.tt' -%]
+    [%- INCLUDE 'scripts/module_track_parser.tt' -%]    
+    [%- INCLUDE 'scripts/module_guess_case.tt' -%]
+
+    [% INCLUDE 'scripts/module_other.tt' %]
+
+        [%- suppressStyleGuidelines=1 -%]
+
+The tiny code snippet to activate double-clicks on radio buttons is stored in layout.tt.  Use RadioClick=1 when calling layout.tt to activate it.
+
