@@ -42,7 +42,6 @@ var MusicBrainz = {
         });
         /* Set auto-newline correction and textarea height auto-adjustment for the track parser input field. */
         $('#tp-textarea').keypress(function () {
-            $(this).val($(this).val().replace(/\n\n/g, "\n"));
             var rows = $('#tp-textarea').val().match(/\n/g).length;
             rows === null ? 1 : rows;
             $('#tp-textarea').attr("rows", rows);
@@ -390,7 +389,6 @@ $(function () {
             $(".hidden.trackdur :eq(" + i + ")").show();
         });
     });
-
 
 
 
