@@ -1,4 +1,5 @@
 [%- WRAPPER 'release/layout.tt' page='index' -%]
+    [% INCLUDE "release/annotation.tt" parent=release %]
     [%- IF edit -%]
         [%- INCLUDE 'scripts/module_track_parser.tt' -%]
     [%- ELSE -%]

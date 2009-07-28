@@ -14,7 +14,7 @@ END -%]
             <select id="select-edit-[%- entity -%]-[% edit %]" class="width100"><option value="">[ [% l('Select&hellip;') %] ]</option></select>
             <input type="hidden" id="edit-[%- entity -%]-[% edit %]-value" value="[%- data1 -%]"/>
         [%- CASE "text" -%]
-            <input type="text" size="14" id="edit-[%- entity -%]-[% edit %]" value="[%- data1 -%]"/>
+            <input type="text" size="13" id="edit-[%- entity -%]-[% edit %]" value="[%- data1 -%]"/>
         [%- CASE "date" -%]
             <div class="nowrap">
                 <input type="text" class="width3" maxlength="4" id="edit-[%- entity -%]-[% edit %]-y" value="[% data1 %]"/> &ndash;
