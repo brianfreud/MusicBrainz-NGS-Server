@@ -30,6 +30,8 @@ var MusicBrainz = {
         $("#" + element + "-dt").btOff();
     },
     initializeTrackParser : function () {
+        /* Insert the track parser into the document. */
+        $(".tbl.release").before(mb.HTMLsnippets.trackParser);
         /* Set the click event controls for the Show / Hide Track Parser button. */
         $("#btnTrackParser").click(function () {
             if ($(this).val() == text.TrackParserShow) { // Show the track parser.
@@ -310,8 +312,6 @@ $(function () {
                                        ["th.release:eq(2)", text.displayTrackArtist, "http://"],
                                        ["th.release:eq(3)", text.displayTrackDuration, "http://"]
                                        ]);
-
-$(".tbl.release").before(mb.HTMLsnippets.trackParser);
 
 // TODO   /* Set click behaviour for editable fields (where there is more than one of that field type). */
     MusicBrainz.makeTogglable([

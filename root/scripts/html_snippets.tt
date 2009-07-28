@@ -11,7 +11,7 @@ mb.HTMLsnippets          = {
 		</div>
 	</div>
 ' -%]
-editBox : '[% editBox.replace("[\t\n]","") %]',
+editBox : '[% editBox.replace("[\t\n]","").replace("'","\\'") %]',
 
 [%- docsBox = '
 	<div id="wikiHelpBox">
@@ -27,7 +27,7 @@ editBox : '[% editBox.replace("[\t\n]","") %]',
 		</div>
 	</div>
 ' -%]
-docsBox : '[% docsBox.replace("[\t\n]","") %]',
+docsBox : '[% docsBox.remove("[\t\n]").replace("'","\\'") %]',
 
 [%- sideMenu = '
 	<div id="editMenu">
@@ -60,8 +60,8 @@ docsBox : '[% docsBox.replace("[\t\n]","") %]',
 		</span>
 	</div>
 ' -%]
-sideMenu : '[% sideMenu.replace("[\t\n]","") %]',
+sideMenu : '[% sideMenu.replace("[\t\n]","").replace("'","\\'") %]',
 
 [%- trackParser = PROCESS "scripts/module_track_parser.tt" -%]
-trackParser : '[% trackParser.replace("[\t\n]","").replace("'","\\'") %]',
+trackParser : '[% trackParser.remove("[\t\n]").replace("'","\\'").replace(" +"," ") %]',
                            };
