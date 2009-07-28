@@ -1,0 +1,64 @@
+[%#- The use of tabs in this file is on purpose.  Do not replace them! -%]
+mb.HTMLsnippets          = {
+
+[%- editBox = '
+	<div id="editMsgBox">
+		<div id="editMsg">
+			<div id="editStatusMsg">
+			</div>
+			<div id="editHelpMsg">
+			</div>
+		</div>
+	</div>
+' -%]
+editBox : '[% editBox.replace("[\t\n]","") %]',
+
+[%- docsBox = '
+	<div id="wikiHelpBox">
+		<div id="wikiHelpInnerBox">
+			<div id="wikiTitle">
+				' _ l("MusicBrainz documentation for:") _ '
+				&nbsp;
+				<span id="wikiDocName"/>
+			</div>
+			<hr />
+			<div id="wikiHelp">
+			</div>
+		</div>
+	</div>
+' -%]
+docsBox : '[% docsBox.replace("[\t\n]","") %]',
+
+[%- sideMenu = '
+	<div id="editMenu">
+		<div id="editMenuControls">
+			<div id="editMenuControlsReveal">
+				<input type="button" id="btnEditTitles" value="' _ l("Edit all Titles") _ '"/>
+				<input type="button" id="btnEditArtists" value="' _ l("Edit all Artists") _ '"/>
+				<input type="button" id="btnEditDurations" value="' _ l("Edit all Durations") _ '"/>
+				<input type="button" id="btnEditAll" value="' _ l("Edit Everything") _ '"/>
+			</div>
+			<div id="editMenuControlsGC">
+				<input type="button" id="btnGuessAll" value="' _ l("Guess All") _ '"/>
+				<div style="padding:.2em 0;clear:both;">
+					' _ l("using") _ '
+				</div>
+				<select id="edit-select-gc-mode"/>
+			</div>
+			<div id="editMenuControlsInline">
+				<input type="button" id="btnTrackParser" value="TRACK PARSER"/>
+				<input type="button" id="btnFooFoo" value="PLACEHOLDER"/>
+			</div>
+		</div>
+		<div id="editMenuSubmit">
+			<input type="button" id="editSubmit" value="' _ l("Submit Edits") _ '"/>
+		</div>
+	</div>
+	<div id="editMenuPullout">
+		<span>
+			»
+		</span>
+	</div>
+' -%]
+sideMenu : '[% sideMenu.replace("[\t\n]","") %]'
+                           };
