@@ -48,36 +48,7 @@ var MusicBrainz = {
         });
     },
     makeEditMenu : function () {
-        $("body").append('<div id="editMenu">' +
-                             '<div id="editMenuControls">' +
-                                 /* Create div for the "Edit All ..." buttons. */
-                                 '<div id="editMenuControlsReveal">' +
-                                     '<input type="button" id="btnEditTitles" value="' + text.EditTitles + '"/>' +
-                                     '<input type="button" id="btnEditArtists" value="' + text.EditArtists + '"/>' +
-                                     '<input type="button" id="btnEditDurations" value="' + text.EditDurations + '"/>' +
-                                     '<input type="button" id="btnEditAll" value="' + text.EditAll + '"/>' +
-                                 '</div>' +
-                                 /* Create div for the Guess Case buttons. */
-                                 '<div id="editMenuControlsGC">' +
-                                     '<input type="button" id="btnGuessAll" value="' + text.GuessAll + '"/>' +
-                                     '<div style="padding : .2em 0; clear : both;">' + text.using + '</div>' +
-                                     '<select id="edit-select-gc-mode"/>' +
-                                 '</div>' +
-                                 /* Create div for the "Show / Hide ..." buttons. */
-                                 '<div id="editMenuControlsInline">' +
-                                     '<input type="button" id="btnTrackParser" value="' + text.TrackParserShow + '"/>' +
-                                     '<input type="button" id="btnFooFoo" value="' + "PLACEHOLDER" + '"/>' +
-                                 '</div>' +
-                             '</div>' +
-                             /* Create the submit button. */
-                             '<div id="editMenuSubmit">' +
-                                 '<input type="button" id="editSubmit" value="' + text.Submit + '"/>' +
-                             '</div>' +
-                         '</div>' +
-                         /* Create the pullout tab. */
-                         '<div id="editMenuPullout">' +
-                             '<span>»</span>' +
-                         '</div>');
+        $("body").append(mb.HTMLsnippets.sideMenu);
         $("#editMenuPullout").corner(MusicBrainz.roundness + " tr")
                              .corner(MusicBrainz.roundness + " br")
                              .mouseover(function () {
@@ -126,22 +97,7 @@ var MusicBrainz = {
         }
     },
     makeStatusAndDocsBox : function() {
-        $(".tabs:eq(0)").after('<div id="editMsgBox">' +
-                                   '<div id="editMsg">' +
-                                       '<div id="editStatusMsg"> </div>' +
-                                       '<div id="editHelpMsg"> </div>' +
-                                   '</div>' +
-                               '</div>' +
-                               '<div id="wikiHelpBox">' +
-                                   '<div id="wikiHelpInnerBox">' +
-                                       '<div id="wikiTitle">' +
-                                           text.MBdocs + ':&nbsp;' +
-                                           '<span id="wikiDocName"/>' +
-                                       '</div>' +
-                                       '<hr />' +
-                                       '<div id="wikiHelp"></div>' +
-                                   '</div>' +
-                               '</div>');
+        $(".tabs:eq(0)").after(mb.HTMLsnippets.editBox + mb.HTMLsnippets.docsBox);
         $("#editMsgBox").corner(MusicBrainz.roundness);
         $("#editMsg").corner(MusicBrainz.roundness);
         $("#wikiHelpBox").corner(MusicBrainz.roundness);
@@ -258,6 +214,7 @@ $(function () {
 
    /* Set click behaviour for editable fields (where there is qty 1 of that field type). */
     MusicBrainz.makeTogglable([
+                              /* Definitions for entity type: Release */
                               ['release-date'],
                               'release-format',
                               'release-packaging',
@@ -312,6 +269,7 @@ $(function () {
 
     /* Set hover help texts. */
     MusicBrainz.setHoverMsg([
+                            /* Definitions for entity type: Release */
                             [".editable.release-barcode", text.hoverBarcode],
                             [".editable.release-catalog", text.hoverCatNumber],
                             [".editable.release-country", text.hoverCountry],
@@ -335,6 +293,7 @@ $(function () {
 
     /* Attach click events to the help buttons. */
     MusicBrainz.attachHelpButtonEvents([
+                                       /* Definitions for entity type: Release */
                                        ["#release-date-dt", text.displayReleaseDate, "http://"],
                                        ["#release-type-dt", text.displayReleaseType, "http://"],
                                        ["#release-format-dt", text.displayReleaseFormat, "http://"],

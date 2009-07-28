@@ -1,6 +1,72 @@
+[%#- The use of tabs in this file is on purpose.  Do not replace them! -%]
+
 var mb                   = [];
 
-[% INCLUDE 'scripts/js_text.tt' %]
+[%- INCLUDE 'scripts/js_text.tt' -%]
+
+mb.HTMLsnippets          = {
+
+[%- editBox = '
+	<div id="editMsgBox">
+		<div id="editMsg">
+			<div id="editStatusMsg">
+			</div>
+			<div id="editHelpMsg">
+			</div>
+		</div>
+	</div>
+' -%]
+editBox : '[% editBox.replace("[\t\n]","") %]',
+
+[%- docsBox = '
+	<div id="wikiHelpBox">
+		<div id="wikiHelpInnerBox">
+			<div id="wikiTitle">
+				' _ l("MusicBrainz documentation for:") _ '
+				&nbsp;
+				<span id="wikiDocName"/>
+			</div>
+			<hr />
+			<div id="wikiHelp">
+			</div>
+		</div>
+	</div>
+' -%]
+docsBox : '[% docsBox.replace("[\t\n]","") %]',
+
+[%- sideMenu = '
+	<div id="editMenu">
+		<div id="editMenuControls">
+			<div id="editMenuControlsReveal">
+				<input type="button" id="btnEditTitles" value="' _ l("Edit all Titles") _ '"/>
+				<input type="button" id="btnEditArtists" value="' _ l("Edit all Artists") _ '"/>
+				<input type="button" id="btnEditDurations" value="' _ l("Edit all Durations") _ '"/>
+				<input type="button" id="btnEditAll" value="' _ l("Edit Everything") _ '"/>
+			</div>
+			<div id="editMenuControlsGC">
+				<input type="button" id="btnGuessAll" value="' _ l("Guess All") _ '"/>
+				<div style="padding:.2em 0;clear:both;">
+					' _ l("using") _ '
+				</div>
+				<select id="edit-select-gc-mode"/>
+			</div>
+			<div id="editMenuControlsInline">
+				<input type="button" id="btnTrackParser" value="TRACK PARSER"/>
+				<input type="button" id="btnFooFoo" value="PLACEHOLDER"/>
+			</div>
+		</div>
+		<div id="editMenuSubmit">
+			<input type="button" id="editSubmit" value="' _ l("Submit Edits") _ '"/>
+		</div>
+	</div>
+	<div id="editMenuPullout">
+		<span>
+			»
+		</span>
+	</div>
+' -%]
+sideMenu : '[% sideMenu.replace("[\t\n]","") %]'
+                           };
 
 mb.commonLangs           = [9,18,41,68,76,366,98,100,113,120,123,131,134,145,159,166,167,171,176,180,189,195,198,224,238,239,243,309,330,338,340,351,353,363,377,378,393,403,433,441,448,284];
 mb.commonScripts         = [18,31,22,92,93,94,11,85,84,43,28,65];
