@@ -211,14 +211,11 @@ label.overlabel-apply {
 
 #editMenu {
  font-weight:700;
- height:25em;
  width:0;
  padding:.3em;
 }
 
 #editMenuPullout {
- height:25.3em;
- line-height:25.3em;
  width:1em;
 }
 
@@ -246,6 +243,7 @@ label.overlabel-apply {
 }
 
 #editMenuControlsInline {
+ display: none;
  margin-top:.3em;
 }
 
@@ -270,7 +268,6 @@ label.overlabel-apply {
 }
 
 #editMenuControlsReveal {
- height:8.7em;
  margin-bottom:.3em;
  padding-top:.1em;
 }

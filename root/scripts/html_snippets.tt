@@ -46,8 +46,6 @@ docsBox : '[% docsBox.remove("[\t\n]").replace("'","\\'") %]',
 				<select id="edit-select-gc-mode"/>
 			</div>
 			<div id="editMenuControlsInline">
-				<input type="button" id="btnTrackParser" value="TRACK PARSER"/>
-				<input type="button" id="btnFooFoo" value="PLACEHOLDER"/>
 			</div>
 		</div>
 		<div id="editMenuSubmit">
