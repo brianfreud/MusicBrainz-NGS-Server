@@ -338,10 +338,11 @@ label.overlabel-apply {
 }
 
 .helpIcon {
+ background: url(/static/images/icon/q.blue.png) top left no-repeat;
  cursor: pointer;
  height: 12px;
+ vertical-align: middle;
  width: 12px;
- background: url(/static/images/icon/q.blue.png) top left no-repeat;
 }
 
 .helpIcon:hover {
@@ -349,11 +350,11 @@ label.overlabel-apply {
 }
 
 .closeButton {
+ background: url(/static/images/icon/close.grey.png) top left no-repeat;
  cursor: pointer;
+ float: right;
  height: 16px;
  width: 16px;
- float: right;
- background: url(/static/images/icon/close.grey.png) top left no-repeat;
 }
 
 .closeButton:hover {
