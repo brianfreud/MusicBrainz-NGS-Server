@@ -1,11 +1,9 @@
 [%- WRAPPER 'release/layout.tt' page='index' -%]
     [% INCLUDE "release/annotation.tt" parent=release %]
-    [%- IF edit -%]
-        [%- INCLUDE 'scripts/module_track_parser.tt' -%]
-    [%- ELSE -%]
+    [%- IF !edit -%]
         <h2>Track listing</h2>
     [%- END -%]
-    <table class="tbl">
+    <table class="tbl[%- IF edit -%] release[%- END -%]">
         <thead>
             <tr>
                 <th class="first[%- IF edit -%] release[%- END-%]" style="width:1em;text-align:right;">#</th>

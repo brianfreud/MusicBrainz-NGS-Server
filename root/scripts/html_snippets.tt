@@ -17,7 +17,7 @@ editBox : '[% editBox.replace("[\t\n]","") %]',
 	<div id="wikiHelpBox">
 		<div id="wikiHelpInnerBox">
 			<div id="wikiTitle">
-				' _ l("MusicBrainz documentation for:") _ '
+				' _ l("MusicBrainz documentation:") _ '
 				&nbsp;
 				<span id="wikiDocName"/>
 			</div>
@@ -60,5 +60,8 @@ docsBox : '[% docsBox.replace("[\t\n]","") %]',
 		</span>
 	</div>
 ' -%]
-sideMenu : '[% sideMenu.replace("[\t\n]","") %]'
+sideMenu : '[% sideMenu.replace("[\t\n]","") %]',
+
+[%- trackParser = PROCESS "scripts/module_track_parser.tt" -%]
+trackParser : '[% trackParser.replace("[\t\n]","").replace("'","\\'") %]',
                            };

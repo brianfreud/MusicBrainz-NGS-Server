@@ -311,7 +311,7 @@ $(function () {
                                        ["th.release:eq(3)", text.displayTrackDuration, "http://"]
                                        ]);
 
-
+$(".tbl.release").before(mb.HTMLsnippets.trackParser);
 
 // TODO   /* Set click behaviour for editable fields (where there is more than one of that field type). */
     MusicBrainz.makeTogglable([
