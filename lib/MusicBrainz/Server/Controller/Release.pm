@@ -216,6 +216,27 @@ sub edit : Chained('load') RequireAuth
     my ($self, $c) = @_;
 
     my $release = $c->stash->{release};
+
+    $c->model('ReleaseStatus')->load($release);
+    $c->model('ReleasePackaging')->load($release);
+    $c->model('Country')->load($release);
+    $c->model('Language')->load($release);
+    $c->model('Script')->load($release);
+    $c->model('ReleaseLabel')->load($release);
+    $c->model('Label')->load(@{ $release->labels });
+    $c->model('ReleaseGroupType')->load($release->release_group);
+    $c->model('Medium')->load($release);
+
+    my @mediums = $release->all_mediums;
+    $c->model('MediumFormat')->load(@mediums);
+
+    my @tracklists = map { $_->tracklist } @mediums;
+    $c->model('Track')->load(@tracklists);
+
+    my @tracks = map { $_->all_tracks } @tracklists;
+    $c->model('Recording')->load(@tracks);
+    $c->model('ArtistCredit')->load($release, @tracks);
+
     my $form = $c->form(form => 'Release', item => $release);
 
     if ($form->submitted_and_valid($c->req->params)) {

@@ -60,7 +60,6 @@ text.ESBeginB              = "[% l("Click any button on the left to begin.") %]"
 text.esGerman              = "[% l('SS was present in the input text here.  Please note that Guess Case has no way to know if SS should become ss or ß when making it lowercase.  Please double check the correct lowercased spelling of this word.') %]";
 text.ESLoaded              = "[% l("Edit Suite loaded.") %]";
 text.FieldFormat           = "[% l("Format") %]";
-text.FormatGeneric         = "[% l("The I18N-format-I18N format began commercial production in I18N-date-I18N.") %]";
 text.GenericOther          = "[% l("Use this option only if the correct I18N-selectlist-I18N is not in the above list.") %]";
 text.FullList              = "[% l("Full List") %]";
 text.gcMode1               = "[% l("using Guess Case set to") %]";

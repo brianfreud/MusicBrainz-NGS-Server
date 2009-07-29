@@ -116,10 +116,6 @@ var MusicBrainz = {
         $.each(mb.format, function (i) {
             mb.format[i][0] != 13 ? formatSelect.addOption(mb.format[i][0],mb.format[i][2]) : otherVal = i;
             formatSelect.children(':last').data("start_date",mb.format[i][1]);
-            MusicBrainz.setHoverMsg([["#select-edit-release-format option:last",
-                                      text.FormatGeneric.replace("I18N-format-I18N", mb.format[i][2])
-                                                        .replace("I18N-date-I18N",mb.format[i][1])
-                                    ]]);
         });
         formatSelect.sortOptions()
                     .val("")
@@ -313,7 +309,7 @@ $(function () {
                             [".helpIcon", text.hoverHelp],
                             ["#btnTrackParser", text.hoverTP]
                             ]);
-    $(".editable, .helpIcon, #btnTrackParser").mouseout(function () {
+    $(".editable, .helpIcon, #btnTrackParser, #select-edit-release-format option:last").mouseout(function () {
                                                          MusicBrainz.clearHelpMsg();
                                                          });
 
