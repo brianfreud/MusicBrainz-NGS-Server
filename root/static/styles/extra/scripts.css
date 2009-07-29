@@ -334,6 +334,8 @@ label.overlabel-apply {
  border-color: #736DAB;
 }
 
+/* Help icons */
+
 .helpIcon {
  background: url(/static/images/icon/q.blue.png) top left no-repeat;
  cursor: pointer;
@@ -346,6 +348,8 @@ label.overlabel-apply {
  background: url(/static/images/icon/q.orange.png) top left no-repeat;
 }
 
+/* Documentation window close button. */
+
 .closeButton {
  background: url(/static/images/icon/close.grey.png) top left no-repeat;
  cursor: pointer;
@@ -356,4 +360,23 @@ label.overlabel-apply {
 
 .closeButton:hover {
  background: url(/static/images/icon/close.red.png) top left no-repeat;
+}
+
+/* Country flags in select lists. */
+
+#select-edit-release-country optgroup.icon {
+ background: transparent none no-repeat scroll left top;
+ float: left;
+ height: 16px;
+ margin-left: 2px;
+ vertical-align: middle;
+ width: 16px;
+}
+
+#select-edit-release-country option {
+ float: left;
+ margin-bottom :6px;
+ margin-top: -20px;
+ padding-left: 21px;
+ vertical-align: middle;
 }

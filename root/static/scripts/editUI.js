@@ -83,6 +83,24 @@ var MusicBrainz = {
             });
         }
     },
+    makeCountryList : function () {
+        var countrySelect = $("#select-edit-release-country");
+        $.each(mb.country, function (i) {
+            /* Add country <option> to the <select>. */
+            countrySelect.addOption(mb.country[i][0], mb.country[i][1]);
+            /* This next pushes CSS2 engines and only works in FireFox at the moment.  As the results either look really
+             * ugly or do nothing at all in the other browsers, don't even try to do it on any browser but FireFox. */
+            if ($.browser.mozilla) {
+                /* Add flag icon to the left of the <option>'s text. */
+                countrySelect.children(":last")
+                             .before($("<optgroup/>").css({
+                                                          background: "url(/static/images/icon/flags.png) no-repeat " + mb.country[i][3] + "px"
+                                                          })
+                                                     .addClass("icon")
+                             );
+            }
+        });
+    },
     makeFormatList : function () {
         var otherVal,
             formatSelect = $("#select-edit-release-format");
@@ -93,7 +111,7 @@ var MusicBrainz = {
         formatSelect.sortOptions()
                     .val("")
                     .addOption(mb.format[otherVal][0],mb.format[otherVal][2]); // Add the option for "Other" to the end of the list.
-        formatSelect.children(':last').data("start_date","");
+        formatSelect.children(':last').data("start_date", "");
         formatSelect.children(':first').attr("selected", "selected");
     },
     makeStatusAndDocsBox : function () {
@@ -192,9 +210,12 @@ var MusicBrainz = {
 };
 
 $(function () {
+   /* === Editor Initialization === */
 
     /* Insert help icons. */
     $(".datumItem dt, th.release").prepend('<img src="/static/images/blank.gif" class="helpIcon"/>&nbsp;');
+
+    /* Expand tracklist position and duration columns slightly, to accomodate the help icons without wrapping. */
     $("th.release:first").css({width: "3em"});
     $("th.release:last").css({width: "6em"});
 
@@ -240,7 +261,8 @@ $(function () {
     $('#edit-release-date-y').autotab({ target: 'edit-release-date-m', format: 'numeric',                                  maxlength: '4' });
     $('#edit-release-date-m').autotab({ target: 'edit-release-date-d', format: 'numeric', previous: 'edit-release-date-y', maxlength: '2' });
     $('#edit-release-date-d').autotab({                                format: 'numeric', previous: 'edit-release-date-m', maxlength: '2' });
-    $("input[id$='edit-release-barcode']").attr("maxlength", 15); // EAN13 + EAN2, 15 digit maximum length
+    $("input[id$='edit-release-barcode']").attr("maxlength", 15) // EAN13 + EAN2, 15 digit maximum length
+                                          .autotab({format: 'numeric'});
 
     /* Populate the simple select lists. */
     $("#select-edit-release-type").addOption(mb.releasetype, false);
@@ -257,12 +279,6 @@ $(function () {
     $('.editable.release-script').click(function () {
         MusicBrainz.makeSwappableSelectList("release", "script", mb.script);
     });
-
-    /* Set the selected language and script, if there is a pre-existing selected one. */
-    $("#select-edit-release-language").addOption($("#edit-release-language-value").val(), "");
-    MusicBrainz.swapShortLongList($("#select-edit-release-language"), $("#btn-switch-language-list"), mb.commonLangs, mb.language);
-    $("#select-edit-release-script").addOption($("#edit-release-script-value").val(), "");
-    MusicBrainz.swapShortLongList($("#select-edit-release-script"), $("#btn-switch-script-list"), mb.commonScripts, mb.script);
 
     /* Set hover help texts. */
     MusicBrainz.setHoverMsg([
@@ -305,6 +321,26 @@ $(function () {
                                        ["th.release:eq(3)", text.displayTrackDuration, "http://"]
                                        ]);
 
+   /* === Bring existing data into the editor. === */
+
+    /* Set the selected language and script, if there is a pre-existing selected one. */
+    $("#select-edit-release-language").addOption($("#edit-release-language-value").val(), "");
+    MusicBrainz.swapShortLongList($("#select-edit-release-language"), $("#btn-switch-language-list"), mb.commonLangs, mb.language);
+    $("#select-edit-release-script").addOption($("#edit-release-script-value").val(), "");
+    MusicBrainz.swapShortLongList($("#select-edit-release-script"), $("#btn-switch-script-list"), mb.commonScripts, mb.script);
+
+/* TODO: Also pre-populate:
+                          * Release Date
+                          * Type
+                          * Format
+                          * Packaging
+                          * Status
+                          * Labels
+                          * Cat #s
+                          * Barcodes
+                          * Countries */
+
+
 /* Everything below is rough code in progress. */
 
 // TODO:   /* Set click behaviour for editable fields (where there is more than one of that field type). */
@@ -316,7 +352,7 @@ $(function () {
                               ]);
 
 // TODO: There can be more than one country dropdown.
-    $("#select-edit-release-country").addOption(mb.country, false);
+    MusicBrainz.makeCountryList();
 
 // TODO: Test using makeTogglableEachInGroup instead here, once loading release data is function.
     $(".editable.trackposition").each(function (i) {
