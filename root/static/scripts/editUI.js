@@ -71,16 +71,25 @@ var MusicBrainz = {
          * long option text, so those are left to operate normally, without the workaround. */
         if (!$.browser.safari && !$.browser.opera) {
             $("#select-edit-release-country").hoverIntent({
-                interval: 1
-            });
-            $("#select-edit-release-country").hoverIntent(function () {
-                $(this).removeClass("width100", "normal")
-                       .addClass("shiftSelect", "normal");
-            },
-            function () {
-                $(this).addClass("width100", "normal")
-                       .removeClass("shiftSelect", "normal");
-            });
+                interval: 1,
+                sensitivity: 1,
+                timeout: 300,
+                over: function () {
+                                  /* Expand the select's width, and bump it to the left. */
+                                  $(this).removeClass("width100", "normal")
+                                         .addClass("shiftSelect", "normal");
+                                  },
+                out: function () {
+                                  /* Return the select to normal width and position. */
+                                 $(this).addClass("width100", "normal")
+                                        .removeClass("shiftSelect", "normal");
+                                 }
+            }).change(function () {
+                                  /* Make the action of the select returning to normal width and position act more responsively when
+                                   * the user makes a selection. (The hoverIntent event takes 300 extra ms to take notice and act.) */
+                                  $(this).addClass("width100", "fast")
+                                         .removeClass("shiftSelect", "fast");
+                                  });
         }
     },
     makeCountryList : function () {
