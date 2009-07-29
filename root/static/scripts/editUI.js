@@ -116,10 +116,17 @@ var MusicBrainz = {
         $.each(mb.format, function (i) {
             mb.format[i][0] != 13 ? formatSelect.addOption(mb.format[i][0],mb.format[i][2]) : otherVal = i;
             formatSelect.children(':last').data("start_date",mb.format[i][1]);
+            MusicBrainz.setHoverMsg([["#select-edit-release-format option:last",
+                                      text.FormatGeneric.replace("I18N-format-I18N", mb.format[i][2])
+                                                        .replace("I18N-date-I18N",mb.format[i][1])
+                                    ]]);
         });
         formatSelect.sortOptions()
                     .val("")
                     .addOption(mb.format[otherVal][0],mb.format[otherVal][2]); // Add the option for "Other" to the end of the list.
+        MusicBrainz.setHoverMsg([["#select-edit-release-format option:last",
+                                  text.GenericOther.replace("I18N-selectlist-I18N",text.FieldFormat)
+                                ]]);
         formatSelect.children(':last').data("start_date", "");
         formatSelect.children(':first').attr("selected", "selected");
     },
