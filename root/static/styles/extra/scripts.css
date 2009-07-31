@@ -398,6 +398,12 @@ table.tbl th.ttitle {
  width: 42%!important;
 }
 
+.trackposition input,
+.trackdur input {
+ text-align: center;
+ width: 90%;
+}
+
 .trackname textarea,
 .trackartist textarea {
  font-size: 110%;
@@ -431,16 +437,16 @@ td.trackname textarea {
 }
 
 .ta-results {
-  border-bottom: 1px solid black;
+  border-bottom: 1px solid #789;
   border-width: 1px;
 }
 
 .trackartist textarea {
  margin-bottom: 5px;
  padding-bottom: 5px;
- background-color: #F9F9F9;
+ background: transparent;
  color: black;
- border: 1px solid black;
+ border: 0px;
 }
 
 tr.editartist td {
@@ -448,32 +454,32 @@ tr.editartist td {
 }
 
 tr.editartist td.artistlabel {
- border-left: 1px solid black;
+ border-left: 1px solid #789;
  padding: 8px 0 4px 8px!important;
  width: 69%;
 }
 
 tr.editartist td.joinerlabel {
- border-right: 1px solid black;
+ border-right: 1px solid #789;
  padding-top: 8px!important;
  width: 10%;
  text-align: center;
 }
 
 tr.editartist td.empty {
- border-left: 1px solid black;
+ border-left: 1px solid #789;
  padding-left: 8px!important;
 }
 
 tr.editartist td.joiner {
- border-right: 1px solid black;
+ border-right: 1px solid #789;
  padding; 0 8px 8px 0!important;
 }
 
 tr.editartist.btn td {
- border-right: 1px solid black;
- border-left: 1px solid black;
- border-bottom: 1px solid black;
+ border-right: 1px solid #789;
+ border-left: 1px solid #789;
+ border-bottom: 1px solid #789;
 }
 
 tr.editartist input.name {

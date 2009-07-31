@@ -3,7 +3,7 @@
     <tr[% ' class="ev"' IF loop.count % 2 == 0 %]>
         <td[%- IF edit %] class="editable trackposition"[% END %]>[% track.position %]</td>
         [%- IF edit %]
-            <td class="hidden trackposition"><input type="text" size="2" value="[% track.position %]"></td>
+            <td class="hidden trackposition"><input type="text" value="[% track.position %]"></td>
         [%- END -%]
         <td[%- IF edit %] class="editable trackname"[%- END -%]>[% link_recording(recording, 'show', track.name) %]</td>
         [%- IF edit %]
@@ -57,7 +57,7 @@
         </td>
         <td[%- ' class="editable trackdur"><span' IF edit -%]>[% recording.length | format_time %][%- '</span>' IF edit -%]</td>
         [%- IF edit %]
-            <td class="hidden trackdur"><input type="text" size="4" value="[% recording.length | format_time %]"></td>
+            <td class="hidden trackdur"><input type="text" value="[% recording.length | format_time %]"></td>
         [%- END -%]
     </tr>
         <tr class="hidden" id="error-track-[%- loop.count -%]">

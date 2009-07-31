@@ -1,7 +1,30 @@
+/*jslint undef: true, browser: true*/
+/*global jQuery, $, mb, text*/
 var MusicBrainz = {
 
     roundness : "round 6px",
 
+    addSingleArtist : function (whereClicked) {
+        var thisArtist = whereClicked.parents("table:first"),
+            artistRows = $(thisArtist).find(".addartist"),
+            artistJoinPhrases = $(artistRows).find("input.joiner"),
+            mNum = 0, // TODO: Add medium handling to the artist functions
+            tNum = parseInt(whereClicked.attr("id").replace("btnAddTA-",""),10);
+        $(thisArtist).find(".joinerlabel strong").removeClass("hidden");  // Show the "Joiner" header text.
+        $(artistJoinPhrases).show()  // Show the join phrase input fields.
+                            .each(function (i) {
+                                                var joinVal = whereClicked.val(),
+                                                    joiner = "";
+                                                if (joinVal == "&" || joinVal == "," || joinVal === "") {  // If values are still the defaults,
+                                                    /* If this is the 2nd to last of n artists, or there is only
+                                                     * 1 artist, insert a comma, else insert an ampersand. */
+                                                    joiner = (i == artistJoinPhrases.length - 1 || artistJoinPhrases.length == 1) ? "&" : ",";
+                                                    whereClicked.val(joiner);
+                                                }
+                            });
+        $(artistRows).filter(":last").after(MusicBrainz.makeHTMLNewArtist(tNum, mNum)); // Insert the new artist row.
+        MusicBrainz.updateComboArtist($(artistRows[0])); // Update the displayed "combo artist" to include the new join phrases.
+    },
     addToolButton : function (buttonText, buttonID) {
         $("#editMenuControlsInline").append('<input type="button" id="' + buttonID + '" value="' + buttonText + '"/>');
         $("#editMenuControlsInline").show();
@@ -23,7 +46,7 @@ var MusicBrainz = {
                 }, 1000);
                 /* END */
             });
-        })
+        });
     },
     clearHelpMsg : function () {
         $("#editHelpMsg").html("");
@@ -114,7 +137,11 @@ var MusicBrainz = {
         var otherVal,
             formatSelect = $("#select-edit-release-format");
         $.each(mb.format, function (i) {
-            mb.format[i][0] != 13 ? formatSelect.addOption(mb.format[i][0],mb.format[i][2]) : otherVal = i;
+            if (mb.format[i][0] != 13) {
+                formatSelect.addOption(mb.format[i][0],mb.format[i][2]);
+            } else {
+                otherVal = i;
+            }
             formatSelect.children(':last').data("start_date",mb.format[i][1]);
         });
         formatSelect.sortOptions()
@@ -137,7 +164,7 @@ var MusicBrainz = {
                    '<td class="joiner">' +
                        '<input id="ta-joiner-' + trackNum + '" type="text" class="joiner hidden" value="' + joinPhrase + '"/>' +
                    '</td>' +
-               '</tr>'
+               '</tr>';
     },
     makeStatusAndDocsBox : function () {
 //        $(".tabs:eq(0)").after(mb.HTMLsnippets.editBox + mb.HTMLsnippets.docsBox);
@@ -147,14 +174,14 @@ var MusicBrainz = {
         $("#wikiHelpBox").corner(MusicBrainz.roundness);
         $("#wikiHelpInnerBox").corner(MusicBrainz.roundness);
     },
-    makeSwappableSelectList : function (entity, toSwap, swapArray) {
+    makeSwappableSelectList : function (entity, toSwap, commonArray, swapArray) {
         var swapList = "#select-edit-" + entity + "-" + toSwap,
             swapButton = "btn-switch-" + toSwap + "-list";
         $('.' + entity + '-' + toSwap + ':not(dt)').toggle();
         $(swapList).after('<input type="button" value="' + text.FullList + '" id="' + swapButton + '"/>');
         swapButton = '#' + swapButton;
         $(swapButton).addClass("rightsidebutton").click(function () {
-            MusicBrainz.swapShortLongList($(swapList), $(swapButton), mb.commonLangs, swapArray);
+            MusicBrainz.swapShortLongList($(swapList), $(swapButton), commonArray, swapArray);
         });
         MusicBrainz.setHoverMsg([[swapButton, text.hoverSwapList]]);
         $(swapButton).mouseout(function () { MusicBrainz.clearHelpMsg(); });
@@ -173,7 +200,6 @@ var MusicBrainz = {
             $('.editable.' + toggleclass[0]).each(function (i) {
                 $(this).click(function () { // We cannot just toggle toggleclass, as we only want to swap the one item, not the whole group.
                     $('.editable.' + toggleclass[0] + ':eq(' + i + ')').hide(); // Hide the specific item's text.
-                    $('.hidden.' + toggleclass[0] + ':eq(' + i + ')').show(); // Show the specific item's form field.
                     if(typeof(toggleclass[1]) != 'undefined') {
                         if(toggleclass[1]) {
                             $('.hidden.' + toggleclass[0] + ':eq(' + i + ') textarea').autogrow({ minHeight: 10 });
@@ -182,6 +208,7 @@ var MusicBrainz = {
                     if(typeof(toggleclass[2]) != 'undefined') {
                         $('.hidden.' + toggleclass[2] + '.' + i).show();
                     }
+                    $('.hidden.' + toggleclass[0] + ':eq(' + i + ')').show(); // Show the specific item's form field.
                 });
             });
         });
@@ -190,7 +217,7 @@ var MusicBrainz = {
         $("#editHelpMsg").html(status);
     },
     setHoverMsg : function (hoverArray) {
-        jQuery.each(hoverArray, function (i) {
+        $.each(hoverArray, function (i) {
             $(hoverArray[i][0]).mouseover(function () { MusicBrainz.setHelpMsg(hoverArray[i][1]); });
         });
     },
@@ -198,7 +225,7 @@ var MusicBrainz = {
         var pulloutHeight = ($("#editMenu").height() + 10) + "px";
         $("#editMenuPullout").css({
                                   height: pulloutHeight,
-                                  lineHeight: pulloutHeight,
+                                  lineHeight: pulloutHeight
                                   });
     },
     setStatus : function (status, showThrobber) {
@@ -254,7 +281,11 @@ var MusicBrainz = {
                                            comboArtist += inputValue;
                                        }
                      });
-        $(thisArtist).find("textarea:first").val($.trim(comboArtist));
+        $(thisArtist).find('input[type=text]:last')
+                     .val("") // Clear the value of anything that might be in the last join phrase box.
+                     .hide(); // Hide the last joiner phrase (it may be currently visible if an artist was just removed).
+        $(thisArtist).find("textarea:first")
+                     .val($.trim(comboArtist));
     }
 };
 
@@ -324,10 +355,10 @@ $(function () {
     $("#select-edit-release-script").addOption($("#edit-release-script-value").val(), "");
     MusicBrainz.swapShortLongList($("#select-edit-release-script"), $("#btn-switch-script-list"), mb.commonScripts, mb.script);
     $('.editable.release-language').click(function () {
-        MusicBrainz.makeSwappableSelectList("release", "language", mb.language);
+        MusicBrainz.makeSwappableSelectList("release", "language", mb.commonLangs, mb.language);
     });
     $('.editable.release-script').click(function () {
-        MusicBrainz.makeSwappableSelectList("release", "script", mb.script);
+        MusicBrainz.makeSwappableSelectList("release", "script", mb.commonScripts, mb.script);
     });
 
     /* Set hover help texts. */
@@ -374,25 +405,7 @@ $(function () {
 */
 
     /* Add functionality to the "Add another artist" buttons. */
-    $(".btnAddTA").live("click", function () {
-        var thisArtist = $(this).parents("table:first"),
-            artistRows = $(thisArtist).find(".addartist")
-            artistJoinPhrases = $(artistRows).find("input.joiner"),
-            mNum = 0, // TODO: Add medium handling to the artist functions
-            tNum = parseInt($(this).attr("id").replace("btnAddTA-",""),10);
-        $(thisArtist).find(".joinerlabel strong").removeClass("hidden");  // Show the "Joiner" header text.
-        $(artistJoinPhrases).show()  // Show the join phrase input fields.
-                            .each(function (i) {
-                                                var joinVal = $(this).val();
-                                                if (joinVal == "&" || joinVal == "," || joinVal == "") {  // If values are still the defaults,
-                                                    /* If this is the 2nd to last of n artists, or there is only
-                                                    /* 1 artist, insert a comma, else insert an ampersand. */
-                                                    (i == (artistJoinPhrases.length - 1) || artistJoinPhrases.length == 1) ? $(this).val("&") : $(this).val(",");
-                                                }
-                            });
-        $(artistRows).filter(":last").after(MusicBrainz.makeHTMLNewArtist(tNum, mNum)); // Insert the new artist row.
-        MusicBrainz.updateComboArtist($(artistRows[0])); // Update the displayed "combo artist" to include the new join phrases.
-    });
+    $(".btnAddTA").live("click", MusicBrainz.addSingleArtist($(this)));
 
     /* Add auto-updating of the "combo artist" field, based on the artist fields' contents. */
     $(".addartist input").live("keyup", function () { // User typed into an artist or join phrase field.
@@ -403,6 +416,7 @@ $(function () {
             MusicBrainz.updateComboArtist(artistbox); // delay until after that occurs, so we can read out that inserted data.
         }, 1);
     });
+
 
 /* TODO: pre-populate:
                           * Type
@@ -474,7 +488,7 @@ MusicBrainz.initializeTrackParser = function () {
     });
     /* Set textarea height auto-adjustment for the track parser input field. */
     $('#tp-textarea').autogrow({ minHeight: 30 });
-}
+};
 
 $(function () {
     MusicBrainz.initializeTrackParser();
