@@ -1,5 +1,6 @@
-.highlight:hover {
- background-color:#FFBA58 !important;
+.highlight:hover
+.page table.tbl tr td:hover {
+ background-color: #FFBA58!important;
 }
 
 .ajax-lookup {
@@ -340,6 +341,7 @@ label.overlabel-apply {
  background: url(/static/images/icon/q.blue.png) top left no-repeat;
  cursor: pointer;
  height: 12px;
+ margin-right: .2em;
  vertical-align: middle;
  width: 12px;
 }
@@ -379,4 +381,112 @@ label.overlabel-apply {
  margin-top: -20px;
  padding-left: 21px;
  vertical-align: middle;
+}
+
+/* Track fields. */
+
+table.tbl th.first {
+ width: 5%!important;
+}
+
+table.tbl th.treleases {
+ width: 10%!important;
+}
+
+table.tbl th.tartist,
+table.tbl th.ttitle {
+ width: 42%!important;
+}
+
+.trackname textarea,
+.trackartist textarea {
+ font-size: 110%;
+ letter-spacing: 1px;
+ overflow: hidden;
+ padding: .2em;
+ white-space: pre;
+ width: 98%;
+}
+
+.trackdur span {
+ padding-left: 1em;
+}
+
+.trackdur,
+.trackname,
+.trackposition {
+ padding-top: .4em!important;
+ vertical-align: top;
+}
+
+td.trackname textarea {
+ border: 1px solid black;
+}
+
+/* Artist editor / selector */
+
+.tartist table {
+ border-spacing: 0;
+ margin-bottom: 4px;
+}
+
+.ta-results {
+  border-bottom: 1px solid black;
+  border-width: 1px;
+}
+
+.trackartist textarea {
+ margin-bottom: 5px;
+ padding-bottom: 5px;
+ background-color: #F9F9F9;
+ color: black;
+ border: 1px solid black;
+}
+
+tr.editartist td {
+ background-color: white!important; 
+}
+
+tr.editartist td.artistlabel {
+ border-left: 1px solid black;
+ padding: 8px 0 4px 8px!important;
+ width: 69%;
+}
+
+tr.editartist td.joinerlabel {
+ border-right: 1px solid black;
+ padding-top: 8px!important;
+ width: 10%;
+ text-align: center;
+}
+
+tr.editartist td.empty {
+ border-left: 1px solid black;
+ padding-left: 8px!important;
+}
+
+tr.editartist td.joiner {
+ border-right: 1px solid black;
+ padding; 0 8px 8px 0!important;
+}
+
+tr.editartist.btn td {
+ border-right: 1px solid black;
+ border-left: 1px solid black;
+ border-bottom: 1px solid black;
+}
+
+tr.editartist input.name {
+ margin-right: 1em;
+ width: 99%;
+}
+
+tr.editartist input.joiner {
+ width: 80%;
+ text-align:center;
+}
+
+tr.editartist input[type="button"] {
+ margin-bottom: 4px;
+ float:right;
 }

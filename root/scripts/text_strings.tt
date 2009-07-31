@@ -53,7 +53,6 @@ text.editData              = "[% l("Edit") %]";
 text.EditDurations         = "[% l("Edit all Durations") %]";
 text.editing               = "[% l("Currently editing") %]";
 text.EditTitles            = "[% l("Edit all Titles") %]";
-text.EditorReady           = "[% l("The editor is ready.") %]";
 text.ErrorTitle            = "[% l("Error") %]";
 text.ESBeginA              = "[% l("The Edit Suite has been loaded.") %]";
 text.ESBeginB              = "[% l("Click any button on the left to begin.") %]";

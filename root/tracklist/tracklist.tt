@@ -1,4 +1,3 @@
-[% edit=1 %]
 [%- FOR track=tracklist.tracks;
     recording = track.recording %]
     <tr[% ' class="ev"' IF loop.count % 2 == 0 %]>
@@ -8,26 +7,63 @@
         [%- END -%]
         <td[%- IF edit %] class="editable trackname"[%- END -%]>[% link_recording(recording, 'show', track.name) %]</td>
         [%- IF edit %]
-            <td class="hidden trackname"><input type="text" size="78" value="[% track.name %]"></td>
+            <td class="hidden trackname"><textarea>[% track.name %]</textarea></td>
         [%- END -%]
         <td class="tartist
-            [% IF !show_artists %] hidden [% END %]
-            [% IF edit %] editable trackartist"[% END -%]
-        >[% artist_credit(track.artist_credit) %]</td>
-        [%- IF edit %]
-            <td class="hidden trackartist"><input type="text" size="78" value="[% track.artist_credit %]"></td>
-        [%- END -%]
-        <td[%- IF edit %] class="editable trackdur"[%- END -%]>[% recording.length | format_time %]</td>
+            [%- IF !edit -%]
+                [% ' hidden"' IF !show_artists %]
+            [%- END -%]
+            ">
+            [%- IF !edit %]
+                [% artist_credit(track.artist_credit) %]
+            [%- ELSE -%]
+                [%#- Note: all the loop.count - 1 here need updating for multiple mediums. -%]
+                <table>
+                    <tr>
+                        <td colspan="2" class="editable trackartist">
+                            [% artist_credit(track.artist_credit) %]
+                        </td>
+                        <td colspan="2" class="hidden trackartist ta-results">
+                            <textarea readonly="readonly" id=trackartist-[%- loop.count - 1 -%]>[% track.artist_credit.name %]</textarea>
+                        </td>
+                    </tr>
+                    <tr class="hidden editartist [%- loop.count - 1 -%]">
+                        <td class="artistlabel">
+                            <strong>
+                                [%- l('Artist') -%]
+                            </strong>
+                        </td>
+                        <td class="joinerlabel">
+                            <strong class="hidden">
+                                [%- l('Joiner') -%]
+                            </strong>
+                        </td>
+                    </tr>
+                    <tr class="hidden editartist addartist [%- loop.count - 1 -%]">
+                        <td class="empty">
+                            <input id="ta-name-[%- loop.count - 1 -%]" type="text" class="name"/>
+                        </td>
+                        <td class="joiner">
+                            <input id="ta-joiner-[%- loop.count - 1 -%]" type="text" class="joiner hidden"/>
+                        </td>
+                    </tr>
+                    <tr class="hidden editartist btn [%- loop.count - 1 -%]">
+                        <td colspan="2">
+                            <input class="btnAddTA" id=btnAddTA-[%- loop.count - 1 -%] type="button" value="[%- l('Add another artist&hellip;') -%]"/>
+                        </td>
+                    </tr>
+                </table>
+            [%- END -%]
+        </td>
+        <td[%- ' class="editable trackdur"><span' IF edit -%]>[% recording.length | format_time %][%- '</span>' IF edit -%]</td>
         [%- IF edit %]
             <td class="hidden trackdur"><input type="text" size="4" value="[% recording.length | format_time %]"></td>
         [%- END -%]
     </tr>
-    [%- IF edit %]
         <tr class="hidden" id="error-track-[%- loop.count -%]">
             <td id="error-track-position-[%- loop.count -%]"/>
             <td id="error-track-title-[%- loop.count -%]"/>
             <td id="error-track-artist-[%- loop.count -%]"/>
             <td id="error-track-duration-[%- loop.count -%]"/>
         </tr>
-    [%- END -%]
 [%- END -%]

@@ -11,7 +11,7 @@ var MusicBrainz = {
         $.each(helpArray, function (i) {
             $(helpArray[i][0] + " img").click(function () {
                 $("#wikiDocName").html(helpArray[i][1]);
-                MusicBrainz.setStatus("Loading documentation, please wait.");
+//                MusicBrainz.setStatus("Loading documentation, please wait.");
                 $("#wikiHelp").html("")
                               .slideDown();
                 /* TODO: START: Junk stub code to simulate downloading text. */
@@ -19,7 +19,7 @@ var MusicBrainz = {
                 setTimeout(function () {
                     $("#wikiHelp").lorem({ type: 'words',amount:'500',ptags:true});
                     $("#wikiHelpBox").slideDown(1000);
-                    MusicBrainz.setStatus("Documentation loaded.");
+//                    MusicBrainz.setStatus("Documentation loaded.");
                 }, 1000);
                 /* END */
             });
@@ -126,10 +126,24 @@ var MusicBrainz = {
         formatSelect.children(':last').data("start_date", "");
         formatSelect.children(':first').attr("selected", "selected");
     },
+    makeHTMLNewArtist : function(trackNum, mediumNum, artistName, joinPhrase) {
+        mediumNum = (typeof(mediumNum) == "undefined") ? 0 : mediumNum;
+        artistName = (typeof(artistName) == "undefined") ? "" : artistName;
+        joinPhrase = (typeof(joinPhrase) == "undefined") ? "" : joinPhrase;
+        return '<tr class="editartist addartist ' + trackNum + '">' +
+                   '<td class="empty">' +
+                       '<input id="ta-name-' + trackNum + '" type="text" class="name" value="' + artistName + '"/>' +
+                   '</td>' +
+                   '<td class="joiner">' +
+                       '<input id="ta-joiner-' + trackNum + '" type="text" class="joiner hidden" value="' + joinPhrase + '"/>' +
+                   '</td>' +
+               '</tr>'
+    },
     makeStatusAndDocsBox : function () {
-        $(".tabs:eq(0)").after(mb.HTMLsnippets.editBox + mb.HTMLsnippets.docsBox);
-        $("#editMsgBox").corner(MusicBrainz.roundness);
-        $("#editMsg").corner(MusicBrainz.roundness);
+//        $(".tabs:eq(0)").after(mb.HTMLsnippets.editBox + mb.HTMLsnippets.docsBox);
+        $(".tabs:eq(0)").after(mb.HTMLsnippets.docsBox);
+//        $("#editMsgBox").corner(MusicBrainz.roundness);
+//        $("#editMsg").corner(MusicBrainz.roundness);
         $("#wikiHelpBox").corner(MusicBrainz.roundness);
         $("#wikiHelpInnerBox").corner(MusicBrainz.roundness);
     },
@@ -156,10 +170,18 @@ var MusicBrainz = {
     makeTogglableEachInGroup : function (togglableItemArray) {
         $.each(togglableItemArray, function () {
             var toggleclass = this;
-            $('.editable.' + toggleclass).each(function (i) {
+            $('.editable.' + toggleclass[0]).each(function (i) {
                 $(this).click(function () { // We cannot just toggle toggleclass, as we only want to swap the one item, not the whole group.
-                    $('.editable.' + toggleclass + ':eq(' + i + ')').hide(); // Hide the specific item's text.
-                    $('.hidden.' + toggleclass + ':eq(' + i + ')').show(); // Show the specific item's form field.
+                    $('.editable.' + toggleclass[0] + ':eq(' + i + ')').hide(); // Hide the specific item's text.
+                    $('.hidden.' + toggleclass[0] + ':eq(' + i + ')').show(); // Show the specific item's form field.
+                    if(typeof(toggleclass[1]) != 'undefined') {
+                        if(toggleclass[1]) {
+                            $('.hidden.' + toggleclass[0] + ':eq(' + i + ') textarea').autogrow({ minHeight: 10 });
+                        }
+                    }
+                    if(typeof(toggleclass[2]) != 'undefined') {
+                        $('.hidden.' + toggleclass[2] + '.' + i).show();
+                    }
                 });
             });
         });
@@ -218,6 +240,21 @@ var MusicBrainz = {
         select.addOption("", '[ ' + text.Select + ' ]', false); // Reset the displayed text for the non-option option.
         select.val(selecteditem); // Re-select the selected item.
         select.show();
+    },
+    updateComboArtist : function (artist) {
+        var thisArtist = $(artist).parents("table:first"),
+            comboArtist = "";
+        $(thisArtist).find('input[type=text]:not(:last)') // Get all input fields except the last (which is the joiner after the last artist).
+                     .each(function (i) {
+                                       var inputValue = $.trim($(this).val());
+                                       if (i % 2) { // Input field is an artist name field
+                                           comboArtist += (inputValue == ",") ? "" : " ";
+                                           comboArtist += (inputValue + " ");
+                                       } else {
+                                           comboArtist += inputValue;
+                                       }
+                     });
+        $(thisArtist).find("textarea:first").val($.trim(comboArtist));
     }
 };
 
@@ -225,24 +262,21 @@ $(function () {
    /* === Editor Initialization === */
 
     /* Insert help icons. */
-    $(".datumItem dt, th.release").prepend('<img src="/static/images/blank.gif" class="helpIcon"/>&nbsp;');
-
-    /* Expand tracklist position and duration columns slightly, to accomodate the help icons without wrapping. */
-    $("th.release:first").css({width: "3em"});
-    $("th.release:last").css({width: "6em"});
+//    $(".datumItem dt, th.release").prepend($('<img src="/static/images/blank.gif" class="helpIcon"/>')
+//                                  .hide());
 
     /* Insert the status and heads-up display box. */
-    MusicBrainz.makeStatusAndDocsBox();
+//    MusicBrainz.makeStatusAndDocsBox();
 
     /* Initialize the display text box. */
-    MusicBrainz.setStatus(text.LoadingJS, true);
+//    MusicBrainz.setStatus(text.LoadingJS, true);
 
    /* Create and attach click event for the documentation display close button. */
-    var closeButton = $('<img src="/static/images/blank.gif" class="closeButton"/>');
-    $("#wikiTitle").prepend(closeButton);
-    closeButton.click(function () {
-        $("#wikiHelpBox").slideUp(1000);
-    });
+//    var closeButton = $('<img src="/static/images/blank.gif" class="closeButton"/>');
+//    $("#wikiTitle").prepend(closeButton);
+//    closeButton.click(function () {
+//        $("#wikiHelpBox").slideUp(1000);
+//    });
 
     /* Disable default behaviour for anchor links. */
     $(".editable a").bind("click.blocked", function (event) {
@@ -276,7 +310,7 @@ $(function () {
     $("input[id$='edit-release-barcode']").attr("maxlength", 15) // EAN13 + EAN2, 15 digit maximum length
                                           .autotab({format: 'numeric'});
 
-    /* Populate the simple select lists. */
+    /* Populate basic select lists. */
     $("#select-edit-release-type").addOption(mb.releasetype, false);
     $("#select-edit-release-packaging").addOption(mb.packaging, false);
     $("#select-edit-release-status").addOption(mb.releasestatus, false);
@@ -285,6 +319,10 @@ $(function () {
     MusicBrainz.makeFormatList();
 
     /* Setup and initialize language and script selects.  */
+    $("#select-edit-release-language").addOption($("#edit-release-language-value").val(), "");
+    MusicBrainz.swapShortLongList($("#select-edit-release-language"), $("#btn-switch-language-list"), mb.commonLangs, mb.language);
+    $("#select-edit-release-script").addOption($("#edit-release-script-value").val(), "");
+    MusicBrainz.swapShortLongList($("#select-edit-release-script"), $("#btn-switch-script-list"), mb.commonScripts, mb.script);
     $('.editable.release-language').click(function () {
         MusicBrainz.makeSwappableSelectList("release", "language", mb.language);
     });
@@ -293,9 +331,9 @@ $(function () {
     });
 
     /* Set hover help texts. */
-    MusicBrainz.setHoverMsg([
+//    MusicBrainz.setHoverMsg([
                             /* Definitions for entity type: Release */
-                            [".editable.release-barcode", text.hoverBarcode],
+/*                            [".editable.release-barcode", text.hoverBarcode],
                             [".editable.release-catalog", text.hoverCatNumber],
                             [".editable.release-country", text.hoverCountry],
                             [".editable.release-date", text.hoverDate],
@@ -312,11 +350,12 @@ $(function () {
     $(".editable, .helpIcon, #btnTrackParser, #select-edit-release-format option:last").mouseout(function () {
                                                          MusicBrainz.clearHelpMsg();
                                                          });
+*/
 
     /* Attach click events to the help buttons. */
-    MusicBrainz.attachHelpButtonEvents([
+//    MusicBrainz.attachHelpButtonEvents([
                                        /* Definitions for entity type: Release */
-                                       ["#release-date-dt", text.displayReleaseDate, "http://"],
+/*                                       ["#release-date-dt", text.displayReleaseDate, "http://"],
                                        ["#release-type-dt", text.displayReleaseType, "http://"],
                                        ["#release-format-dt", text.displayReleaseFormat, "http://"],
                                        ["#release-packaging-dt", text.displayReleasePackaging, "http://"],
@@ -332,28 +371,63 @@ $(function () {
                                        ["th.release:eq(2)", text.displayTrackArtist, "http://"],
                                        ["th.release:eq(3)", text.displayTrackDuration, "http://"]
                                        ]);
+*/
 
-   /* === Bring existing data into the editor. === */
+    /* Add functionality to the "Add another artist" buttons. */
+    $(".btnAddTA").live("click", function () {
+        var thisArtist = $(this).parents("table:first"),
+            artistRows = $(thisArtist).find(".addartist")
+            artistJoinPhrases = $(artistRows).find("input.joiner"),
+            mNum = 0, // TODO: Add medium handling to the artist functions
+            tNum = parseInt($(this).attr("id").replace("btnAddTA-",""),10);
+        $(thisArtist).find(".joinerlabel strong").removeClass("hidden");  // Show the "Joiner" header text.
+        $(artistJoinPhrases).show()  // Show the join phrase input fields.
+                            .each(function (i) {
+                                                var joinVal = $(this).val();
+                                                if (joinVal == "&" || joinVal == "," || joinVal == "") {  // If values are still the defaults,
+                                                    /* If this is the 2nd to last of n artists, or there is only
+                                                    /* 1 artist, insert a comma, else insert an ampersand. */
+                                                    (i == (artistJoinPhrases.length - 1) || artistJoinPhrases.length == 1) ? $(this).val("&") : $(this).val(",");
+                                                }
+                            });
+        $(artistRows).filter(":last").after(MusicBrainz.makeHTMLNewArtist(tNum, mNum)); // Insert the new artist row.
+        MusicBrainz.updateComboArtist($(artistRows[0])); // Update the displayed "combo artist" to include the new join phrases.
+    });
 
-    /* Set the selected language and script, if there is a pre-existing selected one. */
-    $("#select-edit-release-language").addOption($("#edit-release-language-value").val(), "");
-    MusicBrainz.swapShortLongList($("#select-edit-release-language"), $("#btn-switch-language-list"), mb.commonLangs, mb.language);
-    $("#select-edit-release-script").addOption($("#edit-release-script-value").val(), "");
-    MusicBrainz.swapShortLongList($("#select-edit-release-script"), $("#btn-switch-script-list"), mb.commonScripts, mb.script);
+    /* Add auto-updating of the "combo artist" field, based on the artist fields' contents. */
+    $(".addartist input").live("keyup", function () { // User typed into an artist or join phrase field.
+        MusicBrainz.updateComboArtist(this);
+    }).live("paste", function () { // User pasted via mouse into an artist or join phrase field.
+        var artistbox = this; // The value of "this" doesn't carry over into a setTimeout.
+        setTimeout(function () { // The onpaste event fires before the data is actually inserted into the form field; we need to
+            MusicBrainz.updateComboArtist(artistbox); // delay until after that occurs, so we can read out that inserted data.
+        }, 1);
+    });
 
-/* TODO: Also pre-populate:
-                          * Release Date
+/* TODO: pre-populate:
                           * Type
                           * Format
                           * Packaging
                           * Status
-                          * Labels
-                          * Cat #s
                           * Barcodes
                           * Countries */
 
 
 /* Everything below is rough code in progress. */
+
+
+
+
+
+
+
+
+    MusicBrainz.makeTogglableEachInGroup([
+                                         ["trackposition"],
+                                         ["trackname", true],
+                                         ["trackartist", true, "editartist"],
+                                         ["trackdur"]
+                                         ]);
 
 // TODO:   /* Set click behaviour for editable fields (where there is more than one of that field type). */
     MusicBrainz.makeTogglable([
@@ -366,37 +440,19 @@ $(function () {
 // TODO: There can be more than one country dropdown.
     MusicBrainz.makeCountryList();
 
-// TODO: Test using makeTogglableEachInGroup instead here, once loading release data is function.
-    $(".editable.trackposition").each(function (i) {
-        $(this).click(function () {
-            $(".editable.trackposition:eq(" + i + ")").hide();
-            $(".hidden.trackposition:eq(" + i + ")").show();
-        });
-    });
-    $(".editable.trackname").each(function (i) {
-        $(this).click(function () {
-            $(".editable.trackname:eq(" + i + ")").hide();
-            $(".hidden.trackname:eq(" + i + ")").show();
-        });
-    });
-    $(".editable.trackartist").each(function (i) {
-        $(this).click(function () {
-            $(".editable.trackartist:eq(" + i + ")").hide();
-            $(".hidden.trackartist:eq(" + i + ")").show();
-        });
-    });
-    $(".editable.trackdur").each(function (i) {
-        $(this).click(function () {
-            $(".editable.trackdur:eq(" + i + ")").hide();
-            $(".hidden.trackdur:eq(" + i + ")").show();
-        });
-    });
+// TODO: Block /n's in field textareas.
+
+
+//    MusicBrainz.addToolButton("Show Help Buttons", "btnHelp");
+
+//    $("#btnHelp").click(function () {
+//        $(".helpIcon").toggle();
+//        $("#btnHelp").val($("#btnHelp").val() == "Show Help Buttons" ? "Hide Help Buttons" : "Show Help Buttons");
+//    });
 
 
 
-
-
-    MusicBrainz.setStatus(text.EditorReady, false);
+//    MusicBrainz.clearStatus();
 });
 
 // MusicBrainz.showErrorForSidebar("release-date", "FOO");
@@ -416,12 +472,8 @@ MusicBrainz.initializeTrackParser = function () {
             $(this).val(text.TrackParserShow);
         }
     });
-    /* Set auto-newline correction and textarea height auto-adjustment for the track parser input field. */
-    $('#tp-textarea').keypress(function () {
-        var rows = $('#tp-textarea').val().match(/\n/g).length;
-        rows === null ? 1 : rows;
-        $('#tp-textarea').attr("rows", rows);
-    });
+    /* Set textarea height auto-adjustment for the track parser input field. */
+    $('#tp-textarea').autogrow({ minHeight: 30 });
 }
 
 $(function () {

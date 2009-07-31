@@ -7,8 +7,13 @@
         <thead>
             <tr>
                 <th class="first[%- IF edit -%] release[%- END-%]" style="width:1em;text-align:right;">#</th>
-                <th[%- IF edit -%] class="release"[%- END-%]>[% l('Title') %]</th>
-                <th class="tartist[%- IF !show_artists -%] hidden[%- END -%][%- IF edit -%] release[%- END-%]">[% l('Artist') %]</th>
+                <th[%- IF edit -%] class="ttitle release"[%- END-%]>[% l('Title') %]</th>
+                <th class="tartist
+                    [%- IF !edit -%]
+                        [%- IF !show_artists %] hidden[%- END -%]
+                    [%- ELSE %] release
+                    [%- END -%]
+                    ">[% l('Artist') %]</th>
                 <th class="treleases[%- IF edit -%] release[%- END-%]">[% l('Length') %]</th>
             </tr>
         </thead>

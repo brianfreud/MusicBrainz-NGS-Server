@@ -1,7 +1,7 @@
 [%- IF browserIsIE -%]
-    [%- extra_js = "jquery/jquery.corner.js jquery/jquery.selectboxes.js jquery/jquery.hoverintent.js jquery/jquery.autotab.js libraries/excanvas.js jquery/jquery.bt.js jquery/jquery.bgiframe.min.js jquery/jquery.lorem.js editUI.js" -%]
+    [%- extra_js = "jquery/jquery.corner.js jquery/jquery.selectboxes.js jquery/jquery.hoverintent.js jquery/jquery.autotab.js libraries/excanvas.js jquery/jquery.bt.js jquery/jquery.bgiframe.min.js jquery/jquery.lorem.js jquery/jquery.autogrow.js editUI.js" -%]
 [%- ELSE -%]
-    [%- extra_js = "jquery/jquery.corner.js jquery/jquery.selectboxes.js jquery/jquery.hoverintent.js jquery/jquery.autotab.js jquery/jquery.bt.js jquery/jquery.lorem.js editUI.js" -%]
+    [%- extra_js = "jquery/jquery.corner.js jquery/jquery.selectboxes.js jquery/jquery.hoverintent.js jquery/jquery.autotab.js jquery/jquery.bt.js jquery/jquery.lorem.js jquery/jquery.autogrow.js editUI.js" -%]
 [%- END -%]
 
 [%- edit=1 -%]
