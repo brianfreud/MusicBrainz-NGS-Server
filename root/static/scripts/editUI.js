@@ -5,21 +5,21 @@ var MusicBrainz = {
     roundness : "round 6px",
 
     addSingleArtist : function (whereClicked) {
-        var thisArtist = whereClicked.parents("table:first"),
+        var thisArtist = $(whereClicked).parents("table:first"),
             artistRows = $(thisArtist).find(".addartist"),
             artistJoinPhrases = $(artistRows).find("input.joiner"),
             mNum = 0, // TODO: Add medium handling to the artist functions
-            tNum = parseInt(whereClicked.attr("id").replace("btnAddTA-",""),10);
+            tNum = parseInt($(whereClicked).attr("id").replace("btnAddTA-",""),10);
         $(thisArtist).find(".joinerlabel strong").removeClass("hidden");  // Show the "Joiner" header text.
         $(artistJoinPhrases).show()  // Show the join phrase input fields.
                             .each(function (i) {
-                                                var joinVal = whereClicked.val(),
+                                                var joinVal = $(whereClicked).val(),
                                                     joiner = "";
                                                 if (joinVal == "&" || joinVal == "," || joinVal === "") {  // If values are still the defaults,
                                                     /* If this is the 2nd to last of n artists, or there is only
                                                      * 1 artist, insert a comma, else insert an ampersand. */
                                                     joiner = (i == artistJoinPhrases.length - 1 || artistJoinPhrases.length == 1) ? "&" : ",";
-                                                    whereClicked.val(joiner);
+                                                    $(whereClicked).val(joiner);
                                                 }
                             });
         $(artistRows).filter(":last").after(MusicBrainz.makeHTMLNewArtist(tNum, mNum)); // Insert the new artist row.
@@ -405,7 +405,9 @@ $(function () {
 */
 
     /* Add functionality to the "Add another artist" buttons. */
-    $(".btnAddTA").live("click", MusicBrainz.addSingleArtist($(this)));
+    $(".btnAddTA").live("click", function () {
+        MusicBrainz.addSingleArtist(this);
+    });
 
     /* Add auto-updating of the "combo artist" field, based on the artist fields' contents. */
     $(".addartist input").live("keyup", function () { // User typed into an artist or join phrase field.
