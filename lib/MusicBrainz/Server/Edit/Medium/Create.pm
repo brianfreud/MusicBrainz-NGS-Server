@@ -7,13 +7,11 @@ use MooseX::Types::Structured qw( Dict Optional );
 use MusicBrainz::Server::Constants qw( $EDIT_MEDIUM_CREATE );
 use MusicBrainz::Server::Data::Medium;
 use MusicBrainz::Server::Data::Utils qw( defined_hash );
-use MusicBrainz::Server::Types qw( :edit_status );
 
 extends 'MusicBrainz::Server::Edit';
 
 sub edit_type { $EDIT_MEDIUM_CREATE }
 sub edit_name { "Create Medium" }
-sub edit_auto_edit { 1 }
 sub entity_model { 'Medium' }
 sub entity_id { shift->medium_id }
 
@@ -37,14 +35,14 @@ has '+data' => (
     ]
 );
 
-override 'accept' => sub
+sub insert
 {
     my $self = shift;
     my $medium = $self->c->model('Medium')->insert( $self->data );
 
     $self->medium($medium);
     $self->medium_id($medium->id);
-};
+}
 
 # medium_id is handled separately, as it should not be copied if the edit is cloned
 # (a new different medium_id would be used)

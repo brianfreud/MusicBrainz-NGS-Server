@@ -1,7 +1,7 @@
 #!/usr/bin/perl
 use strict;
 use warnings;
-use Test::More;
+use Test::More tests => 13;
 
 BEGIN { use_ok 'MusicBrainz::Server::Edit::Medium::Create'; }
 
@@ -26,7 +26,6 @@ my $edit = $c->model('Edit')->create(
 isa_ok($edit, 'MusicBrainz::Server::Edit::Medium::Create');
 is($edit->entity_model, 'Medium');
 is($edit->entity_id, $edit->medium_id);
-is($edit->status, $STATUS_APPLIED);
 
 ok(defined $edit->medium_id);
 ok(defined $edit->id);
@@ -37,6 +36,9 @@ is($medium->format_id, 1);
 is($medium->tracklist_id, 1);
 is($medium->position, 1);
 is($medium->release_id, 1);
-is($medium->edits_pending, 0);
+is($medium->edits_pending, 1);
 
-done_testing;
+$c->model('Edit')->accept($edit);
+
+$medium = $c->model('Medium')->get_by_id($edit->medium_id);
+is($medium->edits_pending, 0);
