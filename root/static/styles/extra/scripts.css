@@ -468,7 +468,6 @@ tr.editartist td.joinerlabel {
 
 tr.editartist td.empty {
  border-left: 1px solid #789;
- padding-left: 8px!important;
 }
 
 tr.editartist td.joiner {
@@ -483,8 +482,8 @@ tr.editartist.btn td {
 }
 
 tr.editartist input.name {
- margin-right: 1em;
- width: 99%;
+ float: right;
+ width: 90%;
 }
 
 tr.editartist input.joiner {
@@ -496,3 +495,18 @@ tr.editartist input[type="button"] {
  margin-bottom: 4px;
  float:right;
 }
+
+.removeArtist {
+ background: url(/static/images/icon/close.grey.png) top left no-repeat;
+ cursor: pointer;
+ float: left;
+ height: 16px;
+ padding-right: 3px;
+ margin-top: 4px;
+ width: 5%!important;
+}
+
+.removeArtist:hover {
+ background: url(/static/images/icon/close.red.png) top left no-repeat;
+}
+

@@ -41,6 +41,7 @@
                     </tr>
                     <tr class="hidden editartist addartist [%- loop.count - 1 -%]">
                         <td class="empty">
+                            <img src="/static/images/blank.gif" class="removeArtist hidden"/>
                             <input id="ta-name-[%- loop.count - 1 -%]" type="text" class="name"/>
                         </td>
                         <td class="joiner">

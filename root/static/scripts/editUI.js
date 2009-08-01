@@ -6,24 +6,15 @@ var MusicBrainz = {
 
     addSingleArtist : function (whereClicked) {
         var thisArtist = $(whereClicked).parents("table:first"),
-            artistRows = $(thisArtist).find(".addartist"),
-            artistJoinPhrases = $(artistRows).find("input.joiner"),
+            artistRows = thisArtist.find(".addartist"),
             mNum = 0, // TODO: Add medium handling to the artist functions
             tNum = parseInt($(whereClicked).attr("id").replace("btnAddTA-",""),10);
-        $(thisArtist).find(".joinerlabel strong").removeClass("hidden");  // Show the "Joiner" header text.
-        $(artistJoinPhrases).show()  // Show the join phrase input fields.
-                            .each(function (i) {
-                                                var joinVal = $(whereClicked).val(),
-                                                    joiner = "";
-                                                if (joinVal == "&" || joinVal == "," || joinVal === "") {  // If values are still the defaults,
-                                                    /* If this is the 2nd to last of n artists, or there is only
-                                                     * 1 artist, insert a comma, else insert an ampersand. */
-                                                    joiner = (i == artistJoinPhrases.length - 1 || artistJoinPhrases.length == 1) ? "&" : ",";
-                                                    $(whereClicked).val(joiner);
-                                                }
-                            });
-        $(artistRows).filter(":last").after(MusicBrainz.makeHTMLNewArtist(tNum, mNum)); // Insert the new artist row.
+        thisArtist.find(".joinerlabel strong, .joiner")
+                  .removeClass("hidden");  // Show the "Joiner" header text.
+        $(artistRows).filter(":last")
+                     .after(MusicBrainz.makeHTMLNewArtist(tNum, mNum)) // Insert the new artist row.
         MusicBrainz.updateComboArtist($(artistRows[0])); // Update the displayed "combo artist" to include the new join phrases.
+        MusicBrainz.updateJoinPhrases(thisArtist.find(".addartist"));
     },
     addToolButton : function (buttonText, buttonID) {
         $("#editMenuControlsInline").append('<input type="button" id="' + buttonID + '" value="' + buttonText + '"/>');
@@ -159,10 +150,11 @@ var MusicBrainz = {
         joinPhrase = (typeof(joinPhrase) == "undefined") ? "" : joinPhrase;
         return '<tr class="editartist addartist ' + trackNum + '">' +
                    '<td class="empty">' +
+                       '<img src="/static/images/blank.gif" class="removeArtist"/>' +
                        '<input id="ta-name-' + trackNum + '" type="text" class="name" value="' + artistName + '"/>' +
                    '</td>' +
                    '<td class="joiner">' +
-                       '<input id="ta-joiner-' + trackNum + '" type="text" class="joiner hidden" value="' + joinPhrase + '"/>' +
+                       '<input id="ta-joiner-' + trackNum + '" type="text" class="joiner" value="' + joinPhrase + '"/>' +
                    '</td>' +
                '</tr>';
     },
@@ -270,7 +262,8 @@ var MusicBrainz = {
     },
     updateComboArtist : function (artist) {
         var thisArtist = $(artist).parents("table:first"),
-            comboArtist = "";
+            comboArtist = "",
+            removeArtistButtons = thisArtist.find(".removeArtist");
         $(thisArtist).find('input[type=text]:not(:last)') // Get all input fields except the last (which is the joiner after the last artist).
                      .each(function (i) {
                                        var inputValue = $.trim($(this).val());
@@ -281,12 +274,37 @@ var MusicBrainz = {
                                            comboArtist += inputValue;
                                        }
                      });
-        $(thisArtist).find('input[type=text]:last')
-                     .val("") // Clear the value of anything that might be in the last join phrase box.
-                     .hide(); // Hide the last joiner phrase (it may be currently visible if an artist was just removed).
-        $(thisArtist).find("textarea:first")
+        thisArtist.find("textarea:first")
                      .val($.trim(comboArtist));
-    }
+        if (removeArtistButtons.length == 1) {
+            removeArtistButtons.hide();  // Can't remove the artist if there's only one.
+        } else {
+            removeArtistButtons.show();
+        }
+    },
+    updateJoinPhrases : function (artistJoinPhrases) {
+        var artistCount = artistJoinPhrases.length;
+        artistJoinPhrases.find("input.joiner") // Find all of this artist's join phrase input fields,
+                         .show() // show them all,
+                         .filter(":last") // then select only the last one,
+                             .hide() // hide it,
+                             .val("") // clear any value it may have (there's no next artist after this to join to, so no join phrase is valid),
+                         .end() // then revert back to selecting all join phrase fields,
+                         .filter(":visible") // select all visible join fields (ie: all but the last (unused) join phrase),
+    	                         .each(function (i) { // and for each one individually,
+                                                    var joinVal = $(this).val(),
+                                                        joiner = "";
+                                                    if (joinVal == "&" || joinVal == "," || joinVal.length === 0) {  // if this value is still a default value,
+                                                        joiner = ","; // set the joiner to the most-common comma,
+                                                        if (artistCount == 2) { // but if there are only 2 artists,
+                                                            joiner = "&"; // we want the joiner to be an ampersand, not a comma,
+                                                        } else if (artistCount > 2 && i == (artistCount - 2)) { // or if there are 3+ artists and this is the last join phrase,
+                                                            joiner = "&"; // then we want the last joiner to be an ampersand, not a comma.
+                                                        }
+                                                        $(this).val(joiner); // Populate the join phrase input.
+                                                    }
+                                 })
+    },
 };
 
 $(function () {
@@ -433,7 +451,12 @@ $(function () {
 
 
 
-
+    $(".removeArtist").live("click", function () {
+        var thisSingleArtist = $(this).parents("table:first");
+        $(this).parents("tr:first").remove();
+        MusicBrainz.updateJoinPhrases(thisSingleArtist.find(".addartist"));
+        MusicBrainz.updateComboArtist(thisSingleArtist.find("tr:eq(2)"));
+    });
 
 
 
