@@ -44,6 +44,12 @@ sub insert
     $self->medium_id($medium->id);
 }
 
+sub reject
+{
+    my $self = shift;
+    $self->c->model('Medium')->delete($self->medium_id);
+}
+
 # medium_id is handled separately, as it should not be copied if the edit is cloned
 # (a new different medium_id would be used)
 override 'to_hash' => sub

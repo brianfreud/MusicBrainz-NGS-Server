@@ -131,6 +131,13 @@ sub insert
     return @medium_hashes > 1 ? @created : $created[0];
 }
 
+sub delete
+{
+    my ($self, @ids) = @_;
+    my $sql = Sql->new($self->c->dbh);
+    $sql->Do('DELETE FROM medium WHERE id IN (' . placeholders(@ids) . ')', @ids);
+}
+
 sub _create_row
 {
     my ($self, $medium_hash) = @_;

@@ -1,7 +1,7 @@
 #!/usr/bin/perl
 use strict;
 use warnings;
-use Test::More tests => 13;
+use Test::More tests => 14;
 
 BEGIN { use_ok 'MusicBrainz::Server::Edit::Medium::Create'; }
 
@@ -42,3 +42,20 @@ $c->model('Edit')->accept($edit);
 
 $medium = $c->model('Medium')->get_by_id($edit->medium_id);
 is($medium->edits_pending, 0);
+
+## Create a medium to reject
+$edit = $c->model('Edit')->create(
+    edit_type => $EDIT_MEDIUM_CREATE,
+    editor_id => 1,
+    name => 'Live',
+    position => 2,
+    format_id => 1,
+    release_id => 1,
+    tracklist_id => 1
+);
+
+my $medium_id = $edit->medium_id;
+$c->model('Edit')->reject($edit);
+
+$medium = $c->model('Medium')->get_by_id($medium_id);
+ok(!defined $medium);
