@@ -19,40 +19,42 @@
             [%- ELSE -%]
                 [%#- Note: all the loop.count - 1 here need updating for multiple mediums. -%]
                 <table>
-                    <tr>
-                        <td colspan="2" class="editable trackartist">
-                            [% artist_credit(track.artist_credit) %]
-                        </td>
-                        <td colspan="2" class="hidden trackartist ta-results">
-                            <textarea readonly="readonly" id=trackartist-[%- loop.count - 1 -%]>[% track.artist_credit.name %]</textarea>
-                        </td>
-                    </tr>
-                    <tr class="hidden editartist [%- loop.count - 1 -%]">
-                        <td class="artistlabel">
-                            <strong>
-                                [%- l('Artist') -%]
-                            </strong>
-                        </td>
-                        <td class="joinerlabel">
-                            <strong class="hidden">
-                                [%- l('Joiner') -%]
-                            </strong>
-                        </td>
-                    </tr>
-                    <tr class="hidden editartist addartist [%- loop.count - 1 -%]">
-                        <td class="empty">
-                            <img src="/static/images/blank.gif" class="removeArtist hidden"/>
-                            <input id="ta-name-[%- loop.count - 1 -%]" type="text" class="name"/>
-                        </td>
-                        <td class="joiner">
-                            <input id="ta-joiner-[%- loop.count - 1 -%]" type="text" class="joiner hidden"/>
-                        </td>
-                    </tr>
-                    <tr class="hidden editartist btn [%- loop.count - 1 -%]">
-                        <td colspan="2">
-                            <input class="btnAddTA" id=btnAddTA-[%- loop.count - 1 -%] type="button" value="[%- l('Add another artist&hellip;') -%]"/>
-                        </td>
-                    </tr>
+                    <tbody>
+                        <tr>
+                            <td colspan="2" class="editable trackartist">
+                                [% artist_credit(track.artist_credit) %]
+                            </td>
+                            <td colspan="2" class="hidden trackartist ta-results">
+                                <textarea readonly="readonly" id=trackartist-[%- loop.count - 1 -%]>[% artist_credit(track.artist_credit, plain=1) %]</textarea>
+                            </td>
+                        </tr>
+                        <tr class="hidden editartist [%- loop.count - 1 -%]">
+                            <td class="artistlabel">
+                                <strong>
+                                    [%- l('Artist') -%]
+                                </strong>
+                            </td>
+                            <td class="joinerlabel">
+                                <strong class="hidden">
+                                    [%- l('Joiner') -%]
+                                </strong>
+                            </td>
+                        </tr>
+                        <tr class="hidden editartist addartist [%- loop.count - 1 -%]">
+                            <td class="empty">
+                                <img src="/static/images/blank.gif" class="removeArtist hidden"/>
+                                <input id="ta-name-[%- loop.count - 1 -%]" type="text" class="name"/>
+                            </td>
+                            <td class="joiner">
+                                <input id="ta-joiner-[%- loop.count - 1 -%]" type="text" class="joiner hidden"/>
+                            </td>
+                        </tr>
+                        <tr class="hidden editartist btn [%- loop.count - 1 -%]">
+                            <td colspan="2">
+                                <input class="btnAddTA" id=btnAddTA-[%- loop.count - 1 -%] type="button" value="[%- l('Add another artist&hellip;') -%]"/>
+                            </td>
+                        </tr>
+                    </tbody>
                 </table>
             [%- END -%]
         </td>

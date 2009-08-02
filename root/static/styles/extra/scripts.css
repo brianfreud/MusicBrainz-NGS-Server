@@ -394,7 +394,9 @@ table.tbl th.treleases {
 }
 
 table.tbl th.tartist,
-table.tbl th.ttitle {
+table.tbl th.ttitle,
+table.tbl td.trackartist,
+table.tbl td.trackname {
  width: 42%!important;
 }
 
@@ -411,7 +413,14 @@ table.tbl th.ttitle {
  overflow: hidden;
  padding: .2em;
  white-space: pre;
+}
+
+.trackname textarea {
  width: 98%;
+}
+
+.trackartist textarea {
+ width: 90%;
 }
 
 .trackdur span {
@@ -431,9 +440,12 @@ td.trackname textarea {
 
 /* Artist editor / selector */
 
+.trackposition {
+ padding-left: .6em!important;
+}
+
 .tartist table {
  border-spacing: 0;
- margin-bottom: 4px;
 }
 
 .ta-results {
@@ -510,3 +522,63 @@ tr.editartist input[type="button"] {
  background: url(/static/images/icon/close.red.png) top left no-repeat;
 }
 
+/* Remove track */
+
+.removeTrack {
+ background:transparent url(/static/images/icon/close.grey.png) no-repeat scroll left top;
+ cursor:pointer;
+ height: 16px;
+ width: 16px;
+ float: left;
+ position: relative;
+ left: -33px;
+ top: 3pt;
+}
+
+.removeTrack:hover {
+ background: url(/static/images/icon/close.red.png) top left no-repeat;
+}
+
+#removedTracks tr {
+ background-color: #FFBA58;
+}
+
+/* Track position mover */
+
+.upDown:hover {
+ background-color: #FFBA58!important;
+}
+
+.dragHandle {
+ cursor: move;
+ display: inline;
+ position: absolute;
+}
+
+.handleIcon {
+ background: transparent url(/static/images/icon/updown.grey.png) no-repeat scroll 0 0 !important;
+ height: 14px;
+ width: 12px;
+ float: left;
+ position: relative;
+ left: -2px;
+ top: 2px;
+}
+
+.handleIcon:hover {
+ background: url(/static/images/icon/updown.png) no-repeat!important;
+}
+
+/* Artist copier */
+
+.copyArtist {
+ background: url(/static/images/icon/person.grey.png) no-repeat;
+ cursor: move;
+ height: 16px;
+ float: left;
+ width: 18px;
+}
+
+.copyArtist:hover {
+ background: url(/static/images/icon/person.color.png) no-repeat;
+}

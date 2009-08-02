@@ -1,7 +1,6 @@
+[%- extra_js = "jquery/jquery.corner.js jquery/jquery.selectboxes.js jquery/jquery.hoverintent.js jquery/jquery.autotab.js jquery/jquery.bt.js jquery/jquery.lorem.js jquery/jquery.autogrow.js jquery/jquery.jquery-ui.js jquery/jquery.tablednd.js editUI.js" -%]
 [%- IF browserIsIE -%]
-    [%- extra_js = "jquery/jquery.corner.js jquery/jquery.selectboxes.js jquery/jquery.hoverintent.js jquery/jquery.autotab.js libraries/excanvas.js jquery/jquery.bt.js jquery/jquery.bgiframe.min.js jquery/jquery.lorem.js jquery/jquery.autogrow.js editUI.js" -%]
-[%- ELSE -%]
-    [%- extra_js = "jquery/jquery.corner.js jquery/jquery.selectboxes.js jquery/jquery.hoverintent.js jquery/jquery.autotab.js jquery/jquery.bt.js jquery/jquery.lorem.js jquery/jquery.autogrow.js editUI.js" -%]
+    [%- extra_js = "libraries/excanvas.js jquery/jquery.bgiframe.min.js " _ extra_js -%]
 [%- END -%]
 
 [%- edit=1 -%]
@@ -9,7 +8,7 @@
 [%- USE CGI -%]
 [%#- Note, the next line is not in the TT docs. However, it is the required workaround  -#%]
 [%#- for http://mail.template-toolkit.org/pipermail/templates/2009-February/010605.html -#%]
-[%- SET dontIncludeReturnCode =	 CGI.initialize_globals() -%]
+[%- SET dontIncludeReturnCode =	CGI.initialize_globals() -%]
 
 [%- SWITCH CGI.param('tab') -%]
     [%- CASE 'relationships' -%]

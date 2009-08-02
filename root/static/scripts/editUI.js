@@ -2,25 +2,29 @@
 /*global jQuery, $, mb, text*/
 var MusicBrainz = {
 
+    artistData : new Object(),
+
     roundness : "round 6px",
 
     addSingleArtist : function (whereClicked) {
-        var thisArtist = $(whereClicked).parents("table:first"),
-            artistRows = thisArtist.find(".addartist"),
+        var targetArtists = $(whereClicked).parents("table:first"),
+            artistRows = targetArtists.find(".addartist"),
             mNum = 0, // TODO: Add medium handling to the artist functions
             tNum = parseInt($(whereClicked).attr("id").replace("btnAddTA-",""),10);
-        thisArtist.find(".joinerlabel strong, .joiner")
+        targetArtists.find(".joinerlabel strong, .joiner")
                   .removeClass("hidden");  // Show the "Joiner" header text.
         $(artistRows).filter(":last")
                      .after(MusicBrainz.makeHTMLNewArtist(tNum, mNum)) // Insert the new artist row.
         MusicBrainz.updateComboArtist($(artistRows[0])); // Update the displayed "combo artist" to include the new join phrases.
-        MusicBrainz.updateJoinPhrases(thisArtist.find(".addartist"));
+        MusicBrainz.updateJoinPhrases(targetArtists.find(".addartist"));
     },
+
     addToolButton : function (buttonText, buttonID) {
         $("#editMenuControlsInline").append('<input type="button" id="' + buttonID + '" value="' + buttonText + '"/>');
         $("#editMenuControlsInline").show();
         MusicBrainz.setPulloutHeight();
     },
+
     attachHelpButtonEvents : function (helpArray) {
         $.each(helpArray, function (i) {
             $(helpArray[i][0] + " img").click(function () {
@@ -39,15 +43,19 @@ var MusicBrainz = {
             });
         });
     },
+
     clearHelpMsg : function () {
         $("#editHelpMsg").html("");
     },
+
     clearStatus : function () {
         $("#editStatusMsg").html("");
     },
+
     hideErrorForSidebar : function (element) {
         $("#" + element + "-dt").btOff();
     },
+
     makeEditMenu : function () {
         $("body").append(mb.HTMLsnippets.sideMenu);
         $("#editMenuPullout").corner(MusicBrainz.roundness + " tr")
@@ -106,6 +114,7 @@ var MusicBrainz = {
                                   });
         }
     },
+
     makeCountryList : function () {
         var countrySelect = $("#select-edit-release-country");
         $.each(mb.country, function (i) {
@@ -124,6 +133,7 @@ var MusicBrainz = {
             }
         });
     },
+
     makeFormatList : function () {
         var otherVal,
             formatSelect = $("#select-edit-release-format");
@@ -144,13 +154,14 @@ var MusicBrainz = {
         formatSelect.children(':last').data("start_date", "");
         formatSelect.children(':first').attr("selected", "selected");
     },
+
     makeHTMLNewArtist : function(trackNum, mediumNum, artistName, joinPhrase) {
         mediumNum = (typeof(mediumNum) == "undefined") ? 0 : mediumNum;
         artistName = (typeof(artistName) == "undefined") ? "" : artistName;
         joinPhrase = (typeof(joinPhrase) == "undefined") ? "" : joinPhrase;
         return '<tr class="editartist addartist ' + trackNum + '">' +
                    '<td class="empty">' +
-                       '<img src="/static/images/blank.gif" class="removeArtist"/>' +
+                       '<img src="/static/images/blank.gif" class="removeArtist"  alt="' + text.RemoveArtist + '" title="' + text.RemoveArtist + '"/>' +
                        '<input id="ta-name-' + trackNum + '" type="text" class="name" value="' + artistName + '"/>' +
                    '</td>' +
                    '<td class="joiner">' +
@@ -158,6 +169,7 @@ var MusicBrainz = {
                    '</td>' +
                '</tr>';
     },
+
     makeStatusAndDocsBox : function () {
 //        $(".tabs:eq(0)").after(mb.HTMLsnippets.editBox + mb.HTMLsnippets.docsBox);
         $(".tabs:eq(0)").after(mb.HTMLsnippets.docsBox);
@@ -166,6 +178,7 @@ var MusicBrainz = {
         $("#wikiHelpBox").corner(MusicBrainz.roundness);
         $("#wikiHelpInnerBox").corner(MusicBrainz.roundness);
     },
+
     makeSwappableSelectList : function (entity, toSwap, commonArray, swapArray) {
         var swapList = "#select-edit-" + entity + "-" + toSwap,
             swapButton = "btn-switch-" + toSwap + "-list";
@@ -178,6 +191,7 @@ var MusicBrainz = {
         MusicBrainz.setHoverMsg([[swapButton, text.hoverSwapList]]);
         $(swapButton).mouseout(function () { MusicBrainz.clearHelpMsg(); });
     },
+
     makeTogglable : function (togglableItemArray) {
         $.each(togglableItemArray, function () {
             var toggleclass = this;
@@ -186,6 +200,7 @@ var MusicBrainz = {
             });
         });
     },
+
     makeTogglableEachInGroup : function (togglableItemArray) {
         $.each(togglableItemArray, function () {
             var toggleclass = this;
@@ -205,14 +220,17 @@ var MusicBrainz = {
             });
         });
     },
+
     setHelpMsg : function (status) {
         $("#editHelpMsg").html(status);
     },
+
     setHoverMsg : function (hoverArray) {
         $.each(hoverArray, function (i) {
             $(hoverArray[i][0]).mouseover(function () { MusicBrainz.setHelpMsg(hoverArray[i][1]); });
         });
     },
+
     setPulloutHeight : function () {
         var pulloutHeight = ($("#editMenu").height() + 10) + "px";
         $("#editMenuPullout").css({
@@ -220,12 +238,14 @@ var MusicBrainz = {
                                   lineHeight: pulloutHeight
                                   });
     },
+
     setStatus : function (status, showThrobber) {
         if (showThrobber) {
             status = '<img src="/static/images/loading-small.gif">&nbsp;' + status;
         }
         $("#editStatusMsg").html(status);
     },
+
     /* Note: Due to a selector problem with ExplorerCanvas in MSIE, the selector passed here must be an id, not a class or other selector. */
     showErrorForSidebar : function (element, errorMessage) {
         $("#" + element + "-dt").bt(errorMessage, {
@@ -236,6 +256,16 @@ var MusicBrainz = {
                                     shrinkToFit: 'true'
         }).btOn();
     },
+
+    stripeTracks : function () {
+        $("table.tbl > tbody").each(function () {
+                                   $(this).children("tr")
+                                          .removeClass("ev") // Unstripe the tracks.
+                                          .filter(":visible:even")
+                                          .addClass("ev"); // Restripe the tracks, using the new ordering.
+        });
+    },
+
     swapShortLongList : function (select, button, commonarray, bigarray) {
         if (typeof(select.selectedValues()[0]) != "undefined") { // If there actually is a currently selected item,
             var selecteditem = select.selectedValues()[0]; // then store the currently selected item.
@@ -260,11 +290,12 @@ var MusicBrainz = {
         select.val(selecteditem); // Re-select the selected item.
         select.show();
     },
+
     updateComboArtist : function (artist) {
-        var thisArtist = $(artist).parents("table:first"),
+        var targetArtists = $(artist).parents("table:first"),
             comboArtist = "",
-            removeArtistButtons = thisArtist.find(".removeArtist");
-        $(thisArtist).find('input[type=text]:not(:last)') // Get all input fields except the last (which is the joiner after the last artist).
+            removeArtistButtons = targetArtists.find(".removeArtist");
+        $(targetArtists).find('input[type=text]:not(:last)') // Get all input fields except the last (which is the joiner after the last artist).
                      .each(function (i) {
                                        var inputValue = $.trim($(this).val());
                                        if (i % 2) { // Input field is an artist name field
@@ -274,7 +305,7 @@ var MusicBrainz = {
                                            comboArtist += inputValue;
                                        }
                      });
-        thisArtist.find("textarea:first")
+        targetArtists.find("textarea:first")
                      .val($.trim(comboArtist));
         if (removeArtistButtons.length == 1) {
             removeArtistButtons.hide();  // Can't remove the artist if there's only one.
@@ -282,6 +313,7 @@ var MusicBrainz = {
             removeArtistButtons.show();
         }
     },
+
     updateJoinPhrases : function (artistJoinPhrases) {
         var artistCount = artistJoinPhrases.length;
         artistJoinPhrases.find("input.joiner") // Find all of this artist's join phrase input fields,
@@ -437,6 +469,88 @@ $(function () {
         }, 1);
     });
 
+    /* Add the track dragging and removal icons. */
+    $(".trackposition:visible").before('<td class="dragHandle">' + // Insert the reordering handler td.
+                                           '<div class="handleIcon" alt="' + text.DragTrack + '" title="' + text.DragTrack + '">' +
+                                           '</div>' +
+                                           '<div class="removeTrack" alt="' + text.RemoveTrack + '" title="' + text.RemoveTrack + '">' +
+                                           '</div>' +
+                                       '</td>');
+
+    /* Attach functionality to the the track dragging icons. */
+    $(".tbl").tableDnD({ // Add drag and drop reordering to the track rows. TODO: Add multi-medium support.
+        dragHandle: "dragHandle",
+        onDragClass: "upDown",
+        onDrop: function (tabel, movedRow) {
+                                               MusicBrainz.stripeTracks();
+                                               if (!$(movedRow).parents("#removedTracks").length) { // If the track was not dropped within Removed Tracks,
+                                                   $(movedRow).children("td:eq(0)")
+                                                              .children(".removeTrack")
+                                                              .show(); // then re-show the remove track icon.
+                                                   if ($("#removedTracks > tr").length <= 1) { // If Removed Tracks now has no tracks in it,
+                                                       $("#removedTracks").addClass("hidden"); // re-hide Remove Tracks.
+                                                   }
+                                               }
+                                           }
+                       })
+    /* Attach functionality to the the track removal icons. */
+    $(".removeTrack").live("click", function () {  // If the remove track icon is clicked, move the track to the Removed Tracks tfoot.
+        $("#removedTracks").append($(this).parents("tr:first")
+                                          .removeClass("ev") // Unstripe the track.
+                           );
+        $("#removedTracks").removeClass("hidden"); // Make sure that Removed Tracks is visible.
+        $("#removedTracks tr .removeTrack").hide(); // Hide the removed track's remove track icon.
+        MusicBrainz.stripeTracks();
+    });
+
+    /* Insert the artist duplication icons. */
+    $(".trackartist").prepend('<div class="copyArtist" alt="' + text.DragArtist + '" title="' + text.DragArtist + '"></div>');
+
+    /* Attach functionality to the the artist duplication icons. */
+    $(".copyArtist").draggable({
+                               helper: 'clone',
+                               opacity: 0.5
+                               })
+                    .live('dragstart', function () {
+                        MusicBrainz.artistData = $(this).parents("table:first");
+                    });
+
+    /* Attach artist duplication target functionality to the the tracks. */
+// TODO: Add multi-medium support.
+    $('.tartist').parent().droppable({ accept: '.copyArtist' })
+                 .bind('drop', function() {
+// TODO: Abstract this out, so it can less-redundantly also be accomplished when reading in a stash.
+                 var sourceArtists = MusicBrainz.artistData.find("input.name"),
+                     sourceJoiners = MusicBrainz.artistData.find("input.joiner"),
+                     sourceArtistCount = sourceArtists.length,
+                     targetArtistCell = $(this).find("table:first"),
+                     targetArtists = targetArtistCell.find("input.name"),
+                     targetJoiners = targetArtistCell.find("input.joiner"),
+                     targetArtistCount = targetArtistCell.find(".addartist").length,
+                     artistCountDifference = sourceArtistCount - targetArtistCount,
+                     targetAddArtistBtn = targetArtistCell.find("input[type=button]");
+                 $(this).find("td.editable:eq(2)").click();
+                 if (artistCountDifference < 0) { // The target track has more single artist fields than exist for the source track.
+                     targetArtistCell.find(".addartist:not(:first)").remove();
+                     artistCountDifference = sourceArtistCount - 1;
+                 }
+                 for (var i = 0; i < artistCountDifference; i++) { // Add artist fields, such that there's enough to equal the
+                     MusicBrainz.addSingleArtist(targetAddArtistBtn); // number of artists in the combo-artist being copied over.
+                 }
+                 for (var i = 0; i < sourceArtistCount; i++) {
+                     $(targetArtists[i]).val($(sourceArtists[i]).val()); // Copy over the artist name
+                     $(targetJoiners[i]).val($(sourceJoiners[i]).val()); // Copy over the join phrases
+                 }
+                 MusicBrainz.updateComboArtist(targetAddArtistBtn);
+             });
+
+    /* Attach functionality to the the remove artist icons. */
+    $(".removeArtist").live("click", function () {
+        var thisSingleArtist = $(this).parents("table:first");
+        $(this).parents("tr:first").remove();
+        MusicBrainz.updateJoinPhrases(thisSingleArtist.find(".addartist"));
+        MusicBrainz.updateComboArtist(thisSingleArtist.find("tr:eq(2)"));
+    });
 
 /* TODO: pre-populate:
                           * Type
@@ -451,12 +565,7 @@ $(function () {
 
 
 
-    $(".removeArtist").live("click", function () {
-        var thisSingleArtist = $(this).parents("table:first");
-        $(this).parents("tr:first").remove();
-        MusicBrainz.updateJoinPhrases(thisSingleArtist.find(".addartist"));
-        MusicBrainz.updateComboArtist(thisSingleArtist.find("tr:eq(2)"));
-    });
+
 
 
 
@@ -478,6 +587,20 @@ $(function () {
 
 // TODO: There can be more than one country dropdown.
     MusicBrainz.makeCountryList();
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 // TODO: Block /n's in field textareas.
 
