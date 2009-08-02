@@ -338,7 +338,7 @@ label.overlabel-apply {
 /* Help icons */
 
 .helpIcon {
- background: url(/static/images/icon/q.blue.png) top left no-repeat;
+ background: url(/static/images/icon/src/q.blue.png) top left no-repeat;
  cursor: pointer;
  height: 12px;
  margin-right: .2em;
@@ -347,13 +347,13 @@ label.overlabel-apply {
 }
 
 .helpIcon:hover {
- background: url(/static/images/icon/q.orange.png) top left no-repeat;
+ background: url(/static/images/icon/src/q.orange.png) top left no-repeat;
 }
 
 /* Documentation window close button. */
 
 .closeButton {
- background: url(/static/images/icon/close.grey.png) top left no-repeat;
+ background: url(/static/images/icon/src/close.grey.png) top left no-repeat;
  cursor: pointer;
  float: right;
  height: 16px;
@@ -361,7 +361,7 @@ label.overlabel-apply {
 }
 
 .closeButton:hover {
- background: url(/static/images/icon/close.red.png) top left no-repeat;
+ background: url(/static/images/icon/src/close.red.png) top left no-repeat;
 }
 
 /* Country flags in select lists. */
@@ -509,7 +509,7 @@ tr.editartist input[type="button"] {
 }
 
 .removeArtist {
- background: url(/static/images/icon/close.grey.png) top left no-repeat;
+ background: url(/static/images/icon/src/close.grey.png) top left no-repeat;
  cursor: pointer;
  float: left;
  height: 16px;
@@ -519,24 +519,24 @@ tr.editartist input[type="button"] {
 }
 
 .removeArtist:hover {
- background: url(/static/images/icon/close.red.png) top left no-repeat;
+ background: url(/static/images/icon/src/close.red.png) top left no-repeat;
 }
 
 /* Remove track */
 
 .removeTrack {
- background:transparent url(/static/images/icon/close.grey.png) no-repeat scroll left top;
+ background:transparent url(/static/images/icon/src/close.grey.png) no-repeat scroll left top;
  cursor:pointer;
  height: 16px;
  width: 16px;
  float: left;
  position: relative;
- left: -33px;
- top: 3pt;
+ left: -34px;
+ top: 2px;
 }
 
 .removeTrack:hover {
- background: url(/static/images/icon/close.red.png) top left no-repeat;
+ background: url(/static/images/icon/src/close.red.png) top left no-repeat;
 }
 
 #removedTracks tr {
@@ -556,7 +556,7 @@ tr.editartist input[type="button"] {
 }
 
 .handleIcon {
- background: transparent url(/static/images/icon/updown.grey.png) no-repeat scroll 0 0 !important;
+ background: transparent url(/static/images/icon/src/updown.grey.png) no-repeat scroll 0 0 !important;
  height: 14px;
  width: 12px;
  float: left;
@@ -566,13 +566,13 @@ tr.editartist input[type="button"] {
 }
 
 .handleIcon:hover {
- background: url(/static/images/icon/updown.png) no-repeat!important;
+ background: url(/static/images/icon/src/updown.png) no-repeat!important;
 }
 
 /* Artist copier */
 
 .copyArtist {
- background: url(/static/images/icon/person.grey.png) no-repeat;
+ background: url(/static/images/icon/src/person.grey.png) no-repeat;
  cursor: move;
  height: 16px;
  float: left;
@@ -580,5 +580,5 @@ tr.editartist input[type="button"] {
 }
 
 .copyArtist:hover {
- background: url(/static/images/icon/person.color.png) no-repeat;
+ background: url(/static/images/icon/src/person.color.png) no-repeat;
 }
