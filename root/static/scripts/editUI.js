@@ -592,9 +592,32 @@ $(function () {
 
 
 
-
-
-
+// TODO: Track renumbering on remove or delete.
+// TODO: Track addition.
+// TODO: Medium reordering.
+// TODO: Fix everything to support multiple mediums. (artist; note that the onclick is off by one for medium 2, likely off by n+1 for medium n)
+// TODO: Medium addition.
+// TODO: Missing mediums?
+// TODO: Medium titles.
+// TODO: Medium numbering.
+// TODO: Release artist editing.
+// TODO: Release title editing.
+// TODO: Annotation editor.
+// TODO: Medium type selection.
+// TODO: Setting all track artists from release artist.
+// TODO: Redish color instead of orange for removed tracks?
+// TODO: sprite-ize the icons.
+// TODO: track parser support
+// TODO: track parser template layout
+// TODO: guess case support
+// TODO: guess case template layout
+// TODO: stash, undo, and redo support
+// TODO: data loading via url args support
+// TODO: add/remove label
+// TODO: extend existing label functionality to support multiple labels
+// TODO: Copy in a clean track
+// TODO: Copy in a clean label
+// TODO: Loading of each single artist for each combo-artist
 
 
 
