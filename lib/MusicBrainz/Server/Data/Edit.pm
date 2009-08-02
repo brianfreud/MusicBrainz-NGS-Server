@@ -115,17 +115,14 @@ sub create
 
     my $edit = $class->new( editor_id => $editor_id, c => $self->c );
     $edit->initialize(%opts);
-
-    eval {
-        $sql->Begin;
-        $sql_raw->Begin;
-
+    
+    Sql::RunInTransaction(sub {
         $edit->insert;
 
         # Automatically accept auto-edits on insert
         if($edit->auto_edit)
         {
-            my $st = $self->_accept_edit($edit);
+            my $st = $self->_do_accept($edit);
             $edit->status($st);
         };
 
@@ -160,17 +157,7 @@ sub create
                 $model->inc_edits_pending(@$ids);
             }
         }
-
-        $sql->Commit;
-        $sql_raw->Commit;
-    };
-
-    if ($@)
-    {
-        $sql->Rollback;
-        $sql_raw->Rollback;
-        die $@;
-    }
+    }, $sql, $sql_raw);
 
     return $edit;
 }
@@ -187,11 +174,14 @@ sub load_all
 sub accept
 {
     my ($self, $edit) = @_;
-    $self->_close($edit, sub {
-        my $edit = shift;
-        eval { $edit->accept };
-        return $@ ? $STATUS_ERROR : $STATUS_APPLIED;
-   });
+    $self->_close($edit, sub { $self->_do_accept(shift) });
+}
+
+sub _do_accept
+{
+    my ($self, $edit) = @_;
+    eval { $edit->accept };
+    return $@ ? $STATUS_ERROR : $STATUS_APPLIED;
 }
 
 sub reject
