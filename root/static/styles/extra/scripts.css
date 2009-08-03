@@ -195,7 +195,7 @@ label.overlabel-apply {
 
 .notActive td.ta-results textarea {
  cursor: pointer!important;
- font-size: 100%!important;
+ height: 1em;
  letter-spacing: 0!important;
  margin-bottom: 0!important;
  padding-top: 0!important;
@@ -428,7 +428,7 @@ table.tbl td.trackname {
 }
 
 .trackname textarea {
- width: 98%;
+ width: 97%;
 }
 
 .trackartist textarea {
