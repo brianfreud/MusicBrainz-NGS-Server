@@ -1,10 +1,5 @@
 /* css from older versions of the UI; TODO: remove this when sure its not needed further.
 
-.highlight:hover
-.page table.tbl tr td:hover {
- background-color: #FFBA58!important;
-}
-
 .ajax-lookup {
  background:#FFF;
  border:1px solid #000;
@@ -185,6 +180,18 @@ label.overlabel-apply {
 }
 
 */
+
+/* Highlight on mouseover for editable fields */
+
+.highlight:hover {
+ background-color: #FFBA58!important;
+}
+
+/* Hide the bottom border line for edited, but not displayed, artists */
+
+.notActive td.ta-results {
+ border-bottom: 0 none!important;
+}
 
 /* Class used to shift the country list - makeEditMenu function in the editor's js */
 

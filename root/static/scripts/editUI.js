@@ -640,7 +640,7 @@ $(function () {
                               ]);
 
     /* Add background and cursor hover behaviours for editable fields. */
-    $(".editable").each(function (event) {
+    $(".editable, .artistDisplay td:has(textarea)").each(function (event) {
         $(this).addClass('highlight')
                .css("cursor", "pointer");
     });
@@ -817,6 +817,30 @@ $(function () {
     /* Add and activate the Annotation Editor toolbox button. */
 //    MusicBrainz.addAnnotationButton();
 
+    /* Make each multiple-item entity editable. */
+    MusicBrainz.makeTogglableEachInGroup([
+                                         ["trackposition"],
+                                         ["trackname", true],
+                                         ["trackartist", true, "editartist"],
+                                         ["trackdur"]
+                                         ]);
+
+    /* Toggle artist editors, such that only one is visible at any one time. */
+    $(".artistDisplay").live("click", function () {
+        $(".artistDisplay").each(function () { // Find all artist textarea display fields,
+            $(this).parents("table:first") // find their parent artist tables,
+                   .find("tr:not(:first)") // find all rows of those tables, except the one with the textarea display text,
+                   .hide() // hide them
+                   .end() // go back up to the parent artist tables level,
+                   .find("tr:first") // select only the first one - the one with the textarea display text,
+                   .addClass("notActive"); // and remove the bottom box line from it.
+        });
+        $(this).parents("table:first") // find the parent artist table for the active artist,
+               .find("tr") // find all table rows within that artist's edit table,
+               .show() // show them,
+               .filter(":first") // then filter to only the first one - the one with the textarea display text,
+               .removeClass("notActive"); // and add the bottom box line to it.
+    })
 
 
 
@@ -824,12 +848,6 @@ $(function () {
 /* Everything below is rough code in progress. */
 
 
-    MusicBrainz.makeTogglableEachInGroup([
-                                         ["trackposition"],
-                                         ["trackname", true],
-                                         ["trackartist", true, "editartist"],
-                                         ["trackdur"]
-                                         ]);
 
 
 

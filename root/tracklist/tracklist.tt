@@ -20,7 +20,7 @@
                 [%#- Note: all the loop.count - 1 here need updating for multiple mediums. -%]
                 <table>
                     <tbody>
-                        <tr>
+                        <tr class="artistDisplay">
                             <td colspan="2" class="editable trackartist">
                                 [% artist_credit(track.artist_credit) %]
                             </td>
