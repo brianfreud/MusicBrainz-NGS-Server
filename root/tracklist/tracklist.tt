@@ -1,7 +1,7 @@
 [%- FOR track=tracklist.tracks;
     recording = track.recording %]
     <tr[% ' class="ev"' IF loop.count % 2 == 0 %]>
-        <td[%- IF edit %] class="editable trackposition"[% END %]><a>[% track.position %]</a></td>
+        <td[%- IF edit %] class="editable trackposition"[% END %]>[% track.position %]</td>
         [%- IF edit %]
             <td class="hidden trackposition"><input type="text" value="[% track.position %]"></td>
         [%- END -%]
@@ -58,7 +58,7 @@
                 </table>
             [%- END -%]
         </td>
-        <td[%- ' class="editable trackdur"><span' IF edit -%]><a>[% recording.length | format_time %]</a>[%- '</span>' IF edit -%]</td>
+        <td[%- ' class="editable trackdur"><span' IF edit -%]>[% recording.length | format_time %][%- '</span>' IF edit -%]</td>
         [%- IF edit %]
             <td class="hidden trackdur"><input type="text" value="[% recording.length | format_time %]"></td>
         [%- END -%]
