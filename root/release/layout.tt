@@ -7,7 +7,6 @@
         { field="release.date.year"          title => l('Released')  edit => 'date'      type='date'   data => release.date.format 
           plaintext => [ release.date.year, release.date.month, release.date.day ],
         },
-        { field="release.release_group.type" title => l('Type')      edit => 'type'      type='option' data => html_escape(release.release_group.type.name) },
         { field="release.combined_format"    title => l('Format')    edit => 'format'    type='option' data => release.combined_format_name },
         { field="release.packaging"          title => l('Packaging') edit => 'packaging' type='option' data => html_escape(release.packaging.name) },
         { field="release.status"             title => l('Status')    edit => 'status'    type='option' data => html_escape(release.status.name) },

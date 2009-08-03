@@ -13,7 +13,7 @@
         <thead>
             <tr>
                 [%- IF edit -%]
-                    <th/>
+
                 [%- END -%]
                 <th class="first[%- IF edit -%] release[%- END-%]" style="width:1em;text-align:right;">#</th>
                 <th[%- IF edit -%] class="ttitle release"[%- END-%]>[% l('Title') %]</th>
@@ -29,25 +29,13 @@
         [%- FOR medium=release.mediums -%]
             <tbody[%- IF edit -%] id="medium-[%- loop.count -%]"[%- END -%]>
                 <tr class="subh[%- IF edit -%] nodrop nodrag[%- END -%]">
-                    <td>&nbsp;</td><td colspan="[%- IF edit -%]4[%- ELSE -%]3[%- END -%]">
+                    <th>&nbsp;</th>
+                    <th colspan="[%- IF edit -%]3[%- ELSE -%]3[%- END -%]">
                         <a href="[% c.uri_for_action('/tracklist/show', [medium.tracklist.id]) %]">
                             [% medium.format_name or l("Medium") | html %] [% medium.position %][% IF medium.name %]:
                             [% medium.name | html %][% END %]
                         </a>
-                    </td>
-                </tr>
-                [%- INCLUDE 'tracklist/tracklist.tt' tracklist=medium.tracklist -%]
-            </tbody>
-        [%- END -%]
-        [%- FOR medium=release.mediums -%]
-            <tbody[%- IF edit -%] id="medium-[%- loop.count -%]"[%- END -%]>
-                <tr class="subh[%- IF edit -%] nodrop nodrag[%- END -%]">
-                    <td>&nbsp;</td><td colspan="[%- IF edit -%]4[%- ELSE -%]3[%- END -%]">
-                        <a href="[% c.uri_for_action('/tracklist/show', [medium.tracklist.id]) %]">
-                            [% medium.format_name or l("Medium") | html %] [% medium.position %][% IF medium.name %]:
-                            [% medium.name | html %][% END %]
-                        </a>
-                    </td>
+                    </th>
                 </tr>
                 [%- INCLUDE 'tracklist/tracklist.tt' tracklist=medium.tracklist -%]
             </tbody>
