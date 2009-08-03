@@ -183,7 +183,7 @@ label.overlabel-apply {
 
 /* Highlight on mouseover for editable fields */
 
-.highlight a {
+.highlight:hover a {
  background: transparent url(/static/images/icon/Pencil.png) no-repeat!important;
 }
 
