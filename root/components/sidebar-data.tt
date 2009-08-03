@@ -32,7 +32,7 @@ END -%]
                         [%- datum.title -%]:
                     </dt>
                     <dd class="exp editable [%- entity -%]-[% datum.edit %] width54" id="[%- entity -%]-[% datum.edit %][%- IF datum.number.defined -%]-[% datum.number %][%- END -%]-view">
-                        [%- check_if_unknown(${datum.field}, datum.data) %]
+                        <a>[%- check_if_unknown(${datum.field}, datum.data) %]</a>
                     </dd>
                     <dd class="exp hidden [%- entity -%]-[% datum.edit %] width54" id="[%- entity -%]-[% datum.edit %][%- IF datum.number.defined -%]-[% datum.number %][%- END -%]-edit">
                         [%- insert_editfield(datum.type, datum.edit, get_editfield_text(datum.data, datum.plaintext.0), datum.plaintext.1, datum.plaintext.2) -%]
