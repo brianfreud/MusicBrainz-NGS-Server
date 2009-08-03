@@ -642,6 +642,7 @@ $(function () {
     /* Add background and cursor hover behaviours for editable fields. */
     $(".editable, .artistDisplay td:has(textarea)").each(function (event) {
         $(this).css("cursor", "pointer");
+        $(this).prepend('<div style="float:right; position: relative; right: 1px;">edit</div>');
 //               .addClass('highlight');
     });
 
