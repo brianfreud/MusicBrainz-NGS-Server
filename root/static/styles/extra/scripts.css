@@ -194,6 +194,7 @@ label.overlabel-apply {
 }
 
 .notActive td.ta-results textarea {
+ cursor: pointer!important;
  font-size: 100%!important;
  letter-spacing: 0!important;
  margin-bottom: 0!important;
