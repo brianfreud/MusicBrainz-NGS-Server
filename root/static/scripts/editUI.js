@@ -546,6 +546,20 @@ var MusicBrainz = {
         }
     },
 
+    updatePositionFields : function () {
+        $(".tbl.release > tbody").each(function () {
+            var originalPositions = $($(this).find(".editable.trackposition")),
+                newPositions = $($(this).find('.trackposition:not(".editable")')),
+                mediumTrackCount = $(this).find(".editable.trackposition").length;
+            for (var i = 0; i < mediumTrackCount; i++) {
+                if ($(originalPositions[i]).text() != i+1) { // If the original position != the current position,
+//                    $(originalPositions[i]).click(); // The track position field now has been edited (via a remove or reorder), so show the edit field,
+//                    $(newPositions[i]).find("input:eq(0)").val(i+1); // and populate the input with the new position.
+                }
+            }
+        });
+    },
+
     updateJoinPhrases : function (artistJoinPhrases) {
         var artistCount = artistJoinPhrases.length;
         artistJoinPhrases.find("input.joiner") // Find all of this artist's join phrase input fields,
@@ -599,8 +613,8 @@ $(function () {
         MusicBrainz.addAnnotationSwitcher();
     }
 
-    /* Attach and activate the annotation editor. */
-    $('#annotation').markItUp(MusicBrainz.markup.wiki);
+    /* Attach and activate the editor for the annotation and edit note. */
+    $('#annotation, #edit-releaseedit_note').markItUp(MusicBrainz.markup.wiki);
 
     if (experimental) {
         /* Activate the annotation markup switcher controls. */
@@ -726,11 +740,12 @@ $(function () {
                                        '</td>');
 
     /* Attach functionality to the the track dragging icons. */
-    $(".tbl").tableDnD({ // Add drag and drop reordering to the track rows. TODO: Add multi-medium support.
+    $(".tbl").tableDnD({ // Add drag and drop reordering to the track rows.
         dragHandle: "dragHandle",
         onDragClass: "upDown",
         onDrop: function (tabel, movedRow) {
                                                MusicBrainz.stripeTracks();
+                                               MusicBrainz.updatePositionFields();
                                                if (!$(movedRow).parents("#removedTracks").length) { // If the track was not dropped within Removed Tracks,
                                                    $(movedRow).children("td:eq(0)")
                                                               .children(".removeTrack")
@@ -749,6 +764,7 @@ $(function () {
         $("#removedTracks").removeClass("hidden"); // Make sure that Removed Tracks is visible.
         $("#removedTracks tr .removeTrack").hide(); // Hide the removed track's remove track icon.
         MusicBrainz.stripeTracks();
+        MusicBrainz.updatePositionFields();
     });
 
     /* Insert the artist duplication icons. */
@@ -804,6 +820,16 @@ $(function () {
     MusicBrainz.addAnnotationButton();
 
 
+
+
+
+/* Everything below is rough code in progress. */
+
+
+
+
+
+
 /* TODO: pre-populate:
                           * Type
                           * Format
@@ -813,7 +839,6 @@ $(function () {
                           * Countries */
 
 
-/* Everything below is rough code in progress. */
 
     MusicBrainz.makeTogglableEachInGroup([
                                          ["trackposition"],
@@ -862,6 +887,9 @@ $(function () {
 // TODO: label lookup
 // TODO: Fix Sidebar pre-populated data for dates (should be yyyy, mm, dd, actually is yyyy, yyyy, mm)
 // TODO: Country dropdown is not sliding over anymore, like it should.
+// TODO: Type editing is a RG concept, not a release one
+// TODO: Format is a medium concept, not a release one.
+
 
 
 //    MusicBrainz.addToolButton("Show Help Buttons", "btnHelp");

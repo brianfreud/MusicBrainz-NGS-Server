@@ -722,6 +722,13 @@ tr.editartist input[type="button"] {
  background-position: 0 -858px;
 }
 
+/* Annotation and edit note textareas */
+
+#annotation,
+#edit-releaseedit_note {
+ width: 98.5%;
+}
+
 /* Annotation editor character and symbol drop-down menus */
 
 .characters ul {
