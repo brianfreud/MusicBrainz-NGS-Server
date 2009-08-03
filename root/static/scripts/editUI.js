@@ -826,6 +826,12 @@ $(function () {
 /* Everything below is rough code in progress. */
 
 
+    MusicBrainz.makeTogglableEachInGroup([
+                                         ["trackposition"],
+                                         ["trackname", true],
+                                         ["trackartist", true, "editartist"],
+                                         ["trackdur"]
+                                         ]);
 
 
 
@@ -840,12 +846,6 @@ $(function () {
 
 
 
-    MusicBrainz.makeTogglableEachInGroup([
-                                         ["trackposition"],
-                                         ["trackname", true],
-                                         ["trackartist", true, "editartist"],
-                                         ["trackdur"]
-                                         ]);
 
 // TODO:   /* Set click behaviour for editable fields (where there is more than one of that field type). */
     MusicBrainz.makeTogglable([
@@ -879,6 +879,7 @@ $(function () {
 // TODO: add/remove label
 // TODO: extend existing label functionality to support multiple labels
 // TODO: Copy in a clean track for later use
+// TODO: Copy in a clean medium line for later use
 // TODO: Copy in a clean label for later use
 // TODO: Loading of each single artist for each combo-artist
 // TODO: Block /n's in field textareas.
@@ -886,7 +887,6 @@ $(function () {
 // TODO: artist lookup
 // TODO: label lookup
 // TODO: Fix Sidebar pre-populated data for dates (should be yyyy, mm, dd, actually is yyyy, yyyy, mm)
-// TODO: Country dropdown is not sliding over anymore, like it should.
 // TODO: Type editing is a RG concept, not a release one
 // TODO: Format is a medium concept, not a release one.
 

@@ -184,13 +184,15 @@ label.overlabel-apply {
  z-index:1;
 }
 
+*/
+
+/* Class used to shift the country list - makeEditMenu function in the editor's js */
+
 .shiftSelect {
  position:absolute;
  right:106px;
  z-index:100;
 }
-
-*/
 
 /* Control buttons placed on the right side of the screen. */
 
