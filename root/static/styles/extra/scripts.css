@@ -181,18 +181,18 @@ label.overlabel-apply {
 
 */
 
-.editable a {
- color: #000;
-}
-
 /* Highlight on mouseover for editable fields */
 
 .highlight {
- background-color: #FFFAD8!important;
+ background-color: #FFFA98;
 }
 
 .highlight:hover {
- background: #FFFAD8 url(/static/images/icon/Pencil.png) top right no-repeat!important;
+ background: transparent url(/static/images/icon/Pencil.png) top right no-repeat!important;
+}
+
+.ev .highlight {
+ background-color: #FFDA78!important;
 }
 
 /* Hide the bottom border line for edited, but not displayed, artists */
