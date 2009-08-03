@@ -11,21 +11,22 @@ extends 'MusicBrainz::Server::Edit';
 
 sub edit_type { $EDIT_RELEASEGROUP_DELETE }
 sub edit_name { "Delete Release Group" }
-sub entity_model { 'ReleaseGroup' }
-sub entity_id { shift->release_group_id }
 
-sub entities
-{
-    my $self = shift;
-    return {
-        release_group => [ $self->release_group_id ]
-    }
-}
+sub related_entities { { release_group => [ shift->release_group_id ] } }
+sub alter_edit_pending { { ReleaseGroup => [ shift->release_group_id ] } }
+sub models { [qw( ReleaseGroup )] }
 
 has '+data' => (
     isa => Dict[
         release_group => Int
     ]
+);
+
+has 'release_group_id' => (
+    isa => 'Int',
+    is => 'rw',
+    lazy => 1,
+    default => sub { shift->data->{release_group} }
 );
 
 has 'release_group' => (
