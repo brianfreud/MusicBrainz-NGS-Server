@@ -1,3 +1,5 @@
+/* css from older versions of the UI; TODO: remove this when sure its not needed further.
+
 .highlight:hover
 .page table.tbl tr td:hover {
  background-color: #FFBA58!important;
@@ -187,6 +189,8 @@ label.overlabel-apply {
  right:106px;
  z-index:100;
 }
+
+*/
 
 /* Control buttons placed on the right side of the screen. */
 
@@ -523,7 +527,7 @@ tr.editartist input[type="button"] {
 
 #removedTracks tr,
 .upDown:hover {
- background-color: #FFBA58!important;
+ background-color: #FAA!important;
 }
 
 .dragHandle {
@@ -550,14 +554,50 @@ tr.editartist input[type="button"] {
  width: 18px;
 }
 
+/* Annotation fieldset */
+.annotationFS {
+ margin-top: 1em;
+}
+
+/* Annotation markup switcher */
+#ChangeMarkup {
+ display: inline-block;
+ margin: 0;
+ padding: 0;
+}
+
+#ChangeMarkup li {
+ display: inline;
+ list-style-type: none;
+ margin: 0 10px 0 0;
+ padding: 0;
+}
+
+#ChangeMarkup li a {
+ font-variant: small-caps;
+}
+
+#ChangeMarkup .currentSet {
+ font-weight: bolder;
+}
+
+#ChangeMarkup .currentSet a {
+ color: #FF8A38 !important;
+}
+
 /* Icons */
 
+.characters,
 .closeButton,
 .copyArtist,
-.helpIcon,
+.editor a,
 .handleIcon,
+.helpIcon,
+.markItUpResizeHandle,
+.preview,
 .removeArtist,
-.removeTrack {
+.removeTrack,
+.symbols {
  background: transparent url(/static/images/icon/editor.png) no-repeat;
 }
 
@@ -565,60 +605,173 @@ tr.editartist input[type="button"] {
 .closeButton,
 .removeArtist,
 .removeTrack {
- background-position: 0 -132px;
+ background-position: 0 -198px;
 }
 
 /* Icon: X (red) */
 .closeButton:hover,
 .removeArtist:hover,
 .removeTrack:hover {
- background-position: 0 -198px;
+ background-position: 0 -264px;
 }
 
 /* Icon: Up-down (blue) */
 .handleIcon:hover {
- background-position: 0 -1444px;
+ background-position: 0 -1764px;
 }
 
 /* Icon: Up-down (gray) */
 .handleIcon {
- background-position: 0 -1508px;
+ background-position: 0 -1828px;
 }
 
 /* Icon: Person (color) */
 .copyArtist:hover {
- background-position: 0 -1122px;
+ background-position: 0 -1310px;
 }
 
 /* Icon: Person (gray) */
 .copyArtist {
- background-position: 0 -1188px;
+ background-position: 0 -1376px;
 }
 
 /* Icon: question mark (blue) */
 .helpIcon {
- background-position: 0 -1254px;
+ background-position: 0 -1508px;
 }
 
 /* Icon: question mark (orange) */
 .helpIcon:hover {
- background-position: 0 -1316px;
+ background-position: 0 -1570px;
 }
 
-.sprite-arrow_undo { background-position: 0 0; } 
-.sprite-bold { background-position: 0 -66px; } 
-.sprite-code { background-position: 0 -264px; } 
-.sprite-file { background-position: 0 -330px; } 
-.sprite-h1 { background-position: 0 -396px; } 
-.sprite-h2 { background-position: 0 -462px; } 
-.sprite-h3 { background-position: 0 -528px; } 
-.sprite-h4 { background-position: 0 -594px; } 
-.sprite-h5 { background-position: 0 -660px; } 
-.sprite-h6 { background-position: 0 -726px; } 
-.sprite-hr { background-position: 0 -792px; } 
-.sprite-italic { background-position: 0 -858px; } 
-.sprite-list-bullet { background-position: 0 -924px; } 
-.sprite-list-numeric { background-position: 0 -990px; } 
-.sprite-paragraph { background-position: 0 -1056px; } 
-.sprite-trash { background-position: 0 -1378px; } 
-.sprite-url { background-position: 0 -1572px; } 
+/* Icons: HTML / Wiki */
+.editor.strong a {
+ background-position: 0 -66px;
+}
+
+.editor.a a {
+ background-position: 0 -1892px;
+}
+
+.editor.em a {
+ background-position: 0 -980px;
+}
+
+.editor.h1 a {
+ background-position: 0 -462px;
+}
+
+.editor.h2 a {
+ background-position: 0 -528px;
+}
+
+.editor.h3 a {
+ background-position: 0 -594px;
+}
+
+.editor.h4 a {
+ background-position: 0 -660px;
+}
+
+.editor.h5 a {
+ background-position: 0 -726px;
+}
+
+.editor.h6 a {
+ background-position: 0 -792px;
+}
+
+.editor.hr a {
+ background-position: 0 -914px;
+}
+
+.editor.p a {
+ background-position: 0 -1244px;
+}
+
+.editor.precode a {
+ background-position: 0 -330px;
+}
+
+.editor.ul a {
+ background-position: 0 -1046px;
+}
+
+.editor.ol a {
+ background-position: 0 -1178px;
+}
+
+.editor.li a {
+ background-position: 0 -1112px;
+}
+
+.preview {
+ background-position: 0 -1442px;
+}
+
+.characters {
+ background-position: 0 -132px;
+}
+
+.symbols {
+ background-position: 0 -1632px;
+}
+
+.markItUpResizeHandle {
+ background-position: 0 -858px;
+}
+
+/* Annotation editor character and symbol drop-down menus */
+
+.characters ul {
+ padding:1px;
+ width: 39.5em;
+}
+
+.symbols ul {
+ padding:1px;
+ width: 16.5em;
+}
+
+.markItUpHeader ul ul li {
+ font-family: monospace;
+}
+
+.skip-2 {
+ padding-left: 3em!important;
+}
+
+.skip1 {
+ padding-right: 1.5em!important;
+}
+
+.skip2 {
+ padding-right: 3em!important;
+}
+
+.skip3 {
+ padding-right: 4.5em!important;
+}
+
+.skip4 {
+ padding-right: 6em!important;
+}
+
+.skip5 {
+ padding-right: 7.5em!important;
+}
+
+.skip6 {
+ padding-right: 9em!important;
+}
+
+.skip16 {
+ padding-right: 24em!important;
+}
+
+/* Other icons in editor.png
+.arrow_undo  0 0;
+.file  0 -396px;
+.trash  0 -1698px;
+*/

@@ -1,0 +1,121 @@
+.markItUp {
+ display: inline-block;
+ margin:5px 0;
+ width:100%;
+}
+
+.markItUp * {
+ margin:0;
+ outline:none;
+ padding:0;
+}
+
+.markItUp a:link,
+.markItUp a:visited {
+ color:#000;
+ text-decoration:none;
+}
+
+
+.markItUpEditor {
+ clear:both;
+ display:block;
+ line-height:18px;
+ overflow:auto;
+ padding:5px;
+}
+
+.markItUpPreviewFrame {
+ background:#FFF;
+ height: 20em;
+ margin:5px 0;
+ overflow:auto;
+ width:99.9%;
+}
+
+.markItUpFooter {
+ width:100%;
+}
+
+.markItUpResizeHandle {
+ cursor:n-resize;
+ height:5px;
+ margin-left:auto;
+ margin-right:auto;
+ overflow:hidden;
+ width:22px;
+}
+
+ /* first row of buttons */
+.markItUpHeader ul li {
+ float:left;
+ list-style:none;
+ position:relative;
+}
+
+.markItUpHeader ul li:hover > ul {
+ display:block;
+}
+
+.markItUpHeader ul.markItUpDropMenu li {
+ margin-right:0;
+}
+
+ /* next rows of buttons */
+.markItUpHeader ul ul {
+ background:#FFF;
+ border:1px solid #000;
+ display:none;
+ left:0;
+ position:absolute;
+ top:18px;
+}
+
+.markItUpHeader ul ul li {
+ float:left;
+ padding: 3px 0;
+ width: 1.5em;
+}
+
+.markItUpHeader ul .markItUpSeparator {
+ background:#CCC;
+ height:16px;
+ margin:0 5px;
+ overflow:hidden;
+ width:1px;
+}
+
+.markItUpHeader ul ul .markItUpSeparator {
+ height:1px;
+ margin:0px;
+ width:auto;
+}
+
+ /* next row of buttons */
+.markItUpHeader ul ul ul {
+ left:150px;
+ position:absolute;
+ top:-1px;
+}
+
+.markItUpHeader ul ul ul li {
+ float:none;
+}
+
+.markItUpHeader ul a {
+ display:block;
+ margin:0;
+ padding: 1px 4px;
+ text-indent:-10000px;
+ width:16px;
+}
+
+.markItUpHeader ul ul a {
+ display:block;
+ text-indent:0;
+ width:120px;
+}
+
+.markItUpHeader ul ul a:hover {
+ color: orange;
+}

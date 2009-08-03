@@ -1,10 +1,191 @@
 /*jslint undef: true, browser: true*/
 /*global jQuery, $, mb, text*/
+
+var experimental = false;
+
+var charMap = {
+    characters : {
+        name: 'Characters',
+        className: "characters",
+        dropMenu: []
+    },
+    symbols : {
+        name: 'Symbols',
+        className: "symbols",
+        dropMenu: []
+    }
+}
+
 var MusicBrainz = {
 
     artistData : new Object(),
 
-    roundness : "round 6px",
+    roundness  : "round 6px",
+
+    markup     : {
+                 wiki : {
+                         nameSpace: 'wiki',
+                         onTab: {
+                                keepDefault:false,
+                                openWith:'    '
+                         },
+                         markupSet: [
+                                    {name:'Bold', className:"editor strong", key:'b', openWith:"'''", closeWith:"'''", placeHolder:'( ' + text.InsertTextBold + ' )' },
+                                    {name:'Italic', className:"editor em", key:'i', openWith:"''", closeWith:"''", placeHolder:'( ' + text.InsertTextItalic + ' )' },
+                                    {separator:'---------------' },
+                                    {name:'Heading 1', className:"editor h1", key:'1', openWith:'= ', closeWith:' =', placeHolder:'( ' + text.InsertTitle + ' )' },
+                                    {name:'Heading 2', className:"editor h2", key:'2', openWith:'== ', closeWith:' ==', placeHolder:'( ' + text.InsertTitle + ' )' },
+                                    {name:'Heading 3', className:"editor h3", key:'3', openWith:'=== ', closeWith:' ===', placeHolder:'( ' + text.InsertTitle + ' )' },
+                                    {name:'Heading 4', className:"editor h4", key:'4', openWith:'==== ', closeWith:' ====', placeHolder:'( ' + text.InsertTitle + ' )' },
+                                    {name:'Heading 5', className:"editor h5", key:'5', openWith:'===== ', closeWith:' =====', placeHolder:'( ' + text.InsertTitle + ' )' },
+                                    {name:'Heading 6', className:"editor h6", key:'6', openWith:'====== ', closeWith:' ======', placeHolder:'( ' + text.InsertTitle + ' )' },
+                                    {separator:'---------------' },
+                                    {name:'Hard rule', className:"editor hr", openWith:'\n----\n'},
+                                    {name:'Paragraph', className:"editor p", openWith:'\n', closeWith:'\n' },
+                                    {name:'Preformatted Text', className:"editor precode", openWith:'        ', placeHolder:'( ' + text.InsertTextPreformat + ' )' },
+                                    {name:'Link to URL', key:'l', className:"editor a", openWith:'[[![Url:!:http://]!]|', closeWith:']', placeHolder:'( ' + text.InsertTextURL + ' )' },
+                                    {separator:'---------------' },
+                                    {name:'Bulleted list', className:"editor ul", 
+                                     replaceWith: function (markItUp) {
+                                             var selectedText = markItUp.selection;
+                                             selectedText = selectedText.replace(/^\s{4}[\*(a.)]\s/gm,""); // Remove existing <li>s.
+                                             selectedText = "    * " + selectedText.replace(/\n/g,"\n    * ") + "\n";
+                                             return selectedText.replace(/\n$/g,"");;
+                                         }
+                                    },
+                                    {name:'Numbered list', className:"editor ol",
+                                     replaceWith: function (markItUp) {
+                                             var selectedText = markItUp.selection;
+                                             selectedText = selectedText.replace(/^\s{4}[\*(a.)]\s/gm,""); // Remove existing <li>s.
+                                             selectedText = "    a. " + selectedText.replace(/\n/g,"\n    a. ") + "\n";
+                                             return selectedText.replace(/\n$/g,"");
+                                         }
+                                    },
+                                    {separator:'---------------' },
+                                    charMap.characters,
+                                    charMap.symbols,
+                                    {separator:'---------------' },
+                                    {name:'Preview',
+                                     className:"preview",
+                                     call:'preview',
+                                     afterInsert: function () {
+                                                      setTimeout(function () {
+                                                          var previewWindow = $(".markItUpPreviewFrame")[0].contentWindow.document;
+                                                          previewWindow.open().close();
+                                                          /* The next replace() works around an open bug w/ "    a. " in convertToHTML. (There is the
+                                                             reverse bug in Text::Wikiformat, such that it *only* supports numeric lists, but only if
+                                                             they are defined using alphabetic markup syntax, so this workaround actually ends up
+                                                             generating the correct ol type, even though it initially seems backwards. */
+                                                          $("body", previewWindow).append(convertToHTML($("#annotation").val().replace(/^(\s{4,})a\.\s/gm,"$11. ").replace(/<ol>/g,'<ol type="1">')));
+                                                      }, 1);
+                                                  }
+                                    }
+                                    ]
+                     },
+                 html : {
+                        nameSpace: 'html',
+                        onTab: {
+                               keepDefault:false,
+                               openWith:'    '
+                        },
+                        markupSet: [
+                                   {name:'Bold', className:"editor strong", key:'b', openWith:'<strong>', closeWith:'</strong>', placeHolder:'( ' + text.InsertTextBold + ' )'},
+                                   {name:'Italic', className:"editor em", key:'i', openWith:'<em>', closeWith:'</em>', placeHolder:'( ' + text.InsertTextItalic + ' )'},
+                                   {separator:'---------------' },
+                                   {name:'Heading 1', className:"editor h1", key:'1', openWith:'<h1(!( class="[![Class]!]")!)>', closeWith:'</h1>', placeHolder:'( ' + text.InsertTitle + ' )'},
+                                   {name:'Heading 2', className:"editor h2", key:'2', openWith:'<h2(!( class="[![Class]!]")!)>', closeWith:'</h2>', placeHolder:'( ' + text.InsertTitle + ' )'},
+                                   {name:'Heading 3', className:"editor h3", key:'3', openWith:'<h3(!( class="[![Class]!]")!)>', closeWith:'</h3>', placeHolder:'( ' + text.InsertTitle + ' )'},
+                                   {name:'Heading 4', className:"editor h4", key:'4', openWith:'<h4(!( class="[![Class]!]")!)>', closeWith:'</h4>', placeHolder:'( ' + text.InsertTitle + ' )'},
+                                   {name:'Heading 5', className:"editor h5", key:'5', openWith:'<h5(!( class="[![Class]!]")!)>', closeWith:'</h5>', placeHolder:'( ' + text.InsertTitle + ' )'},
+                                   {name:'Heading 6', className:"editor h6", key:'6', openWith:'<h6(!( class="[![Class]!]")!)>', closeWith:'</h6>', placeHolder:'( ' + text.InsertTitle + ' )'},
+                                   {separator:'---------------' },
+                                   {name:'Hard rule', className:"editor hr", openWith:'<hr/>'},
+                                   {name:'Paragraph', className:"editor p", openWith:'<p>', closeWith:'</p>' },
+                                   {name:'Preformatted Text', key:'c', className:"editor precode", openWith:'<pre><code>', closeWith:'</pre></code>', placeHolder:'( ' + text.InsertTextPreformat + ' )'},
+                                   {name:'Link to URL', key:'l', className:"editor a", openWith:'<a href="[![Link:!:http://]!]">', closeWith:'</a>', placeHolder:'( ' + text.InsertTextURL + ' )' },
+                                   {separator:'---------------' },
+                                   {name:'Bulleted List', className:"editor ul", openWith:'<ul>\n', closeWith:'\n</ul>',
+                                     replaceWith: function (markItUp) {
+                                             var selectedText = markItUp.selection;
+                                             selectedText = selectedText.replace(/(<\/?li>|<\/?[uo]l>)/g,""); // Remove existing <li>s.
+                                             selectedText = "    <li>" + $.trim(selectedText).replace(/\n/g,"</li>\n    <li>") + "</li>";
+                                             return selectedText;
+                                         }
+                                    },
+                                   {name:'Numbered List', className:"editor ol", openWith:'<ol>\n', closeWith:'\n</ol>',
+                                     replaceWith: function (markItUp) {
+                                             var selectedText = markItUp.selection;
+                                             selectedText = selectedText.replace(/(<\/?li>|<\/?[uo]l>)/g,""); // Remove existing <li>s.
+                                             selectedText = "    <li>" + $.trim(selectedText).replace(/\n/g,"</li>\n    <li>") + "</li>";
+                                             return selectedText;
+                                         }
+                                    },
+                                   {name:'List Item', className:"editor li", openWith:'    <li>', closeWith:'</li>\n', placeHolder:'( ' + text.InsertListItem + ' )'},
+                                    {separator:'---------------' },
+                                    charMap.characters,
+                                    charMap.symbols,
+                                   {separator:'---------------' },
+                                   {name:'Preview', className:"preview", call:'preview'}
+                                   ]
+                        }
+                 },
+
+    activateAnnotationSwitcher : function () {
+        $('#ChangeMarkup li:not(:first)').click(function () {
+            $('#ChangeMarkup li').removeClass('currentSet');
+            newSet = $(this).attr('class');
+            $(this).addClass('currentSet');
+            $('#annotation').markItUpRemove();
+            switch (newSet) {
+                case 'wiki':
+                    $('#annotation').val(convertToMarkup($("#annotation").val()));
+                    $('#annotation').markItUp(MusicBrainz.markup.wiki);
+                    break;
+                case 'html':
+                    $('#annotation').val(convertToHTML($("#annotation").val().replace(/^(\s{4,})a\.\s/gm,"$11. ").replace(/<ol>/g,'<ol type="1">')));
+                    $('#annotation').markItUp(MusicBrainz.markup.html);
+                    break;
+                default:
+                }
+            return false;
+        });
+    },
+
+    addAnnotationButton : function () {
+        /* Create the tool button. */
+        MusicBrainz.addToolButton(text.AnnotationEditorShow, "btnAnnotationEditor");
+        /* Set the click event controls for the Show / Hide Annotation Editor button. */
+        $("#btnAnnotationEditor").click(function () {
+            if ($(this).val() == text.AnnotationEditorShow) { // Show the track parser.
+                $(".annotationFS").show();
+                $(this).val(text.AnnotationEditorHide);
+            } else { // Hide the track parser.
+                $(".annotationFS").hide();
+                $(this).val(text.AnnotationEditorShow);
+            }
+        });
+    },
+
+    addAnnotationSwitcher : function () {
+        $('#annotation').before('<ul id="ChangeMarkup">' +
+                                    '<li>' +
+                                        text.MarkupLanguage +
+                                    ' </li>' +
+                                    '<li class="wiki currentSet">' +
+                                        '<a href="#">' +
+                                            text.Wiki +
+                                        '</a>' +
+                                    '</li>' +
+                                    '<li class="html">' +
+                                        '<a href="#">' +
+                                            text.HTML +
+                                        '</a>' +
+                                    '</li>' +
+                                '</ul>');
+        if (experimental) {
+            $('#annotation').before('<br/><br/><em>Note: Converting from HTML to Wikiformat and editing using HTML mode are both experimental at the moment!</em>');
+        }
+    },
 
     addSingleArtist : function (whereClicked) {
         var targetArtists = $(whereClicked).parents("table:first"),
@@ -65,7 +246,7 @@ var MusicBrainz = {
                                                     $("#editMenu").unbind("mouseleave")
                                                                   .stop()
                                                                   .animate({
-                                                                            width: "14em"
+                                                                            width: "17em"
                                                                             }, 'slow')
                                                                   .children()
                                                                   .show();
@@ -221,6 +402,57 @@ var MusicBrainz = {
         });
     },
 
+    populateCharArrays : function () {
+        chars = [
+                ["Á",1],["Ć",1],["É",3],["Í",2],["Ĺ",1],["Ń",0],["Ó",2],["Ŕ",0],["Ś",1],["Ú",3],["Ý",0],["Ź",0],
+                ["á",1],["ć",1],["é",3],["í",2],["ĺ",1],["ń",0],["ó",2],["ŕ",0],["ś",1],["ú",3],["ý",0],["ź",0],
+                ["À",3],["È",2],["Ḥ",0],["Ì",3],["Ḷ",0],["Ṃ",0],["Ṇ",0],["Ò",2],["Ṛ",0],["Ṣ",0],["Ṭ",0],["Ù",4],
+                ["à",3],["è",2],["ḥ",0],["ì",3],["ḷ",0],["ṃ",0],["ṇ",0],["ò",2],["ṛ",0],["ṣ",0],["ṭ",0],["ù",4],
+                ["Â",1],["Ĉ",0],["Ḍ",0],["Ê",1],["Ĝ",0],["Ĥ",0],["Î",0],["Ĵ",4],["Ô",3],["Ŝ",1],["Û",1],["Ŵ",1],["Ŷ",1],
+                ["â",1],["ĉ",0],["ḍ",0],["ê",1],["ĝ",0],["ĥ",0],["î",0],["ĵ",4],["ô",3],["ŝ",1],["û",1],["ŵ",1],["ŷ",1],
+                ["Ä",3],["Ë",3],["Ï",2],["Ḹ",2],["Ö",5],["Ü",3],["Ÿ",1],
+                ["ä",3],["ë",3],["ï",2],["ḹ",2],["ö",5],["ü",3],["ÿ",1],
+                ["Ã",3],["Ẽ",3],["Ĩ",4],["Ñ",0],["Õ",5],["Ũ",3],["Ỹ",1],
+                ["ã",3],["ẽ",3],["ĩ",4],["ñ",0],["õ",5],["ũ",3],["ỹ",1],
+                ["Å",1],["Ç",0],["Đ",0],["Ə",1],["Ģ",3],["Ķ",0],["Ļ",1],["Ņ",3],["Ŗ",0],["Ş",0],["Ţ",6],
+                ["å",1],["ç",0],["đ",0],["ə",1],["ģ",3],["ķ",0],["ļ",1],["ņ",3],["ŗ",0],["ş",0],["ţ",6],
+                ["Ǎ",1],["Č",0],["Ď",0],["Ě",3],["Ǐ",1],["Ľ",1],["Ň",0],["Ǒ",2],["Ř",0],["Š",0],["Ť",0],["Ǔ",4],["Ž",0],
+                ["ǎ",1],["č",0],["ď",0],["ě",3],["ǐ",1],["ľ",1],["ň",0],["ǒ",2],["ř",0],["š",0],["ť",0],["ǔ",4],["ž",0],
+                ["Ā",2],["Ð",0],["Ē",3],["Ī",5],["Ō",5],["Ū",3],["Ȳ",1],
+                ["ā",2],["ð",0],["ē",3],["ī",5],["ō",5],["ū",3],["ȳ",1],
+                ["Ă",3],["Ĕ",1],["Ğ",1],["Ĭ",5],["Ŏ",5],["Ŭ",5],
+                ["ă",3],["ĕ",1],["ğ",1],["ĭ",5],["ŏ",5],["ŭ",5],
+                ["Æ",1],["Ċ",1],["Ė",1],["Ġ",1],["İ",16],["Ż",0],
+                ["æ",1],["ċ",1],["ė",1],["ġ",1],["ı",16],["ż",0],
+                ["Ą",3],["Ę",3],["Į",5],["Ǫ",5],["Ų",4],["þ",0],
+                ["ą",3],["ę",3],["į",5],["ǫ",5],["ų",4],["Þ",0],
+                ["Ǣ",0],["Ħ",0],["Ł",0],["Ŀ",0],["Ő",0],["Ø",0],["Œ",0],["Ṝ",0],["Ů",0],["Ű",16],
+                ["ǣ",0],["ħ",0],["ł",0],["ŀ",0],["ő",0],["ø",0],["œ",0],["ṝ",0],["ß",0],["ů",0],["ǘ",0],["ǜ",0],["ǚ",0],["ǖ",0],["ű",0]
+                ];
+        for (var i=0; i < chars.length; i++) {
+            charMap.characters.dropMenu[i] = {
+                                             name      : chars[i][0],
+                                             openWith  : chars[i][0],
+                                             className : "skip" + chars[i][1]
+                                             };
+        }
+        symbols = ["¿","†","‡","↔","↑","↓","•","∞","¶","½","⅓",
+                   "⅔","¼","¾","⅛","⅜","⅝","⅞","«","»","¤","₳",
+                   "฿","₵","¢","₡","₢","$","₫","₯","€","₠","₣",
+                   "ƒ","₴","₭","₤","₥","₦","№","₧","₰","£","៛",
+                     "₨","₪","৳","₮","₩","¥","♠","♣","♥","♦","²","³",
+                   "®","©","™"];
+        for (var i=0; i < symbols.length; i++) {
+            charMap.symbols.dropMenu[i] = {
+                                          name      : symbols[i],
+                                          openWith  : symbols[i],
+                                          className : "skip0"
+                                          };
+        }
+        charMap.symbols.dropMenu[charMap.symbols.dropMenu.length] = { name: "[", openWith: "&91;", className: "skip0" };
+        charMap.symbols.dropMenu[charMap.symbols.dropMenu.length] = { name: "]", openWith: "&93;", className: "skip0" };
+    },
+
     setHelpMsg : function (status) {
         $("#editHelpMsg").html(status);
     },
@@ -323,7 +555,7 @@ var MusicBrainz = {
                              .val("") // clear any value it may have (there's no next artist after this to join to, so no join phrase is valid),
                          .end() // then revert back to selecting all join phrase fields,
                          .filter(":visible") // select all visible join fields (ie: all but the last (unused) join phrase),
-    	                         .each(function (i) { // and for each one individually,
+                                 .each(function (i) { // and for each one individually,
                                                     var joinVal = $(this).val(),
                                                         joiner = "";
                                                     if (joinVal == "&" || joinVal == "," || joinVal.length === 0) {  // if this value is still a default value,
@@ -340,7 +572,6 @@ var MusicBrainz = {
 };
 
 $(function () {
-   /* === Editor Initialization === */
 
     /* Insert help icons. */
 //    $(".datumItem dt, th.release").prepend($('<img src="/static/images/blank.gif" class="helpIcon"/>')
@@ -358,6 +589,23 @@ $(function () {
 //    closeButton.click(function () {
 //        $("#wikiHelpBox").slideUp(1000);
 //    });
+
+
+    /* Populate the character and symbol arrays for the annotation editor. */
+    MusicBrainz.populateCharArrays();
+
+    if (experimental) {
+        /* Add annotation markup switcher controls. */
+        MusicBrainz.addAnnotationSwitcher();
+    }
+
+    /* Attach and activate the annotation editor. */
+    $('#annotation').markItUp(MusicBrainz.markup.wiki);
+
+    if (experimental) {
+        /* Activate the annotation markup switcher controls. */
+        MusicBrainz.activateAnnotationSwitcher();
+    }
 
     /* Disable default behaviour for anchor links. */
     $(".editable a").bind("click.blocked", function (event) {
@@ -552,23 +800,20 @@ $(function () {
         MusicBrainz.updateComboArtist(thisSingleArtist.find("tr:eq(2)"));
     });
 
+    /* Add and activate the Annotation Editor toolbox button. */
+    MusicBrainz.addAnnotationButton();
+
+
 /* TODO: pre-populate:
                           * Type
                           * Format
                           * Packaging
-                          * Status
-                          * Barcodes
+                          * Status 
+                          * Barcodes  //TODO: Barcode is currently prepopulating the cat #, and cat # is prepopulating the label name
                           * Countries */
 
 
 /* Everything below is rough code in progress. */
-
-
-
-
-
-
-
 
     MusicBrainz.makeTogglableEachInGroup([
                                          ["trackposition"],
@@ -588,10 +833,6 @@ $(function () {
 // TODO: There can be more than one country dropdown.
     MusicBrainz.makeCountryList();
 
-
-
-
-
 // TODO: Track renumbering on remove or delete.
 // TODO: Track addition.
 // TODO: Medium reordering.
@@ -602,11 +843,8 @@ $(function () {
 // TODO: Medium numbering.
 // TODO: Release artist editing.
 // TODO: Release title editing.
-// TODO: Annotation editor.
 // TODO: Medium type selection.
 // TODO: Setting all track artists from release artist.
-// TODO: Redish color instead of orange for removed tracks?
-// TODO: sprite-ize the icons.
 // TODO: track parser support
 // TODO: track parser template layout
 // TODO: guess case support
@@ -615,17 +853,15 @@ $(function () {
 // TODO: data loading via url args support
 // TODO: add/remove label
 // TODO: extend existing label functionality to support multiple labels
-// TODO: Copy in a clean track
-// TODO: Copy in a clean label
+// TODO: Copy in a clean track for later use
+// TODO: Copy in a clean label for later use
 // TODO: Loading of each single artist for each combo-artist
-
-
-
-
-
-
-
 // TODO: Block /n's in field textareas.
+// TODO: Fix up HTML -> Wiki parser to handle HTML not generated by Text::Wikiformat
+// TODO: artist lookup
+// TODO: label lookup
+// TODO: Fix Sidebar pre-populated data for dates (should be yyyy, mm, dd, actually is yyyy, yyyy, mm)
+// TODO: Country dropdown is not sliding over anymore, like it should.
 
 
 //    MusicBrainz.addToolButton("Show Help Buttons", "btnHelp");
@@ -646,7 +882,7 @@ MusicBrainz.initializeTrackParser = function () {
     /* Insert the track parser into the document. */
     $(".tbl.release").before(mb.HTMLsnippets.trackParser);
     /* Create the tool button. */
-    MusicBrainz.addToolButton("Show Track Parser", "btnTrackParser");
+    MusicBrainz.addToolButton(text.TrackParserShow, "btnTrackParser");
     /* Set the click event controls for the Show / Hide Track Parser button. */
     $("#btnTrackParser").click(function () {
         if ($(this).val() == text.TrackParserShow) { // Show the track parser.

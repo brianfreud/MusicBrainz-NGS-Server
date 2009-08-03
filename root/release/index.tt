@@ -1,5 +1,11 @@
 [%- WRAPPER 'release/layout.tt' page='index' -%]
-    [% INCLUDE "release/annotation.tt" parent=release %]
+    [%- IF edit -%]
+	[%- WRAPPER 'forms/fieldset.tt' legend=l("Release Annotation") class="annotationFS hidden" -%]
+            <textarea id="annotation" style="width: 98.5%;" rows="10">[%- html_escape(annotation.text) -%]</textarea>
+        [%- END -%]
+    [%- ELSE -%]
+        [% INCLUDE "release/annotation.tt" parent=release %]
+    [%- END -%]
     [%- IF !edit -%]
         <h2>Track listing</h2>
     [%- END -%]
