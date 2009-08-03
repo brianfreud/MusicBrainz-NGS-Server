@@ -193,6 +193,14 @@ label.overlabel-apply {
  border-bottom: 0 none!important;
 }
 
+.notActive td.ta-results textarea {
+ font-size: 100%!important;
+ letter-spacing: 0!important;
+ margin-bottom: 0!important;
+ padding-top: 0!important;
+ padding-bottom: 0!important;
+}
+
 /* Class used to shift the country list - makeEditMenu function in the editor's js */
 
 .shiftSelect {
