@@ -181,18 +181,20 @@ label.overlabel-apply {
 
 */
 
-/* Highlight on mouseover for editable fields */
-
-.highlight {
- background-color: #FFFA98;
+.editable a {
+ color: #000;
 }
+
+.hidden textarea,
+.hidden input {
+ border: 0 solid #000000; 
+ background-color: transparent;
+}
+
+/* Highlight on mouseover for editable fields */
 
 .highlight:hover {
  background: transparent url(/static/images/icon/Pencil.png) top right no-repeat!important;
-}
-
-.ev .highlight {
- background-color: #FFDA78!important;
 }
 
 /* Hide the bottom border line for edited, but not displayed, artists */
@@ -454,9 +456,6 @@ table.tbl td.trackname {
  vertical-align: top;
 }
 
-td.trackname textarea {
- border: 1px solid #000;
-}
 
 /* Artist editor / selector */
 

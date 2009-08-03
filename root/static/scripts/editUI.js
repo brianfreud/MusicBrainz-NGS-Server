@@ -397,6 +397,7 @@ var MusicBrainz = {
                         $('.hidden.' + toggleclass[2] + '.' + i).show();
                     }
                     $('.hidden.' + toggleclass[0] + ':eq(' + i + ')').show(); // Show the specific item's form field.
+                    $('.hidden.' + toggleclass[0] + ':eq(' + i + ') input, .hidden.' + toggleclass[0] + ':eq(' + i + ') textarea').focus();
                 });
             });
         });
