@@ -27,6 +27,8 @@ sub alter_edit_pending
     }
 }
 
+sub models { [qw( Artist )] }
+
 has 'old_artist_id' => (
     isa => 'Int',
     is => 'rw',

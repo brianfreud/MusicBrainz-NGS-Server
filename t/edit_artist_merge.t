@@ -29,9 +29,9 @@ $c->model('Edit')->reject($edit);
 
 # Test loading entities
 $edit = $c->model('Edit')->get_by_id($edit->id);
-$c->model('Edit')->load_all($edit);
 TODO: {
     local $TODO = 'Support loading artists with non-conventional attribute names';
+#    $c->model('Edit')->load_all($edit);
     ok(defined $edit->old_artist);
     ok(defined $edit->new_artist);
 #    is($edit->old_artist->id, $edit->old_artist_id);
