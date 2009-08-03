@@ -181,6 +181,10 @@ label.overlabel-apply {
 
 */
 
+.editable a {
+ color: #000;
+}
+
 /* Highlight on mouseover for editable fields */
 
 .highlight:hover {
