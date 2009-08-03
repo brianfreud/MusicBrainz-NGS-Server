@@ -184,7 +184,6 @@ label.overlabel-apply {
 /* Highlight on mouseover for editable fields */
 
 .highlight:hover a {
- border: 1px solid #FFBA58!important;
  background: transparent url(/static/images/icon/Pencil.png) no-repeat!important;
  padding-left: 20px;
 }
