@@ -187,8 +187,12 @@ label.overlabel-apply {
 
 /* Highlight on mouseover for editable fields */
 
+.highlight {
+ background-color: #FFFAD8!important;
+}
+
 .highlight:hover {
- background: transparent url(/static/images/icon/Pencil.png) top right no-repeat!important;
+ background: #FFFAD8 url(/static/images/icon/Pencil.png) top right no-repeat!important;
 }
 
 /* Hide the bottom border line for edited, but not displayed, artists */
