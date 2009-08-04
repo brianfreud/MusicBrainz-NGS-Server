@@ -7,7 +7,7 @@
     [%- END -%]
     <p>
         [% USE r = FormRenderer(form) %]
-        [% r.label('edit_note', '<strong>' _ l('Edit note:') _ '</strong>') %]
+        [% r.label('edit_note', '<strong style="font-size: 120%; color: #FC6714;">' _ l('Edit note:') _ '</strong>') %]
         [% r.textarea('edit_note', class => 'edit-note' rows="10") %]
     </p>
 [%- END -%]

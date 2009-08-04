@@ -16,15 +16,12 @@
         <col class="icons"></colgroup>
         [%- IF edit -%]
             <thead>
-                <tr style="height:3em;">
-                    <th style="background: #FFF!important">
-                        <div class="toolsCol"></div>
-                    </th>
+                <tr style="height:3em;" class="toolsStatusLine">
                     <th style="background: #FFF!important; width: 2em;">
                         <div title="[%- l('Click here to hide Track tools.') -%]" alt="[%- l('Click here to hide Track tools.') -%]" class="toolsHead"> </div>
                         <div title="[%- l('Click here to show Track tools.') -%]" alt="[%- l('Click here to show Track tools.') -%]" class="hidden toolsHead"> </div>
                     </th>
-                    <th colspan="4" style="background: #FFF!important">
+                    <th colspan="5" style="background: #FFF!important">
                     </th>
                 </tr>
                 <tr>

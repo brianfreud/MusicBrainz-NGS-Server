@@ -344,8 +344,8 @@ var MusicBrainz = {
                '</tr>';
     },
 
-    makeStatusAndDocsBox : function () {
-        $("table.tbl > thead:eq(0) > tr:eq(0) > th:eq(2)").append(mb.HTMLsnippets.editBox);
+    makeStatusBox : function () {
+        $("table.tbl > thead:eq(0) > tr:eq(0) > th:eq(1)").append(mb.HTMLsnippets.editBox);
         $(".tabs:eq(0)").after(mb.HTMLsnippets.docsBox);
         $("#editMsgBox").corner(MusicBrainz.roundness);
         $("#editMsg").corner(MusicBrainz.roundness);
@@ -583,7 +583,7 @@ $(function () {
                                   .hide());
 
     /* Insert the status and heads-up display box. */
-    MusicBrainz.makeStatusAndDocsBox();
+    MusicBrainz.makeStatusBox();
 
     /* Initialize the display text box. */
     MusicBrainz.setStatus(text.LoadingJS, true);
@@ -813,7 +813,7 @@ $(function () {
 
     /* Add functionality to the show/hide controls for the toolbox column */
     $(".toolsHead, .toolsShow").click(function () {
-        $("table.tbl > * > tr").each(function () {
+        $("table.tbl > * > tr:not(.toolsStatusLine)").each(function () {
             $(".toolsHead").toggle();
             $(this).find("td:first, th:first").toggle();
         })
@@ -893,9 +893,7 @@ $(function () {
 
 
 
-//    MusicBrainz.clearStatus();
-
-    MusicBrainz.setStatus("I'm a test status message,");
+    MusicBrainz.setStatus(text.StatusInitial);
 
 });
 
