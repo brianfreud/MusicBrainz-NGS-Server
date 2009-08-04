@@ -656,7 +656,7 @@ tr:hover .handleIcon {
 }
 
 /* Icon: Person (color) */
-tr td:hover .copyArtist {
+tr .copyArtist:hover {
  background-position: 0 -1310px;
 }
 
