@@ -192,6 +192,10 @@ label.overlabel-apply {
  background-color: transparent;
 }
 
+.ta-results textarea {
+ cursor: pointer;
+}
+
 /* Highlight on mouseover for editable fields */
 
 .highlight:hover {
