@@ -17,7 +17,8 @@
         [%- IF edit -%]
             <thead>
                 <tr style="height:3em;">
-                    <th style="background: #FFF!important" class="toolsCol">
+                    <th style="background: #FFF!important">
+                        <div class="toolsCol"></div>
                     </th>
                     <th style="background: #FFF!important; width: 2em;">
                         <div title="[%- l('Click here to hide Track tools.') -%]" alt="[%- l('Click here to hide Track tools.') -%]" class="toolsHead"> </div>

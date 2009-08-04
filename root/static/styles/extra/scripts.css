@@ -671,13 +671,11 @@ tr:hover .copyArtist {
  background-position: 0 -1570px;
 }
 
-/* Icon: tools 16x16 */
 .toolsCol {
- background: transparent url(/static/images/icon/tools16.png) no-repeat;
- height: 16px;
  width: 30px; /* For each icon added to the toolbar, add 15px to this value. */
 }
 
+/* Icon: tools 24x24 */
 .toolsHead {
  background: transparent url(/static/images/icon/tools24.png) no-repeat;
  height: 24px;
