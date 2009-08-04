@@ -325,9 +325,6 @@ var MusicBrainz = {
         formatSelect.sortOptions()
                     .val("")
                     .addOption(mb.format[otherVal][0],mb.format[otherVal][2]); // Add the option for "Other" to the end of the list.
-        MusicBrainz.setHoverMsg([["#select-edit-release-format option:last",
-                                  text.GenericOther.replace("I18N-selectlist-I18N",text.FieldFormat)
-                                ]]);
         formatSelect.children(':last').data("start_date", "");
         formatSelect.children(':first').attr("selected", "selected");
     },
@@ -365,8 +362,6 @@ var MusicBrainz = {
         $(swapButton).addClass("rightsidebutton").click(function () {
             MusicBrainz.swapShortLongList($(swapList), $(swapButton), commonArray, swapArray);
         });
-        MusicBrainz.setHoverMsg([[swapButton, text.hoverSwapList]]);
-        $(swapButton).mouseout(function () { MusicBrainz.clearHelpMsg(); });
     },
 
     makeTogglable : function (togglableItemArray) {
@@ -457,12 +452,6 @@ var MusicBrainz = {
         }
         charMap.symbols.dropMenu[charMap.symbols.dropMenu.length] = { name: "[", openWith: "&91;", className: "skip0" };
         charMap.symbols.dropMenu[charMap.symbols.dropMenu.length] = { name: "]", openWith: "&93;", className: "skip0" };
-    },
-
-    setHoverMsg : function (hoverArray) {
-        $.each(hoverArray, function (i) {
-            $(hoverArray[i][0]).mouseover(function () { MusicBrainz.setHelpMsg(hoverArray[i][1]); });
-        });
     },
 
     setPulloutHeight : function () {
@@ -672,28 +661,6 @@ $(function () {
     $('.editable.release-script').click(function () {
         MusicBrainz.makeSwappableSelectList("release", "script", mb.commonScripts, mb.script);
     });
-
-    /* Set hover help texts. */
-    MusicBrainz.setHoverMsg([
-                            /* Definitions for entity type: Release */
-                            [".editable.release-barcode", text.hoverBarcode],
-                            [".editable.release-catalog", text.hoverCatNumber],
-                            [".editable.release-country", text.hoverCountry],
-                            [".editable.release-date", text.hoverDate],
-                            [".editable.release-format", text.hoverFormat],
-                            [".editable.release-language", text.hoverLanguage],
-                            [".editable.release-script", text.hoverScript],
-                            [".editable.release-label", text.hoverLabel],
-                            [".editable.release-packaging", text.hoverPackaging],
-                            [".editable.release-status", text.hoverStatus],
-                            [".editable.release-type", text.hoverType],
-                            [".helpIcon", text.hoverHelp],
-                            ["#btnTrackParser", text.hoverTP]
-                            ]);
-    $(".editable, .helpIcon, #btnTrackParser, #select-edit-release-format option:last").mouseout(function () {
-                                                         MusicBrainz.clearHelpMsg();
-                                                         });
-
 
     /* Attach click events to the help buttons. */
     MusicBrainz.attachHelpButtonEvents([
