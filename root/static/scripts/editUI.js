@@ -378,6 +378,7 @@ var MusicBrainz = {
             var toggleclass = this;
             $('.editable.' + toggleclass).click(function () {
                 $('.' + toggleclass + ':not(dt)').toggle();
+                $('.' + toggleclass + ' input:first').focus();
             });
         });
     },
