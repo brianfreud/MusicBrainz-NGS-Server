@@ -634,7 +634,7 @@ tr:hover .removeTrack {
 /* Icon: X (gray) */
 tr:hover .closeButton,
 tr:hover .removeArtist,
-tr:hover .removeTrack {
+tr:hover .removeTrack { 
  background-position: 0 -198px;
 }
 
@@ -647,7 +647,7 @@ tr .removeTrack:hover {
 
 /* Icon: Up-down (blue) */
 tr .handleIcon:hover {
- background-position: 0 -1764px;
+ background-position: 0 -1764px!important;
 }
 
 /* Icon: Up-down (gray) */
@@ -656,7 +656,7 @@ tr:hover .handleIcon {
 }
 
 /* Icon: Person (color) */
-tr .copyArtist:hover {
+tr td:hover .copyArtist {
  background-position: 0 -1310px;
 }
 

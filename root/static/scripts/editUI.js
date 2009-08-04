@@ -772,7 +772,7 @@ $(function () {
         $("#removedTracks").removeClass("hidden"); // Make sure that Removed Tracks is visible.
         $("#removedTracks tr .removeTrack").hide(); // Hide the removed track's remove track icon.
         MusicBrainz.stripeTracks();
-        MusicBrainz.updatePositionFields();
+//        MusicBrainz.updatePositionFields();
     });
 
     /* Insert the artist duplication icons. */
