@@ -20,8 +20,8 @@
                     <th style="background: #FFF!important" class="toolsCol">
                     </th>
                     <th style="background: #FFF!important; width: 2em;">
-                        <div title="[%- l('Click here to hide Track tools.') -%]" alt="[%- l('Click here to hide Track tools.') -%]" class="hidden toolsHead"> </div>
-                        <div title="[%- l('Click here to show Track tools.') -%]" alt="[%- l('Click here to show Track tools.') -%]" class="toolsHead"> </div>
+                        <div title="[%- l('Click here to hide Track tools.') -%]" alt="[%- l('Click here to hide Track tools.') -%]" class="toolsHead"> </div>
+                        <div title="[%- l('Click here to show Track tools.') -%]" alt="[%- l('Click here to show Track tools.') -%]" class="hidden toolsHead"> </div>
                     </th>
                     <th colspan="4" style="background: #FFF!important">
                     </th>

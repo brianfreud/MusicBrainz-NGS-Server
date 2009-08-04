@@ -6,8 +6,6 @@ mb.HTMLsnippets          = {
 		<div id="editMsg">
 			<div id="editStatusMsg">
 			</div>
-			<div id="editHelpMsg">
-			</div>
 		</div>
 	</div>
 ' -%]

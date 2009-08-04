@@ -225,10 +225,6 @@ var MusicBrainz = {
         });
     },
 
-    clearHelpMsg : function () {
-        $("#editHelpMsg").html("");
-    },
-
     clearStatus : function () {
         $("#editStatusMsg").html("");
     },
@@ -463,10 +459,6 @@ var MusicBrainz = {
         charMap.symbols.dropMenu[charMap.symbols.dropMenu.length] = { name: "]", openWith: "&93;", className: "skip0" };
     },
 
-    setHelpMsg : function (status) {
-        $("#editHelpMsg").html(status);
-    },
-
     setHoverMsg : function (hoverArray) {
         $.each(hoverArray, function (i) {
             $(hoverArray[i][0]).mouseover(function () { MusicBrainz.setHelpMsg(hoverArray[i][1]); });
@@ -637,8 +629,8 @@ $(function () {
     });
 
    /* Create and initialize the side menu. */
-    MusicBrainz.makeEditMenu();
-    MusicBrainz.setPulloutHeight();
+//    MusicBrainz.makeEditMenu();
+//    MusicBrainz.setPulloutHeight();
 
    /* Set click behaviour for editable fields (where there is qty 1 of that field type). */
     MusicBrainz.makeTogglable([
@@ -776,7 +768,7 @@ $(function () {
     });
 
     /* Insert the artist duplication icons. */
-    $(".trackartist").prepend('<div class="copyArtist" alt="' + text.DragArtist + '" title="' + text.DragArtist + '"></div>');
+//    $(".trackartist").prepend('<div class="copyArtist" alt="' + text.DragArtist + '" title="' + text.DragArtist + '"></div>');
 
     /* Attach functionality to the the artist duplication icons. */
     $(".copyArtist").draggable({
@@ -852,18 +844,18 @@ $(function () {
                .removeClass("notActive"); // and add the bottom box line to it.
     })
 
-
-
-
-/* Everything below is rough code in progress. */
-
     /* Add functionality to the show/hide controls for the toolbox column */
     $(".toolsHead, .toolsShow").click(function () {
         $("table.tbl > * > tr").each(function () {
             $(".toolsHead").toggle();
             $(this).find("td:first, th:first").toggle();
         })
-    });
+    }).click();
+
+
+/* Everything below is rough code in progress. */
+
+
 
 
 
@@ -934,9 +926,9 @@ $(function () {
 
 
 
-    MusicBrainz.clearStatus();
-$("#editStatusMsg").text("I'm a test status message,");
-$("#editHelpMsg").text("and I'm a test help message.");
+//    MusicBrainz.clearStatus();
+
+    MusicBrainz.setStatus("I'm a test status message,");
 
 });
 
