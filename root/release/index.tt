@@ -9,11 +9,17 @@
     [%- IF !edit -%]
         <h2>Track listing</h2>
     [%- END -%]
+    [%- IF edit -%]
+        <div class="hidden toolsShow" title="[%- l('Click here to show Track tools.') -%]" alt="[%- l('Click here to show Track tools.') -%]"></div>
+    [%- END -%]
     <table class="tbl[%- IF edit -%] release[%- END -%]">
+        <col class="icons"></colgroup>
         <thead>
             <tr>
                 [%- IF edit -%]
-                    <th/>
+                    <th>
+                        <div title="[%- l('Click here to hide Track tools.') -%]" alt="[%- l('Click here to hide Track tools.') -%]" class="toolsHead"/>
+                    </th>
                 [%- END -%]
                 <th class="first[%- IF edit -%] release[%- END-%]" style="width:1em;text-align:right;">#</th>
                 <th[%- IF edit -%] class="ttitle release"[%- END-%]>[% l('Title') %]</th>
@@ -29,8 +35,11 @@
         [%- FOR medium=release.mediums -%]
             <tbody[%- IF edit -%] id="medium-[%- loop.count -%]"[%- END -%]>
                 <tr class="subh[%- IF edit -%] nodrop nodrag[%- END -%]">
+                    [%- IF edit -%]
+                        <th>&nbsp;</th>
+                    [%- END -%]
                     <th>&nbsp;</th>
-                    <th colspan="[%- IF edit -%]4[%- ELSE -%]3[%- END -%]">
+                    <th colspan="3">
                         <a href="[% c.uri_for_action('/tracklist/show', [medium.tracklist.id]) %]">
                             [% medium.format_name or l("Medium") | html %] [% medium.position %][% IF medium.name %]:
                             [% medium.name | html %][% END %]

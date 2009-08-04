@@ -740,10 +740,10 @@ $(function () {
     });
 
     /* Add the track dragging and removal icons. */
-    $(".trackposition:visible").before('<td class="dragHandle">' + // Insert the reordering handler td.
-                                           '<div class="handleIcon" alt="' + text.DragTrack + '" title="' + text.DragTrack + '">' +
+    $(".trackposition:visible").before('<td class="toolbox">' + // Insert the reordering handler td.
+                                           '<div class="removeTrack" alt="' + text.DragTrack + '" title="' + text.DragTrack + '">' +
                                            '</div>' +
-                                           '<div class="removeTrack" alt="' + text.RemoveTrack + '" title="' + text.RemoveTrack + '">' +
+                                           '<div class="handleIcon" alt="' + text.RemoveTrack + '" title="' + text.RemoveTrack + '">' +
                                            '</div>' +
                                        '</td>');
 
@@ -753,7 +753,7 @@ $(function () {
         onDragClass: "upDown",
         onDrop: function (tabel, movedRow) {
                                                MusicBrainz.stripeTracks();
-                                               MusicBrainz.updatePositionFields();
+//                                               MusicBrainz.updatePositionFields();
                                                if (!$(movedRow).parents("#removedTracks").length) { // If the track was not dropped within Removed Tracks,
                                                    $(movedRow).children("td:eq(0)")
                                                               .children(".removeTrack")
@@ -857,8 +857,13 @@ $(function () {
 
 /* Everything below is rough code in progress. */
 
-
-
+    /* Add functionality to the show/hide controls for the toolbox column */
+    $(".toolsHead, .toolsShow").click(function () {
+        $("table.tbl > * > tr").each(function () {
+            $(".toolsShow").toggle();
+            $(this).find("td:first, th:first").toggle();
+        })
+    });
 
 
 
