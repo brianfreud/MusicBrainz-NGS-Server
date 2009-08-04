@@ -210,7 +210,7 @@ var MusicBrainz = {
         $.each(helpArray, function (i) {
             $(helpArray[i][0] + " img").click(function () {
                 $("#wikiDocName").html(helpArray[i][1]);
-//                MusicBrainz.setStatus("Loading documentation, please wait.");
+                MusicBrainz.setStatus("Loading documentation, please wait.");
                 $("#wikiHelp").html("")
                               .slideDown();
                 /* TODO: START: Junk stub code to simulate downloading text. */
@@ -218,7 +218,7 @@ var MusicBrainz = {
                 setTimeout(function () {
                     $("#wikiHelp").lorem({ type: 'words',amount:'500',ptags:true});
                     $("#wikiHelpBox").slideDown(1000);
-//                    MusicBrainz.setStatus("Documentation loaded.");
+                    MusicBrainz.setStatus("Documentation loaded.");
                 }, 1000);
                 /* END */
             });
@@ -352,10 +352,10 @@ var MusicBrainz = {
     },
 
     makeStatusAndDocsBox : function () {
-//        $(".tabs:eq(0)").after(mb.HTMLsnippets.editBox + mb.HTMLsnippets.docsBox);
+        $(".tabs:eq(0)").after(mb.HTMLsnippets.editBox + mb.HTMLsnippets.docsBox);
         $(".tabs:eq(0)").after(mb.HTMLsnippets.docsBox);
-//        $("#editMsgBox").corner(MusicBrainz.roundness);
-//        $("#editMsg").corner(MusicBrainz.roundness);
+        $("#editMsgBox").corner(MusicBrainz.roundness);
+        $("#editMsg").corner(MusicBrainz.roundness);
         $("#wikiHelpBox").corner(MusicBrainz.roundness);
         $("#wikiHelpInnerBox").corner(MusicBrainz.roundness);
     },
@@ -377,8 +377,10 @@ var MusicBrainz = {
         $.each(togglableItemArray, function () {
             var toggleclass = this;
             $('.editable.' + toggleclass).click(function () {
-                $('.' + toggleclass + ':not(dt)').toggle();
-                $('.' + toggleclass + ' input:first').focus();
+                $('.' + toggleclass).filter(":not(dt)")
+                                    .toggle()
+                                    .find("input:first")
+                                    .focus();
             });
         });
     },
@@ -397,8 +399,14 @@ var MusicBrainz = {
                     if(typeof(toggleclass[2]) != 'undefined') {
                         $('.hidden.' + toggleclass[2] + '.' + i).show();
                     }
-                    $('.hidden.' + toggleclass[0] + ':eq(' + i + ')').show(); // Show the specific item's form field.
-                    $('.hidden.' + toggleclass[0] + ':eq(' + i + ') input, .hidden.' + toggleclass[0] + ':eq(' + i + ') textarea').focus();
+                    $('.hidden.' + toggleclass[0] + ':eq(' + i + ')').show() // Show the specific item's form field.
+//                                                                     .if_($(this).find('input, textarea[readonly!=readonly]').length > 0)
+                                                                         .find('input, textarea[readonly!=readonly]')
+                                                                         .focus()
+//                                                                     .else_()
+//                                                                         .parent()
+//                                                                         .find('tr:eq(2) input')
+//                                                                         .focus()
                 });
             });
         });
@@ -555,8 +563,8 @@ var MusicBrainz = {
                 mediumTrackCount = $(this).find(".editable.trackposition").length;
             for (var i = 0; i < mediumTrackCount; i++) {
                 if ($(originalPositions[i]).text() != i+1) { // If the original position != the current position,
-//                    $(originalPositions[i]).click(); // The track position field now has been edited (via a remove or reorder), so show the edit field,
-//                    $(newPositions[i]).find("input:eq(0)").val(i+1); // and populate the input with the new position.
+                    $(originalPositions[i]).click(); // The track position field now has been edited (via a remove or reorder), so show the edit field,
+                    $(newPositions[i]).find("input:eq(0)").val(i+1); // and populate the input with the new position.
                 }
             }
         });
@@ -590,38 +598,38 @@ var MusicBrainz = {
 $(function () {
 
     /* Insert help icons. */
-//    $(".datumItem dt, th.release").prepend($('<img src="/static/images/blank.gif" class="helpIcon"/>')
-//                                  .hide());
+    $(".datumItem dt, th.release").prepend($('<img src="/static/images/blank.gif" class="helpIcon"/>')
+                                  .hide());
 
     /* Insert the status and heads-up display box. */
-//    MusicBrainz.makeStatusAndDocsBox();
+    MusicBrainz.makeStatusAndDocsBox();
 
     /* Initialize the display text box. */
-//    MusicBrainz.setStatus(text.LoadingJS, true);
+    MusicBrainz.setStatus(text.LoadingJS, true);
 
    /* Create and attach click event for the documentation display close button. */
-//    var closeButton = $('<img src="/static/images/blank.gif" class="closeButton"/>');
-//    $("#wikiTitle").prepend(closeButton);
-//    closeButton.click(function () {
-//        $("#wikiHelpBox").slideUp(1000);
-//    });
+    var closeButton = $('<img src="/static/images/blank.gif" class="closeButton"/>');
+    $("#wikiTitle").prepend(closeButton);
+    closeButton.click(function () {
+        $("#wikiHelpBox").slideUp(1000);
+    });
 
 
     /* Populate the character and symbol arrays for the annotation editor. */
-//    MusicBrainz.populateCharArrays();
+    MusicBrainz.populateCharArrays();
 
-//    if (experimental) {
+    if (experimental) {
         /* Add annotation markup switcher controls. */
-//        MusicBrainz.addAnnotationSwitcher();
-//    }
+        MusicBrainz.addAnnotationSwitcher();
+    }
 
     /* Attach and activate the editor for the annotation and edit note. */
-//    $('#annotation, #edit-releaseedit_note').markItUp(MusicBrainz.markup.wiki);
+    $('#annotation, #edit-releaseedit_note').markItUp(MusicBrainz.markup.wiki);
 
-//    if (experimental) {
+    if (experimental) {
         /* Activate the annotation markup switcher controls. */
-//        MusicBrainz.activateAnnotationSwitcher();
-//    }
+        MusicBrainz.activateAnnotationSwitcher();
+    }
 
     /* Disable default behaviour for anchor links. */
     $(".editable a").bind("click.blocked", function (event) {
@@ -629,8 +637,8 @@ $(function () {
     });
 
    /* Create and initialize the side menu. */
-//    MusicBrainz.makeEditMenu();
-//    MusicBrainz.setPulloutHeight();
+    MusicBrainz.makeEditMenu();
+    MusicBrainz.setPulloutHeight();
 
    /* Set click behaviour for editable fields (where there is qty 1 of that field type). */
     MusicBrainz.makeTogglable([
@@ -648,11 +656,11 @@ $(function () {
     });
 
     /* Set up autotabbing and limit input to \d only for date and barcode fields. */
-//    $('#edit-release-date-y').autotab({ target: 'edit-release-date-m', format: 'numeric',                                  maxlength: '4' });
-//    $('#edit-release-date-m').autotab({ target: 'edit-release-date-d', format: 'numeric', previous: 'edit-release-date-y', maxlength: '2' });
-//    $('#edit-release-date-d').autotab({                                format: 'numeric', previous: 'edit-release-date-m', maxlength: '2' });
-//    $("input[id$='edit-release-barcode']").attr("maxlength", 15) // EAN13 + EAN2, 15 digit maximum length
-//                                          .autotab({format: 'numeric'});
+    $('#edit-release-date-y').autotab({ target: 'edit-release-date-m', format: 'numeric',                                  maxlength: '4' });
+    $('#edit-release-date-m').autotab({ target: 'edit-release-date-d', format: 'numeric', previous: 'edit-release-date-y', maxlength: '2' });
+    $('#edit-release-date-d').autotab({                                format: 'numeric', previous: 'edit-release-date-m', maxlength: '2' });
+    $("input[id$='edit-release-barcode']").attr("maxlength", 15) // EAN13 + EAN2, 15 digit maximum length
+                                          .autotab({format: 'numeric'});
 
     /* Populate basic select lists. */
     $("#select-edit-release-packaging").addOption(mb.packaging, false);
@@ -674,9 +682,9 @@ $(function () {
     });
 
     /* Set hover help texts. */
-//    MusicBrainz.setHoverMsg([
+    MusicBrainz.setHoverMsg([
                             /* Definitions for entity type: Release */
-/*                            [".editable.release-barcode", text.hoverBarcode],
+                            [".editable.release-barcode", text.hoverBarcode],
                             [".editable.release-catalog", text.hoverCatNumber],
                             [".editable.release-country", text.hoverCountry],
                             [".editable.release-date", text.hoverDate],
@@ -693,12 +701,12 @@ $(function () {
     $(".editable, .helpIcon, #btnTrackParser, #select-edit-release-format option:last").mouseout(function () {
                                                          MusicBrainz.clearHelpMsg();
                                                          });
-*/
+
 
     /* Attach click events to the help buttons. */
-//    MusicBrainz.attachHelpButtonEvents([
+    MusicBrainz.attachHelpButtonEvents([
                                        /* Definitions for entity type: Release */
-/*                                       ["#release-date-dt", text.displayReleaseDate, "http://"],
+                                       ["#release-date-dt", text.displayReleaseDate, "http://"],
                                        ["#release-type-dt", text.displayReleaseType, "http://"],
                                        ["#release-format-dt", text.displayReleaseFormat, "http://"],
                                        ["#release-packaging-dt", text.displayReleasePackaging, "http://"],
@@ -714,7 +722,7 @@ $(function () {
                                        ["th.release:eq(2)", text.displayTrackArtist, "http://"],
                                        ["th.release:eq(3)", text.displayTrackDuration, "http://"]
                                        ]);
-*/
+
 
     /* Add functionality to the "Add another artist" buttons. */
     $(".btnAddTA").live("click", function () {
@@ -732,92 +740,92 @@ $(function () {
     });
 
     /* Add the track dragging and removal icons. */
-//    $(".trackposition:visible").before('<td class="dragHandle">' + // Insert the reordering handler td.
-//                                           '<div class="handleIcon" alt="' + text.DragTrack + '" title="' + text.DragTrack + '">' +
-//                                           '</div>' +
-//                                           '<div class="removeTrack" alt="' + text.RemoveTrack + '" title="' + text.RemoveTrack + '">' +
-//                                           '</div>' +
-//                                       '</td>');
+    $(".trackposition:visible").before('<td class="dragHandle">' + // Insert the reordering handler td.
+                                           '<div class="handleIcon" alt="' + text.DragTrack + '" title="' + text.DragTrack + '">' +
+                                           '</div>' +
+                                           '<div class="removeTrack" alt="' + text.RemoveTrack + '" title="' + text.RemoveTrack + '">' +
+                                           '</div>' +
+                                       '</td>');
 
     /* Attach functionality to the the track dragging icons. */
-//    $(".tbl").tableDnD({ // Add drag and drop reordering to the track rows.
-//        dragHandle: "dragHandle",
-//        onDragClass: "upDown",
-//        onDrop: function (tabel, movedRow) {
-//                                               MusicBrainz.stripeTracks();
-//                                               MusicBrainz.updatePositionFields();
-//                                               if (!$(movedRow).parents("#removedTracks").length) { // If the track was not dropped within Removed Tracks,
-//                                                   $(movedRow).children("td:eq(0)")
-//                                                              .children(".removeTrack")
-//                                                              .show(); // then re-show the remove track icon.
-//                                                   if ($("#removedTracks > tr").length <= 1) { // If Removed Tracks now has no tracks in it,
-//                                                       $("#removedTracks").addClass("hidden"); // re-hide Remove Tracks.
-//                                                   }
-//                                               }
-//                                           }
-//                       })
+    $(".tbl").tableDnD({ // Add drag and drop reordering to the track rows.
+        dragHandle: "dragHandle",
+        onDragClass: "upDown",
+        onDrop: function (tabel, movedRow) {
+                                               MusicBrainz.stripeTracks();
+                                               MusicBrainz.updatePositionFields();
+                                               if (!$(movedRow).parents("#removedTracks").length) { // If the track was not dropped within Removed Tracks,
+                                                   $(movedRow).children("td:eq(0)")
+                                                              .children(".removeTrack")
+                                                              .show(); // then re-show the remove track icon.
+                                                   if ($("#removedTracks > tr").length <= 1) { // If Removed Tracks now has no tracks in it,
+                                                       $("#removedTracks").addClass("hidden"); // re-hide Remove Tracks.
+                                                   }
+                                               }
+                                           }
+                       })
     /* Attach functionality to the the track removal icons. */
-//    $(".removeTrack").live("click", function () {  // If the remove track icon is clicked, move the track to the Removed Tracks tfoot.
-//        $("#removedTracks").append($(this).parents("tr:first")
-//                                          .removeClass("ev") // Unstripe the track.
-//                           );
-//        $("#removedTracks").removeClass("hidden"); // Make sure that Removed Tracks is visible.
-//        $("#removedTracks tr .removeTrack").hide(); // Hide the removed track's remove track icon.
-//        MusicBrainz.stripeTracks();
-//        MusicBrainz.updatePositionFields();
-//    });
+    $(".removeTrack").live("click", function () {  // If the remove track icon is clicked, move the track to the Removed Tracks tfoot.
+        $("#removedTracks").append($(this).parents("tr:first")
+                                          .removeClass("ev") // Unstripe the track.
+                           );
+        $("#removedTracks").removeClass("hidden"); // Make sure that Removed Tracks is visible.
+        $("#removedTracks tr .removeTrack").hide(); // Hide the removed track's remove track icon.
+        MusicBrainz.stripeTracks();
+        MusicBrainz.updatePositionFields();
+    });
 
     /* Insert the artist duplication icons. */
-//    $(".trackartist").prepend('<div class="copyArtist" alt="' + text.DragArtist + '" title="' + text.DragArtist + '"></div>');
+    $(".trackartist").prepend('<div class="copyArtist" alt="' + text.DragArtist + '" title="' + text.DragArtist + '"></div>');
 
     /* Attach functionality to the the artist duplication icons. */
-//    $(".copyArtist").draggable({
-//                               helper: 'clone',
-//                               opacity: 0.5
-//                               })
-//                    .live('dragstart', function () {
-//                        MusicBrainz.artistData = $(this).parents("table:first");
-//                    });
+    $(".copyArtist").draggable({
+                               helper: 'clone',
+                               opacity: 0.5
+                               })
+                    .live('dragstart', function () {
+                        MusicBrainz.artistData = $(this).parents("table:first");
+                    });
 
     /* Attach artist duplication target functionality to the the tracks. */
 // TODO: Add multi-medium support.
-//    $('.tartist').parent().droppable({ accept: '.copyArtist' })
-//                 .bind('drop', function() {
+    $('.tartist').parent().droppable({ accept: '.copyArtist' })
+                 .bind('drop', function() {
 // TODO: Abstract this out, so it can less-redundantly also be accomplished when reading in a stash.
-//                 var sourceArtists = MusicBrainz.artistData.find("input.name"),
-//                     sourceJoiners = MusicBrainz.artistData.find("input.joiner"),
-//                     sourceArtistCount = sourceArtists.length,
-//                     targetArtistCell = $(this).find("table:first"),
-//                     targetArtists = targetArtistCell.find("input.name"),
-//                     targetJoiners = targetArtistCell.find("input.joiner"),
-//                     targetArtistCount = targetArtistCell.find(".addartist").length,
-//                     artistCountDifference = sourceArtistCount - targetArtistCount,
-//                     targetAddArtistBtn = targetArtistCell.find("input[type=button]");
-//                 $(this).find("td.editable:eq(2)").click();
-//                 if (artistCountDifference < 0) { // The target track has more single artist fields than exist for the source track.
-//                     targetArtistCell.find(".addartist:not(:first)").remove();
-//                     artistCountDifference = sourceArtistCount - 1;
-//                 }
-//                 for (var i = 0; i < artistCountDifference; i++) { // Add artist fields, such that there's enough to equal the
-//                     MusicBrainz.addSingleArtist(targetAddArtistBtn); // number of artists in the combo-artist being copied over.
-//                 }
-//                 for (var i = 0; i < sourceArtistCount; i++) {
-//                     $(targetArtists[i]).val($(sourceArtists[i]).val()); // Copy over the artist name
-//                     $(targetJoiners[i]).val($(sourceJoiners[i]).val()); // Copy over the join phrases
-//                 }
-//                 MusicBrainz.updateComboArtist(targetAddArtistBtn);
-//             });
+                 var sourceArtists = MusicBrainz.artistData.find("input.name"),
+                     sourceJoiners = MusicBrainz.artistData.find("input.joiner"),
+                     sourceArtistCount = sourceArtists.length,
+                     targetArtistCell = $(this).find("table:first"),
+                     targetArtists = targetArtistCell.find("input.name"),
+                     targetJoiners = targetArtistCell.find("input.joiner"),
+                     targetArtistCount = targetArtistCell.find(".addartist").length,
+                     artistCountDifference = sourceArtistCount - targetArtistCount,
+                     targetAddArtistBtn = targetArtistCell.find("input[type=button]");
+                 $(this).find("td.editable:eq(2)").click();
+                 if (artistCountDifference < 0) { // The target track has more single artist fields than exist for the source track.
+                     targetArtistCell.find(".addartist:not(:first)").remove();
+                     artistCountDifference = sourceArtistCount - 1;
+                 }
+                 for (var i = 0; i < artistCountDifference; i++) { // Add artist fields, such that there's enough to equal the
+                     MusicBrainz.addSingleArtist(targetAddArtistBtn); // number of artists in the combo-artist being copied over.
+                 }
+                 for (var i = 0; i < sourceArtistCount; i++) {
+                     $(targetArtists[i]).val($(sourceArtists[i]).val()); // Copy over the artist name
+                     $(targetJoiners[i]).val($(sourceJoiners[i]).val()); // Copy over the join phrases
+                 }
+                 MusicBrainz.updateComboArtist(targetAddArtistBtn);
+             });
 
     /* Attach functionality to the the remove artist icons. */
-//    $(".removeArtist").live("click", function () {
-//        var thisSingleArtist = $(this).parents("table:first");
-//        $(this).parents("tr:first").remove();
-//        MusicBrainz.updateJoinPhrases(thisSingleArtist.find(".addartist"));
-//        MusicBrainz.updateComboArtist(thisSingleArtist.find("tr:eq(2)"));
-//    });
+    $(".removeArtist").live("click", function () {
+        var thisSingleArtist = $(this).parents("table:first");
+        $(this).parents("tr:first").remove();
+        MusicBrainz.updateJoinPhrases(thisSingleArtist.find(".addartist"));
+        MusicBrainz.updateComboArtist(thisSingleArtist.find("tr:eq(2)"));
+    });
 
     /* Add and activate the Annotation Editor toolbox button. */
-//    MusicBrainz.addAnnotationButton();
+    MusicBrainz.addAnnotationButton();
 
     /* Make each multiple-item entity editable. */
     MusicBrainz.makeTogglableEachInGroup([
@@ -910,19 +918,19 @@ $(function () {
 
 
 
-//    MusicBrainz.addToolButton("Show Help Buttons", "btnHelp");
+    MusicBrainz.addToolButton("Show Help Buttons", "btnHelp");
 
-//    $("#btnHelp").click(function () {
-//        $(".helpIcon").toggle();
-//        $("#btnHelp").val($("#btnHelp").val() == "Show Help Buttons" ? "Hide Help Buttons" : "Show Help Buttons");
-//    });
+    $("#btnHelp").click(function () {
+        $(".helpIcon").toggle();
+        $("#btnHelp").val($("#btnHelp").val() == "Show Help Buttons" ? "Hide Help Buttons" : "Show Help Buttons");
+    });
 
 
 
-//    MusicBrainz.clearStatus();
+    MusicBrainz.clearStatus();
 });
 
-// MusicBrainz.showErrorForSidebar("release-date", "FOO");
+ MusicBrainz.showErrorForSidebar("release-date", "Test sidebar error");
 
 MusicBrainz.initializeTrackParser = function () {
     /* Insert the track parser into the document. */
@@ -944,5 +952,5 @@ MusicBrainz.initializeTrackParser = function () {
 };
 
 $(function () {
-//    MusicBrainz.initializeTrackParser();
+    MusicBrainz.initializeTrackParser();
 });

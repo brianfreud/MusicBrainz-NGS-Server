@@ -13,7 +13,7 @@
         <thead>
             <tr>
                 [%- IF edit -%]
-
+                    <th/>
                 [%- END -%]
                 <th class="first[%- IF edit -%] release[%- END-%]" style="width:1em;text-align:right;">#</th>
                 <th[%- IF edit -%] class="ttitle release"[%- END-%]>[% l('Title') %]</th>
@@ -30,7 +30,7 @@
             <tbody[%- IF edit -%] id="medium-[%- loop.count -%]"[%- END -%]>
                 <tr class="subh[%- IF edit -%] nodrop nodrag[%- END -%]">
                     <th>&nbsp;</th>
-                    <th colspan="[%- IF edit -%]3[%- ELSE -%]3[%- END -%]">
+                    <th colspan="[%- IF edit -%]4[%- ELSE -%]3[%- END -%]">
                         <a href="[% c.uri_for_action('/tracklist/show', [medium.tracklist.id]) %]">
                             [% medium.format_name or l("Medium") | html %] [% medium.position %][% IF medium.name %]:
                             [% medium.name | html %][% END %]
