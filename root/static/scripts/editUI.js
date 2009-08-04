@@ -352,7 +352,7 @@ var MusicBrainz = {
     },
 
     makeStatusAndDocsBox : function () {
-        $(".tabs:eq(0)").after(mb.HTMLsnippets.editBox + mb.HTMLsnippets.docsBox);
+        $("table.tbl > thead:eq(0) > tr:eq(0) > th:eq(2)").append(mb.HTMLsnippets.editBox);
         $(".tabs:eq(0)").after(mb.HTMLsnippets.docsBox);
         $("#editMsgBox").corner(MusicBrainz.roundness);
         $("#editMsg").corner(MusicBrainz.roundness);
@@ -860,10 +860,12 @@ $(function () {
     /* Add functionality to the show/hide controls for the toolbox column */
     $(".toolsHead, .toolsShow").click(function () {
         $("table.tbl > * > tr").each(function () {
-            $(".toolsShow").toggle();
+            $(".toolsHead").toggle();
             $(this).find("td:first, th:first").toggle();
         })
     });
+
+
 
 
 
@@ -933,6 +935,9 @@ $(function () {
 
 
     MusicBrainz.clearStatus();
+$("#editStatusMsg").text("I'm a test status message,");
+$("#editHelpMsg").text("and I'm a test help message.");
+
 });
 
  MusicBrainz.showErrorForSidebar("release-date", "Test sidebar error");

@@ -14,12 +14,26 @@
     [%- END -%]
     <table class="tbl[%- IF edit -%] release[%- END -%]">
         <col class="icons"></colgroup>
+        [%- IF edit -%]
+            <thead>
+                <tr style="height:3em;">
+                    <th style="background: #FFF!important" class="toolsCol">
+                    </th>
+                    <th style="background: #FFF!important; width: 2em;">
+                        <div title="[%- l('Click here to hide Track tools.') -%]" alt="[%- l('Click here to hide Track tools.') -%]" class="hidden toolsHead"> </div>
+                        <div title="[%- l('Click here to show Track tools.') -%]" alt="[%- l('Click here to show Track tools.') -%]" class="toolsHead"> </div>
+                    </th>
+                    <th colspan="4" style="background: #FFF!important">
+                    </th>
+                </tr>
+                <tr>
+                </tr>
+            [%- END -%]
+            </thead>
         <thead>
             <tr>
                 [%- IF edit -%]
-                    <th>
-                        <div title="[%- l('Click here to hide Track tools.') -%]" alt="[%- l('Click here to hide Track tools.') -%]" class="toolsHead"/>
-                    </th>
+                    <th></th>
                 [%- END -%]
                 <th class="first[%- IF edit -%] release[%- END-%]" style="width:1em;text-align:right;">#</th>
                 <th[%- IF edit -%] class="ttitle release"[%- END-%]>[% l('Title') %]</th>
