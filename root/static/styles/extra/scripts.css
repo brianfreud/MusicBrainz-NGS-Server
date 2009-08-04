@@ -618,50 +618,50 @@ tr.editartist input[type="button"] {
 /* Icons */
 
 .characters,
-.closeButton,
-.copyArtist,
 .editor a,
-.handleIcon,
 .helpIcon,
 .markItUpResizeHandle,
 .preview,
-.removeArtist,
-.removeTrack,
-.symbols {
+.symbols
+tr:hover .closeButton,
+tr:hover .copyArtist,
+tr:hover .handleIcon,
+tr:hover .removeArtist,
+tr:hover .removeTrack {
  background: transparent url(/static/images/icon/editor.png) no-repeat;
 }
 
 /* Icon: X (gray) */
-.closeButton,
-.removeArtist,
-.removeTrack {
+tr:hover .closeButton,
+tr:hover .removeArtist,
+tr:hover .removeTrack {
  background-position: 0 -198px;
 }
 
 /* Icon: X (red) */
-.closeButton:hover,
-.removeArtist:hover,
-.removeTrack:hover {
+tr .closeButton:hover,
+tr .removeArtist:hover,
+tr .removeTrack:hover {
  background-position: 0 -264px;
 }
 
 /* Icon: Up-down (blue) */
-.handleIcon:hover {
+tr .handleIcon:hover {
  background-position: 0 -1764px;
 }
 
 /* Icon: Up-down (gray) */
-.handleIcon {
+tr:hover .handleIcon {
  background-position: 0 -1828px;
 }
 
 /* Icon: Person (color) */
-.copyArtist:hover {
+tr .copyArtist:hover {
  background-position: 0 -1310px;
 }
 
 /* Icon: Person (gray) */
-.copyArtist {
+tr:hover .copyArtist {
  background-position: 0 -1376px;
 }
 
