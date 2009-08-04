@@ -823,10 +823,20 @@ $(function () {
 
 /* Everything below is rough code in progress. */
 
+    /* Per-medium show/hide */
+    $(".mediumToggle").live("click", function () {
+        $(this).parents("tbody:first").find("> tr:not(:has(th))").toggle();
+        if ($(this).hasClass("mediumToggleClosed")) {
+            $(this).removeClass("mediumToggleClosed");
+        } else {
+            $(this).addClass("mediumToggleClosed");
+        }
+    });
 
-
-
-
+$("#accordion").accordion({ collapsible: true,
+active: "none",
+icons: { 'header': 'ui-icon-plus', 'headerSelected': 'ui-icon-minus' }
+});
 
 
 /* TODO: pre-populate:

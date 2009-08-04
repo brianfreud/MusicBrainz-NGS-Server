@@ -186,6 +186,18 @@ label.overlabel-apply {
  padding: 0.2em 2.4em 0.2em 0.4em!important;
 }
 
+.mediumToggle {
+ background: transparent url(/static/images/icon/arrow.down.png) no-repeat;
+ height: 16px;
+ width: 16px;
+}
+
+.mediumToggleClosed {
+ background: transparent url(/static/images/icon/arrow.right.png) no-repeat!important;
+ height: 16px;
+ width: 16px;
+}
+
 .editable a {
  color: #000;
 }
@@ -457,6 +469,9 @@ table.tbl td.trackname {
  vertical-align: top;
 }
 
+.trackdur {
+ text-align: right;
+}
 
 /* Artist editor / selector */
 
@@ -613,6 +628,7 @@ tr.editartist input[type="button"] {
 .markItUpResizeHandle,
 .preview,
 .symbols,
+.undo,
 tr:hover .closeButton,
 tr:hover .copyArtist,
 tr:hover .handleIcon,
@@ -745,6 +761,10 @@ tr:hover .copyArtist {
  background-position: 0 -1632px;
 }
 
+.undo {
+ background-position: 0 0;
+}
+
 .markItUpResizeHandle {
  background-position: 0 -858px;
 }
@@ -805,7 +825,6 @@ tr:hover .copyArtist {
 }
 
 /* Other icons in editor.png
-.arrow_undo  0 0;
 .file  0 -396px;
 .trash  0 -1698px;
 */

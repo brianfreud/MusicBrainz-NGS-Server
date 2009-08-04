@@ -145,7 +145,7 @@ var text                   = {
        SquareBrackets        : "[% l("unbalanced square bracket:") %]",
        SquareQuill           : "[% l("unbalenced square bracket with quill:") %]",
        SquareWhite           : "[% l("unbalanced white square bracket:") %]",
-       StatusInitial         : "[% l("Move your mouse over data fields to see more editing options.") %]",
+       StatusInitial         : "[% l("Click the tool icon to reveal additional editing options.") %]",
        Submit                : "[% l("Submit Edits") %]",
        TextContains          : "[% l("Warning: This text contains") %]",
        timeRemoved           : "[% l("Guess Case found what appeared to be a track time at the end of this text, and removed it.  The track time removed was:") %]",
