@@ -201,12 +201,6 @@ label.overlabel-apply {
  cursor: pointer;
 }
 
-/* Highlight on mouseover for editable fields */
-
-.highlight:hover {
- background: transparent url(/static/images/icon/Pencil.png) top right no-repeat!important;
-}
-
 /* Hide the bottom border line for edited, but not displayed, artists */
 
 .notActive td.ta-results {
