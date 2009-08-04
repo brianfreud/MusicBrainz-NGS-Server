@@ -186,7 +186,8 @@ label.overlabel-apply {
 }
 
 .hidden textarea,
-.hidden input {
+.trackposition.hidden input,
+.trackdur.hidden input {
  border: 0 solid #000000; 
  background-color: transparent;
 }

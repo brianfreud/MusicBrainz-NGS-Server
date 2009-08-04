@@ -36,6 +36,9 @@
             [%- PROCESS "components/sidebar-data.tt" entity="release" -%]
         [%- END -%]
     [%- END -%]
+    <div class="datumGroup">
+        <input type="button" value="[%- l('Add another&hellip;') -%]" style="float: right;"/>
+    </div>
     [%- INCLUDE "components/sidebar-rating.tt" entity=release -%]
     [%- INCLUDE "components/sidebar-tags.tt" entity=release tags=top_tags -%]
     [%- INCLUDE "components/sidebar-lastupdate.tt" entity=release -%]
