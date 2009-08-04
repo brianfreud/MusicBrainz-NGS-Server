@@ -632,8 +632,9 @@ $(function () {
 
     /* Add background and cursor hover behaviours for editable fields. */
     $(".editable, .artistDisplay td:has(textarea)").each(function (event) {
-        $(this).css("cursor", "pointer")
-               .addClass('highlight');
+        $(this).css("cursor", "text")
+               .find("a")
+               .css("cursor", "text");
     });
 
     /* Set up autotabbing and limit input to \d only for date and barcode fields. */
