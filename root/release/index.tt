@@ -49,12 +49,12 @@
             <tbody[%- IF edit -%] id="medium-[%- loop.count -%]"[%- END -%]>
                 <tr class="subh[%- IF edit -%] nodrop nodrag[%- END -%]">
                     [%- IF edit -%]
-                        <th style="color: #fff; background: #433D88 !important;">&nbsp;</th>
+                        <th style="background: url(/static/images/table-header-2.gif) repeat-x 0 50%!important;">&nbsp;</th>
                     [%- END -%]
-                    <th style="color: #fff; background: #433D88 !important;">
+                    <th style="background: url(/static/images/table-header-2.gif) repeat-x 0 50%!important;">
                         <div class="mediumToggle"></div>
                     </th>
-                    <th colspan="3" style="color: #fff; background: #433D88 !important;">
+                    <th colspan="3" style="background: url(/static/images/table-header-2.gif) repeat-x 0 50%!important;">
                         [%- IF !edit -%]<a href="[% c.uri_for_action('/tracklist/show', [medium.tracklist.id]) %]">[%- END -%]
                             [% medium.format_name or l("Medium") | html %] [% medium.position %][% IF medium.name %]:
                             [% medium.name | html %][% END %]
