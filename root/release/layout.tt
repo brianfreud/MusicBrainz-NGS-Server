@@ -3,11 +3,6 @@
         name => release.name
     })-%]
 <div class="sidebar">
-    [%- IF edit -%]
-        <div id="accordion" class="ui-widget">
-        <h3><a href="#" class="ui-widget-header release">[%- l("Release data") -%]</a></h3>
-        <div class="ui-widget-content">
-    [%- END -%]
     [%- dataCollection = [
         { field="release.date.year"          title => l('Released')  edit => 'date'      type='date'   data => release.date.format 
           plaintext => [ release.date.year, release.date.month, release.date.day ],
@@ -19,11 +14,7 @@
         { field="release.script"             title => l('Script')    edit => 'script'    type='option' data => html_escape(release.script.name) },
     ] -%]
     [%- PROCESS "components/sidebar-data.tt" entity="release" -%]
-    [%- IF edit -%]
-        </div>
-        <h3><a href="#" class="ui-widget-header release">[%- l("Release events") -%]</a></h3>
-        <div class="ui-widget-content">
-    [%- END -%]
+
     [%#- Ensure that one empty RE is created, in edit mode, if no RE exists. -%]
     [%- IF edit && release.labels.size == 0 -%]
         [%- dataCollection = [
@@ -46,10 +37,11 @@
             [%- PROCESS "components/sidebar-data.tt" entity="release" -%]
         [%- END -%]
     [%- END -%]
+    [%- INCLUDE "components/sidebar-rating.tt" entity=release -%]
+    [%- INCLUDE "components/sidebar-tags.tt" entity=release tags=top_tags -%]
     [%- IF edit -%]
         <input type="button" value="[%- l('Add another&hellip;') -%]" style="float: right;"/>
-        </div>
-
+        <div id="accordion" class="ui-widget">
         <h3>
             <a href="#" class="ui-widget-header release">
                 [%- l("Guess Case") -%]
@@ -84,9 +76,9 @@
 
         </div>
     [%- END -%]
-    [%- INCLUDE "components/sidebar-rating.tt" entity=release -%]
-    [%- INCLUDE "components/sidebar-tags.tt" entity=release tags=top_tags -%]
-    [%- INCLUDE "components/sidebar-lastupdate.tt" entity=release -%]
+    [%- IF !edit -%]
+        [%- INCLUDE "components/sidebar-lastupdate.tt" entity=release -%]
+    [%- END -%]
 </div>
 <div class="content">
     [%- INCLUDE "release/header.tt" -%]

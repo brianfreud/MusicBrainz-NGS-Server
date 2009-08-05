@@ -13,7 +13,6 @@
         <div class="hidden toolsShow" title="[%- l('Click here to show Track tools.') -%]" alt="[%- l('Click here to show Track tools.') -%]"></div>
     [%- END -%]
     <table class="tbl[%- IF edit -%] release[%- END -%]">
-        <col class="icons"></colgroup>
         [%- IF edit -%]
             <thead>
                 <tr style="height:3em;" class="toolsStatusLine">
