@@ -861,6 +861,7 @@ $("#accordion").addClass("ui-accordion ui-widget ui-helper-reset")
 
 $("table.tbl > thead:eq(0) > tr > th").css("border-top", "0")
 
+
     MusicBrainz.setStatus(text.StatusInitial);
 
 });

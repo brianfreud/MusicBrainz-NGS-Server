@@ -186,6 +186,11 @@ label.overlabel-apply {
  padding: 0.2em 2.4em 0.2em 0.4em!important;
 }
 
+#annotation {
+ border: 1px solid #888;
+ margin-top: 2px;
+}
+
 .ui-accordion .ui-accordion-content {
  border-top:1px solid grey!important;
 }
@@ -193,12 +198,14 @@ label.overlabel-apply {
 .mediumToggle {
  background: transparent url(/static/images/icon/arrow.down.png) no-repeat;
  height: 12px;
+ margin-left:5px;
  width: 12px;
 }
 
 .mediumToggleClosed {
  background: transparent url(/static/images/icon/arrow.right.png) no-repeat!important;
  height: 12px;
+ margin-left:5px;
  width: 12px;
 }
 
