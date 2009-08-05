@@ -601,12 +601,10 @@ $(function () {
                    .attr("alt",text.toolsShow);
 
     /* Add the track movement and removal icons. */
-    $(".trackposition.editable").before('<td class="toolbox hidden">' + // Insert the reordering handler td.
-                                           '<div class="removeTrack" alt="' + text.RemoveTrack + '" title="' + text.RemoveTrack + '">' +
-                                           '</div>' +
-                                           '<div class="handleIcon" alt="' + text.DragTrack + '" title="' + text.DragTrack + '">' +
-                                           '</div>' +
-                                       '</td>');
+    $("td.toolbox").append('<div class="removeTrack" alt="' + text.RemoveTrack + '" title="' + text.RemoveTrack + '">' +
+                           '</div>' +
+                           '<div class="handleIcon" alt="' + text.DragTrack + '" title="' + text.DragTrack + '">' +
+                           '</div>');
 
     /* Add functionality to the show/hide controls for the toolbox column */
     $("#toolsHead").click(function () {

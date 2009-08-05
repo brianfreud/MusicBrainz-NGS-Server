@@ -1,6 +1,9 @@
 [%- FOR track=tracklist.tracks;
     recording = track.recording %]
     <tr[% ' class="ev"' IF loop.count % 2 == 0 %]>
+        [%- IF edit %]
+            <td class="toolbox hidden"></td>
+        [%- END -%]
         <td[%- IF edit %] class="editable trackposition"[% END %]>[% track.position %]</td>
         [%- IF edit %]
             <td class="hidden trackposition"><input type="text" value="[% track.position %]"></td>

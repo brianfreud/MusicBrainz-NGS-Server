@@ -23,14 +23,12 @@
                     <th colspan="5" style="background: #FFF!important">
                     </th>
                 </tr>
-                <tr>
-                </tr>
             [%- END -%]
             </thead>
         <thead>
             <tr>
                 [%- IF edit -%]
-                    <th class="toolbox"></th>
+                    <th class="toolbox"> </th>
                 [%- END -%]
                 <th class="first[%- IF edit -%] release[%- END-%]" style="width:1em;text-align:right;">#</th>
                 <th[%- IF edit -%] class="ttitle release"[%- END-%]>[% l('Title') %]</th>
@@ -49,7 +47,7 @@
             <tbody[%- IF edit -%] id="medium-[%- loop.count -%]"[%- END -%]>
                 <tr class="subh[%- IF edit -%] nodrop nodrag[%- END -%]">
                     [%- IF edit -%]
-                        <th style="background: url(/static/images/table-header-2.gif) repeat-x 0 50%!important;" class="toolbox">&nbsp;</th>
+                        <th style="background: url(/static/images/table-header-2.gif) repeat-x 0 50%!important;" class="toolbox"> </th>
                     [%- END -%]
                     <th style="background: url(/static/images/table-header-2.gif) repeat-x 0 50%!important;">
                         <div class="mediumToggle"></div>

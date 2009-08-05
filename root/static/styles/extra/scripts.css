@@ -695,17 +695,17 @@ tr.editartist input[type="button"] {
 .symbols,
 .undo,
 .closeButton,
-tr:hover .copyArtist,
-tr:hover .handleIcon,
-tr:hover .removeArtist,
-tr:hover .removeTrack {
+.copyArtist,
+.handleIcon,
+.removeArtist,
+.removeTrack {
  background: transparent url(/static/images/icon/editor.png) no-repeat;
 }
 
 /* Icon: X (gray) */
 .closeButton,
 .removeArtist,
-tr:hover .removeTrack { 
+.removeTrack { 
  background-position: 0 -198px;
 }
 
@@ -722,7 +722,7 @@ tr .handleIcon:hover {
 }
 
 /* Icon: Up-down (gray) */
-tr:hover .handleIcon {
+.handleIcon {
  background-position: 0 -1828px;
 }
 
