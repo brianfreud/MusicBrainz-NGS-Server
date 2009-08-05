@@ -689,7 +689,7 @@ tr:hover .removeTrack {
 }
 
 /* Icon: X (red) */
-tr .closeButton:hover,
+.closeButton:hover,
 tr .removeArtist:hover,
 tr .removeTrack:hover {
  background-position: 0 -264px;
