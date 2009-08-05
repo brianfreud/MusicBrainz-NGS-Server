@@ -37,10 +37,15 @@
             [%- PROCESS "components/sidebar-data.tt" entity="release" -%]
         [%- END -%]
     [%- END -%]
+    [%- IF edit -%]
+        <div class="datumGroup">
+            <input type="button" value="[%- l('Add another&hellip;') -%]" style="float: right;"/>
+        </div>
+    [%- END -%]
     [%- INCLUDE "components/sidebar-rating.tt" entity=release -%]
     [%- INCLUDE "components/sidebar-tags.tt" entity=release tags=top_tags -%]
     [%- IF edit -%]
-        <input type="button" value="[%- l('Add another&hellip;') -%]" style="float: right;"/>
+        <br/>
         <div id="accordion" class="ui-widget">
         <h3>
             <a href="#" class="ui-widget-header release">

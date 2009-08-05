@@ -792,7 +792,7 @@ $("#accordion").addClass("ui-accordion ui-widget ui-helper-reset")
                .next()
                .addClass("ui-accordion-content ui-helper-reset ui-widget-content ui-corner-bottom")
                .hide();
-$("#accordion").find("h3.release:eq(0), h3.release:eq(1), h3.release:eq(2)") // Release: data, REs, Guess Case
+$("#accordion").find("h3:eq(0)") // Guess Case
                .click();
 
 
