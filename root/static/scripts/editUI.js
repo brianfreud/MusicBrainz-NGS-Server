@@ -709,20 +709,20 @@ $(function () {
 
     /* Attach functionality to the the track dragging icons. */
     $(".tbl").tableDnD({ // Add drag and drop reordering to the track rows.
-        dragHandle: "dragHandle",
+        dragHandle: "toolbox",
         onDragClass: "upDown",
         onDrop: function (tabel, movedRow) {
-                                               MusicBrainz.stripeTracks();
-//                                               MusicBrainz.updatePositionFields();
-                                               if (!$(movedRow).parents("#removedTracks").length) { // If the track was not dropped within Removed Tracks,
-                                                   $(movedRow).children("td:eq(0)")
-                                                              .children(".removeTrack")
-                                                              .show(); // then re-show the remove track icon.
-                                                   if ($("#removedTracks > tr").length <= 1) { // If Removed Tracks now has no tracks in it,
-                                                       $("#removedTracks").addClass("hidden"); // re-hide Remove Tracks.
-                                                   }
-                                               }
-                                           }
+                                            MusicBrainz.stripeTracks();
+//                                            MusicBrainz.updatePositionFields();
+                                            if (!$(movedRow).parents("#removedTracks").length) { // If the track was not dropped within Removed Tracks,
+                                                $(movedRow).children("td:eq(0)")
+                                                           .children(".removeTrack")
+                                                          .show(); // then re-show the remove track icon.
+                                                if ($("#removedTracks > tr").length <= 1) { // If Removed Tracks now has no tracks in it,
+                                                    $("#removedTracks").addClass("hidden"); // re-hide Remove Tracks.
+                                                }
+                                            }
+                                        }
                        })
     /* Attach functionality to the the track removal icons. */
     $(".removeTrack").live("click", function () {  // If the remove track icon is clicked, move the track to the Removed Tracks tfoot.
@@ -833,7 +833,6 @@ $(function () {
         }
     });
 
-/* Code for "multiple sections active at the same time" accordion, using jQuery UI standard css, by Richard D. Worth */
 $("#accordion").addClass("ui-accordion ui-widget ui-helper-reset")
                .find("h3")
                .addClass("ui-accordion-header ui-helper-reset ui-state-default ui-corner-top ui-corner-bottom")
@@ -855,7 +854,8 @@ $("#accordion").addClass("ui-accordion ui-widget ui-helper-reset")
                .next()
                .addClass("ui-accordion-content ui-helper-reset ui-widget-content ui-corner-bottom")
                .hide();
-
+$("#accordion").find("h3:first")
+               .click();
 
 
 /* TODO: pre-populate:
