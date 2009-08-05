@@ -1,5 +1,5 @@
 /*jslint undef: true, browser: true*/
-/*global jQuery, $, mb, text*/
+/*global jQuery, $, mb, text, convertToHTML, convertToMarkup*/
 
 var experimental = false;
 
@@ -14,11 +14,11 @@ var charMap = {
         className: "symbols",
         dropMenu: []
     }
-}
+};
 
 var MusicBrainz = {
 
-    artistData : new Object(),
+    artistData : {},
 
     roundness  : "round 6px",
 
@@ -50,7 +50,7 @@ var MusicBrainz = {
                                              var selectedText = markItUp.selection;
                                              selectedText = selectedText.replace(/^\s{4}[\*(a.)]\s/gm,""); // Remove existing <li>s.
                                              selectedText = "    * " + selectedText.replace(/\n/g,"\n    * ") + "\n";
-                                             return selectedText.replace(/\n$/g,"");;
+                                             return selectedText.replace(/\n$/g,"");
                                          }
                                     },
                                     {name:'Numbered list', className:"editor ol",
@@ -133,7 +133,7 @@ var MusicBrainz = {
     activateAnnotationSwitcher : function () {
         $('#ChangeMarkup li:not(:first)').click(function () {
             $('#ChangeMarkup li').removeClass('currentSet');
-            newSet = $(this).attr('class');
+            var newSet = $(this).attr('class');
             $(this).addClass('currentSet');
             $('#annotation').markItUpRemove();
             switch (newSet) {
@@ -195,7 +195,7 @@ var MusicBrainz = {
         targetArtists.find(".joinerlabel strong, .joiner")
                   .removeClass("hidden");  // Show the "Joiner" header text.
         $(artistRows).filter(":last")
-                     .after(MusicBrainz.makeHTMLNewArtist(tNum, mNum)) // Insert the new artist row.
+                     .after(MusicBrainz.makeHTMLNewArtist(tNum, mNum)); // Insert the new artist row.
         MusicBrainz.updateComboArtist($(artistRows[0])); // Update the displayed "combo artist" to include the new join phrases.
         MusicBrainz.updateJoinPhrases(targetArtists.find(".addartist"));
     },
@@ -334,7 +334,7 @@ var MusicBrainz = {
                     $('.hidden.' + toggleclass[0] + ':eq(' + i + ')').show() // Show the specific item's form field.
 //                                                                     .if_($(this).find('input, textarea[readonly!=readonly]').length > 0)
                                                                          .find('input, textarea[readonly!=readonly]')
-                                                                         .focus()
+                                                                         .focus();
 //                                                                     .else_()
 //                                                                         .parent()
 //                                                                         .find('tr:eq(2) input')
@@ -345,7 +345,7 @@ var MusicBrainz = {
     },
 
     populateCharArrays : function () {
-        chars = [
+        var chars = [
                 ["Á",1],["Ć",1],["É",3],["Í",2],["Ĺ",1],["Ń",0],["Ó",2],["Ŕ",0],["Ś",1],["Ú",3],["Ý",0],["Ź",0],
                 ["á",1],["ć",1],["é",3],["í",2],["ĺ",1],["ń",0],["ó",2],["ŕ",0],["ś",1],["ú",3],["ý",0],["ź",0],
                 ["À",3],["È",2],["Ḥ",0],["Ì",3],["Ḷ",0],["Ṃ",0],["Ṇ",0],["Ò",2],["Ṛ",0],["Ṣ",0],["Ṭ",0],["Ù",4],
@@ -370,7 +370,13 @@ var MusicBrainz = {
                 ["ą",3],["ę",3],["į",5],["ǫ",5],["ų",4],["Þ",0],
                 ["Ǣ",0],["Ħ",0],["Ł",0],["Ŀ",0],["Ő",0],["Ø",0],["Œ",0],["Ṝ",0],["Ů",0],["Ű",16],
                 ["ǣ",0],["ħ",0],["ł",0],["ŀ",0],["ő",0],["ø",0],["œ",0],["ṝ",0],["ß",0],["ů",0],["ǘ",0],["ǜ",0],["ǚ",0],["ǖ",0],["ű",0]
-                ];
+                ],
+            symbols = ["¿","†","‡","↔","↑","↓","•","∞","¶","½","⅓",
+                   "⅔","¼","¾","⅛","⅜","⅝","⅞","«","»","¤","₳",
+                   "฿","₵","¢","₡","₢","$","₫","₯","€","₠","₣",
+                   "ƒ","₴","₭","₤","₥","₦","№","₧","₰","£","៛",
+                     "₨","₪","৳","₮","₩","¥","♠","♣","♥","♦","²","³",
+                   "®","©","™"];
         for (var i=0; i < chars.length; i++) {
             charMap.characters.dropMenu[i] = {
                                              name      : chars[i][0],
@@ -378,16 +384,10 @@ var MusicBrainz = {
                                              className : "skip" + chars[i][1]
                                              };
         }
-        symbols = ["¿","†","‡","↔","↑","↓","•","∞","¶","½","⅓",
-                   "⅔","¼","¾","⅛","⅜","⅝","⅞","«","»","¤","₳",
-                   "฿","₵","¢","₡","₢","$","₫","₯","€","₠","₣",
-                   "ƒ","₴","₭","₤","₥","₦","№","₧","₰","£","៛",
-                     "₨","₪","৳","₮","₩","¥","♠","♣","♥","♦","²","³",
-                   "®","©","™"];
-        for (var i=0; i < symbols.length; i++) {
-            charMap.symbols.dropMenu[i] = {
-                                          name      : symbols[i],
-                                          openWith  : symbols[i],
+        for (var j=0; j < symbols.length; j++) {
+            charMap.symbols.dropMenu[j] = {
+                                          name      : symbols[j],
+                                          openWith  : symbols[j],
                                           className : "skip0"
                                           };
         }
@@ -513,8 +513,8 @@ var MusicBrainz = {
                                                         }
                                                         $(this).val(joiner); // Populate the join phrase input.
                                                     }
-                                 })
-    },
+                                 });
+    }
 };
 
 $(function () {
@@ -660,7 +660,7 @@ $(function () {
                                                 }
                                             }
                                         }
-                       })
+                       });
     /* Attach functionality to the the track removal icons. */
     $(".removeTrack").live("click", function () {  // If the remove track icon is clicked, move the track to the Removed Tracks tfoot.
         $("#removedTracks").append($(this).parents("tr:first")
@@ -703,12 +703,12 @@ $(function () {
                      targetArtistCell.find(".addartist:not(:first)").remove();
                      artistCountDifference = sourceArtistCount - 1;
                  }
-                 for (var i = 0; i < artistCountDifference; i++) { // Add artist fields, such that there's enough to equal the
+                 for (var j = 0; j < artistCountDifference; j++) { // Add artist fields, such that there's enough to equal the
                      MusicBrainz.addSingleArtist(targetAddArtistBtn); // number of artists in the combo-artist being copied over.
                  }
-                 for (var i = 0; i < sourceArtistCount; i++) {
-                     $(targetArtists[i]).val($(sourceArtists[i]).val()); // Copy over the artist name
-                     $(targetJoiners[i]).val($(sourceJoiners[i]).val()); // Copy over the join phrases
+                 for (var k = 0; k < sourceArtistCount; k++) {
+                     $(targetArtists[k]).val($(sourceArtists[k]).val()); // Copy over the artist name
+                     $(targetJoiners[k]).val($(sourceJoiners[k]).val()); // Copy over the join phrases
                  }
                  MusicBrainz.updateComboArtist(targetAddArtistBtn);
              });
@@ -747,14 +747,14 @@ $(function () {
                .show() // show them,
                .filter(":first") // then filter to only the first one - the one with the textarea display text,
                .removeClass("notActive"); // and add the bottom box line to it.
-    })
+    });
 
     /* Add functionality to the show/hide controls for the toolbox column */
     $(".toolsHead, .toolsShow").click(function () {
         $("table.tbl > * > tr:not(.toolsStatusLine)").each(function () {
             $(".toolsHead").toggle();
             $(this).find("td:first, th:first").toggle();
-        })
+        });
     }).click();
 
 
