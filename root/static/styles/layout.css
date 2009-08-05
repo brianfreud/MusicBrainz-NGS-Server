@@ -313,7 +313,7 @@ div.tabs {
 .page table.tbl th {
     font-size: 95%;
     background: url(../images/table-header.gif) repeat-x 0 50%;
-    padding: 0.2em 0.2em;
+    padding: .3em .2em;
     text-align: left;
     border-bottom: solid 1px #999999;
     border-top: solid 1px #999999;
