@@ -859,7 +859,7 @@ $("#accordion").addClass("ui-accordion ui-widget ui-helper-reset")
         $("#btnHelp").val($("#btnHelp").val() == "Show Help Buttons" ? "Hide Help Buttons" : "Show Help Buttons");
     });
 
-
+$("table.tbl > thead:eq(0) > tr > th").css("border-top", "0")
 
     MusicBrainz.setStatus(text.StatusInitial);
 
