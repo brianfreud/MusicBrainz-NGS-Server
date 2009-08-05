@@ -204,10 +204,6 @@ label.overlabel-apply {
  cursor: text;
 }
 
-.ui-accordion .ui-accordion-content {
- border-top:1px solid grey!important;
-}
-
 .mediumToggle {
  background: transparent url(/static/images/icon/arrow.down.png) no-repeat;
  height: 12px;
@@ -272,6 +268,7 @@ label.overlabel-apply {
 /* Side accordion */
 
 .ui-accordion .ui-accordion-content-active {
+ border-top:1px solid grey!important;
  margin-bottom:3px!important;
 }
 
