@@ -14,6 +14,11 @@
         { field="release.script"             title => l('Script')    edit => 'script'    type='option' data => html_escape(release.script.name) },
     ] -%]
     [%- PROCESS "components/sidebar-data.tt" entity="release" -%]
+    [%- IF edit -%]
+        <div id="accordion">
+        <h3><a href="#">[%- l("Release events") -%]</a></h3>
+        <div>
+    [%- END -%]
     [%#- Ensure that one empty RE is created, in edit mode, if no RE exists. -%]
     [%- IF edit && release.labels.size == 0 -%]
         [%- dataCollection = [
@@ -36,45 +41,30 @@
             [%- PROCESS "components/sidebar-data.tt" entity="release" -%]
         [%- END -%]
     [%- END -%]
-    <div class="datumGroup">
-        <input type="button" value="[%- l('Add another&hellip;') -%]" style="float: right;"/>
-    </div>
-    [%- INCLUDE "components/sidebar-rating.tt" entity=release -%]
-    [%- INCLUDE "components/sidebar-tags.tt" entity=release tags=top_tags -%]
-    [%- INCLUDE "components/sidebar-lastupdate.tt" entity=release -%]
-    <div class="datumGroup">
-
-
-<br/><br/><strong>Accordian Demo Below</strong>
-<div id="accordion">
-    <h3>
-        <a href="#">
-            Section 1
-        </a>
-    </h3>
-    <div>
+    <input type="button" value="[%- l('Add another&hellip;') -%]" style="float: right;"/>
+    [%- IF edit -%]
+        </div>
+        <h3><a href="#">[%- l("Test stuff 1") -%]</a></h3>
+        <div>
+    [%- END -%]
         Mauris mauris ante, blandit et, ultrices a, suscipit eget, quam. Integer
         ut neque. Vivamus nisi metus, molestie vel, gravida in, condimentum sit
         amet, nunc. Nam a nibh. Donec suscipit eros. Nam mi. Proin viverra leo
         ut odio. Curabitur malesuada. Vestibulum a velit eu ante scelerisque vulputate.
-    </div>
-    <h3>
-        <a href="#">
-            Section 2
-        </a>
-    </h3>
-    <div>
+    [%- IF edit -%]
+        </div>
+        <h3><a href="#">[%- l("Test stuff 2") -%]</a></h3>
+        <div>
+    [%- END -%]
         Sed non urna. Donec et ante. Phasellus eu ligula. Vestibulum sit amet
         purus. Vivamus hendrerit, dolor at aliquet laoreet, mauris turpis porttitor
         velit, faucibus interdum tellus libero ac justo. Vivamus non quam. In suscipit
         faucibus urna.
-    </div>
-    <h3>
-        <a href="#">
-            Section 3
-        </a>
-    </h3>
-    <div>
+    [%- IF edit -%]
+        </div>
+        <h3><a href="#">[%- l("Test stuff 3") -%]</a></h3>
+        <div>
+    [%- END -%]
         Nam enim risus, molestie et, porta ac, aliquam ac, risus. Quisque lobortis.
         Phasellus pellentesque purus in massa. Aenean in pede. Phasellus ac libero
         ac tellus pellentesque semper. Sed ac felis. Sed commodo, magna quis lacinia
@@ -90,23 +80,13 @@
                 List item three
             </li>
         </ul>
-    </div>
-    <h3>
-        <a href="#">
-            Section 4
-        </a>
-    </h3>
-    <div>
-        Cras dictum. Pellentesque habitant morbi tristique senectus et netus et
-        malesuada fames ac turpis egestas. Vestibulum ante ipsum primis in faucibus
-        orci luctus et ultrices posuere cubilia Curae; Aenean lacinia mauris vel
-        est. Suspendisse eu nisl. Nullam ut libero. Integer dignissim consequat
-        lectus. Class aptent taciti sociosqu ad litora torquent per conubia nostra,
-        per inceptos himenaeos.
-    </div>
-</div>
-
-    </div>
+    [%- IF edit -%]
+        </div>
+        </div>
+    [%- END -%]
+    [%- INCLUDE "components/sidebar-rating.tt" entity=release -%]
+    [%- INCLUDE "components/sidebar-tags.tt" entity=release tags=top_tags -%]
+    [%- INCLUDE "components/sidebar-lastupdate.tt" entity=release -%]
 </div>
 <div class="content">
     [%- INCLUDE "release/header.tt" -%]

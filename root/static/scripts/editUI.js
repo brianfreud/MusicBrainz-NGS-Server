@@ -834,9 +834,10 @@ $(function () {
     });
 
 $("#accordion").accordion({ collapsible: true,
-active: "none",
+active: 0,
 icons: { 'header': 'ui-icon-plus', 'headerSelected': 'ui-icon-minus' }
 });
+$("#accordion h3 a").css("font-weight","bold");
 
 
 /* TODO: pre-populate:
