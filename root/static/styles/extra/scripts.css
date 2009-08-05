@@ -461,6 +461,7 @@ display:block;
 /* Track fields. */
 
 table.tbl th.first {
+ text-align: center!important;
  width: 3%!important;
 }
 
@@ -499,7 +500,7 @@ table.tbl td.trackname {
 }
 
 .trackdur span {
- padding-left: 1em;
+ padding-right: 1em;
 }
 
 .trackdur,
