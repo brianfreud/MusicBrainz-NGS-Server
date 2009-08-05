@@ -15,9 +15,9 @@
     ] -%]
     [%- PROCESS "components/sidebar-data.tt" entity="release" -%]
     [%- IF edit -%]
-        <div id="accordion">
-        <h3><a href="#">[%- l("Release events") -%]</a></h3>
-        <div>
+        <div id="accordion" class="ui-widget">
+        <h3><a href="#" class="ui-widget-header">[%- l("Release events") -%]</a></h3>
+        <div class="ui-widget-content">
     [%- END -%]
     [%#- Ensure that one empty RE is created, in edit mode, if no RE exists. -%]
     [%- IF edit && release.labels.size == 0 -%]
@@ -44,8 +44,8 @@
     <input type="button" value="[%- l('Add another&hellip;') -%]" style="float: right;"/>
     [%- IF edit -%]
         </div>
-        <h3><a href="#">[%- l("Test stuff 1") -%]</a></h3>
-        <div>
+        <h3><a href="#" class="ui-widget-header">[%- l("Test stuff 1") -%]</a></h3>
+        <div class="ui-widget-content">
     [%- END -%]
         Mauris mauris ante, blandit et, ultrices a, suscipit eget, quam. Integer
         ut neque. Vivamus nisi metus, molestie vel, gravida in, condimentum sit
@@ -53,8 +53,8 @@
         ut odio. Curabitur malesuada. Vestibulum a velit eu ante scelerisque vulputate.
     [%- IF edit -%]
         </div>
-        <h3><a href="#">[%- l("Test stuff 2") -%]</a></h3>
-        <div>
+        <h3><a href="#" class="ui-widget-header">[%- l("Test stuff 2") -%]</a></h3>
+        <div class="ui-widget-content">
     [%- END -%]
         Sed non urna. Donec et ante. Phasellus eu ligula. Vestibulum sit amet
         purus. Vivamus hendrerit, dolor at aliquet laoreet, mauris turpis porttitor
@@ -62,8 +62,8 @@
         faucibus urna.
     [%- IF edit -%]
         </div>
-        <h3><a href="#">[%- l("Test stuff 3") -%]</a></h3>
-        <div>
+        <h3><a href="#" class="ui-widget-header">[%- l("Test stuff 3") -%]</a></h3>
+        <div class="ui-widget-content">
     [%- END -%]
         Nam enim risus, molestie et, porta ac, aliquam ac, risus. Quisque lobortis.
         Phasellus pellentesque purus in massa. Aenean in pede. Phasellus ac libero
