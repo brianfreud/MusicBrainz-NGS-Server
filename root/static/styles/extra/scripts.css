@@ -187,7 +187,7 @@ label.overlabel-apply {
 }
 
 .ui-accordion .ui-accordion-content {
- border-top:1px solid grey;
+ border-top:1px solid grey!important;
 }
 
 .mediumToggle {
@@ -500,7 +500,7 @@ table.tbl td.trackname {
 }
 
 .trackdur span {
- padding-right: 1em;
+ padding-right: 1.5em;
 }
 
 .trackdur,
