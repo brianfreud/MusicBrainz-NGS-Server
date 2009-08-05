@@ -253,21 +253,27 @@ var MusicBrainz = {
     },
 
     makeFormatList : function () {
-        var otherVal,
-            formatSelect = $("#select-edit-release-format");
-        $.each(mb.format, function (i) {
-            if (mb.format[i][0] != 13) {
-                formatSelect.addOption(mb.format[i][0],mb.format[i][2]);
-            } else {
-                otherVal = i;
+        $("select.medium.format").each(function (i) {
+            var otherVal,
+                formatSelect = $(this),
+                presetFormat = $("input.medium.format:eq(" + i + ")").val();
+            $.each(mb.format, function (i) {
+                if (mb.format[i][0] != 13) {
+                    formatSelect.addOption(mb.format[i][0],mb.format[i][2]);
+                } else {
+                    otherVal = i;
+                }
+                formatSelect.children(':last').data("start_date",mb.format[i][1]);
+            });
+            formatSelect.sortOptions()
+                        .val("")
+                        .addOption(mb.format[otherVal][0],mb.format[otherVal][2]); // Add the option for "Other" to the end of the list.
+            formatSelect.children(':last').data("start_date", "");
+            formatSelect.children(':first').attr("selected", "selected");
+            if (presetFormat.length > 0) {
+                $(this).val(presetFormat);
             }
-            formatSelect.children(':last').data("start_date",mb.format[i][1]);
         });
-        formatSelect.sortOptions()
-                    .val("")
-                    .addOption(mb.format[otherVal][0],mb.format[otherVal][2]); // Add the option for "Other" to the end of the list.
-        formatSelect.children(':last').data("start_date", "");
-        formatSelect.children(':first').attr("selected", "selected");
     },
 
     makeHTMLNewArtist : function(trackNum, mediumNum, artistName, joinPhrase) {
@@ -488,6 +494,25 @@ var MusicBrainz = {
         }
     },
 
+    updateMediumTotalDuration : function () {
+        $("table.tbl > tbody").each(function () {
+            var seconds = 0,
+                minutes = 0;
+            $(this).find(".trackdur > input").each(function () {
+                minutes += parseInt($(this).val().split(":")[0], 10);
+                seconds += parseInt($(this).val().split(":")[1], 10);
+            });
+            if (seconds > 59) { // Carry over :60+ to minutes
+                minutes += Math.floor(seconds / 60);
+                seconds = seconds % 60;
+            }
+            if (seconds < 10) {
+                seconds = "0" + seconds; // Pad out :0 - :9
+            }
+            $(this).find(".medium.trackdur > span").text(minutes + ":" + seconds);
+        });
+    },
+
     updatePositionFields : function () {
         $(".tbl.release > tbody").each(function () {
             var originalPositions = $($(this).find(".editable.trackposition")),
@@ -619,6 +644,9 @@ $(function () {
     /* Insert the artist duplication icons. */
 //    $(".trackartist").prepend('<div class="copyArtist" alt="' + text.DragArtist + '" title="' + text.DragArtist + '"></div>');
 
+    /* Set the initial total durations for each medium. */
+    MusicBrainz.updateMediumTotalDuration();
+
     /* ==== End functions that initially manipulate the tracklist's DOM. ==== */
 
     /* Show the tracklist. */
@@ -662,7 +690,8 @@ $(function () {
                                          ["trackposition"],
                                          ["trackname", true],
                                          ["trackartist", true, "editartist"],
-                                         ["trackdur"]
+                                         ["trackdur"],
+                                         ["medium.title"]
                                          ]);
 
     /* Per-medium show/hide */
@@ -763,7 +792,7 @@ $(function () {
     $(".tbl").tableDnD({ // Add drag and drop reordering to the track rows.
         dragHandle: "toolbox",
         onDragClass: "upDown",
-        onDrop: function (tabel, movedRow) {
+        onDrop: function (table, movedRow) {
                                             MusicBrainz.stripeTracks();
 //                                            MusicBrainz.updatePositionFields();
                                             if (!$(movedRow).parents("#removedTracks").length) { // If the track was not dropped within Removed Tracks,
@@ -774,6 +803,7 @@ $(function () {
                                                     $("#removedTracks").addClass("hidden"); // re-hide Remove Tracks.
                                                 }
                                             }
+                                            $("td.trackdur > input").live("change", MusicBrainz.updateMediumTotalDuration());
                                         }
                        });
 
@@ -786,6 +816,7 @@ $(function () {
         $("#removedTracks tr .removeTrack").hide(); // Hide the removed track's remove track icon.
         MusicBrainz.stripeTracks();
 //        MusicBrainz.updatePositionFields();
+        $("td.trackdur > input").live("change", MusicBrainz.updateMediumTotalDuration());
     });
 
     /* Set up autotabbing and limit input to \d only for date and barcode fields. */
@@ -828,6 +859,9 @@ $(function () {
         $("#wikiHelpBox").slideUp(1000);
     });
 
+    /* Update total duration for each medium when track duration is changed. */
+    $("td.trackdur > input").live("change", MusicBrainz.updateMediumTotalDuration);
+
     /* ==== End functions that attach mouse events. ==== */
 
     /* ==== Start other functions. ==== */
@@ -835,11 +869,29 @@ $(function () {
     /* Clean out the "Loading..." div.  .remove() is slow, so we do this last, not at the instant we're initially done with that div. */
     $("#loader").remove();
 
-    /* Clear the initial status text after 10 seconds. */
+    /* Clear the initial status text after 15 seconds. */
     setTimeout(MusicBrainz.clearStatus, 15000);
 
 
 /* Everything below is rough code in progress. */
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 /* TODO: pre-populate:
                           * Type

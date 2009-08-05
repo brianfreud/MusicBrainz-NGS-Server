@@ -181,9 +181,19 @@ label.overlabel-apply {
 
 */
 
-/* Bump the icons column to sufficient width */
-.page table.tbl th.icons {
- padding: 0.2em 2.4em 0.2em 0.4em!important;
+select.medium,
+.medium.title,
+.medium.position {
+ margin: 0;
+ padding: 0;
+}
+
+.medium.position {
+ width: 2em;
+}
+
+.medium.title {
+ width: 60%;
 }
 
 #loader {
@@ -479,9 +489,9 @@ display:block;
 /* Track fields. */
 
 table.tbl th.first {
- padding-right: 12px;
+ padding-right: 16px;
  text-align: center!important;
- width: 5%!important;
+ width: 6%!important;
 }
 
 table.tbl th.treleases {
@@ -506,7 +516,7 @@ table.tbl td.trackname {
  font-size: 110%;
  letter-spacing: 1px;
  overflow: hidden;
- padding: .2em;
+ padding: .1em;
  white-space: pre;
 }
 
@@ -529,6 +539,15 @@ table.tbl td.trackname {
  vertical-align: top;
 }
 
+th.medium.trackdur {
+ vertical-align: middle;
+}
+
+.medium.trackdur span {
+ display: block;
+ text-align: right;
+}
+
 .trackdur {
  text-align: right;
 }
@@ -536,7 +555,7 @@ table.tbl td.trackname {
 /* Artist editor / selector */
 
 .trackposition {
- padding-left: .6em!important;
+ padding-left: .9em!important;
 }
 
 .tartist table {
@@ -859,10 +878,6 @@ tr:hover .copyArtist {
 
 .markItUpHeader ul ul li {
  font-family: monospace;
-}
-
-.skip-2 {
- padding-left: 3em!important;
 }
 
 .skip1 {
