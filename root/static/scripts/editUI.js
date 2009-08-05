@@ -635,7 +635,6 @@ $(function () {
     /* Show the edit note. */
     $("#loader").hide();
     $("fieldset.editNote").removeClass("hidden");
-    $("#loader").remove();
 
     /* ==== Start functions that attach mouse events. ==== */
 
@@ -818,6 +817,14 @@ $(function () {
     closeButton.click(function () {
         $("#wikiHelpBox").slideUp(1000);
     });
+
+    /* ==== End functions that attach mouse events. ==== */
+
+    /* ==== Start other functions. ==== */
+
+    $("#loader").remove();
+
+
 
 /* Everything below is rough code in progress. */
 
