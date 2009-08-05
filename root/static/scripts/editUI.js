@@ -226,7 +226,7 @@ var MusicBrainz = {
     },
 
     clearStatus : function () {
-        $("#editStatusMsg").html("");
+        $("#editStatusMsg").html("&nbsp;");
     },
 
     hideErrorForSidebar : function (element) {
@@ -608,6 +608,7 @@ $(function () {
 
     /* Add functionality to the show/hide controls for the toolbox column */
     $("#toolsHead").click(function () {
+        MusicBrainz.clearStatus();
         MusicBrainz.toggleTools();
     });
 
@@ -834,6 +835,8 @@ $(function () {
     /* Clean out the "Loading..." div.  .remove() is slow, so we do this last, not at the instant we're initially done with that div. */
     $("#loader").remove();
 
+    /* Clear the initial status text after 10 seconds. */
+    setTimeout(MusicBrainz.clearStatus, 15000);
 
 
 /* Everything below is rough code in progress. */

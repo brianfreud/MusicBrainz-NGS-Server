@@ -192,7 +192,7 @@ label.overlabel-apply {
  margin-top: 19%;
  font-size: 400%;
  font-weight: bolder;
- font-family: “Times New Roman”, Georgia, “Book Antiqua”, serif;"
+ font-family: "Times New Roman", Georgia, "Book Antiqua", serif;
 }
 
 #annotation {
@@ -202,20 +202,6 @@ label.overlabel-apply {
 
 .editable
  cursor: text;
-}
-
-.mediumToggle {
- background: transparent url(/static/images/icon/arrow.down.png) no-repeat;
- height: 12px;
- margin-left:5px;
- width: 12px;
-}
-
-.mediumToggleClosed {
- background: transparent url(/static/images/icon/arrow.right.png) no-repeat!important;
- height: 12px;
- margin-left:5px;
- width: 12px;
 }
 
 .editable a {
@@ -231,6 +217,21 @@ label.overlabel-apply {
 
 .ta-results textarea {
  cursor: pointer;
+}
+
+/* Medium show / hide */
+.mediumToggle {
+ background: transparent url(/static/images/icon/arrow.down.png) no-repeat;
+ height: 12px;
+ margin-left:5px;
+ width: 12px;
+}
+
+.mediumToggleClosed {
+ background: transparent url(/static/images/icon/arrow.right.png) no-repeat!important;
+ height: 12px;
+ margin-left:5px;
+ width: 12px;
 }
 
 /* Hide the bottom border line for edited, but not displayed, artists */
@@ -268,7 +269,7 @@ label.overlabel-apply {
 /* Side accordion */
 
 .ui-accordion .ui-accordion-content-active {
- border-top:1px solid grey!important;
+ border-top:1px solid gray!important;
  margin-bottom:3px!important;
 }
 
@@ -418,7 +419,7 @@ display:block;
  padding: 6px 0 6px 6px;
  overflow-y: scroll;
  overflow-x: hidden;
- marginBottom: .3em;
+ margin-bottom: .3em;
 }
 
 #wikiHelpBox {
@@ -578,7 +579,7 @@ tr.editartist td.empty {
 
 tr.editartist td.joiner {
  border-right: 1px solid #789;
- padding; 0 8px 8px 0!important;
+ padding: 0 8px 8px 0!important;
 }
 
 tr.editartist.btn td {
