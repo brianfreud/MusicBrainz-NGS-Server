@@ -27,37 +27,6 @@ editBox : '[% editBox.replace("[\t\n]","").replace("'","\\'") %]',
 ' -%]
 docsBox : '[% docsBox.remove("[\t\n]").replace("'","\\'") %]',
 
-[%- sideMenu = '
-	<div id="editMenu">
-		<div id="editMenuControls">
-			<div id="editMenuControlsReveal">
-				<input type="button" id="btnEditTitles" value="' _ l("Edit all Titles") _ '"/>
-				<input type="button" id="btnEditArtists" value="' _ l("Edit all Artists") _ '"/>
-				<input type="button" id="btnEditDurations" value="' _ l("Edit all Durations") _ '"/>
-				<input type="button" id="btnEditAll" value="' _ l("Edit Everything") _ '"/>
-			</div>
-			<div id="editMenuControlsGC">
-				<input type="button" id="btnGuessAll" value="' _ l("Guess All") _ '"/>
-				<div style="padding:.2em 0;clear:both;">
-					' _ l("using") _ '
-				</div>
-				<select id="edit-select-gc-mode"/>
-			</div>
-			<div id="editMenuControlsInline">
-			</div>
-		</div>
-		<div id="editMenuSubmit">
-			<input type="button" id="editSubmit" value="' _ l("Submit Edits") _ '"/>
-		</div>
-	</div>
-	<div id="editMenuPullout">
-		<span>
-			»
-		</span>
-	</div>
-' -%]
-sideMenu : '[% sideMenu.replace("[\t\n]","").replace("'","\\'") %]',
-
 [%- trackParser = PROCESS "scripts/module_track_parser.tt" -%]
 trackParser : '[% trackParser.remove("[\t\n]").replace("'","\\'").replace(" +"," ") %]',
                            };

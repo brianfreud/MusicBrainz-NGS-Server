@@ -3,6 +3,11 @@
         name => release.name
     })-%]
 <div class="sidebar">
+    [%- IF edit -%]
+        <div id="accordion" class="ui-widget">
+        <h3><a href="#" class="ui-widget-header release">[%- l("Release data") -%]</a></h3>
+        <div class="ui-widget-content">
+    [%- END -%]
     [%- dataCollection = [
         { field="release.date.year"          title => l('Released')  edit => 'date'      type='date'   data => release.date.format 
           plaintext => [ release.date.year, release.date.month, release.date.day ],
@@ -15,8 +20,8 @@
     ] -%]
     [%- PROCESS "components/sidebar-data.tt" entity="release" -%]
     [%- IF edit -%]
-        <div id="accordion" class="ui-widget">
-        <h3><a href="#" class="ui-widget-header">[%- l("Release events") -%]</a></h3>
+        </div>
+        <h3><a href="#" class="ui-widget-header release">[%- l("Release events") -%]</a></h3>
         <div class="ui-widget-content">
     [%- END -%]
     [%#- Ensure that one empty RE is created, in edit mode, if no RE exists. -%]
@@ -44,38 +49,39 @@
     [%- IF edit -%]
         <input type="button" value="[%- l('Add another&hellip;') -%]" style="float: right;"/>
         </div>
-        <h3><a href="#" class="ui-widget-header">[%- l("Test stuff 1") -%]</a></h3>
-        <div class="ui-widget-content">
-        Mauris mauris ante, blandit et, ultrices a, suscipit eget, quam. Integer
-        ut neque. Vivamus nisi metus, molestie vel, gravida in, condimentum sit
-        amet, nunc. Nam a nibh. Donec suscipit eros. Nam mi. Proin viverra leo
-        ut odio. Curabitur malesuada. Vestibulum a velit eu ante scelerisque vulputate.
+
+        <h3>
+            <a href="#" class="ui-widget-header release">
+                [%- l("Guess Case") -%]
+            </a>
+        </h3>
+        <div class="ui-widget-content" id="MenuGuessCase">
+            <div id="editMenuControlsReveal">
+            <input type="button" id="btnGuessAll" value="[%- l(" Guess All ") -%]"/>
+            <div style="padding:.2em 0;clear:both;">
+                [%- l("using") -%]
+            </div>
+            <select id="edit-select-gc-mode">
+            </select>
         </div>
-        <h3><a href="#" class="ui-widget-header">[%- l("Test stuff 2") -%]</a></h3>
-        <div class="ui-widget-content">
-        Sed non urna. Donec et ante. Phasellus eu ligula. Vestibulum sit amet
-        purus. Vivamus hendrerit, dolor at aliquet laoreet, mauris turpis porttitor
-        velit, faucibus interdum tellus libero ac justo. Vivamus non quam. In suscipit
-        faucibus urna.
         </div>
-        <h3><a href="#" class="ui-widget-header">[%- l("Test stuff 3") -%]</a></h3>
-        <div class="ui-widget-content">
-        Nam enim risus, molestie et, porta ac, aliquam ac, risus. Quisque lobortis.
-        Phasellus pellentesque purus in massa. Aenean in pede. Phasellus ac libero
-        ac tellus pellentesque semper. Sed ac felis. Sed commodo, magna quis lacinia
-        ornare, quam ante aliquam nisi, eu iaculis leo purus venenatis dui.
-        <ul>
-            <li>
-                List item one
-            </li>
-            <li>
-                List item two
-            </li>
-            <li>
-                List item three
-            </li>
-        </ul>
+        <h3>
+            <a href="#" class="ui-widget-header release">
+                [%- l("Editing Tools") -%]
+            </a>
+        </h3>
+        <div class="ui-widget-content" id="MenuEditTools">
+            <div id="editMenuControlsReveal">
+                <input type="button" id="btnEditTitles" value="[%- l(" Edit all Titles") -%]"/>
+                <input type="button" id="btnEditArtists" value="[%- l(" Edit all Artists") -%]"/>
+                <input type="button" id="btnEditDurations" value="[%- l(" Edit all Durations") -%]"/>
+                <input type="button" id="btnEditAll" value="[%- l(" Edit Everything") -%]"/>
+            </div>
+            <hr/>
+            <div id="editMenuControlsInline">
+            </div>
         </div>
+
         </div>
     [%- END -%]
     [%- INCLUDE "components/sidebar-rating.tt" entity=release -%]

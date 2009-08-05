@@ -233,65 +233,6 @@ var MusicBrainz = {
         $("#" + element + "-dt").btOff();
     },
 
-    makeEditMenu : function () {
-        $("body").append(mb.HTMLsnippets.sideMenu);
-        $("#editMenuPullout").corner(MusicBrainz.roundness + " tr")
-                             .corner(MusicBrainz.roundness + " br")
-                             .mouseover(function () {
-                                                    $("#editMenuPullout").hide();
-                                                    $("#editMenu").unbind("mouseleave")
-                                                                  .stop()
-                                                                  .animate({
-                                                                            width: "17em"
-                                                                            }, 'slow')
-                                                                  .children()
-                                                                  .show();
-                                                    /* The setTimeout here, with the unbind above, avoids a yo-yo effect *
-                                                     * due to mouseleave events that would otherwise get triggered while *
-                                                     * the menu is displaying.                                           */
-                                                    setTimeout(function () {
-                                                        $("#editMenu").mouseleave(function () {
-                                                            $("#editMenu")
-                                                                          .animate({
-                                                                                    width: "0px"
-                                                                                    }, 'slow', function () {
-                                                                                                          $("#editMenu").children()
-                                                                                                                        .hide();
-                                                                                                          $("#editMenuPullout").show();
-                                                                                                          $("#editMenu").hide();
-                                                                                    });
-                                                            });
-                                                        }, 250);
-                                                    });
-        $("#editMenu").hide();
-        $("#editMenuPullout, #editMenu").css('top', $("#editToggle").offset().top + 20);
-        /* This next chunk works around a problem present in IE, Chrome, and FireFox, where option lists with long text, such as
-         * the very long country names, scroll right off the page.  This problem is not present in how Safari and Opera handle
-         * long option text, so those are left to operate normally, without the workaround. */
-        if (!$.browser.safari && !$.browser.opera) {
-            $("#select-edit-release-country").hoverIntent({
-                interval: 1,
-                sensitivity: 1,
-                timeout: 300,
-                over: function () {
-                                  /* Expand the select's width, and bump it to the left. */
-                                  $(this).removeClass("width100", "normal")
-                                         .addClass("shiftSelect", "normal");
-                                  },
-                out: function () {
-                                  /* Return the select to normal width and position. */
-                                 $(this).addClass("width100", "normal")
-                                        .removeClass("shiftSelect", "normal");
-                                 }
-            }).change(function () {
-                                  /* Make the action of the select returning to normal width and position act more responsively when
-                                   * the user makes a selection. (The hoverIntent event takes 300 extra ms to take notice and act.) */
-                                  $(this).addClass("width100", "fast")
-                                         .removeClass("shiftSelect", "fast");
-                                  });
-        }
-    },
-
     makeCountryList : function () {
         var countrySelect = $("#select-edit-release-country");
         $.each(mb.country, function (i) {
@@ -617,10 +558,6 @@ $(function () {
         event.preventDefault();
     });
 
-   /* Create and initialize the side menu. */
-//    MusicBrainz.makeEditMenu();
-//    MusicBrainz.setPulloutHeight();
-
    /* Set click behaviour for editable fields (where there is qty 1 of that field type). */
     MusicBrainz.makeTogglable([
                               /* Definitions for entity type: Release */
@@ -825,11 +762,12 @@ $(function () {
 
     /* Per-medium show/hide */
     $(".mediumToggle").live("click", function () {
-        $(this).parents("tbody:first").find("> tr:not(:has(th))").toggle();
         if ($(this).hasClass("mediumToggleClosed")) {
             $(this).removeClass("mediumToggleClosed");
+            $(this).parents("tbody:first").find("> tr:not(:has(th))").show();
         } else {
             $(this).addClass("mediumToggleClosed");
+            $(this).parents("tbody:first").find("> tr:not(:has(th))").hide();
         }
     });
 
@@ -854,7 +792,7 @@ $("#accordion").addClass("ui-accordion ui-widget ui-helper-reset")
                .next()
                .addClass("ui-accordion-content ui-helper-reset ui-widget-content ui-corner-bottom")
                .hide();
-$("#accordion").find("h3:first")
+$("#accordion").find("h3.release:eq(0), h3.release:eq(1), h3.release:eq(2)") // Release: data, REs, Guess Case
                .click();
 
 

@@ -18,7 +18,7 @@
             <thead>
                 <tr style="height:3em;" class="toolsStatusLine">
                     <th style="background: #FFF!important; width: 2em;">
-                        <div title="[%- l('Click here to hide Track tools.') -%]" alt="[%- l('Click here to hide Track tools.') -%]" class="toolsHead"> </div>
+                        <div title="[%- l('Click here to hide Track tools.') -%]" alt="[%- l('Click here to hide Track tools.') -%]" class="toolsHead toolsHeadGrey"> </div>
                         <div title="[%- l('Click here to show Track tools.') -%]" alt="[%- l('Click here to show Track tools.') -%]" class="hidden toolsHead"> </div>
                     </th>
                     <th colspan="5" style="background: #FFF!important">
@@ -44,82 +44,29 @@
                 <th class="treleases[%- IF edit -%] release[%- END-%]">[% l('Length') %]</th>
             </tr>
         </thead>
+[%- i = 0 -%]
+[%- WHILE i < 4 -%]
         [%- FOR medium=release.mediums -%]
             <tbody[%- IF edit -%] id="medium-[%- loop.count -%]"[%- END -%]>
                 <tr class="subh[%- IF edit -%] nodrop nodrag[%- END -%]">
                     [%- IF edit -%]
-                        <th>&nbsp;</th>
+                        <th style="color: #fff; background: #433D88 !important;">&nbsp;</th>
                     [%- END -%]
-                    <th>
+                    <th style="color: #fff; background: #433D88 !important;">
                         <div class="mediumToggle"></div>
                     </th>
-                    <th colspan="3">
-                        <a href="[% c.uri_for_action('/tracklist/show', [medium.tracklist.id]) %]">
+                    <th colspan="3" style="color: #fff; background: #433D88 !important;">
+                        [%- IF !edit -%]<a href="[% c.uri_for_action('/tracklist/show', [medium.tracklist.id]) %]">[%- END -%]
                             [% medium.format_name or l("Medium") | html %] [% medium.position %][% IF medium.name %]:
                             [% medium.name | html %][% END %]
-                        </a>
+                        [%- IF !edit -%]</a>[%- END -%]
                     </th>
                 </tr>
                 [%- INCLUDE 'tracklist/tracklist.tt' tracklist=medium.tracklist -%]
             </tbody>
         [%- END -%]
-        [%- FOR medium=release.mediums -%]
-            <tbody[%- IF edit -%] id="medium-[%- loop.count -%]"[%- END -%]>
-                <tr class="subh[%- IF edit -%] nodrop nodrag[%- END -%]">
-                    [%- IF edit -%]
-                        <th>&nbsp;</th>
-                    [%- END -%]
-                    <th>
-                        <div class="mediumToggle"></div>
-                    </th>
-                    <th colspan="3">
-                        <a href="[% c.uri_for_action('/tracklist/show', [medium.tracklist.id]) %]">
-                            [% medium.format_name or l("Medium") | html %] [% medium.position %][% IF medium.name %]:
-                            [% medium.name | html %][% END %]
-                        </a>
-                    </th>
-                </tr>
-                [%- INCLUDE 'tracklist/tracklist.tt' tracklist=medium.tracklist -%]
-            </tbody>
-        [%- END -%]
-        [%- FOR medium=release.mediums -%]
-            <tbody[%- IF edit -%] id="medium-[%- loop.count -%]"[%- END -%]>
-                <tr class="subh[%- IF edit -%] nodrop nodrag[%- END -%]">
-                    [%- IF edit -%]
-                        <th>&nbsp;</th>
-                    [%- END -%]
-                    <th>
-                        <div class="mediumToggle"></div>
-                    </th>
-                    <th colspan="3">
-                        <a href="[% c.uri_for_action('/tracklist/show', [medium.tracklist.id]) %]">
-                            [% medium.format_name or l("Medium") | html %] [% medium.position %][% IF medium.name %]:
-                            [% medium.name | html %][% END %]
-                        </a>
-                    </th>
-                </tr>
-                [%- INCLUDE 'tracklist/tracklist.tt' tracklist=medium.tracklist -%]
-            </tbody>
-        [%- END -%]
-        [%- FOR medium=release.mediums -%]
-            <tbody[%- IF edit -%] id="medium-[%- loop.count -%]"[%- END -%]>
-                <tr class="subh[%- IF edit -%] nodrop nodrag[%- END -%]">
-                    [%- IF edit -%]
-                        <th>&nbsp;</th>
-                    [%- END -%]
-                    <th>
-                        <div class="mediumToggle"></div>
-                    </th>
-                    <th colspan="3">
-                        <a href="[% c.uri_for_action('/tracklist/show', [medium.tracklist.id]) %]">
-                            [% medium.format_name or l("Medium") | html %] [% medium.position %][% IF medium.name %]:
-                            [% medium.name | html %][% END %]
-                        </a>
-                    </th>
-                </tr>
-                [%- INCLUDE 'tracklist/tracklist.tt' tracklist=medium.tracklist -%]
-            </tbody>
-        [%- END -%]
+[%- i = i+1 -%]
+[%- END -%]
         [%- IF edit -%]
             <tfoot id="removedTracks" class="hidden">
                 <tr class="subh[%- IF edit -%] nodrop nodrag[%- END -%]">
