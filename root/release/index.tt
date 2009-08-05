@@ -8,17 +8,18 @@
     [%- END -%]
     [%- IF !edit -%]
         <h2>Track listing</h2>
+    [%- ELSE -%]
+        <div id="loader">
+            [%- l("Loading&hellip;") -%]
+        </div>
     [%- END -%]
-    [%- IF edit -%]
-        <div class="hidden toolsShow" title="[%- l('Click here to show Track tools.') -%]" alt="[%- l('Click here to show Track tools.') -%]"></div>
-    [%- END -%]
-    <table class="tbl[%- IF edit -%] release[%- END -%]">
+    <table class="tbl[%- IF edit -%] release hidden[%- END -%]">
         [%- IF edit -%]
             <thead>
                 <tr style="height:3em;" class="toolsStatusLine">
                     <th style="background: #FFF!important; width: 2em;">
-                        <div title="[%- l('Click here to hide Track tools.') -%]" alt="[%- l('Click here to hide Track tools.') -%]" class="toolsHead toolsHeadGrey"> </div>
-                        <div title="[%- l('Click here to show Track tools.') -%]" alt="[%- l('Click here to show Track tools.') -%]" class="hidden toolsHead"> </div>
+                        <div title="[%- l('Click here to hide Track tools.') -%]" alt="[%- l('Click here to hide Track tools.') -%]" class="toolsHeadGrey hidden"> </div>
+                        <div title="[%- l('Click here to show Track tools.') -%]" alt="[%- l('Click here to show Track tools.') -%]" class="toolsHead"> </div>
                     </th>
                     <th colspan="5" style="background: #FFF!important">
                     </th>
@@ -30,7 +31,7 @@
         <thead>
             <tr>
                 [%- IF edit -%]
-                    <th></th>
+                    <th class="hidden"></th>
                 [%- END -%]
                 <th class="first[%- IF edit -%] release[%- END-%]" style="width:1em;text-align:right;">#</th>
                 <th[%- IF edit -%] class="ttitle release"[%- END-%]>[% l('Title') %]</th>
@@ -49,7 +50,7 @@
             <tbody[%- IF edit -%] id="medium-[%- loop.count -%]"[%- END -%]>
                 <tr class="subh[%- IF edit -%] nodrop nodrag[%- END -%]">
                     [%- IF edit -%]
-                        <th style="background: url(/static/images/table-header-2.gif) repeat-x 0 50%!important;">&nbsp;</th>
+                        <th style="background: url(/static/images/table-header-2.gif) repeat-x 0 50%!important;" class="hidden">&nbsp;</th>
                     [%- END -%]
                     <th style="background: url(/static/images/table-header-2.gif) repeat-x 0 50%!important;">
                         <div class="mediumToggle"></div>
@@ -69,7 +70,7 @@
         [%- IF edit -%]
             <tfoot id="removedTracks" class="hidden">
                 <tr class="subh[%- IF edit -%] nodrop nodrag[%- END -%]">
-                    <td>&nbsp;</td><td colspan="5">
+                    <td class="hidden">&nbsp;</td><td colspan="5">
                             [%- l("Removed Tracks") -%]
                     </td>
                 </tr>

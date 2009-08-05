@@ -1,4 +1,4 @@
-[%- WRAPPER 'forms/fieldset.tt' legend=l('Edit Note') class="editNote" -%]
+[%- WRAPPER 'forms/fieldset.tt' legend=l('Edit Note') class="editNote hidden" -%]
     [%- UNLESS hide_help -%]
     <p>
         <strong>[% l('About edit notes:') %]</strong>

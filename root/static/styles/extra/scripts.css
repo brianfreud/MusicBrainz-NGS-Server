@@ -186,9 +186,22 @@ label.overlabel-apply {
  padding: 0.2em 2.4em 0.2em 0.4em!important;
 }
 
+#loader {
+ margin-bottom: 81%;
+ margin-left: 35%;
+ margin-top: 19%;
+ font-size: 400%;
+ font-weight: bolder;
+ font-family: “Times New Roman”, Georgia, “Book Antiqua”, serif;"
+}
+
 #annotation {
  border: 1px solid #888;
  margin-top: 2px;
+}
+
+.editable
+ cursor: text;
 }
 
 .ui-accordion .ui-accordion-content {

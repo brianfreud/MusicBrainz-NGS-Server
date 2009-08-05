@@ -2,7 +2,7 @@
         artist => artist-credit(release.artist_credit, plain => 1),
         name => release.name
     })-%]
-<div class="sidebar">
+<div class="sidebar hidden" id="sidebar">
     [%- dataCollection = [
         { field="release.date.year"          title => l('Released')  edit => 'date'      type='date'   data => release.date.format 
           plaintext => [ release.date.year, release.date.month, release.date.day ],

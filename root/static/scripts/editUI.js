@@ -519,67 +519,7 @@ var MusicBrainz = {
 
 $(function () {
 
-    /* Insert help icons. */
-    $(".datumItem dt, th.release").prepend($('<img src="/static/images/blank.gif" class="helpIcon"/>')
-                                  .hide());
-
-    /* Insert the status and heads-up display box. */
-    MusicBrainz.makeStatusBox();
-
-    /* Initialize the display text box. */
-    MusicBrainz.setStatus(text.LoadingJS, true);
-
-   /* Create and attach click event for the documentation display close button. */
-    var closeButton = $('<img src="/static/images/blank.gif" class="closeButton"/>');
-    $("#wikiTitle").prepend(closeButton);
-    closeButton.click(function () {
-        $("#wikiHelpBox").slideUp(1000);
-    });
-
-
-    /* Populate the character and symbol arrays for the annotation editor. */
-    MusicBrainz.populateCharArrays();
-
-    if (experimental) {
-        /* Add annotation markup switcher controls. */
-        MusicBrainz.addAnnotationSwitcher();
-    }
-
-    /* Attach and activate the editor for the annotation and edit note. */
-    $('#annotation, #edit-releaseedit_note').markItUp(MusicBrainz.markup.wiki);
-
-    if (experimental) {
-        /* Activate the annotation markup switcher controls. */
-        MusicBrainz.activateAnnotationSwitcher();
-    }
-
-    /* Disable default behaviour for anchor links. */
-    $(".editable a").bind("click.blocked", function (event) {
-        event.preventDefault();
-    });
-
-   /* Set click behaviour for editable fields (where there is qty 1 of that field type). */
-    MusicBrainz.makeTogglable([
-                              /* Definitions for entity type: Release */
-                              ['release-date'],
-                              'release-format',
-                              'release-packaging',
-                              'release-status'
-                              ]);
-
-    /* Add background and cursor hover behaviours for editable fields. */
-    $(".editable, .artistDisplay td:has(textarea)").each(function (event) {
-        $(this).css("cursor", "text")
-               .find("a")
-               .css("cursor", "text");
-    });
-
-    /* Set up autotabbing and limit input to \d only for date and barcode fields. */
-    $('#edit-release-date-y').autotab({ target: 'edit-release-date-m', format: 'numeric',                                  maxlength: '4' });
-    $('#edit-release-date-m').autotab({ target: 'edit-release-date-d', format: 'numeric', previous: 'edit-release-date-y', maxlength: '2' });
-    $('#edit-release-date-d').autotab({                                format: 'numeric', previous: 'edit-release-date-m', maxlength: '2' });
-    $("input[id$='edit-release-barcode']").attr("maxlength", 15) // EAN13 + EAN2, 15 digit maximum length
-                                          .autotab({format: 'numeric'});
+    /* ==== Start functions that initially manipulate the sidebar DOM. ==== */
 
     /* Populate basic select lists. */
     $("#select-edit-release-packaging").addOption(mb.packaging, false);
@@ -600,30 +540,131 @@ $(function () {
         MusicBrainz.makeSwappableSelectList("release", "script", mb.commonScripts, mb.script);
     });
 
-    /* Attach click events to the help buttons. */
-    MusicBrainz.attachHelpButtonEvents([
-                                       /* Definitions for entity type: Release */
-                                       ["#release-date-dt", text.displayReleaseDate, "http://"],
-                                       ["#release-type-dt", text.displayReleaseType, "http://"],
-                                       ["#release-format-dt", text.displayReleaseFormat, "http://"],
-                                       ["#release-packaging-dt", text.displayReleasePackaging, "http://"],
-                                       ["#release-status-dt", text.displayReleaseStatus, "http://"],
-                                       ["#release-language-dt", text.displayReleaseLanguage, "http://"],
-                                       ["#release-script-dt", text.displayReleaseScript, "http://"],
-                                       ["dt[id^=release-label]", text.displayLabel, "http://"],
-                                       ["dt[id^=release-catalog]", text.displayCatalogNumber, "http://"],
-                                       ["dt[id^=release-barcode]", text.displayBarcode, "http://"],
-                                       ["dt[id^=release-country]", text.displayCountry, "http://"],
-                                       ["th.release:eq(0)", text.displayTrackNumber, "http://"],
-                                       ["th.release:eq(1)", text.displayTrackTitle, "http://"],
-                                       ["th.release:eq(2)", text.displayTrackArtist, "http://"],
-                                       ["th.release:eq(3)", text.displayTrackDuration, "http://"]
-                                       ]);
+    /* Add and activate the Annotation Editor toolbox button. */
+    MusicBrainz.addAnnotationButton();
 
+    /* This next duplicates the jQuery UI accordion, except it also allows the pegboard effect. */
+    $("#accordion").addClass("ui-accordion ui-widget ui-helper-reset")
+                   .find("h3")
+                   .addClass("ui-accordion-header ui-helper-reset ui-state-default ui-corner-top ui-corner-bottom")
+                   .prepend('<span class="ui-icon ui-icon-triangle-1-e"/>')
+                   .click(function () {
+                       $(this).toggleClass("ui-accordion-header-active")
+                              .toggleClass("ui-state-active")
+                              .toggleClass("ui-state-default")
+                              .toggleClass("ui-corner-bottom")
+                              .find("> .ui-icon")
+                              .toggleClass("ui-icon-triangle-1-e")
+                              .toggleClass("ui-icon-triangle-1-s")
+                              .end()
+                              .next()
+                              .toggleClass("ui-accordion-content-active")
+                              .toggle();
+                       return false;
+                   })
+                   .next()
+                   .addClass("ui-accordion-content ui-helper-reset ui-widget-content ui-corner-bottom")
+                   .hide();
+//    $("#accordion").find("h3:eq(0)") // Guess Case
+//                   .click();
 
-    /* Add functionality to the "Add another artist" buttons. */
-    $(".btnAddTA").live("click", function () {
-        MusicBrainz.addSingleArtist(this);
+    /* Add the show help button to the tool box. */
+    MusicBrainz.addToolButton("Show Help Buttons", "btnHelp");
+
+    /* ==== End functions that initially manipulate the sidebar DOM. ==== */
+
+    $("#sidebar").show();
+
+    /* ==== Only functions that affect the initial DOM for the tracklist should go here. ==== */
+
+    /* Hide the top line for the first of the two theads; would need a CSS3 selector to do it via the css file. */
+    $("table.tbl > thead:eq(0) > tr > th").css("border-top", "0")
+
+    /* Insert the status display box. */
+    MusicBrainz.makeStatusBox();
+
+    /* Insert the initial status display box text. */
+    MusicBrainz.setStatus(text.StatusInitial);
+
+    /* Add the track movement and removal icons. */
+    $(".trackposition.editable").before('<td class="toolbox hidden">' + // Insert the reordering handler td.
+                                           '<div class="removeTrack" alt="' + text.DragTrack + '" title="' + text.DragTrack + '">' +
+                                           '</div>' +
+                                           '<div class="handleIcon" alt="' + text.RemoveTrack + '" title="' + text.RemoveTrack + '">' +
+                                           '</div>' +
+                                       '</td>');
+
+    /* Add functionality to the show/hide controls for the toolbox column */
+    $(".toolsHead, .toolsHeadGrey").click(function () {
+        $("table.tbl > * > tr:not(.toolsStatusLine)").each(function () {
+            $(".toolsHead, .toolsHeadGrey").toggle();
+            $(this).find("td:first, th:first").toggle();
+        });
+    });
+
+    /* Insert help icons. */
+    $(".datumItem dt, th.release").prepend($('<img src="/static/images/blank.gif" class="helpIcon"/>')
+                                  .hide());
+
+    /* Insert the artist duplication icons. */
+//    $(".trackartist").prepend('<div class="copyArtist" alt="' + text.DragArtist + '" title="' + text.DragArtist + '"></div>');
+
+    /* ==== End functions that initially manipulate the tracklist's DOM. ==== */
+
+    /* Show the tracklist. */
+    $("table.tbl").removeClass("hidden");
+
+    /* ==== Only functions that affect the initial DOM for the edit note or annotation should go here. ==== */
+
+    /* Populate the character and symbol arrays for the annotation editor. */
+    MusicBrainz.populateCharArrays();
+
+    if (experimental) {
+        /* Add annotation markup switcher controls. */
+        MusicBrainz.addAnnotationSwitcher();
+
+        /* Activate the annotation markup switcher controls. */
+        MusicBrainz.activateAnnotationSwitcher();
+    }
+
+    /* Attach and activate the editor for the annotation and edit note. */
+    $('#annotation, #edit-releaseedit_note').markItUp(MusicBrainz.markup.wiki);
+
+    /* ==== End functions that initially manipulate the edit note or annotation DOM. ==== */
+
+    /* Show the edit note. */
+    $("#loader").hide();
+    $("fieldset.editNote").removeClass("hidden");
+    $("#loader").remove();
+
+    /* ==== Start functions that attach mouse events. ==== */
+
+   /* Set click behaviour for editable fields (where there is qty 1 of that field type). */
+    MusicBrainz.makeTogglable([
+                              /* Definitions for entity type: Release */
+                              ['release-date'],
+                              'release-format',
+                              'release-packaging',
+                              'release-status'
+                              ]);
+
+    /* Make each multiple-item entity editable. */
+    MusicBrainz.makeTogglableEachInGroup([
+                                         ["trackposition"],
+                                         ["trackname", true],
+                                         ["trackartist", true, "editartist"],
+                                         ["trackdur"]
+                                         ]);
+
+    /* Per-medium show/hide */
+    $(".mediumToggle").live("click", function () {
+        if ($(this).hasClass("mediumToggleClosed")) {
+            $(this).removeClass("mediumToggleClosed");
+            $(this).parents("tbody:first").find("> tr:not(:has(th))").show();
+        } else {
+            $(this).addClass("mediumToggleClosed");
+            $(this).parents("tbody:first").find("> tr:not(:has(th))").hide();
+        }
     });
 
     /* Add auto-updating of the "combo artist" field, based on the artist fields' contents. */
@@ -636,44 +677,27 @@ $(function () {
         }, 1);
     });
 
-    /* Add the track dragging and removal icons. */
-    $(".trackposition:visible").before('<td class="toolbox">' + // Insert the reordering handler td.
-                                           '<div class="removeTrack" alt="' + text.DragTrack + '" title="' + text.DragTrack + '">' +
-                                           '</div>' +
-                                           '<div class="handleIcon" alt="' + text.RemoveTrack + '" title="' + text.RemoveTrack + '">' +
-                                           '</div>' +
-                                       '</td>');
-
-    /* Attach functionality to the the track dragging icons. */
-    $(".tbl").tableDnD({ // Add drag and drop reordering to the track rows.
-        dragHandle: "toolbox",
-        onDragClass: "upDown",
-        onDrop: function (tabel, movedRow) {
-                                            MusicBrainz.stripeTracks();
-//                                            MusicBrainz.updatePositionFields();
-                                            if (!$(movedRow).parents("#removedTracks").length) { // If the track was not dropped within Removed Tracks,
-                                                $(movedRow).children("td:eq(0)")
-                                                           .children(".removeTrack")
-                                                          .show(); // then re-show the remove track icon.
-                                                if ($("#removedTracks > tr").length <= 1) { // If Removed Tracks now has no tracks in it,
-                                                    $("#removedTracks").addClass("hidden"); // re-hide Remove Tracks.
-                                                }
-                                            }
-                                        }
-                       });
-    /* Attach functionality to the the track removal icons. */
-    $(".removeTrack").live("click", function () {  // If the remove track icon is clicked, move the track to the Removed Tracks tfoot.
-        $("#removedTracks").append($(this).parents("tr:first")
-                                          .removeClass("ev") // Unstripe the track.
-                           );
-        $("#removedTracks").removeClass("hidden"); // Make sure that Removed Tracks is visible.
-        $("#removedTracks tr .removeTrack").hide(); // Hide the removed track's remove track icon.
-        MusicBrainz.stripeTracks();
-//        MusicBrainz.updatePositionFields();
+    /* Add background and cursor hover behaviours for editable fields. */
+    $(".artistDisplay td:has(textarea)").each(function (event) {
+        $(this).css("cursor", "text");
     });
 
-    /* Insert the artist duplication icons. */
-//    $(".trackartist").prepend('<div class="copyArtist" alt="' + text.DragArtist + '" title="' + text.DragArtist + '"></div>');
+    /* Toggle artist editors, such that only one is visible at any one time. */
+    $(".artistDisplay").live("click", function () {
+        $(".artistDisplay").each(function () { // Find all artist textarea display fields,
+            $(this).parents("table:first") // find their parent artist tables,
+                   .find("tr:not(:first)") // find all rows of those tables, except the one with the textarea display text,
+                   .hide() // hide them
+                   .end() // go back up to the parent artist tables level,
+                   .find("tr:first") // select only the first one - the one with the textarea display text,
+                   .addClass("notActive"); // and remove the bottom box line from it.
+        });
+        $(this).parents("table:first") // find the parent artist table for the active artist,
+               .find("tr") // find all table rows within that artist's edit table,
+               .show() // show them,
+               .filter(":first") // then filter to only the first one - the one with the textarea display text,
+               .removeClass("notActive"); // and add the bottom box line to it.
+    });
 
     /* Attach functionality to the the artist duplication icons. */
     $(".copyArtist").draggable({
@@ -713,6 +737,11 @@ $(function () {
                  MusicBrainz.updateComboArtist(targetAddArtistBtn);
              });
 
+    /* Add functionality to the "Add another artist" buttons. */
+    $(".btnAddTA").live("click", function () {
+        MusicBrainz.addSingleArtist(this);
+    });
+
     /* Attach functionality to the the remove artist icons. */
     $(".removeArtist").live("click", function () {
         var thisSingleArtist = $(this).parents("table:first");
@@ -721,80 +750,76 @@ $(function () {
         MusicBrainz.updateComboArtist(thisSingleArtist.find("tr:eq(2)"));
     });
 
-    /* Add and activate the Annotation Editor toolbox button. */
-    MusicBrainz.addAnnotationButton();
+    /* Attach functionality to the the track dragging icons. */
+    $(".tbl").tableDnD({ // Add drag and drop reordering to the track rows.
+        dragHandle: "toolbox",
+        onDragClass: "upDown",
+        onDrop: function (tabel, movedRow) {
+                                            MusicBrainz.stripeTracks();
+//                                            MusicBrainz.updatePositionFields();
+                                            if (!$(movedRow).parents("#removedTracks").length) { // If the track was not dropped within Removed Tracks,
+                                                $(movedRow).children("td:eq(0)")
+                                                           .children(".removeTrack")
+                                                          .show(); // then re-show the remove track icon.
+                                                if ($("#removedTracks > tr").length <= 1) { // If Removed Tracks now has no tracks in it,
+                                                    $("#removedTracks").addClass("hidden"); // re-hide Remove Tracks.
+                                                }
+                                            }
+                                        }
+                       });
 
-    /* Make each multiple-item entity editable. */
-    MusicBrainz.makeTogglableEachInGroup([
-                                         ["trackposition"],
-                                         ["trackname", true],
-                                         ["trackartist", true, "editartist"],
-                                         ["trackdur"]
-                                         ]);
-
-    /* Toggle artist editors, such that only one is visible at any one time. */
-    $(".artistDisplay").live("click", function () {
-        $(".artistDisplay").each(function () { // Find all artist textarea display fields,
-            $(this).parents("table:first") // find their parent artist tables,
-                   .find("tr:not(:first)") // find all rows of those tables, except the one with the textarea display text,
-                   .hide() // hide them
-                   .end() // go back up to the parent artist tables level,
-                   .find("tr:first") // select only the first one - the one with the textarea display text,
-                   .addClass("notActive"); // and remove the bottom box line from it.
-        });
-        $(this).parents("table:first") // find the parent artist table for the active artist,
-               .find("tr") // find all table rows within that artist's edit table,
-               .show() // show them,
-               .filter(":first") // then filter to only the first one - the one with the textarea display text,
-               .removeClass("notActive"); // and add the bottom box line to it.
+    /* Attach functionality to the the track removal icons. */
+    $(".removeTrack").live("click", function () {  // If the remove track icon is clicked, move the track to the Removed Tracks tfoot.
+        $("#removedTracks").append($(this).parents("tr:first")
+                                          .removeClass("ev") // Unstripe the track.
+                           );
+        $("#removedTracks").removeClass("hidden"); // Make sure that Removed Tracks is visible.
+        $("#removedTracks tr .removeTrack").hide(); // Hide the removed track's remove track icon.
+        MusicBrainz.stripeTracks();
+//        MusicBrainz.updatePositionFields();
     });
 
-    /* Add functionality to the show/hide controls for the toolbox column */
-    $(".toolsHead, .toolsShow").click(function () {
-        $("table.tbl > * > tr:not(.toolsStatusLine)").each(function () {
-            $(".toolsHead").toggle();
-            $(this).find("td:first, th:first").toggle();
-        });
-    }).click();
+    /* Set up autotabbing and limit input to \d only for date and barcode fields. */
+    $('#edit-release-date-y').autotab({ target: 'edit-release-date-m', format: 'numeric',                                  maxlength: '4' });
+    $('#edit-release-date-m').autotab({ target: 'edit-release-date-d', format: 'numeric', previous: 'edit-release-date-y', maxlength: '2' });
+    $('#edit-release-date-d').autotab({                                format: 'numeric', previous: 'edit-release-date-m', maxlength: '2' });
+    $("input[id$='edit-release-barcode']").attr("maxlength", 15) // EAN13 + EAN2, 15 digit maximum length
+                                          .autotab({format: 'numeric'});
 
+    /* Attach functionality to the show/hide help button. */
+    $("#btnHelp").click(function () {
+        $(".helpIcon").toggle();
+        $("#btnHelp").val($("#btnHelp").val() == "Show Help Buttons" ? "Hide Help Buttons" : "Show Help Buttons");
+    });
+
+    /* Attach click events to the help buttons. */
+    MusicBrainz.attachHelpButtonEvents([
+                                       /* Definitions for entity type: Release */
+                                       ["#release-date-dt", text.displayReleaseDate, "http://"],
+                                       ["#release-type-dt", text.displayReleaseType, "http://"],
+                                       ["#release-format-dt", text.displayReleaseFormat, "http://"],
+                                       ["#release-packaging-dt", text.displayReleasePackaging, "http://"],
+                                       ["#release-status-dt", text.displayReleaseStatus, "http://"],
+                                       ["#release-language-dt", text.displayReleaseLanguage, "http://"],
+                                       ["#release-script-dt", text.displayReleaseScript, "http://"],
+                                       ["dt[id^=release-label]", text.displayLabel, "http://"],
+                                       ["dt[id^=release-catalog]", text.displayCatalogNumber, "http://"],
+                                       ["dt[id^=release-barcode]", text.displayBarcode, "http://"],
+                                       ["dt[id^=release-country]", text.displayCountry, "http://"],
+                                       ["th.release:eq(0)", text.displayTrackNumber, "http://"],
+                                       ["th.release:eq(1)", text.displayTrackTitle, "http://"],
+                                       ["th.release:eq(2)", text.displayTrackArtist, "http://"],
+                                       ["th.release:eq(3)", text.displayTrackDuration, "http://"]
+                                       ]);
+
+   /* Create and attach click event for the documentation display close button. */
+    var closeButton = $('<img src="/static/images/blank.gif" class="closeButton"/>');
+    $("#wikiTitle").prepend(closeButton);
+    closeButton.click(function () {
+        $("#wikiHelpBox").slideUp(1000);
+    });
 
 /* Everything below is rough code in progress. */
-
-    /* Per-medium show/hide */
-    $(".mediumToggle").live("click", function () {
-        if ($(this).hasClass("mediumToggleClosed")) {
-            $(this).removeClass("mediumToggleClosed");
-            $(this).parents("tbody:first").find("> tr:not(:has(th))").show();
-        } else {
-            $(this).addClass("mediumToggleClosed");
-            $(this).parents("tbody:first").find("> tr:not(:has(th))").hide();
-        }
-    });
-
-$("#accordion").addClass("ui-accordion ui-widget ui-helper-reset")
-               .find("h3")
-               .addClass("ui-accordion-header ui-helper-reset ui-state-default ui-corner-top ui-corner-bottom")
-               .prepend('<span class="ui-icon ui-icon-triangle-1-e"/>')
-               .click(function () {
-                   $(this).toggleClass("ui-accordion-header-active")
-                          .toggleClass("ui-state-active")
-                          .toggleClass("ui-state-default")
-                          .toggleClass("ui-corner-bottom")
-                          .find("> .ui-icon")
-                          .toggleClass("ui-icon-triangle-1-e")
-                          .toggleClass("ui-icon-triangle-1-s")
-                          .end()
-                          .next()
-                          .toggleClass("ui-accordion-content-active")
-                          .toggle();
-                   return false;
-               })
-               .next()
-               .addClass("ui-accordion-content ui-helper-reset ui-widget-content ui-corner-bottom")
-               .hide();
-//$("#accordion").find("h3:eq(0)") // Guess Case
-//               .click();
-
 
 /* TODO: pre-populate:
                           * Type
@@ -803,9 +828,6 @@ $("#accordion").addClass("ui-accordion ui-widget ui-helper-reset")
                           * Status 
                           * Barcodes  //TODO: Barcode is currently prepopulating the cat #, and cat # is prepopulating the label name
                           * Countries */
-
-
-
 
 // TODO:   /* Set click behaviour for editable fields (where there is more than one of that field type). */
     MusicBrainz.makeTogglable([
@@ -850,23 +872,9 @@ $("#accordion").addClass("ui-accordion ui-widget ui-helper-reset")
 // TODO: Type editing is a RG concept, not a release one
 // TODO: Format is a medium concept, not a release one.
 
-
-
-    MusicBrainz.addToolButton("Show Help Buttons", "btnHelp");
-
-    $("#btnHelp").click(function () {
-        $(".helpIcon").toggle();
-        $("#btnHelp").val($("#btnHelp").val() == "Show Help Buttons" ? "Hide Help Buttons" : "Show Help Buttons");
-    });
-
-$("table.tbl > thead:eq(0) > tr > th").css("border-top", "0")
-
-
-    MusicBrainz.setStatus(text.StatusInitial);
+ MusicBrainz.showErrorForSidebar("release-date", "Test sidebar error");
 
 });
-
- MusicBrainz.showErrorForSidebar("release-date", "Test sidebar error");
 
 MusicBrainz.initializeTrackParser = function () {
     /* Insert the track parser into the document. */
