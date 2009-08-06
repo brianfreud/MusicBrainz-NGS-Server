@@ -181,6 +181,13 @@ label.overlabel-apply {
 
 */
 
+.floatBox {
+ background-color: 1px;
+ border: 1px solid #000;
+ color: #000;
+ 
+}
+
 select.medium,
 .medium.title,
 .medium.position {
