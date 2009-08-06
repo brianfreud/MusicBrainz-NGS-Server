@@ -155,6 +155,18 @@ CREATE TABLE editor_subscribe_editor
     lasteditsent        INTEGER NOT NULL  -- weakly references edit
 );
 
+CREATE TABLE editor_collection
+(
+    id                  SERIAL,
+    editor              INTEGER NOT NULL -- references editor.id
+);
+
+CREATE TABLE editor_collection_release
+(
+    collection          INTEGER NOT NULL, -- PK, references editor_collection.id
+    release             INTEGER NOT NULL -- PK, references release.id
+);
+
 CREATE TABLE cdtoc
 (
     id                  SERIAL,
@@ -602,7 +614,8 @@ CREATE TABLE medium
 CREATE TABLE medium_format
 (
     id                  SERIAL,
-    name                VARCHAR(100) NOT NULL
+    name                VARCHAR(100) NOT NULL,
+    year                SMALLINT
 );
 
 CREATE TABLE puid
@@ -700,7 +713,11 @@ CREATE TABLE release_meta
 (
     id                  INTEGER NOT NULL, -- PK, references release.id CASCADE
     lastupdate          TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
-    dateadded           TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+    dateadded           TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+    coverarturl         VARCHAR(255),
+    infourl             VARCHAR(255),
+    amazonasin          VARCHAR(10),
+    amazonstore         VARCHAR(20)
 );
 
 CREATE TABLE release_label (

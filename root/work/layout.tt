@@ -1,22 +1,23 @@
 [% IF edit %]
     [% extra_js = "jquery/jquery.corner.js editUI.js" %]
 [% END %]
-[%- WRAPPER "layout.tt" title=l('{type} {work} by {artist}', {
-        type => work.type_name or l('Work'),
-        work => work.name,
-        artist => artist_credit(work.artist_credit, plain => 1)
-    }) -%]
+[% main_title = l('{type} {work} by {artist}', {
+    type => work.type_name or l('Work'),
+    work => work.name,
+    artist => artist_credit(work.artist_credit, plain => 1)
+}) %]
+[%- WRAPPER "layout.tt" title=title ? main_title _ " - ${title}" : main_title -%]
 <div class="sidebar">
     [%- dataCollection = [
         { field="work.artist_credit" title => l('Artist') edit => 'artist' type='text' data => artist_credit(work.artist_credit)
           plaintext => html_escape(work.artist_credit)
         },
         { field="work.type"          title => l('Type')   edit => 'type'   type='text' data => html_escape(work.sort_name) },
-        { field="work.iswc"          title => l('ISWC')   edit => 'iswc'   type='text' data => html_escape(work.sort_name) },
+        { field="work.iswc"          title => l('ISWC')   edit => 'iswc'   type='text' data => html_escape(work.iswc) },
     ] -%]
-    [%- PROCESS "components/sidebar-data.tt" element="work" -%]
+    [%- PROCESS "components/sidebar-data.tt" entity=work -%]
     [%- INCLUDE "components/sidebar-rating.tt" entity=work -%]
-    [%- INCLUDE "components/sidebar-tags.tt" entity=work tags=top_tags -%]
+    [%- INCLUDE "components/sidebar-tags.tt" entity=work tags=top_tags tag_this_text=l('Tag this work') -%]
     [%- INCLUDE "components/sidebar-lastupdate.tt" entity=work -%]
 </div>
 <div class="content">

@@ -1,10 +1,11 @@
 [% IF edit %]
     [% extra_js = "jquery/jquery.corner.js editUI.js" %]
 [% END %]
-[%- WRAPPER 'layout.tt' title=l('Release group “{name}” by {artist}', {
-        artist => artist_credit(rg.artist_credit, plain => 1),
-        name => rg.name
-    })-%]
+[% main_title = l('Release group “{name}” by {artist}', {
+    artist => artist_credit(rg.artist_credit, plain => 1),
+    name => rg.name
+}) %]
+[%- WRAPPER "layout.tt" title=title ? main_title _ " - ${title}" : main_title -%]
 <div class="sidebar">
     [%- dataCollection = [
         { field="rg.artist_credit" title => l('Artist') edit => 'artist' type='text' data => artist_credit(rg.artist_credit)
@@ -13,9 +14,9 @@
         { field="rg.type"          title => l('Type')   edit => 'type'   type='text' data => html_escape(rg.type_name) },
         { field="rg.status"        title => l('Status')   edit => 'type'   type='text' data => html_escape(rg.status_name) },
     ] -%]
-    [%- PROCESS "components/sidebar-data.tt" entity="rg" -%]
-    [%- INCLUDE "components/sidebar-rating.tt" entity=release -%]
-    [%- INCLUDE "components/sidebar-tags.tt" entity=rg tags=top_tags -%]
+    [%- PROCESS "components/sidebar-data.tt" entity=rg -%]
+    [%- INCLUDE "components/sidebar-rating.tt" entity=rg -%]
+    [%- INCLUDE "components/sidebar-tags.tt" entity=rg tags=top_tags tag_this_text=l('Tag this release group') -%]
     [%- INCLUDE "components/sidebar-lastupdate.tt" entity=rg -%]
 </div>
 <div class="content">

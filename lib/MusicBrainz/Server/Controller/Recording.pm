@@ -42,6 +42,9 @@ after 'load' => sub
 
     my $recording = $c->stash->{recording};
     $c->model('Recording')->load_meta($recording);
+    if ($c->user_exists) {
+        $c->model('Recording')->rating->load_user_ratings($c->user->id, $recording);
+    }
 };
 
 =head2 relations
@@ -95,6 +98,19 @@ sub show : Chained('load') PathPart('')
     $c->stash(
         tracks   => $tracks,
         template => 'recording/index.tt',
+    );
+}
+
+sub puids : Chained('load') PathPart('puids')
+{
+    my ($self, $c) = @_;
+
+    my $recording = $c->stash->{recording};
+    my @puids = $c->model('RecordingPUID')->find_by_recording($recording->id);
+    $c->model('ArtistCredit')->load($recording);
+    $c->stash(
+        puids    => \@puids,
+        template => 'recording/puids.tt',
     );
 }
 

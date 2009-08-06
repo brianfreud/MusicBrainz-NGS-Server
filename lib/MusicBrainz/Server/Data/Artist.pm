@@ -113,8 +113,11 @@ sub delete
     # XXX Checks to see if artist is in use (core entities that depend on this artist)
     return unless $can_delete;
 
+    $self->c->model('Relationship')->delete('artist', @artist_ids);
     $self->annotation->delete(@artist_ids);
     $self->alias->delete(@artist_ids);
+    $self->tags->delete(@artist_ids);
+    $self->rating->delete(@artist_ids);
     $self->remove_gid_redirects(@artist_ids);
     my $query = 'DELETE FROM artist WHERE id IN (' . placeholders(@artist_ids) . ')';
     my $sql = Sql->new($self->c->mb->dbh);
@@ -124,21 +127,17 @@ sub delete
 
 sub merge
 {
-    my ($self, $old_id, $new_id) = @_;
-    my $sql = Sql->new($self->c->dbh);
-    my $ac_data = MusicBrainz::Server::Data::ArtistCredit->new(c => $self->c);
-    my $edit_data = MusicBrainz::Server::Data::Edit->new(c => $self->c);
+    my ($self, $new_id, @old_ids) = @_;
 
-    $self->alias->merge($old_id => $new_id);
-    $self->annotation->merge($old_id => $new_id);
-    $self->update_gid_redirects($old_id => $new_id);
-    $ac_data->merge_artists($old_id => $new_id);
-    $edit_data->merge_entities('artist', $old_id => $new_id);
-    $self->c->model('Relationship')->merge('artist', $new_id, $old_id);
+    $self->alias->merge($new_id, @old_ids);
+    $self->tags->merge($new_id, @old_ids);
+    $self->rating->merge($new_id, @old_ids);
+    $self->annotation->merge($new_id, @old_ids);
+    $self->c->model('ArtistCredit')->merge_artists($new_id, @old_ids);
+    $self->c->model('Edit')->merge_entities('artist', $new_id, @old_ids);
+    $self->c->model('Relationship')->merge('artist', $new_id, @old_ids);
 
-    my $old_gid = $sql->SelectSingleValue('DELETE FROM artist WHERE id = ? RETURNING gid', $old_id);
-    $self->add_gid_redirects($old_gid => $new_id);
-
+    $self->_delete_and_redirect_gids('artist', $new_id, @old_ids);
     return 1;
 }
 

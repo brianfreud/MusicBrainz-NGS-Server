@@ -6,13 +6,20 @@
     tag_links.push(link_entity(entity, 'tags', l('more&hellip;')));
     tag_links.join(', ');
 END -%]
-<div class="datumGroup">
-    <dl class="datumList">
-        <dt class="exp datumLabels">
-            [% l('Tags:') %]
-        </dt>
-        <dd class="exp">
-            [% tag_list(tags, entity) %]
-        </dd>
-    </dl>
-</div>
+
+[% IF tags.size || c.user_exists %]
+    [% IF tags.size %]
+        <div class="datumGroup">
+            <dl class="datumList">
+                <dt class="exp datumLabels">
+                    [% l('Tags:') %]
+                </dt>
+                <dd class="exp">
+                    [% tag_list(tags, entity) %]
+                </dd>
+            </dl>
+            [% IF c.user_exists %]
+                [% link_entity(entity, 'tag', tag_this_text) %]
+            [% END %]
+        </div>
+[% END %]

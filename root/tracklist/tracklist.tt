@@ -1,5 +1,6 @@
 [%- FOR track=tracklist.tracks;
     recording = track.recording %]
+<<<<<<< HEAD:root/tracklist/tracklist.tt
     <tr[% ' class="ev"' IF loop.count % 2 == 0 %]>
         [%- IF edit %]
             <td class="toolbox hidden"></td>
@@ -25,7 +26,9 @@
             [%- END -%]
             ">
             [%- IF !edit %]
-                [% artist_credit(track.artist_credit) %]
+                [%- IF show_artists -%]
+                    [% artist_credit(track.artist_credit) %]
+                [%- END -%]
             [%- ELSE -%]
                 [% artist_credit(track.artist_credit, plain=1) %]
                 <input type="text" value="[% artist_credit(track.artist_credit, plain=1) %]"/>
@@ -41,15 +44,18 @@
 
             [%- END -%]
         </td>
+        [%- IF !edit %]
+            <td class="c">[% rating_stars(recording) %]</td>
+        [%- END -%]
         <td[%- ' class="editable trackdur"><span' IF edit -%]>[% recording.length | format_time %][%- '</span>' IF edit -%]</td>
         [%- IF edit %]
             <td class="hidden trackdur"><input type="text" value="[% recording.length | format_time %]"></td>
         [%- END -%]
     </tr>
-        <tr class="hidden" id="error-track-[%- loop.count -%]">
-            <td id="error-track-position-[%- loop.count -%]"/>
-            <td id="error-track-title-[%- loop.count -%]"/>
-            <td id="error-track-artist-[%- loop.count -%]"/>
-            <td id="error-track-duration-[%- loop.count -%]"/>
-        </tr>
+    <tr class="hidden" id="error-track-[%- loop.count -%]">
+        <td id="error-track-position-[%- loop.count -%]"/>
+        <td id="error-track-title-[%- loop.count -%]"/>
+        <td id="error-track-artist-[%- loop.count -%]"/>
+        <td id="error-track-duration-[%- loop.count -%]"/>
+    </tr>
 [%- END -%]

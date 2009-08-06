@@ -1,6 +1,7 @@
+#!/usr/bin/perl
 use strict;
 use warnings;
-use Test::More tests => 41;
+use Test::More tests => 45;
 use_ok 'MusicBrainz::Server::Data::Work';
 use MusicBrainz::Server::Data::WorkType;
 use MusicBrainz::Server::Data::Search;
@@ -62,12 +63,15 @@ is(keys %names, 2);
 is($names{'Dancing Queen'}, 1);
 ok($names{'Traits'} > 1);
 
-my $sql = Sql->new($c->mb->dbh);
+my $sql = Sql->new($c->dbh);
+my $raw_sql = Sql->new($c->raw_dbh);
 $sql->Begin;
+$raw_sql->Begin;
+
 $work = $work_data->insert({
         name => 'Traits',
         artist_credit => 1,
-        type => 1,
+        type_id => 1,
         iswc => 'T-000.000.001-0',
         comment => 'Drum & bass track',
     });
@@ -82,7 +86,7 @@ is($work->iswc, 'T-000.000.001-0');
 is($work->type_id, 1);
 ok(defined $work->gid);
 
-$work_data->update($work, {
+$work_data->update($work->id, {
         name => 'Traits (remix)',
         iswc => 'T-100.000.001-0',
     });
@@ -94,4 +98,26 @@ is($work->iswc, 'T-100.000.001-0');
 $work_data->delete($work);
 $work = $work_data->get_by_id($work->id);
 ok(!defined $work);
+
+$raw_sql->Commit;
 $sql->Commit;
+
+
+# Both #1 and #2 are in the DB
+$work = $work_data->get_by_id(1);
+ok(defined $work);
+$work = $work_data->get_by_id(2);
+ok(defined $work);
+
+# Merge #2 into #1
+$sql->Begin;
+$raw_sql->Begin;
+$work_data->merge(1, 2);
+$sql->Commit;
+$raw_sql->Commit;
+
+# Only #1 is now in the DB
+$work = $work_data->get_by_id(1);
+ok(defined $work);
+$work = $work_data->get_by_id(2);
+ok(!defined $work);

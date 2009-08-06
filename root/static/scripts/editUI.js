@@ -893,15 +893,6 @@ $(".name").each(function () {
     });
 });
 
-//                  background  : "#FFF",                          <-- the background color.  Do not define this using the css arguments. Default: #fff
-//                  css         : { color  : "red" },              <-- any css customization. Defaults: see settings var below.
-//                  id          : "foo",                           <-- id to be given to the generated div. Default: "floatdiv"
-//                  classes     : { 1: "bar", 2: "baz" },          <-- classes to be given to the generated div. Default: none
-//                  borderColor : "#000",                          <-- the margin color.  Do not define this using the css arguments. Default: #000
-//                  position    : "bl",                            <-- align to which corner of the parent element: bl, tl, br, tr.  Default: bl
-//                  round       : true                             <-- add shadowing visual effects. Default: true
-//                  shadow      : true        
-
 
 
 

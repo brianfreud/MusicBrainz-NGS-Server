@@ -14,6 +14,7 @@ with 'MusicBrainz::Server::Data::AnnotationRole' => { type => 'work' };
 with 'MusicBrainz::Server::Data::Role::Name' => { name_table => 'work_name' };
 with 'MusicBrainz::Server::Data::RatingRole' => { type => 'work' };
 with 'MusicBrainz::Server::Data::TagRole' => { type => 'work' };
+with 'MusicBrainz::Server::Data::Editable' => { table => 'work' };
 
 sub _table
 {
@@ -78,20 +79,38 @@ sub insert
 
 sub update
 {
-    my ($self, $work, $update) = @_;
+    my ($self, $work_id, $update) = @_;
     my $sql = Sql->new($self->c->mb->dbh);
     my %names = $self->find_or_insert_names($update->{name});
     my $row = $self->_hash_to_row($update, \%names);
-    $sql->Update('work', $row, { id => $work->id });
-    return $work;
+    $sql->Update('work', $row, { id => $work_id });
 }
 
 sub delete
 {
     my ($self, $work) = @_;
+    $self->c->model('Relationship')->delete('work', $work->id);
+    $self->annotation->delete($work->id);
+    $self->tags->delete($work->id);
+    $self->rating->delete($work->id);
+    $self->remove_gid_redirects($work->id);
     my $sql = Sql->new($self->c->mb->dbh);
     $sql->Do('DELETE FROM work WHERE id = ?', $work->id);
     return;
+}
+
+sub merge
+{
+    my ($self, $new_id, @old_ids) = @_;
+
+    $self->annotation->merge($new_id, @old_ids);
+    $self->tags->merge($new_id, @old_ids);
+    $self->rating->merge($new_id, @old_ids);
+    $self->c->model('Edit')->merge_entities('work', $new_id, @old_ids);
+    $self->c->model('Relationship')->merge('work', $new_id, @old_ids);
+
+    $self->_delete_and_redirect_gids('work', $new_id, @old_ids);
+    return 1;
 }
 
 sub _hash_to_row
@@ -99,9 +118,9 @@ sub _hash_to_row
     my ($self, $work, $names) = @_;
     my %row = (
         artist_credit => $work->{artist_credit},
-        type => $work->{type},
         iswc => $work->{iswc},
         comment => $work->{comment},
+        type => $work->{type_id},
     );
 
     if ($work->{name}) {

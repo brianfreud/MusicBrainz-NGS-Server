@@ -40,11 +40,6 @@ sub index : Path Args(0)
 {
     my ($self, $c) = @_;
 
-    $c->stash->{server_details} = {
-        is_slave_db    => &DBDefs::REPLICATION_TYPE == RT_SLAVE,
-        staging_server => &DBDefs::DB_STAGING_SERVER,
-    };
-
     # Load the blog for the sidebar
     #
     $c->stash->{blog} = $c->model('Feeds')->get($c, 'musicbrainz',
@@ -94,6 +89,17 @@ sub begin : Private
 
     return if exists $c->action->attributes->{Minimal};
 
+    if ($c->user_exists) {
+        if (exists $c->session->{collection}) {
+            $c->stash->{user_collection} = $c->session->{collection};
+        }
+        else {
+            my $id = $c->model('Collection')->find_collection($c->user);
+            $c->stash->{user_collection} = $id;
+            $c->session->{collection} = $id;
+        }
+    }
+
     if (exists $c->action->attributes->{RequireAuth})
     {
         $c->forward('/user/do_login');
@@ -132,6 +138,11 @@ sub end : ActionClass('RenderView')
     my $simpleSearch = MusicBrainz::Server::Form::Search::Search->new;
     $simpleSearch->field('type')->value($c->session->{last_simple_search} || 'artist');
     $c->stash->{sidebar_search} = $simpleSearch;
+
+    $c->stash->{server_details} = {
+        is_slave_db    => &DBDefs::REPLICATION_TYPE == RT_SLAVE,
+        staging_server => &DBDefs::DB_STAGING_SERVER,
+    };
 
     # Determine which server version to display. If the DBDefs string is empty
     # attempt to display the current subversion revision

@@ -1,66 +1,46 @@
 package MusicBrainz::Server::Data::Tag;
+
 use Moose;
-
-use MusicBrainz::Server::Data::Utils qw(
-    placeholders
-    query_to_list
-    query_to_list_limited
-);
-use MusicBrainz::Server::Entity::AggregatedTag;
 use MusicBrainz::Server::Entity::Tag;
-use Sql;
+use MusicBrainz::Server::Data::Utils qw( load_subobjects );
 
-has 'c' => (
-    is => 'rw',
-    isa => 'Object'
-);
+extends 'MusicBrainz::Server::Data::Entity';
+with 'MusicBrainz::Server::Data::EntityCache' => { prefix => 'tag' };
 
-has [qw( tag_table type )] => (
-    isa => 'Str',
-    is => 'rw'
-);
-
-sub find_tags
+sub _table
 {
-    my ($self, $entity_id, $limit, $offset) = @_;
-    $offset ||= 0;
-    my $query = "SELECT tag.name, entity_tag.count FROM " . $self->tag_table . " entity_tag " .
-                "JOIN tag ON tag.id = entity_tag.tag " .
-                "WHERE " . $self->type . " = ?" .
-                "ORDER BY entity_tag.count DESC OFFSET ?";
-    return query_to_list_limited(
-        $self->c->dbh, $offset, $limit, sub { $self->_new_from_row($_[0]) },
-        $query, $entity_id, $offset);
+    return 'tag';
 }
 
-sub find_top_tags
+sub _columns
 {
-    my ($self, $entity_id, $limit, $offset) = @_;
-    my $query = "SELECT tag.name, entity_tag.count FROM " . $self->tag_table . " entity_tag " .
-                "JOIN tag ON tag.id = entity_tag.tag " .
-                "WHERE " . $self->type . " = ? " .
-                "ORDER BY entity_tag.count DESC LIMIT ?";
-    return query_to_list($self->c->dbh, sub { $self->_new_from_row($_[0]) },
-                         $query, $entity_id, $limit);
+    return 'id, name';
 }
 
-sub _new_from_row
+sub _entity_class
 {
-    my ($self, $row) = @_;
-    MusicBrainz::Server::Entity::AggregatedTag->new(
-        count => $row->{count},
-        tag => MusicBrainz::Server::Entity::Tag->new(
-            name => $row->{name},
-        ),
-    );
+    return 'MusicBrainz::Server::Entity::Tag';
 }
 
+sub get_by_name
+{
+    my ($self, $name) = @_;
+    my @result = values %{$self->_get_by_keys('name', $name)};
+    return $result[0];
+}
+
+sub load
+{
+    my ($self, @objs) = @_;
+    load_subobjects($self, 'tag', @objs);
+}
+
+__PACKAGE__->meta->make_immutable;
 no Moose;
 1;
 
 =head1 COPYRIGHT
 
-Copyright (C) 2009 Oliver Charles
 Copyright (C) 2009 Lukas Lalinsky
 
 This program is free software; you can redistribute it and/or modify

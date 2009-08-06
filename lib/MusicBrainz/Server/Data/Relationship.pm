@@ -12,7 +12,7 @@ use MusicBrainz::Server::Data::Recording;
 use MusicBrainz::Server::Data::ReleaseGroup;
 use MusicBrainz::Server::Data::URL;
 use MusicBrainz::Server::Data::Work;
-use MusicBrainz::Server::Data::Utils qw( placeholders );
+use MusicBrainz::Server::Data::Utils qw( placeholders type_to_model );
 
 extends 'MusicBrainz::Server::Data::Entity';
 
@@ -34,16 +34,6 @@ Readonly my %ENTITY_CLASS_TO_TYPE => (
     'MusicBrainz::Server::Entity::ReleaseGroup' => 'release_group',
     'MusicBrainz::Server::Entity::URL'          => 'url',
     'MusicBrainz::Server::Entity::Work'         => 'work',
-);
-
-Readonly my %TYPE_TO_MODEL => (
-    'artist'        => 'Artist',
-    'label'         => 'Label',
-    'recording'     => 'Recording',
-    'release'       => 'Release',
-    'release_group' => 'ReleaseGroup',
-    'url'           => 'URL',
-    'work'          => 'Work',
 );
 
 sub _new_from_row
@@ -137,7 +127,7 @@ sub load_entities
     foreach my $type (keys %ids_by_type) {
         my @ids = @{$ids_by_type{$type}};
         $data_by_type{$type} =
-            $self->c->model($TYPE_TO_MODEL{$type})->get_by_ids(@ids);
+            $self->c->model(type_to_model($type))->get_by_ids(@ids);
     }
     foreach my $rel (@rels) {
         if ($rel->entity0_id && !defined($rel->entity0)) {
@@ -174,10 +164,9 @@ sub load
     $self->load_entities(@rels);
 }
 
-sub merge
+sub _generate_table_list
 {
-    my ($self, $type, $target_id, @source_ids) = @_;
-
+    my ($type) = @_;
     # Generate a list of all possible type combinations
     my @types;
     foreach my $t (@TYPES) {
@@ -188,9 +177,15 @@ sub merge
             push @types, ["l_${t}_${type}", 'entity1', 'entity0'];
         }
     }
+    return @types;
+}
+
+sub merge
+{
+    my ($self, $type, $target_id, @source_ids) = @_;
 
     my $sql = Sql->new($self->c->dbh);
-    foreach my $t (@types) {
+    foreach my $t (_generate_table_list($type)) {
         my ($table, $entity0, $entity1) = @$t;
         # Delete all relationships from the source entities,
         # which don't already exist on the target entity
@@ -205,6 +200,20 @@ sub merge
             UPDATE $table SET $entity0 = ?
             WHERE $entity0 IN (" . placeholders(@source_ids) . ")
         ", $target_id, @source_ids);
+    }
+}
+
+sub delete
+{
+    my ($self, $type, @ids) = @_;
+
+    my $sql = Sql->new($self->c->dbh);
+    foreach my $t (_generate_table_list($type)) {
+        my ($table, $entity0, $entity1) = @$t;
+        $sql->Do("
+            DELETE FROM $table a
+            WHERE $entity0 IN (" . placeholders(@ids) . ")
+        ", @ids);
     }
 }
 

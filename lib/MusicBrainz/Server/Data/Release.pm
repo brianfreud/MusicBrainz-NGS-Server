@@ -22,9 +22,9 @@ sub _table
 
 sub _columns
 {
-    return 'release.id, gid, name.name, release.artist_credit, release_group,
-            status, packaging, date_year, date_month, date_day, country,
-            comment, editpending, barcode, script, language';
+    return 'release.id, gid, name.name, release.artist_credit AS artist_credit_id,
+            release_group, status, packaging, date_year, date_month, date_day,
+            country, comment, editpending, barcode, script, language';
 }
 
 sub _id_column
@@ -43,7 +43,7 @@ sub _column_mapping
         id => 'id',
         gid => 'gid',
         name => 'name',
-        artist_credit_id => 'artist_credit',
+        artist_credit_id => 'artist_credit_id',
         release_group_id => 'release_group',
         status_id => 'status',
         packaging_id => 'packaging',
@@ -90,6 +90,21 @@ sub find_by_release_group
         $query, $release_group_id, $offset || 0);
 }
 
+sub find_by_collection
+{
+    my ($self, $collection_id, $limit, $offset) = @_;
+    my $query = "SELECT " . $self->_columns . "
+                 FROM " . $self->_table . "
+                    JOIN editor_collection_release c
+                        ON release.id = c.release
+                 WHERE c.collection = ?
+                 ORDER BY date_year, date_month, date_day, name.name
+                 OFFSET ?";
+    return query_to_list_limited(
+        $self->c->dbh, $offset, $limit, sub { $self->_new_from_row(@_) },
+        $query, $collection_id, $offset || 0);
+}
+
 sub insert
 {
     my ($self, @releases) = @_;
@@ -121,10 +136,44 @@ sub update
 sub delete
 {
     my ($self, @releases) = @_;
+    my @release_ids = map { $_->id } @releases;
+    $self->c->model('Collection')->delete_releases(@release_ids);
+    $self->annotation->delete(@release_ids);
+    $self->remove_gid_redirects(@release_ids);
     my $sql = Sql->new($self->c->mb->dbh);
-    $sql->Do('DELETE FROM release WHERE id IN (' . placeholders(@releases) . ')',
-        map { $_->id } @releases);
+    $sql->Do('DELETE FROM release WHERE id IN (' . placeholders(@release_ids) . ')',
+        @release_ids);
     return;
+}
+
+sub merge
+{
+    my ($self, $new_id, @old_ids) = @_;
+
+    $self->annotation->merge($new_id, @old_ids);
+    $self->c->model('Collection')->merge_releases($new_id, @old_ids);
+    $self->c->model('ReleaseLabel')->merge_releases($new_id, @old_ids);
+    $self->c->model('Edit')->merge_entities('release', $new_id, @old_ids);
+    $self->c->model('Relationship')->merge('release', $new_id, @old_ids);
+
+    # XXX merge release attributes
+
+    # XXX allow actual tracklists/mediums merging
+    my $sql = Sql->new($self->c->dbh);
+    my $pos = $sql->SelectSingleValue('
+        SELECT max(position) FROM medium WHERE release=?', $new_id) || 0;
+    foreach my $old_id (@old_ids) {
+        my $medium_ids = $sql->SelectSingleColumnArray('
+            SELECT id FROM medium WHERE release=?
+            ORDER BY position', $old_id);
+        foreach my $medium_id (@$medium_ids) {
+            $sql->Do('UPDATE medium SET release=?, position=? WHERE id=?',
+                     $new_id, ++$pos, $medium_id);
+        }
+    }
+
+    $self->_delete_and_redirect_gids('release', $new_id, @old_ids);
+    return 1;
 }
 
 sub _hash_to_row
@@ -159,6 +208,10 @@ sub load_meta
     MusicBrainz::Server::Data::Utils::load_meta($self->c, "release_meta", sub {
         my ($obj, $row) = @_;
         $obj->last_update_date($row->{lastupdate}) if defined $row->{lastupdate};
+        $obj->cover_art_url($row->{coverarturl}) if defined $row->{coverarturl};
+        $obj->info_url($row->{infourl}) if defined $row->{infourl};
+        $obj->amazon_asin($row->{amazonasin}) if defined $row->{amazonasin};
+        $obj->amazon_store($row->{amazonstore}) if defined $row->{amazonstore};
     }, @_);
 }
 

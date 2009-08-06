@@ -1,3 +1,4 @@
+#!/usr/bin/perl
 use strict;
 use warnings;
 use Test::More tests => 79;
@@ -13,8 +14,10 @@ use Sql;
 my $c = MusicBrainz::Server::Test->create_test_context();
 MusicBrainz::Server::Test->prepare_test_database($c, '+data_artist');
 
-my $sql = Sql->new($c->mb->dbh);
+my $sql = Sql->new($c->dbh);
+my $raw_sql = Sql->new($c->raw_dbh);
 $sql->Begin;
+$raw_sql->Begin;
 
 my $artist_data = MusicBrainz::Server::Data::Artist->new(c => $c);
 does_ok($artist_data, 'MusicBrainz::Server::Data::Editable');
@@ -69,7 +72,7 @@ my $annotation = $artist_data->annotation->get_latest(1);
 like ( $annotation->text, qr/Test annotation 1/ );
 
 # Merging annotations
-$artist_data->annotation->merge(1, 2);
+$artist_data->annotation->merge(2, 1);
 $annotation = $artist_data->annotation->get_latest(1);
 ok(!defined $annotation);
 
@@ -87,6 +90,7 @@ $annotation = $artist_data->annotation->get_latest(2);
 ok(!defined $annotation);
 
 $sql->Commit;
+$raw_sql->Commit;
 
 # ---
 # Searching for artists
@@ -99,6 +103,7 @@ is( $results->[0]->entity->name, "Test Artist" );
 is( $results->[0]->entity->sort_name, "Artist, Test" );
 
 $sql->Begin;
+$raw_sql->Begin;
 
 # ---
 # Find/insert artist names
@@ -190,15 +195,12 @@ is($artist->id, 1);
 $artist = $artist_data->get_by_gid('2adff2b0-5dbf-11de-8a39-0800200c9a66');
 is($artist->id, 2);
 
-$artist_data->update_gid_redirects(2, 1);
+$artist_data->update_gid_redirects(1, 2);
 
 $artist = $artist_data->get_by_gid('2adff2b0-5dbf-11de-8a39-0800200c9a66');
 is($artist->id, 1);
 
-my $sql_raw = Sql->new($c->raw_dbh);
-$sql_raw->Begin;
-
-$artist_data->merge(2, 1);
+$artist_data->merge(1, 2);
 $artist = $artist_data->get_by_id(2);
 ok(!defined $artist);
 
@@ -206,5 +208,5 @@ $artist = $artist_data->get_by_id(1);
 ok(defined $artist);
 is($artist->name, 'Test Artist');
 
-$sql_raw->Commit;
 $sql->Commit;
+$raw_sql->Commit;

@@ -1,0 +1,11 @@
+[% WRAPPER "user/profile/layout.tt" title=l("Collection") page="collection" %]
+
+    <h2>[% l("Collection") %]</h2>
+
+    [%- IF releases.size -%]
+        [%- INCLUDE 'release_group/releases-list.tt' WRAPPER 'components/with-pager.tt' -%]
+    [%- ELSE -%]
+        <p>[%- l('No releases found in collection.') -%]</p>
+    [%- END -%]
+
+[% END %]

@@ -48,6 +48,9 @@ after 'load' => sub
     # Load release group
     $c->model('ReleaseGroup')->load($release);
     $c->model('ReleaseGroup')->load_meta($release->release_group);
+    if ($c->user_exists) {
+        $c->model('ReleaseGroup')->rating->load_user_ratings($c->user->id, $release->release_group);
+    }
 
     # Load release group tags
     my $entity = $c->stash->{$self->{entity_name}};
@@ -55,6 +58,16 @@ after 'load' => sub
         $release->release_group->id,
         $MusicBrainz::Server::Controller::TagRoleTOP_TAGS_COUNT);
     $c->stash->{top_tags} = \@tags;
+
+    # Check user's collection
+    if ($c->user_exists) {
+        my $in_collection = 0;
+        if ($c->stash->{user_collection}) {
+            $in_collection = $c->model('Collection')->check_release(
+                $c->stash->{user_collection}, $release->id);
+        }
+        $c->stash->{in_collection} = $in_collection;
+    }
 
     # We need to load more artist credits in 'show'
     if ($c->action->name ne 'show') {
@@ -146,7 +159,11 @@ sub show : Chained('load') PathPart('')
     $c->model('Track')->load(@tracklists);
 
     my @tracks = map { $_->all_tracks } @tracklists;
-    $c->model('Recording')->load(@tracks);
+    my @recordings = $c->model('Recording')->load(@tracks);
+    $c->model('Recording')->load_meta(@recordings);
+    if ($c->user_exists) {
+        $c->model('Recording')->rating->load_user_ratings($c->user->id, @recordings);
+    }
     $c->model('ArtistCredit')->load($release, @tracks);
 
     $c->stash(

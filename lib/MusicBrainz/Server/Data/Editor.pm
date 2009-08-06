@@ -32,7 +32,7 @@ sub _column_mapping
         accepted_edits          => 'editsaccepted',
         rejected_edits          => 'editsrejected',
         failed_edits            => 'editsfailed',
-        auto_edits              => 'autoeditsaccepted',
+        accepted_auto_edits     => 'autoeditsaccepted',
         email_confirmation_date => 'emailconfirmdate',
         registration_date       => 'membersince',
         last_login_date         => 'lastlogindate',
@@ -51,18 +51,56 @@ sub get_by_name
     return $result[0];
 }
 
+sub find_by_email
+{
+    my ($self, $email) = @_;
+    return values %{$self->_get_by_keys('email', $email)};
+}
+
+sub insert
+{
+    my ($self, $data) = @_;
+
+    my $sql = Sql->new($self->c->dbh);
+    return Sql::RunInTransaction(sub {
+        return $self->_entity_class->new(
+            id => $sql->InsertRow('editor', $data, 'id'),
+            name => $data->{name},
+            password => $data->{password},
+            accepted_edits => 0,
+            rejected_edits => 0,
+            failed_edits => 0,
+            accepted_auto_edits => 0,
+        );
+    }, $sql);
+}
+
+sub update_email
+{
+    my ($self, $editor, $email) = @_;
+
+    my $sql = Sql->new($self->c->dbh);
+    Sql::RunInTransaction(sub {
+        $sql->Do('UPDATE editor SET email=?, emailconfirmdate=NOW()
+                  WHERE id=?', $email, $editor->id);
+    }, $sql);
+}
+
+sub update_password
+{
+    my ($self, $editor, $password) = @_;
+
+    my $sql = Sql->new($self->c->dbh);
+    Sql::RunInTransaction(sub {
+        $sql->Do('UPDATE editor SET password=? WHERE id=?',
+                 $password, $editor->id);
+    }, $sql);
+}
 
 sub load
 {
     my ($self, @objs) = @_;
     load_subobjects($self, 'editor', @objs);
-}
-
-sub _preference_name_mapping
-{
-    return {
-        datetimeformat => 'datetime_format',
-    };
 }
 
 sub load_preferences
@@ -71,13 +109,34 @@ sub load_preferences
     my $query = "SELECT name, value FROM editor_preference WHERE editor = ?";
     my $sql = Sql->new($self->c->dbh);
     my $prefs = $sql->SelectListOfHashes($query, $editor->id);
-    my %mapping = %{ $self->_preference_name_mapping };
     for my $pref (@$prefs) {
         my ($key, $value) = ($pref->{name}, $pref->{value});
-        $key = $mapping{$key} || $key;
         next unless $editor->preferences->can($key);
         $editor->preferences->$key($value);
     }
+}
+
+sub save_preferences
+{
+    my ($self, $editor, $values) = @_;
+
+    my $sql = Sql->new($self->c->dbh);
+    Sql::RunInTransaction(sub {
+
+        $sql->Do('DELETE FROM editor_preference WHERE editor = ?', $editor->id);
+        my $preferences_meta = $editor->preferences->meta;
+        foreach my $name (keys %$values) {
+            my $default = $preferences_meta->get_attribute($name)->default;
+            unless ($default eq $values->{$name}) {
+                $sql->InsertRow('editor_preference', {
+                    editor => $editor->id,
+                    name   => $name,
+                    value  => $values->{$name},
+                });
+            }
+        }
+
+    }, $sql);
 }
 
 no Moose;

@@ -1,111 +1,64 @@
 package MusicBrainz::Server::Form::User::Register;
 
-use strict;
-use warnings;
+use HTML::FormHandler::Moose;
 
-use MusicBrainz;
-use MusicBrainz::Server::Editor;
+extends 'MusicBrainz::Server::Form';
 
-use base 'MusicBrainz::Server::Form';
+has '+name' => ( default => 'register' );
 
-=head1 NAME
+has_field 'username' => (
+    type => 'Text',
+    required => 1,
+);
 
-MusicBrainz::Server::Form::User::Register;
+has_field 'password' => (
+    type => 'Password',
+    required => 1,
+    min_length => 1,
+);
 
-=head1 DESCRIPTION
+has_field 'confirm_password' => (
+    type => 'PasswordConf',
+    password_field => 'password',
+    required => 1,
+    min_length => 1,
+);
 
-Provide a form for new users to register on the site
+has_field 'email' => (
+    type => 'Email',
+);
 
-=head1 METHODS
-
-=head2 name
-
-Returns the name of this form
-
-=cut
-
-sub name { 'user-register' }
-
-=head2
-
-Returns a list of required and optional fields in this form
-
-=cut
-
-sub profile {
-    return {
-        required => {
-            username => 'Text',
-            password => {
-                type => 'Text',
-                min_length => 1,
-                widget => 'password'
-            },
-            confirm_password => {
-                type => 'Text',
-                min_length => 1,
-                widget => 'password'
-            },
-        },
-        optional => {
-            email => '+MusicBrainz::Server::Form::Field::Email'
-        }
-    };
-}
-
-=head2 cross_validate
-
-Cross validate the 2 given passwords to make sure they match
-
-=cut
-
-sub cross_validate {
-    my $self = shift;
-
-    my ($pass, $confirm) = ( $self->field('password'),
-                             $self->field('confirm_password') );
-
-    $confirm->add_error("Both provided passwords must be equal")
-        if $confirm->value ne $pass->value;
-}
-
-=head2 model_validate
-
-Make sure that the username does not already exist
-
-=cut
-
-sub model_validate
+sub validate_username
 {
-    my $self = shift;
+    my ($self, $field) = @_;
 
-    my $mb = new MusicBrainz;
-    $mb->Login;
-
-    my $us = new MusicBrainz::Server::Editor($mb->{dbh});
-    my $user = $us->newFromName($self->value('username'));
-
-    $self->field('username')->add_error('This username is already taken')
-        if $user;
+    my $username = $field->value;
+    if ($username) {
+        my $editor = $self->ctx->model('Editor')->get_by_name($username);
+        if (defined $editor) {
+            $field->add_error($self->ctx->gettext('Please choose another username, this one is already taken'));
+        }
+    }
 }
-
-=head1 LICENSE 
-
-This software is provided "as is", without warranty of any kind, express or
-implied, including  but not limited  to the warranties of  merchantability,
-fitness for a particular purpose and noninfringement. In no event shall the
-authors or  copyright  holders be  liable for any claim,  damages or  other
-liability, whether  in an  action of  contract, tort  or otherwise, arising
-from,  out of  or in  connection with  the software or  the  use  or  other
-dealings in the software.
-
-GPL - The GNU General Public License    http://www.gnu.org/licenses/gpl.txt
-Permits anyone the right to use and modify the software without limitations
-as long as proper  credits are given  and the original  and modified source
-code are included. Requires  that the final product, software derivate from
-the original  source or any  software  utilizing a GPL  component, such  as
-this, is also licensed under the GPL license.
-
-=cut
 
 1;
+
+=head1 COPYRIGHT
+
+Copyright (C) 2009 Lukas Lalinsky
+
+This program is free software; you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation; either version 2 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program; if not, write to the Free Software
+Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+
+=cut

@@ -13,6 +13,7 @@ use MusicBrainz::Server::Data::Utils qw(
 
 extends 'MusicBrainz::Server::Data::CoreEntity';
 with 'MusicBrainz::Server::Data::Role::Name' => { name_table => 'track_name' };
+with 'MusicBrainz::Server::Data::Editable' => { table => 'track' };
 
 sub _table
 {
@@ -78,7 +79,7 @@ sub find_by_recording
                 medium.tracklist AS m_tracklist,
                 tracklist.trackcount AS m_trackcount,
             release.id AS r_id, release.gid AS r_gid, release_name.name AS r_name,
-                release.artist_credit AS r_artist_credit,
+                release.artist_credit AS r_artist_credit_id,
                 release.date_year AS r_date_year,
                 release.date_month AS r_date_month,
                 release.date_day AS r_date_day,
@@ -107,6 +108,30 @@ sub find_by_recording
             return $track;
         },
         $query, $recording_id, $offset || 0);
+}
+
+sub update
+{
+    my ($self, $track_id, $track_hash) = @_;
+    my $sql = Sql->new($self->c->dbh);
+    my %names = $self->find_or_insert_names($track_hash->{name});
+    my $row = $self->_create_row($track_hash, \%names);
+    $sql->Update('track', $row, { id => $track_id });
+}
+
+sub _create_row
+{
+    my ($self, $track_hash, $names) = @_;
+
+    my $mapping = $self->_column_mapping;
+    my %row = map {
+        my $mapped = $mapping->{$_} || $_;
+        $mapped => $track_hash->{$_}
+    } keys %$track_hash;
+
+    $row{name} = $names->{ $track_hash->{name} } if exists $track_hash->{name};
+
+    return { %row };
 }
 
 __PACKAGE__->meta->make_immutable;

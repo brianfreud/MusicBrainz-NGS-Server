@@ -3,7 +3,17 @@ package MusicBrainz::Server::Entity::UserTag;
 use Moose;
 use MusicBrainz::Server::Entity::Types;
 
-extends 'MusicBrainz::Server::Entity::Tag';
+extends 'MusicBrainz::Server::Entity::Entity';
+
+has 'tag_id' => (
+    is => 'rw',
+    isa => 'Int'
+);
+
+has 'tag' => (
+    is => 'rw',
+    isa => 'Tag'
+);
 
 has 'editor_id' => (
     is => 'rw',

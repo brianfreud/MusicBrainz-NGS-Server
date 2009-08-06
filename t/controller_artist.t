@@ -1,6 +1,6 @@
 #!/usr/bin/perl
 use strict;
-use Test::More tests => 65;
+use Test::More tests => 73;
 
 BEGIN {
     use MusicBrainz::Server::Context;
@@ -10,9 +10,12 @@ BEGIN {
 my $c = MusicBrainz::Server::Test->create_test_context();
 MusicBrainz::Server::Test->prepare_test_database($c);
 MusicBrainz::Server::Test->prepare_raw_test_database($c, "
+    TRUNCATE artist_tag_raw CASCADE;
     TRUNCATE artist_rating_raw CASCADE;
+    INSERT INTO artist_tag_raw (artist, editor, tag) VALUES (3, 1, 1), (3, 2, 1);
     INSERT INTO artist_rating_raw (artist, editor, rating)
-        VALUES (8, 1, 4);");
+        VALUES (8, 1, 4);
+");
 MusicBrainz::Server::Test->prepare_test_server();
 
 use Test::WWW::Mechanize::Catalyst;
@@ -93,7 +96,7 @@ $mech->content_contains('new_editor');
 $mech->content_contains('4 - ');
 
 # Test creating new artists via the create artist form
-$mech->get_ok('/user/login');
+$mech->get_ok('/login');
 $mech->submit_form( with_fields => { username => 'new_editor', password => 'password' } );
 
 $mech->get_ok('/artist/create');
@@ -210,3 +213,38 @@ my $response = $mech->submit_form(
 my $edit = MusicBrainz::Server::Test->get_latest_edit($c);
 isa_ok($edit, 'MusicBrainz::Server::Edit::Artist::Delete');
 is_deeply($edit->data, { artist_id => 3 });
+
+# Test merging artists
+$mech->get_ok('/artist/745c079d-374e-4436-9448-da92dedef3ce/merge');
+$response = $mech->submit_form(
+    with_fields => {
+        'filter.query' => 'David',
+    }
+);
+$response = $mech->submit_form(
+    with_fields => {
+        'results.selected_id' => 5
+    });
+$response = $mech->submit_form(
+    with_fields => { 'confirm.edit_note' => ' ' }
+);
+ok($mech->uri =~ qr{/artist/5441c29d-3602-4898-b1a1-b77fa23b8e50});
+
+my $edit = MusicBrainz::Server::Test->get_latest_edit($c);
+isa_ok($edit, 'MusicBrainz::Server::Edit::Artist::Merge');
+is_deeply($edit->data, {
+        old_artist => 3,
+        new_artist => 5,
+    });
+
+
+# Test tagging
+$mech->get_ok('/artist/745c079d-374e-4436-9448-da92dedef3ce/tag');
+$response = $mech->submit_form(
+    with_fields => {
+        'tag.tags' => 'World Music, Jazz',
+    }
+);
+$mech->get_ok('/artist/745c079d-374e-4436-9448-da92dedef3ce/tags');
+$mech->content_contains('world music');
+$mech->content_contains('jazz');

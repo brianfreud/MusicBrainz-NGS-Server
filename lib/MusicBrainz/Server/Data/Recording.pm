@@ -27,6 +27,18 @@ sub _columns
             recording.artist_credit AS artist_credit_id, length,
             comment, editpending AS edits_pending';
 }
+sub _column_mapping
+{
+    return {
+        id               => 'id',
+        gid              => 'gid',
+        name             => 'name',
+        artist_credit_id => 'artist_credit_id',
+        length           => 'length',
+        comment          => 'comment',
+        edits_pending    => 'edits_pending',
+    };
+}
 
 sub _id_column
 {
@@ -61,7 +73,7 @@ sub find_by_artist
 sub load
 {
     my ($self, @objs) = @_;
-    load_subobjects($self, 'recording', @objs);
+    return load_subobjects($self, 'recording', @objs);
 }
 
 sub insert
@@ -98,6 +110,12 @@ sub update
 sub delete
 {
     my ($self, $recording) = @_;
+    $self->c->model('Relationship')->delete('recording', $recording->id);
+    $self->c->model('RecordingPUID')->delete_recordings($recording->id);
+    $self->annotation->delete($recording->id);
+    $self->tags->delete($recording->id);
+    $self->rating->delete($recording->id);
+    $self->remove_gid_redirects($recording->id);
     my $sql = Sql->new($self->c->mb->dbh);
     $sql->Do('DELETE FROM recording WHERE id = ?', $recording->id);
     return;
@@ -128,6 +146,26 @@ sub load_meta
         $obj->rating_count($row->{ratingcount}) if defined $row->{ratingcount};
         $obj->last_update_date($row->{lastupdate}) if defined $row->{lastupdate};
     }, @_);
+}
+
+sub merge
+{
+    my ($self, $new_id, @old_ids) = @_;
+
+    $self->annotation->merge($new_id, @old_ids);
+    $self->tags->merge($new_id, @old_ids);
+    $self->rating->merge($new_id, @old_ids);
+    $self->c->model('RecordingPUID')->merge_recordings($new_id, @old_ids);
+    $self->c->model('Edit')->merge_entities('recording', $new_id, @old_ids);
+    $self->c->model('Relationship')->merge('recording', $new_id, @old_ids);
+
+    # Move tracks to the new recording
+    my $sql = Sql->new($self->c->dbh);
+    $sql->Do('UPDATE track SET recording = ?
+              WHERE recording IN ('.placeholders(@old_ids).')', $new_id, @old_ids);
+
+    $self->_delete_and_redirect_gids('recording', $new_id, @old_ids);
+    return 1;
 }
 
 __PACKAGE__->meta->make_immutable;

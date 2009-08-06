@@ -1,6 +1,7 @@
+#!/usr/bin/perl
 use strict;
 use warnings;
-use Test::More tests => 34;
+use Test::More tests => 38;
 use_ok 'MusicBrainz::Server::Data::Recording';
 use MusicBrainz::Server::Data::Search;
 
@@ -51,8 +52,11 @@ is( scalar(@$results), 1 );
 is( $results->[0]->position, 1 );
 is( $results->[0]->entity->name, "A Coral Room" );
 
-my $sql = Sql->new($c->mb->dbh);
+my $sql = Sql->new($c->dbh);
+my $raw_sql = Sql->new($c->raw_dbh);
 $sql->Begin;
+$raw_sql->Begin;
+
 $rec = $rec_data->insert({
         name => 'Traits',
         artist_credit => 1,
@@ -79,4 +83,25 @@ is($rec->comment, 'New remix');
 $rec_data->delete($rec);
 $rec = $rec_data->get_by_id($rec->id);
 ok(!defined $rec);
+
 $sql->Commit;
+$raw_sql->Commit;
+
+# Both #1 and #2 are in the DB
+$rec = $rec_data->get_by_id(1);
+ok(defined $rec);
+$rec = $rec_data->get_by_id(2);
+ok(defined $rec);
+
+# Merge #2 into #1
+$sql->Begin;
+$raw_sql->Begin;
+$rec_data->merge(1, 2);
+$sql->Commit;
+$raw_sql->Commit;
+
+# Only #1 is now in the DB
+$rec = $rec_data->get_by_id(1);
+ok(defined $rec);
+$rec = $rec_data->get_by_id(2);
+ok(!defined $rec);

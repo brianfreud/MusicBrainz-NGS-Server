@@ -1,7 +1,7 @@
 [% IF edit %]
     [% extra_js = "jquery/jquery.corner.js editUI.js" %]
 [% END %]
-[%- WRAPPER "layout.tt" title="${label.name} - ${title}" -%]
+[%- WRAPPER "layout.tt" title=title ? label.name _ " - ${title}" : label.name -%]
 <div class="sidebar">
     [%- dataCollection = [
         { field="label.name"        title => l('Name')      edit => 'name'      type='text' data => html_escape(label.name) },
@@ -16,7 +16,7 @@
     ] -%]
     [%- PROCESS "components/sidebar-data.tt" entity="label" -%]
     [%- INCLUDE "components/sidebar-rating.tt" entity=label -%]
-    [%- INCLUDE "components/sidebar-tags.tt" entity=label tags=top_tags -%]
+    [%- INCLUDE "components/sidebar-tags.tt" entity=label tags=top_tags tag_this_text=l('Tag this label') -%]
     [%- INCLUDE "components/sidebar-lastupdate.tt" entity=label -%]
 </div>
 <div class="content">
