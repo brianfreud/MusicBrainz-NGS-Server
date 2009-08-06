@@ -88,10 +88,6 @@ END -%]
     [%- END -%]
 [%- END -%]
 
-[%- MACRO format_time(duration) BLOCK -%]
-    [%- duration | format_time -%]
-[%- END -%]
-
 [%- MACRO link_entity(entity, action, text) BLOCK;
     type = "$entity";
     IF    type.search('Entity::Artist='); link_artist(entity, action, text);
@@ -137,14 +133,11 @@ END -%]
     '<a href="' _ link _ '">' _ text _ '</a>';
 END -%]
 
-[%- MACRO link_release(release, action, text, whereami) BLOCK;
+[%- MACRO link_release(release, action, text) BLOCK;
     action = action || 'show';
     link = c.uri_for_action("/release/$action", [ release.gid ]);
     text = text || html_escape(release.name);
-    '<a href="' _ link;
-    IF whereami; '?tab=' _ whereami;
-    END;
-    '">' _ text _ '</a>';
+    '<a href="' _ link _ '">' _ text _ '</a>';
 END -%]
 
 [%- MACRO link_release_group(rg, action, text) BLOCK;

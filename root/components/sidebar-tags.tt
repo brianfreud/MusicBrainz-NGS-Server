@@ -8,8 +8,8 @@
 END -%]
 
 [% IF tags.size || c.user_exists %]
-    [% IF tags.size %]
-        <div class="datumGroup">
+    <div class="datumGroup">
+        [% IF tags.size %]
             <dl class="datumList">
                 <dt class="exp datumLabels">
                     [% l('Tags:') %]
@@ -18,8 +18,9 @@ END -%]
                     [% tag_list(tags, entity) %]
                 </dd>
             </dl>
-            [% IF c.user_exists %]
-                [% link_entity(entity, 'tag', tag_this_text) %]
-            [% END %]
+        [% END %]
+        [% IF c.user_exists %]
+            [% link_entity(entity, 'tag', tag_this_text) %]
+        [% END %]
         </div>
 [% END %]
