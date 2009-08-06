@@ -691,6 +691,7 @@ $(function () {
                                          ["trackname", true],
                                          ["trackartist", true, "editartist"],
                                          ["trackdur"],
+                                         ["medium.format"],
                                          ["medium.title"]
                                          ]);
 
@@ -880,7 +881,8 @@ $(function () {
 
 
 
-
+var floatBox = $("<div></div>");
+floatBox.addClass("floatBox");
 
 
 
