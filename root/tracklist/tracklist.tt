@@ -1,6 +1,5 @@
 [%- FOR track=tracklist.tracks;
     recording = track.recording %]
-<<<<<<< HEAD:root/tracklist/tracklist.tt
     <tr[% ' class="ev"' IF loop.count % 2 == 0 %]>
         [%- IF edit %]
             <td class="toolbox hidden"></td>
@@ -34,14 +33,11 @@
                 <input type="text" value="[% artist_credit(track.artist_credit, plain=1) %]"/>
                 <textarea readonly="readonly">[% artist_credit(track.artist_credit, plain=1) %]</textarea>
                 [%- trackNum = loop.count -%]
-                [%- FOREACH $key IN track.artist_credit.names -%]
+                [%- FOREACH name IN track.artist_credit.names -%]
                     <input type="text" value="[%- name.artist.gid -%]" class="track [% trackNum %] aGID"/>
                     <input type="text" value="[%- html_escape(name.name) -%]" class="track [% trackNum %] aName"/>
                     <input type="text" value="[%- html_escape(name.join_phrase) -%]" class="track [% trackNum %] aJoin"/>
                 [%- END -%]
-
-
-
             [%- END -%]
         </td>
         [%- IF !edit %]

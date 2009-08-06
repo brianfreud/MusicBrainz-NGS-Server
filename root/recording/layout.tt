@@ -13,7 +13,7 @@
         },
         { field="recording.length"        title => l('Length') edit => 'length'   type='text' data => format_time(recording.length) },
     ] -%]
-    [%- PROCESS "components/sidebar-data.tt" element="recording" -%]
+    [%- PROCESS "components/sidebar-data.tt" entity=recording -%]
     [%- INCLUDE "components/sidebar-rating.tt" entity=recording -%]
     [%- INCLUDE "components/sidebar-tags.tt" entity=recording tags=top_tags tag_this_text=l('Tag this recording') -%]
     [%- INCLUDE "components/sidebar-lastupdate.tt" entity=recording -%]

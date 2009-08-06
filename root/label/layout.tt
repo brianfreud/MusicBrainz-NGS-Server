@@ -7,7 +7,7 @@
         { field="label.name"        title => l('Name')      edit => 'name'      type='text' data => html_escape(label.name) },
         { field="label.sort_name"   title => l('Sort Name') edit => 'sortname'  type='text' data => html_escape(label.sort_name) },
     ] -%]
-    [%- PROCESS "components/sidebar-data.tt" element="label" -%]
+    [%- PROCESS "components/sidebar-data.tt" entity=label -%]
     [%- dataCollection = [
         { field="label.type"        title => l('Type')      edit => 'type'      type='text' data => html_escape(label.type_name) },
         { field="label.begin_date"  title => l('Start')     edit => 'begindate' type='text' data => html_escape(label.begin_date.format) },
