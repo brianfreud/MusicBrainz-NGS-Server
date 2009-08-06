@@ -45,7 +45,7 @@ var MusicBrainz = {
                                     {name:'Preformatted Text', className:"editor precode", openWith:'        ', placeHolder:'( ' + text.InsertTextPreformat + ' )' },
                                     {name:'Link to URL', key:'l', className:"editor a", openWith:'[[![Url:!:http://]!]|', closeWith:']', placeHolder:'( ' + text.InsertTextURL + ' )' },
                                     {separator:'---------------' },
-                                    {name:'Bulleted list', className:"editor ul", 
+                                    {name:'Bulleted list', className:"editor ul",
                                      replaceWith: function (markItUp) {
                                              var selectedText = markItUp.selection;
                                              selectedText = selectedText.replace(/^\s{4}[\*(a.)]\s/gm,""); // Remove existing <li>s.
@@ -467,7 +467,7 @@ var MusicBrainz = {
         var show = $("#toolsHead").hasClass("toolsHeadGrey") ? false : true;
         $("#toolsHead").attr("title",show ? text.toolsShow : text.toolsHide)
                        .attr("alt",show ? text.toolsShow : text.toolsHide);
-        show ? $(".toolbox").hide() : $(".toolbox").show();
+        show = show ? $(".toolbox").hide() : $(".toolbox").show();
         $("table.tbl").removeClass("hidden");
     },
 
@@ -499,8 +499,11 @@ var MusicBrainz = {
             var seconds = 0,
                 minutes = 0;
             $(this).find(".trackdur > input").each(function () {
-                minutes += parseInt($(this).val().split(":")[0], 10);
-                seconds += parseInt($(this).val().split(":")[1], 10);
+                var thisValue = $(this).val();
+                if (thisValue.length > 0) {
+                    minutes += parseInt(thisValue.split(":")[0], 10);
+                    seconds += parseInt(thisValue.split(":")[1], 10);
+                }
             });
             if (seconds > 59) { // Carry over :60+ to minutes
                 minutes += Math.floor(seconds / 60);
@@ -613,7 +616,7 @@ $(function () {
     /* ==== Only functions that affect the initial DOM for the tracklist should go here. ==== */
 
     /* Hide the top line for the first of the two theads; would need a CSS3 selector to do it via the css file. */
-    $("table.tbl > thead:eq(0) > tr > th").css("border-top", "0")
+    $("table.tbl > thead:eq(0) > tr > th").css("border-top", "0");
 
     /* Insert the status display box. */
     MusicBrainz.makeStatusBox();
@@ -804,7 +807,7 @@ $(function () {
                                                     $("#removedTracks").addClass("hidden"); // re-hide Remove Tracks.
                                                 }
                                             }
-                                            $("td.trackdur > input").live("change", MusicBrainz.updateMediumTotalDuration());
+                                            MusicBrainz.updateMediumTotalDuration();
                                         }
                        });
 
@@ -817,7 +820,7 @@ $(function () {
         $("#removedTracks tr .removeTrack").hide(); // Hide the removed track's remove track icon.
         MusicBrainz.stripeTracks();
 //        MusicBrainz.updatePositionFields();
-        $("td.trackdur > input").live("change", MusicBrainz.updateMediumTotalDuration());
+        MusicBrainz.updateMediumTotalDuration();
     });
 
     /* Set up autotabbing and limit input to \d only for date and barcode fields. */
@@ -861,7 +864,9 @@ $(function () {
     });
 
     /* Update total duration for each medium when track duration is changed. */
-    $("td.trackdur > input").live("change", MusicBrainz.updateMediumTotalDuration);
+    $("td.trackdur > input").live("change", function () {
+                                                        MusicBrainz.updateMediumTotalDuration();
+                                                        });
 
     /* ==== End functions that attach mouse events. ==== */
 
@@ -878,19 +883,24 @@ $(function () {
 
 
 
+$(".name").each(function () {
+    $(this).click(function () {
+        var foo = $(this).makeFloatingDiv({
+            borderColor : "#666",
+            id          : "artistLookupBox",
+            round       : false
+        })
+    });
+});
 
-
-
-var floatBox = $("<div></div>");
-floatBox.addClass("floatBox");
-
-
-
-
-
-
-
-
+//                  background  : "#FFF",                          <-- the background color.  Do not define this using the css arguments. Default: #fff
+//                  css         : { color  : "red" },              <-- any css customization. Defaults: see settings var below.
+//                  id          : "foo",                           <-- id to be given to the generated div. Default: "floatdiv"
+//                  classes     : { 1: "bar", 2: "baz" },          <-- classes to be given to the generated div. Default: none
+//                  borderColor : "#000",                          <-- the margin color.  Do not define this using the css arguments. Default: #000
+//                  position    : "bl",                            <-- align to which corner of the parent element: bl, tl, br, tr.  Default: bl
+//                  round       : true                             <-- add shadowing visual effects. Default: true
+//                  shadow      : true        
 
 
 
@@ -899,8 +909,8 @@ floatBox.addClass("floatBox");
                           * Type
                           * Format
                           * Packaging
-                          * Status 
-                          * Barcodes  
+                          * Status
+                          * Barcodes
                           * Countries */
 
 // TODO:   /* Set click behaviour for editable fields (where there is more than one of that field type). */
