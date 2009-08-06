@@ -2,7 +2,7 @@
         artist => artist-credit(release.artist_credit, plain => 1),
         name => release.name
     })-%]
-<div class="sidebar hidden" id="sidebar">
+<div class="sidebar[%- IF edit %] hidden[%- END -%]" id="sidebar">
     [%- dataCollection = [
         { field="release.date.year"          title => l('Released')  edit => 'date'      type='date'   data => release.date.format 
           plaintext => [ release.date.year, release.date.month, release.date.day ],
@@ -26,13 +26,17 @@
         [%- PROCESS "components/sidebar-data.tt" entity="release" -%]
     [%- ELSE -%]
         [%- FOR label=release.labels -%]
-            [%- dataCollection = [
-                { field="label.label"            title => l('Label')     edit => 'label' type='text'   data => link_label(label.label) number => loop.count
-                  plaintext => [ html_escape(label.label.name) ]
-                },
-                { field="label.catalog_number"   title => l('Catalog #') edit => 'catalog' type='text'   data => html_escape(label.catalog_number) number => loop.count },
-                { field="release.barcode"        title => l('Barcode')   edit => 'barcode' type='text'   data => html_escape(release.barcode) number => loop.count },
-                { field="release.country"        title => l('Country')   edit => 'country' type='option' data => html_escape(release.country.name) number => loop.count },
+            [%- IF edit -%]
+                [%- dataToShow = html_escape(label.label.name) -%]
+            [%- ELSE -%]
+                [%- dataToShow = link_label(label.label) -%]
+            [%- END -%]
+                [%- dataCollection = [
+                    { field="label.label"            title => l('Label')     edit => 'label' type='text'   data => dataToShow                          number => loop.count
+                      plaintext => [ html_escape(label.label.name) ] },
+                    { field="label.catalog_number"   title => l('Catalog #') edit => 'catalog' type='text'   data => html_escape(label.catalog_number) number => loop.count },
+                    { field="release.barcode"        title => l('Barcode')   edit => 'barcode' type='text'   data => html_escape(release.barcode)      number => loop.count },
+                    { field="release.country"        title => l('Country')   edit => 'country' type='option' data => html_escape(release.country.name) number => loop.count },
             ] -%]
             [%- PROCESS "components/sidebar-data.tt" entity="release" -%]
         [%- END -%]

@@ -218,7 +218,7 @@ select.medium,
  margin-top: 2px;
 }
 
-.editable
+.editable {
  cursor: text;
 }
 

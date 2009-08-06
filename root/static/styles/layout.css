@@ -560,6 +560,10 @@ ul.links {
  overflow: hidden;
 }
 
+.datumItem dd {
+ line-height: normal;
+}
+
 .datumLabels {
  width: 4.6em;
  font-weight: bold;
