@@ -309,13 +309,6 @@ display:block;
 
 /* Editing Tools menu */
 
-
-
-
-
-
-
-
 #editMenu,
 #editMenuPullout {
  background-color:#FFBA58;
@@ -503,7 +496,16 @@ table.tbl th.tartist,
 table.tbl th.ttitle,
 table.tbl td.trackartist,
 table.tbl td.trackname {
- width: 42%!important;
+ width: 43%!important;
+}
+
+table.tbl td {
+ line-height: 1.9em;
+ vertical-align: middle;
+}
+
+table.tbl td div {
+ line-height: normal;
 }
 
 .trackposition input,
@@ -514,10 +516,9 @@ table.tbl td.trackname {
 
 .trackname textarea,
 .trackartist textarea {
- font-size: 110%;
- letter-spacing: 1px;
  overflow: hidden;
- padding: .1em;
+ margin: 0;
+ padding: 0;
  white-space: pre;
 }
 
@@ -527,6 +528,10 @@ table.tbl td.trackname {
 
 .trackartist textarea {
  width: 90%;
+}
+
+th.trackdur span {
+ padding-right: 1.1em;
 }
 
 .trackdur span {
@@ -553,12 +558,44 @@ th.medium.trackdur {
  text-align: right;
 }
 
-/* Artist editor / selector */
-
 .trackposition {
  padding-left: .9em!important;
 }
 
+.page table.tbl tr {
+ height: 1.9em;
+ line-height: 1.9em;
+}
+
+.page table.tbl td,
+.page table.tbl tr.ev td {
+	
+ padding: 0!important;
+}
+
+/* Artist editor / selector */
+
+.editArtist {
+ float: left;
+ width: 93%;
+}
+
+.editArtist input,
+.editArtist textarea {
+ width: 100%;
+ background: transparent;
+ color: #000;
+ border: 0;
+}
+
+.addArtist {
+ height: 16px;
+ width: 16px;
+ float: right;
+ margin-top: 4px;
+}
+
+/*
 .tartist table {
  border-spacing: 0;
 }
@@ -622,6 +659,7 @@ tr.editartist input[type="button"] {
  margin-bottom: 4px;
  float:right;
 }
+*/
 
 .removeArtist {
  cursor: pointer;
@@ -718,6 +756,14 @@ tr.editartist input[type="button"] {
 .removeArtist,
 .removeTrack {
  background: transparent url(/static/images/icon/editor.png) no-repeat;
+}
+
+.addArtist {
+ background: transparent url(/static/images/icon/plus.grey.png) no-repeat;
+}
+
+.addArtist:hover {
+ background-image: url(/static/images/icon/plus.green.png)!important;
 }
 
 /* Icon: X (gray) */

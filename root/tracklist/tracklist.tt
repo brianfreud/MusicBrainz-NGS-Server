@@ -12,32 +12,47 @@
         [%- IF !edit -%]
             [% link_recording(recording, 'show', track.name) %]
         [%- ELSE -%]
-            [%- track.name -%]
+            <div>
+                [%- track.name -%]
+            </div>
         [%- END -%]
         </td>
         [%- IF edit %]
             <td class="hidden trackname"><textarea>[% track.name %]</textarea></td>
         [%- END -%]
-        <td class="tartist
-            [%- IF !edit -%]
-                [% ' hidden"' IF !show_artists %]
-            [%- ELSE -%] trackartist
-            [%- END -%]
-            ">
+        <td class="[%- IF !edit -%][% ' hidden"' IF !show_artists %][%- ELSE -%] trackartist editable[%- END -%]">
             [%- IF !edit %]
                 [%- IF show_artists -%]
                     [% artist_credit(track.artist_credit) %]
                 [%- END -%]
             [%- ELSE -%]
-                [% artist_credit(track.artist_credit, plain=1) %]
-                <input type="text" value="[% artist_credit(track.artist_credit, plain=1) %]"/>
-                <textarea readonly="readonly">[% artist_credit(track.artist_credit, plain=1) %]</textarea>
-                [%- trackNum = loop.count -%]
-                [%- FOREACH name IN track.artist_credit.names -%]
-                    <input type="text" value="[%- name.artist.gid -%]" class="track [% trackNum %] aGID"/>
-                    <input type="text" value="[%- html_escape(name.name) -%]" class="track [% trackNum %] aName"/>
-                    <input type="text" value="[%- html_escape(name.join_phrase) -%]" class="track [% trackNum %] aJoin"/>
-                [%- END -%]
+                <div>
+                    [% artist_credit(track.artist_credit, plain=1) %]
+                </div>
+                </td>
+                <td class="trackartist hidden">
+                    [%# The use of style with !important is important here, due to a FireFox css rendering issue when changing a td  -%]
+                    [%# with display: none to display: table-cell.  Do *not* change this to a class, or remove the !important!       -%]
+                    <div class="editArtist">
+                        [%- IF track.artist_credit.artist_count > 1 -%]
+                            <textarea readonly="readonly">[% artist_credit(track.artist_credit, plain=1) %]</textarea>
+                            <input style="display: none!important;" type="text" value="[% artist_credit(track.artist_credit, plain=1) %]"/>
+                        [%- ELSE -%]
+                            <textarea style="display: none!important;" readonly="readonly">[% artist_credit(track.artist_credit, plain=1) %]</textarea>
+                            <input type="text" class="oneArtist" value="[% artist_credit(track.artist_credit, plain=1) %]"/>
+                        [%- END -%]
+                    </div>
+                    [%# TODO: populate this next with the AC for the track artist. %]
+                    <input type="hidden" value=""/>
+                    [%- trackNum = loop.count -%]
+                    [%- FOREACH name IN track.artist_credit.names -%]
+                        <input type="hidden" value="[%- name.artist.gid -%]" class="track [% trackNum %] aGID"/>
+                        <input type="hidden" value="[%- html_escape(name.name) -%]" class="track [% trackNum %] aName"/>
+                        [%# TODO: populate this next with the AC for this artist. %]
+                        <input type="hidden" value="[%- html_escape(name.name) -%]" class="track [% trackNum %] aName"/>
+                        <input type="hidden" value="[%- html_escape(name.join_phrase) -%]" class="track [% trackNum %] aJoin"/>
+                    [%- END -%]
+                </td>
             [%- END -%]
         </td>
         [%- IF !edit %]

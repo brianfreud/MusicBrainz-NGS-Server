@@ -561,7 +561,7 @@ ul.links {
 }
 
 .datumItem dd {
- line-height: normal;
+ min-height: normal;
 }
 
 .datumLabels {

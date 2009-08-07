@@ -187,19 +187,6 @@ var MusicBrainz = {
         }
     },
 
-    addSingleArtist : function (whereClicked) {
-        var targetArtists = $(whereClicked).parents("table:first"),
-            artistRows = targetArtists.find(".addartist"),
-            mNum = 0, // TODO: Add medium handling to the artist functions
-            tNum = parseInt($(whereClicked).attr("id").replace("btnAddTA-",""),10);
-        targetArtists.find(".joinerlabel strong, .joiner")
-                  .removeClass("hidden");  // Show the "Joiner" header text.
-        $(artistRows).filter(":last")
-                     .after(MusicBrainz.makeHTMLNewArtist(tNum, mNum)); // Insert the new artist row.
-        MusicBrainz.updateComboArtist($(artistRows[0])); // Update the displayed "combo artist" to include the new join phrases.
-        MusicBrainz.updateJoinPhrases(targetArtists.find(".addartist"));
-    },
-
     addToolButton : function (buttonText, buttonID) {
         $("#editMenuControlsInline").append('<input type="button" id="' + buttonID + '" value="' + buttonText + '"/>');
         $("#editMenuControlsInline").show();
@@ -276,21 +263,6 @@ var MusicBrainz = {
         });
     },
 
-    makeHTMLNewArtist : function(trackNum, mediumNum, artistName, joinPhrase) {
-        mediumNum = (typeof(mediumNum) == "undefined") ? 0 : mediumNum;
-        artistName = (typeof(artistName) == "undefined") ? "" : artistName;
-        joinPhrase = (typeof(joinPhrase) == "undefined") ? "" : joinPhrase;
-        return '<tr class="editartist addartist ' + trackNum + '">' +
-                   '<td class="empty">' +
-                       '<img src="/static/images/blank.gif" class="removeArtist"  alt="' + text.RemoveArtist + '" title="' + text.RemoveArtist + '"/>' +
-                       '<input id="ta-name-' + trackNum + '" type="text" class="name" value="' + artistName + '"/>' +
-                   '</td>' +
-                   '<td class="joiner">' +
-                       '<input id="ta-joiner-' + trackNum + '" type="text" class="joiner" value="' + joinPhrase + '"/>' +
-                   '</td>' +
-               '</tr>';
-    },
-
     makeStatusBox : function () {
         $("table.tbl > thead:eq(0) > tr:eq(0) > th:eq(1)").append(mb.HTMLsnippets.editBox);
         $(".tabs:eq(0)").after(mb.HTMLsnippets.docsBox);
@@ -331,20 +303,15 @@ var MusicBrainz = {
                     $('.editable.' + toggleclass[0] + ':eq(' + i + ')').hide(); // Hide the specific item's text.
                     if(typeof(toggleclass[1]) != 'undefined') {
                         if(toggleclass[1]) {
-                            $('.hidden.' + toggleclass[0] + ':eq(' + i + ') textarea').autogrow({ minHeight: 10 });
+                            $('.hidden.' + toggleclass[0] + ':eq(' + i + ') textarea').autogrow({ minHeight: 1 });
                         }
                     }
-                    if(typeof(toggleclass[2]) != 'undefined') {
-                        $('.hidden.' + toggleclass[2] + '.' + i).show();
-                    }
-                    $('.hidden.' + toggleclass[0] + ':eq(' + i + ')').show() // Show the specific item's form field.
-//                                                                     .if_($(this).find('input, textarea[readonly!=readonly]').length > 0)
-                                                                         .find('input, textarea[readonly!=readonly]')
-                                                                         .focus();
-//                                                                     .else_()
-//                                                                         .parent()
-//                                                                         .find('tr:eq(2) input')
-//                                                                         .focus()
+                    $('.hidden.' + toggleclass[0] + ':eq(' + i + ')').show() // Show the specific item's editing form field.
+                                                                     .find("textarea") // Find any textareas in that field,
+                                                                     .autogrow() // and expand them to fit the contents, if needed.
+                                                                     .end()
+                                                                     .find('input:first')
+                                                                     .focus();
                 });
             });
         });
@@ -471,36 +438,13 @@ var MusicBrainz = {
         $("table.tbl").removeClass("hidden");
     },
 
-    updateComboArtist : function (artist) {
-        var targetArtists = $(artist).parents("table:first"),
-            comboArtist = "",
-            removeArtistButtons = targetArtists.find(".removeArtist");
-        $(targetArtists).find('input[type=text]:not(:last)') // Get all input fields except the last (which is the joiner after the last artist).
-                     .each(function (i) {
-                                       var inputValue = $.trim($(this).val());
-                                       if (i % 2) { // Input field is an artist name field
-                                           comboArtist += (inputValue == ",") ? "" : " ";
-                                           comboArtist += (inputValue + " ");
-                                       } else {
-                                           comboArtist += inputValue;
-                                       }
-                     });
-        targetArtists.find("textarea:first")
-                     .val($.trim(comboArtist));
-        if (removeArtistButtons.length == 1) {
-            removeArtistButtons.hide();  // Can't remove the artist if there's only one.
-        } else {
-            removeArtistButtons.show();
-        }
-    },
-
     updateMediumTotalDuration : function () {
         $("table.tbl > tbody").each(function () {
             var seconds = 0,
                 minutes = 0;
             $(this).find(".trackdur > input").each(function () {
                 var thisValue = $(this).val();
-                if (thisValue.length > 0) {
+                if (thisValue.length > 0 && thisValue != "?:??") {
                     minutes += parseInt(thisValue.split(":")[0], 10);
                     seconds += parseInt(thisValue.split(":")[1], 10);
                 }
@@ -512,7 +456,11 @@ var MusicBrainz = {
             if (seconds < 10) {
                 seconds = "0" + seconds; // Pad out :0 - :9
             }
-            $(this).find(".medium.trackdur > span").text(minutes + ":" + seconds);
+            if (minutes + ":" + seconds != "0:00") {
+                $(this).find(".medium.trackdur > span").text(minutes + ":" + seconds);
+            } else {
+                $(this).find(".medium.trackdur > span").text("?:??");
+            }
         });
     },
 
@@ -528,30 +476,6 @@ var MusicBrainz = {
                 }
             }
         });
-    },
-
-    updateJoinPhrases : function (artistJoinPhrases) {
-        var artistCount = artistJoinPhrases.length;
-        artistJoinPhrases.find("input.joiner") // Find all of this artist's join phrase input fields,
-                         .show() // show them all,
-                         .filter(":last") // then select only the last one,
-                             .hide() // hide it,
-                             .val("") // clear any value it may have (there's no next artist after this to join to, so no join phrase is valid),
-                         .end() // then revert back to selecting all join phrase fields,
-                         .filter(":visible") // select all visible join fields (ie: all but the last (unused) join phrase),
-                                 .each(function (i) { // and for each one individually,
-                                                    var joinVal = $(this).val(),
-                                                        joiner = "";
-                                                    if (joinVal == "&" || joinVal == "," || joinVal.length === 0) {  // if this value is still a default value,
-                                                        joiner = ","; // set the joiner to the most-common comma,
-                                                        if (artistCount == 2) { // but if there are only 2 artists,
-                                                            joiner = "&"; // we want the joiner to be an ampersand, not a comma,
-                                                        } else if (artistCount > 2 && i == (artistCount - 2)) { // or if there are 3+ artists and this is the last join phrase,
-                                                            joiner = "&"; // then we want the last joiner to be an ampersand, not a comma.
-                                                        }
-                                                        $(this).val(joiner); // Populate the join phrase input.
-                                                    }
-                                 });
     }
 };
 
@@ -603,8 +527,6 @@ $(function () {
                    .next()
                    .addClass("ui-accordion-content ui-helper-reset ui-widget-content ui-corner-bottom")
                    .hide();
-//    $("#accordion").find("h3:eq(0)") // Guess Case
-//                   .click();
 
     /* Add the show help button to the tool box. */
     MusicBrainz.addToolButton("Show Help Buttons", "btnHelp");
@@ -692,7 +614,7 @@ $(function () {
     MusicBrainz.makeTogglableEachInGroup([
                                          ["trackposition"],
                                          ["trackname", true],
-                                         ["trackartist", true, "editartist"],
+                                         ["trackartist", true],
                                          ["trackdur"],
                                          ["medium.format"],
                                          ["medium.title"]
@@ -709,87 +631,9 @@ $(function () {
         }
     });
 
-    /* Add auto-updating of the "combo artist" field, based on the artist fields' contents. */
-    $(".addartist input").live("keyup", function () { // User typed into an artist or join phrase field.
-        MusicBrainz.updateComboArtist(this);
-    }).live("paste", function () { // User pasted via mouse into an artist or join phrase field.
-        var artistbox = this; // The value of "this" doesn't carry over into a setTimeout.
-        setTimeout(function () { // The onpaste event fires before the data is actually inserted into the form field; we need to
-            MusicBrainz.updateComboArtist(artistbox); // delay until after that occurs, so we can read out that inserted data.
-        }, 1);
-    });
-
     /* Add background and cursor hover behaviours for editable fields. */
     $(".artistDisplay td:has(textarea)").each(function (event) {
         $(this).css("cursor", "text");
-    });
-
-    /* Toggle artist editors, such that only one is visible at any one time. */
-    $(".artistDisplay").live("click", function () {
-        $(".artistDisplay").each(function () { // Find all artist textarea display fields,
-            $(this).parents("table:first") // find their parent artist tables,
-                   .find("tr:not(:first)") // find all rows of those tables, except the one with the textarea display text,
-                   .hide() // hide them
-                   .end() // go back up to the parent artist tables level,
-                   .find("tr:first") // select only the first one - the one with the textarea display text,
-                   .addClass("notActive"); // and remove the bottom box line from it.
-        });
-        $(this).parents("table:first") // find the parent artist table for the active artist,
-               .find("tr") // find all table rows within that artist's edit table,
-               .show() // show them,
-               .filter(":first") // then filter to only the first one - the one with the textarea display text,
-               .removeClass("notActive"); // and add the bottom box line to it.
-    });
-
-    /* Attach functionality to the the artist duplication icons. */
-    $(".copyArtist").draggable({
-                               helper: 'clone',
-                               opacity: 0.5
-                               })
-                    .live('dragstart', function () {
-                        MusicBrainz.artistData = $(this).parents("table:first");
-                    });
-
-    /* Attach artist duplication target functionality to the the tracks. */
-// TODO: Add multi-medium support.
-    $('.tartist').parent().droppable({ accept: '.copyArtist' })
-                 .bind('drop', function() {
-// TODO: Abstract this out, so it can less-redundantly also be accomplished when reading in a stash.
-                 var sourceArtists = MusicBrainz.artistData.find("input.name"),
-                     sourceJoiners = MusicBrainz.artistData.find("input.joiner"),
-                     sourceArtistCount = sourceArtists.length,
-                     targetArtistCell = $(this).find("table:first"),
-                     targetArtists = targetArtistCell.find("input.name"),
-                     targetJoiners = targetArtistCell.find("input.joiner"),
-                     targetArtistCount = targetArtistCell.find(".addartist").length,
-                     artistCountDifference = sourceArtistCount - targetArtistCount,
-                     targetAddArtistBtn = targetArtistCell.find("input[type=button]");
-                 $(this).find("td.editable:eq(2)").click();
-                 if (artistCountDifference < 0) { // The target track has more single artist fields than exist for the source track.
-                     targetArtistCell.find(".addartist:not(:first)").remove();
-                     artistCountDifference = sourceArtistCount - 1;
-                 }
-                 for (var j = 0; j < artistCountDifference; j++) { // Add artist fields, such that there's enough to equal the
-                     MusicBrainz.addSingleArtist(targetAddArtistBtn); // number of artists in the combo-artist being copied over.
-                 }
-                 for (var k = 0; k < sourceArtistCount; k++) {
-                     $(targetArtists[k]).val($(sourceArtists[k]).val()); // Copy over the artist name
-                     $(targetJoiners[k]).val($(sourceJoiners[k]).val()); // Copy over the join phrases
-                 }
-                 MusicBrainz.updateComboArtist(targetAddArtistBtn);
-             });
-
-    /* Add functionality to the "Add another artist" buttons. */
-    $(".btnAddTA").live("click", function () {
-        MusicBrainz.addSingleArtist(this);
-    });
-
-    /* Attach functionality to the the remove artist icons. */
-    $(".removeArtist").live("click", function () {
-        var thisSingleArtist = $(this).parents("table:first");
-        $(this).parents("tr:first").remove();
-        MusicBrainz.updateJoinPhrases(thisSingleArtist.find(".addartist"));
-        MusicBrainz.updateComboArtist(thisSingleArtist.find("tr:eq(2)"));
     });
 
     /* Attach functionality to the the track dragging icons. */
@@ -882,6 +726,26 @@ $(function () {
 /* Everything below is rough code in progress. */
 
 
+$(".oneArtist").parent().after('<div class="addArtist" alt="' + text.RemoveTrack + '" title="' + text.RemoveTrack + '"></div>');
+
+
+
+
+
+
+// plus.grey.png
+// plus.green.png
+
+
+
+
+
+
+
+
+
+
+/*
 
 $(".name").each(function () {
     $(this).click(function () {
@@ -894,6 +758,163 @@ $(".name").each(function () {
 });
 
 
+    addSingleArtist : function (whereClicked) {
+        var targetArtists = $(whereClicked).parents("table:first"),
+            artistRows = targetArtists.find(".addartist"),
+            mNum = 0, // TODO: Add medium handling to the artist functions
+            tNum = parseInt($(whereClicked).attr("id").replace("btnAddTA-",""),10);
+        targetArtists.find(".joinerlabel strong, .joiner")
+                  .removeClass("hidden");  // Show the "Joiner" header text.
+        $(artistRows).filter(":last")
+                     .after(MusicBrainz.makeHTMLNewArtist(tNum, mNum)); // Insert the new artist row.
+        MusicBrainz.updateComboArtist($(artistRows[0])); // Update the displayed "combo artist" to include the new join phrases.
+        MusicBrainz.updateJoinPhrases(targetArtists.find(".addartist"));
+    },
+
+
+    makeHTMLNewArtist : function(trackNum, mediumNum, artistName, joinPhrase) {
+        mediumNum = (typeof(mediumNum) == "undefined") ? 0 : mediumNum;
+        artistName = (typeof(artistName) == "undefined") ? "" : artistName;
+        joinPhrase = (typeof(joinPhrase) == "undefined") ? "" : joinPhrase;
+        return '<tr class="editartist addartist ' + trackNum + '">' +
+                   '<td class="empty">' +
+                       '<img src="/static/images/blank.gif" class="removeArtist"  alt="' + text.RemoveArtist + '" title="' + text.RemoveArtist + '"/>' +
+                       '<input id="ta-name-' + trackNum + '" type="text" class="name" value="' + artistName + '"/>' +
+                   '</td>' +
+                   '<td class="joiner">' +
+                       '<input id="ta-joiner-' + trackNum + '" type="text" class="joiner" value="' + joinPhrase + '"/>' +
+                   '</td>' +
+               '</tr>';
+    },
+
+
+    updateComboArtist : function (artist) {
+        var targetArtists = $(artist).parents("table:first"),
+            comboArtist = "",
+            removeArtistButtons = targetArtists.find(".removeArtist");
+        $(targetArtists).find('input[type=text]:not(:last)') // Get all input fields except the last (which is the joiner after the last artist).
+                     .each(function (i) {
+                                       var inputValue = $.trim($(this).val());
+                                       if (i % 2) { // Input field is an artist name field
+                                           comboArtist += (inputValue == ",") ? "" : " ";
+                                           comboArtist += (inputValue + " ");
+                                       } else {
+                                           comboArtist += inputValue;
+                                       }
+                     });
+        targetArtists.find("textarea:first")
+                     .val($.trim(comboArtist));
+        if (removeArtistButtons.length == 1) {
+            removeArtistButtons.hide();  // Can't remove the artist if there's only one.
+        } else {
+            removeArtistButtons.show();
+        }
+    },
+
+
+    updateJoinPhrases : function (artistJoinPhrases) {
+        var artistCount = artistJoinPhrases.length;
+        artistJoinPhrases.find("input.joiner") // Find all of this artist's join phrase input fields,
+                         .show() // show them all,
+                         .filter(":last") // then select only the last one,
+                             .hide() // hide it,
+                             .val("") // clear any value it may have (there's no next artist after this to join to, so no join phrase is valid),
+                         .end() // then revert back to selecting all join phrase fields,
+                         .filter(":visible") // select all visible join fields (ie: all but the last (unused) join phrase),
+                                 .each(function (i) { // and for each one individually,
+                                                    var joinVal = $(this).val(),
+                                                        joiner = "";
+                                                    if (joinVal == "&" || joinVal == "," || joinVal.length === 0) {  // if this value is still a default value,
+                                                        joiner = ","; // set the joiner to the most-common comma,
+                                                        if (artistCount == 2) { // but if there are only 2 artists,
+                                                            joiner = "&"; // we want the joiner to be an ampersand, not a comma,
+                                                        } else if (artistCount > 2 && i == (artistCount - 2)) { // or if there are 3+ artists and this is the last join phrase,
+                                                            joiner = "&"; // then we want the last joiner to be an ampersand, not a comma.
+                                                        }
+                                                        $(this).val(joiner); // Populate the join phrase input.
+                                                    }
+                                 });
+    }
+
+*/
+
+    /* Add auto-updating of the "combo artist" field, based on the artist fields' contents. */
+    $(".addartist input").live("keyup", function () { // User typed into an artist or join phrase field.
+        MusicBrainz.updateComboArtist(this);
+    }).live("paste", function () { // User pasted via mouse into an artist or join phrase field.
+        var artistbox = this; // The value of "this" doesn't carry over into a setTimeout.
+        setTimeout(function () { // The onpaste event fires before the data is actually inserted into the form field; we need to
+            MusicBrainz.updateComboArtist(artistbox); // delay until after that occurs, so we can read out that inserted data.
+        }, 1);
+    });
+
+    /* Toggle artist editors, such that only one is visible at any one time. */
+    $(".artistDisplay").live("click", function () {
+        $(".artistDisplay").each(function () { // Find all artist textarea display fields,
+            $(this).parents("table:first") // find their parent artist tables,
+                   .find("tr:not(:first)") // find all rows of those tables, except the one with the textarea display text,
+                   .hide() // hide them
+                   .end() // go back up to the parent artist tables level,
+                   .find("tr:first") // select only the first one - the one with the textarea display text,
+                   .addClass("notActive"); // and remove the bottom box line from it.
+        });
+        $(this).parents("table:first") // find the parent artist table for the active artist,
+               .find("tr") // find all table rows within that artist's edit table,
+               .show() // show them,
+               .filter(":first") // then filter to only the first one - the one with the textarea display text,
+               .removeClass("notActive"); // and add the bottom box line to it.
+    });
+
+    /* Attach functionality to the the artist duplication icons. */
+    $(".copyArtist").draggable({
+                               helper: 'clone',
+                               opacity: 0.5
+                               })
+                    .live('dragstart', function () {
+                        MusicBrainz.artistData = $(this).parents("table:first");
+                    });
+
+    /* Attach artist duplication target functionality to the the tracks. */
+// TODO: Add multi-medium support.
+    $('.tartist').parent().droppable({ accept: '.copyArtist' })
+                 .bind('drop', function() {
+// TODO: Abstract this out, so it can less-redundantly also be accomplished when reading in a stash.
+                 var sourceArtists = MusicBrainz.artistData.find("input.name"),
+                     sourceJoiners = MusicBrainz.artistData.find("input.joiner"),
+                     sourceArtistCount = sourceArtists.length,
+                     targetArtistCell = $(this).find("table:first"),
+                     targetArtists = targetArtistCell.find("input.name"),
+                     targetJoiners = targetArtistCell.find("input.joiner"),
+                     targetArtistCount = targetArtistCell.find(".addartist").length,
+                     artistCountDifference = sourceArtistCount - targetArtistCount,
+                     targetAddArtistBtn = targetArtistCell.find("input[type=button]");
+                 $(this).find("td.editable:eq(2)").click();
+                 if (artistCountDifference < 0) { // The target track has more single artist fields than exist for the source track.
+                     targetArtistCell.find(".addartist:not(:first)").remove();
+                     artistCountDifference = sourceArtistCount - 1;
+                 }
+                 for (var j = 0; j < artistCountDifference; j++) { // Add artist fields, such that there's enough to equal the
+                     MusicBrainz.addSingleArtist(targetAddArtistBtn); // number of artists in the combo-artist being copied over.
+                 }
+                 for (var k = 0; k < sourceArtistCount; k++) {
+                     $(targetArtists[k]).val($(sourceArtists[k]).val()); // Copy over the artist name
+                     $(targetJoiners[k]).val($(sourceJoiners[k]).val()); // Copy over the join phrases
+                 }
+                 MusicBrainz.updateComboArtist(targetAddArtistBtn);
+             });
+
+    /* Add functionality to the "Add another artist" buttons. */
+    $(".btnAddTA").live("click", function () {
+        MusicBrainz.addSingleArtist(this);
+    });
+
+    /* Attach functionality to the the remove artist icons. */
+    $(".removeArtist").live("click", function () {
+        var thisSingleArtist = $(this).parents("table:first");
+        $(this).parents("tr:first").remove();
+        MusicBrainz.updateJoinPhrases(thisSingleArtist.find(".addartist"));
+        MusicBrainz.updateComboArtist(thisSingleArtist.find("tr:eq(2)"));
+    });
 
 
 /* TODO: pre-populate:
