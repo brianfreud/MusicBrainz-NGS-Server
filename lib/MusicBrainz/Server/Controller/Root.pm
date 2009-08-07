@@ -83,6 +83,11 @@ sub js_arrays : Path('/MBarrays.js') {
     $c->stash->{template} = 'scripts/MBarrays.tt';
 }
 
+sub sandbox : Path('/sandbox/guesscase') {
+    my ($self, $c) = @_;
+    $c->stash->{template} = 'scripts/sandbox.guesscase.tt';
+}
+
 sub begin : Private
 {
     my ($self, $c) = @_;

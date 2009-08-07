@@ -1,0 +1,85 @@
+[%- extra_js = "common/es_guess_case.js" -%]
+[%- WRAPPER "layout.tt" -%]
+    <script type='text/javascript' src='http://getfirebug.com/releases/lite/1.2/firebug-lite-compressed.js'>
+    </script>
+    <script type="text/javascript">
+        var reportErrors = false;
+        function storeError(foo, type, number) {
+            return true;
+        }
+        function addErrorReport(type, number) {
+            return true;
+        }
+        function gc(i) {
+            $("#textInput" + i).attr("value", guessMyCase("title", 0, $("#textInput" + i).attr("value"), "", "English", "true", "true"));
+        }
+/**************************************************************************************
+* Function: fullWidthConverter ( string )                                            *
+*                                                                                    *
+* Convert fullwidth characters to standard halfwidth Latin.                          *
+**************************************************************************************/
+function fullWidthConverter(inputString) {
+    if (inputString === "") {
+        return "";
+    }
+    var convertMe = function(str, p1) {
+        return String.fromCharCode(p1.charCodeAt(0) - 65248);
+    },
+        i = inputString.length,
+        newString = [];
+    do {
+        newString.push(inputString[i-1].replace(/([\uFF01-\uFF5E])/g,convertMe));
+    } while (--i);
+    return newString.reverse().join("");
+}
+    </script>
+<big>
+    <big>
+        Sandbox: Guess Case
+    </big>
+    <br />
+    <br />
+    Currently set to:
+    <br />
+    <blockquote>Keep Uppercase on, Uppercase Roman numerals, English mode, for titles and label names.</blockquote>
+    <br />
+    <big>
+        <input type="text" id="textInput1" size="95" />
+        <input type="button" value="Guess Case" style="margin-left: 4em;" onClick="gc('1');">
+        <br />
+        <br />
+        <input type="text" id="textInput2" size="95" />
+        <input type="button" value="Guess Case" style="margin-left: 4em;" onClick="gc('2');">
+        <br />
+        <br />
+        <input type="text" id="textInput3" size="95" />
+        <input type="button" value="Guess Case" style="margin-left: 4em;" onClick="gc('3');">
+        <br />
+        <br />
+        <input type="text" id="textInput4" size="95" />
+        <input type="button" value="Guess Case" style="margin-left: 4em;" onClick="gc('4');">
+        <br />
+        <br />
+        <input type="text" id="textInput5" size="95" />
+        <input type="button" value="Guess Case" style="margin-left: 4em;" onClick="gc('5');">
+        <br />
+        <br />
+        <input type="text" id="textInput6" size="95" />
+        <input type="button" value="Guess Case" style="margin-left: 4em;" onClick="gc('6');">
+        <br />
+        <br />
+        <input type="text" id="textInput7" size="95" />
+        <input type="button" value="Guess Case" style="margin-left: 4em;" onClick="gc('7');">
+        <br />
+        <br />
+        <input type="text" id="textInput8" size="95" />
+        <input type="button" value="Guess Case" style="margin-left: 4em;" onClick="gc('8');">
+        <br />
+        <br />
+        <input type="text" id="textInput9" size="95" />
+        <input type="button" value="Guess Case" style="margin-left: 4em;" onClick="gc('9');">
+        <br />
+        <br />
+    </big>
+</big>
+[%- END -%]
