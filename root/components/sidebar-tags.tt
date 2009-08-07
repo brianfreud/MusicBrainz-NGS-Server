@@ -20,7 +20,7 @@ END -%]
             </dl>
         [% END %]
         [% IF c.user_exists %]
-            [% link_entity(entity, 'tag', tag_this_text) %]
+            [%# link_entity(entity, 'tag', tag_this_text) %]
         [% END %]
         </div>
 [% END %]

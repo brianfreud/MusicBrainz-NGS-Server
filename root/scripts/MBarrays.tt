@@ -1073,4 +1073,9 @@ mb.script                = {
                            "90" : "[%- l("Yi") -%]"
                            };
 mb.packaging             = {
+                           "1" : "[%- l("Jewel Case") -%]",
+                           "2" : "[%- l("Slim Jewel Case") -%]",
+                           "3" : "[%- l("Digipak") -%]",
+                           "4" : "[%- l("Paper Sleeve") -%]",
+                           "5" : "[%- l("Other") -%]"
                            };
