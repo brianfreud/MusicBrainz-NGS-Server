@@ -510,8 +510,11 @@ table.tbl td div {
 
 .trackposition input,
 .trackdur input {
+ width: 100%;
+}
+
+.trackdur input {
  text-align: center;
- width: 90%;
 }
 
 .trackname textarea,
@@ -567,9 +570,12 @@ th.medium.trackdur {
  line-height: 1.9em;
 }
 
-.page table.tbl td,
-.page table.tbl tr.ev td {
-	
+.page table.tbl td.trackname,
+.page table.tbl tr.ev td.trackname,
+.page table.tbl td.trackartist,
+.page table.tbl tr.ev td.trackartist,
+.page table.tbl td.trackdur,
+.page table.tbl tr.ev td.trackdur {
  padding: 0!important;
 }
 
@@ -586,6 +592,7 @@ th.medium.trackdur {
  background: transparent;
  color: #000;
  border: 0;
+ font-size: 100%;
 }
 
 .addArtist {

@@ -301,17 +301,12 @@ var MusicBrainz = {
             $('.editable.' + toggleclass[0]).each(function (i) {
                 $(this).click(function () { // We cannot just toggle toggleclass, as we only want to swap the one item, not the whole group.
                     $('.editable.' + toggleclass[0] + ':eq(' + i + ')').hide(); // Hide the specific item's text.
-                    if(typeof(toggleclass[1]) != 'undefined') {
-                        if(toggleclass[1]) {
-                            $('.hidden.' + toggleclass[0] + ':eq(' + i + ') textarea').autogrow({ minHeight: 1 });
-                        }
-                    }
                     $('.hidden.' + toggleclass[0] + ':eq(' + i + ')').show() // Show the specific item's editing form field.
                                                                      .find("textarea") // Find any textareas in that field,
                                                                      .autogrow() // and expand them to fit the contents, if needed.
-                                                                     .end()
-                                                                     .find('input:first')
-                                                                     .focus();
+                                                                     .end() // Return selection to the parent td.
+                                                                     .find('input:visible:first, textarea:visible:first') // Find the first edit field,
+                                                                     .focus(); // and give it focus.
                 });
             });
         });
