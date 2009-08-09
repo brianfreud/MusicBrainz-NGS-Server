@@ -181,6 +181,17 @@ label.overlabel-apply {
 
 */
 
+.ui-dialog .ui-dialog-buttonpane {
+ border: none;
+ margin: 0!important;
+ padding: 0!important;
+}
+
+.ui-dialog .ui-dialog-buttonpane button {
+ margin: 0.4em 0.4em 0.15em 0!important;
+ padding: 0.1em 1em!important;
+}
+
 select.medium,
 .medium.title,
 .medium.position {

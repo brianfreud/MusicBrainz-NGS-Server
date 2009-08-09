@@ -28,6 +28,8 @@ var charMap = {
 
 var MusicBrainz = {
 
+    activeArtistEditor : "",
+
     artistData : {},
 
     newArtistLabels : '<div class="artistLine labelLine">' +
@@ -456,6 +458,27 @@ var MusicBrainz = {
         select.show();
     },
 
+    thereCanBeOnlyOne : function () {
+        $('<div>' + text.ArtistEditorError + '</div>').dialog({
+                                                              buttons       : { "Ok" : function() { 
+                                                                                                  $(this).dialog("close");
+                                                                                                  }
+                                                                              },
+                                                              close         : function () { $.scrollTo($("#artistEditBox"));
+                                                                                            $("#artistEditBox").find("div:first")
+                                                                                                               .effect("highlight", {}, 1000)
+                                                                                                               .effect("highlight", {}, 1000)
+                                                                                                               .effect("highlight", {}, 1000);
+                                                                                          },
+                                                              closeOnEscape : true,
+                                                              dialogClass   : 'alert',
+                                                              modal         : true,
+                                                              position      : 'center',
+                                                              title         : text.ErrorTitle,
+                                                              zIndex        : 10000
+                                                              });
+    },
+
     toggleTools : function () {
         $("table.tbl").addClass("hidden");
         $("#toolsHead").toggleClass("toolsHeadGrey");
@@ -782,12 +805,52 @@ console.time("Other")
 
 /* Everything below is rough code in progress. */
 
+// TODO: Add new artist
+// TODO: Artist lookup
+// TODO: Updating join phrases
+
+
+
+
+
+  $.fn.quickselect = function() {
+    return this.each(function() {
+        config = config || {};
+        var defaults = { 
+            maxdisplaysize: "10"
+            searchbuttonurl: "trigger.gif"
+        };
+        config = $.extend(defaults, config);
+        // Make sure a valid select element was passed
+        if ("select" != this.tagName.toLowerCase()) {
+            return;
+        }
+        var $selectbox = $(this);
+        var $resultsboxid = "results-" + $selectbox.attr("id");
+        var $resultsbox = $('<option id="'+$resultsboxid+'"></option>');
+        var $inputsearch = $('<input style="width: '+$selectbox.attr("width")+'"></input>');
+        var $searchbutton = $('<img style="height: '+selectbox.attr("height")+'" src="'+searchbuttonurl+'" />');
+        $selectbox.wrap('<div></div>');
+        $selectbox.hide();
+        $resultsbox.hide();
+        $selectbox.before($inputsearch.after($searchbutton).after($resultsbox));
+        $selectbox.hide();
+
+        selectbox.children().each(function() {
+
+        });
+    });
+  }
 
 
 
 
 
 
+
+
+
+/* Bind event listeners to listen for changes to artist credit names or join phrases, to keep the trackartist textareas updated. */
 $("input.artistCredit, input.joinPhrase").live("change", function () {
     MusicBrainz.updateTrackArtist();
 }).live("keyup", function () {
@@ -795,13 +858,6 @@ $("input.artistCredit, input.joinPhrase").live("change", function () {
 }).live("paste", function () {
     MusicBrainz.updateTrackArtist();
 });
-
-
-
-
-
-
-
 
 /* Keep the AC synched to the artist name, but only if the AC hasn't been modified independantly. */
 $(".artistName").live("keydown", function () {
@@ -825,10 +881,14 @@ $(".artistName").live("keydown", function () {
 });
 
 /* This next function is used when a track artist has more than 1 artist as constituant artists. */
-$(".editTAs").live("click", function () {
-    if ($("#artistEditBox").length > 0) {
-        alert(text.ArtistEditorError);
+$(".editTAs").live("click", function (e) {
+    if ($("#artistEditBox").length > 0) { // If another artist editor is already active, don't open another one.
+        if (MusicBrainz.activeArtistEditor != e.target) { // The textarea the user clicked on was *not* the one we're already working on anyhow.
+            MusicBrainz.thereCanBeOnlyOne();
+            e.stopPropagation();
+        }
     } else {
+        MusicBrainz.activeArtistEditor = e.target;
         var artistCell = $(this).parent().parent(),
             artistData = $(this).parent().data("TAs"),
             dataHTML = "",
@@ -874,10 +934,11 @@ $(".editTAs").live("click", function () {
 
 
 /* This next function is used only when a track artist has only either 0 or 1 artists as constituant artists. */
-$(".addArtist").live("click", function () {
+$(".addArtist").live("click", function (e) {
     if ($("#artistEditBox").length > 0) {
-        alert(text.ArtistEditorError);
+        MusicBrainz.thereCanBeOnlyOne();
     } else {
+        MusicBrainz.activeArtistEditor = e.target;
         var artistCell = $(this).parent().parent();
         $(this).parent()
                .makeFloatingDiv({
@@ -948,6 +1009,7 @@ $(".addArtist").live("click", function () {
                                   .find("textarea");
         $("#artistEditBox").removeShadow()
                            .remove();
+        MusicBrainz.activeArtistEditor = "";
         $(thisTextarea).focus(); // Force focus to the textarea; this forces the textarea's position to be updated, and avoids the textarea ending
     });                          // up aligned to the absolute top of the td.  It's not perfectly centered, but about as good as css allows us to do.
 
@@ -980,49 +1042,6 @@ $(".addArtist").live("click", function () {
 
 /*
 
-$(".name").each(function () {
-    $(this).click(function () {
-        var foo = $(this).makeFloatingDiv({
-            borderColor : "#666",
-            id          : "artistEditBox",
-            round       : false
-        })
-    });
-});
-
-
-    addSingleArtist : function (whereClicked) {
-        var targetArtists = $(whereClicked).parents("table:first"),
-            artistRows = targetArtists.find(".addartist"),
-            mNum = 0, // TODO: Add medium handling to the artist functions
-            tNum = parseInt($(whereClicked).attr("id").replace("btnAddTA-",""),10);
-        targetArtists.find(".joinerlabel strong, .joiner")
-                  .removeClass("hidden");  // Show the "Joiner" header text.
-        $(artistRows).filter(":last")
-                     .after(MusicBrainz.makeHTMLNewArtist(tNum, mNum)); // Insert the new artist row.
-        MusicBrainz.updateTrackArtist($(artistRows[0])); // Update the displayed "combo artist" to include the new join phrases.
-        MusicBrainz.updateJoinPhrases(targetArtists.find(".addartist"));
-    },
-
-
-    makeHTMLNewArtist : function(trackNum, mediumNum, artistName, joinPhrase) {
-        mediumNum = (typeof(mediumNum) == "undefined") ? 0 : mediumNum;
-        artistName = (typeof(artistName) == "undefined") ? "" : artistName;
-        joinPhrase = (typeof(joinPhrase) == "undefined") ? "" : joinPhrase;
-        return '<tr class="editartist addartist ' + trackNum + '">' +
-                   '<td class="empty">' +
-                       '<img src="/static/images/blank.gif" class="removeArtist"  alt="' + text.RemoveArtist + '" title="' + text.RemoveArtist + '"/>' +
-                       '<input id="ta-name-' + trackNum + '" type="text" class="name" value="' + artistName + '"/>' +
-                   '</td>' +
-                   '<td class="joiner">' +
-                       '<input id="ta-joiner-' + trackNum + '" type="text" class="joiner" value="' + joinPhrase + '"/>' +
-                   '</td>' +
-               '</tr>';
-    },
-
-
-
-
 
     updateJoinPhrases : function (artistJoinPhrases) {
         var artistCount = artistJoinPhrases.length;
@@ -1049,33 +1068,6 @@ $(".name").each(function () {
     }
 
 */
-
-    /* Add auto-updating of the "combo artist" field, based on the artist fields' contents. */
-    $(".addartist input").live("keyup", function () { // User typed into an artist or join phrase field.
-        MusicBrainz.updateTrackArtist();
-    }).live("paste", function () { // User pasted via mouse into an artist or join phrase field.
-        var artistbox = this; // The value of "this" doesn't carry over into a setTimeout.
-        setTimeout(function () { // The onpaste event fires before the data is actually inserted into the form field; we need to
-            MusicBrainz.updateTrackArtist(); // delay until after that occurs, so we can read out that inserted data.
-        }, 1);
-    });
-
-    /* Toggle artist editors, such that only one is visible at any one time. */
-    $(".artistDisplay").live("click", function () {
-        $(".artistDisplay").each(function () { // Find all artist textarea display fields,
-            $(this).parents("table:first") // find their parent artist tables,
-                   .find("tr:not(:first)") // find all rows of those tables, except the one with the textarea display text,
-                   .css("display","none") // hide them
-                   .end() // go back up to the parent artist tables level,
-                   .find("tr:first") // select only the first one - the one with the textarea display text,
-                   .addClass("notActive"); // and remove the bottom box line from it.
-        });
-        $(this).parents("table:first") // find the parent artist table for the active artist,
-               .find("tr") // find all table rows within that artist's edit table,
-               .show() // show them,
-               .filter(":first") // then filter to only the first one - the one with the textarea display text,
-               .removeClass("notActive"); // and add the bottom box line to it.
-    });
 
     /* Attach functionality to the the artist duplication icons. */
     $(".copyArtist").draggable({
@@ -1114,12 +1106,6 @@ $(".name").each(function () {
                  }
                  MusicBrainz.updateTrackArtist();
              });
-
-    /* Add functionality to the "Add another artist" buttons. */
-    $(".btnAddTA").live("click", function () {
-        MusicBrainz.addSingleArtist(this);
-    });
-
 
 
 /* TODO: pre-populate:
