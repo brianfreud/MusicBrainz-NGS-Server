@@ -181,6 +181,12 @@ label.overlabel-apply {
 
 */
 
+#artistLookup div.center {
+ margin: 0 auto;
+ text-align: center;
+ width: 100%;
+}
+
 .ui-dialog .ui-dialog-buttonpane {
  border: none;
  margin: 0!important;
@@ -680,10 +686,11 @@ table.tbl tr.ev td.trackdur {
  margin-left: .8em;
 }
 
+.removeArtist,
 #artistEditBox .artistName,
 #artistEditBox .artistCredit,
 #artistEditBox .joinPhrase {
- margin-left: .5em;
+ margin-right: .5em;
 }
 
 #artistEditBox .labelArtist,

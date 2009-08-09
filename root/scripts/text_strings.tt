@@ -3,6 +3,7 @@
  ===========================================================================================*/
 var text                   = {
        AddArtist             : "[% l("Click here to add another artist.") %]",
+       AddArtistNew          : "[% l("Add a new Artist") %]",
        AddArtistShort        : "[% l("Add another Artist&hellip;") %]",
        AddRE                 : "[% l("Add a release event") %]",
        AmazonCatalog         : "[% l("This would appear to be an Amazon ASIN, and not a catalog number.  Please note that Amazon ASINs should not be entered here, but should instead be added as a release - url Advanced Relationship.") %]",
@@ -133,6 +134,7 @@ var text                   = {
        Remove                : "[% l("Remove") %]",
        RemoveArtist          : "[% l("Click here to remove this artist.") %]",
        RemoveTrack           : "[% l("Click here to remove this track.") %]",
+       SearchArtist          : "[% l("Lookup Artist") %]",
        Select                : "[% l("Select…") %]",
        SelectFormat          : "[% l("Select Format") %]",
        SelectCountry         : "[% l("Select Country") %]",

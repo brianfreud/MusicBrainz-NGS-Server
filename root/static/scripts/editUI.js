@@ -11,6 +11,16 @@ jQuery.fn.dir = function (msg) {
     return this;
 };
 
+jQuery.fn.profile = function (argA, argB) {
+    if (argB == true || argB == false) {
+        console ? (argB ? console.timeEnd(argA) : console.time(argA)) : "";
+    } else {
+        console.timeEnd(argA);
+        console.time(argB);
+    }
+    return this;
+};
+
 var experimental = false;
 
 var charMap = {
@@ -810,14 +820,69 @@ console.time("Other")
 // TODO: Updating join phrases
 
 
+/*
+Lookup:
 
+Box opens on artist field click.
 
+Initial box shows only the search button, only on click/tab into the field.
 
+Search button click: Show "searching" text + icon, disable search button.
 
+Lookup failure: Change text and icon to reflect the error.
 
+Results returned: 
+    Check for results count.
+    If there are more results than were returned, add controls to support getting more results, paginated.  
+    Cache search + results.
+    Populate div with the results.
+    Zebra-stripe results.
 
+More results returned: 
+    Add pagination buttons
+    Re-check to see if there are still yet even more results available, and update those controls to reflect it.  
+    Update cache.
+    Add to div population with the new results.
+    Zebra-stripe results.
 
+Artist in results list hover:
+    Change background color + outline to reflect hovered artist.
 
+Artist selected:
+    Get rid of the search div.
+    Toggle the artist field to a text view.
+
+Artist text view:
+    On click, switch (back) to artist field, re-add initial search box.  Show disambiguation.
+
+*/
+
+/* Artist lookup functionality. */
+$('.artistName').live("click", function () {
+$('input.artistName, input.artistCredit, input.joinPhrase').css("backgroundColor","#ccc")
+$(this).parent().find("input").css("backgroundColor","#fff")
+$("#artistLookup").removeShadow().remove();
+    $(this).makeFloatingDiv({
+                            after       : true,
+                            borderColor : "#666",
+                            css         : {
+                                          float  : "left",
+                                          height : "3em",
+                                          width  : "12em"
+                                          },
+                            id          : "artistLookup",
+                            round       : false
+                            })
+           .find("div:first")
+           .append('<div id="lookupControls" class="center">' +
+                       '<input type="button" value="' + text.SearchArtist + '" class="" style="/>' +
+                   '</div>' +
+                   '<div id="lookupResults"/>' +
+                   '<div id="lookupAddNew">' +
+                       '<input type="button" value="' + text.AddArtistNew + '" class="hidden"/>' +
+                   '</div>')
+//                                          width  : "45em"
+})
 
 
 /* Bind event listeners to listen for changes to artist credit names or join phrases, to keep the trackartist textareas updated. */

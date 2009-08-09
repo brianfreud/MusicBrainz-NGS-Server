@@ -15,6 +15,7 @@
  */
 
 // .makeFloatingDiv({
+//                  after       : true                             <-- where the floating div will be attached; append if false, after if true.  Default: false 
 //                  background  : "#FFF",                          <-- the background color.  Do not define this using the css arguments. Default: #fff
 //                  borderColor : "#000",                          <-- the border color.  Do not define this using the css arguments. Default: #000
 //                  classes     : { 1: "bar", 2: "baz" },          <-- classes to be given to the generated div. Default: none
@@ -78,25 +79,25 @@ $.fn.makeFloatingDiv = function (options) {
     switch (options.position) {
         case "bl":
             $.extend(settings, {
-                               left : $(this).position().left,
+                               left : $(this).position().left + 1,
                                top  : $(this).position().top + $(this).outerHeight() - 1
                                });
             break;
         case "tl":
             $.extend(settings, {
-                               left : $(this).position().left,
+                               left : $(this).position().left + 1,
                                top  : $(this).position().top
                                });
             break;
         case "br":
             $.extend(settings, {
-                               left : $(this).position().left  + $(this).outerWidth(),
+                               left : $(this).position().left + $(this).outerWidth(),
                                top  : $(this).position().top + $(this).outerHeight() - 1
                                });
             break;
         case "tr":
             $.extend(settings, {
-                               left : $(this).position().left  + $(this).outerWidth(),
+                               left : $(this).position().left + $(this).outerWidth(),
                                top  : $(this).position().top
                                });
             break;
@@ -105,7 +106,15 @@ $.fn.makeFloatingDiv = function (options) {
         $.extend(settings, options.css);
     }
     floatBox.css(settings);
-    $(this).append(floatBox);
+    if (typeof(options.after) != "undefined") {
+        if (options.after) {
+            $(this).parent().after(floatBox);
+        } else {
+            $(this).append(floatBox);
+        }
+    } else {
+        $(this).append(floatBox);
+    }
     floatBoxInner.css({
                       backgroundColor : (typeof(options.background) == "undefined") ? "#fff" : options.background,
                       height          : parseInt(floatBox.height(), 10) - ((typeof(options.innerPad) == "undefined") ? 16 : (options.innerPad * 2) + 2),
