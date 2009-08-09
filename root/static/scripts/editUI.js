@@ -813,36 +813,6 @@ console.time("Other")
 
 
 
-  $.fn.quickselect = function() {
-    return this.each(function() {
-        config = config || {};
-        var defaults = { 
-            maxdisplaysize: "10"
-            searchbuttonurl: "trigger.gif"
-        };
-        config = $.extend(defaults, config);
-        // Make sure a valid select element was passed
-        if ("select" != this.tagName.toLowerCase()) {
-            return;
-        }
-        var $selectbox = $(this);
-        var $resultsboxid = "results-" + $selectbox.attr("id");
-        var $resultsbox = $('<option id="'+$resultsboxid+'"></option>');
-        var $inputsearch = $('<input style="width: '+$selectbox.attr("width")+'"></input>');
-        var $searchbutton = $('<img style="height: '+selectbox.attr("height")+'" src="'+searchbuttonurl+'" />');
-        $selectbox.wrap('<div></div>');
-        $selectbox.hide();
-        $resultsbox.hide();
-        $selectbox.before($inputsearch.after($searchbutton).after($resultsbox));
-        $selectbox.hide();
-
-        selectbox.children().each(function() {
-
-        });
-    });
-  }
-
-
 
 
 
@@ -884,8 +854,8 @@ $(".artistName").live("keydown", function () {
 $(".editTAs").live("click", function (e) {
     if ($("#artistEditBox").length > 0) { // If another artist editor is already active, don't open another one.
         if (MusicBrainz.activeArtistEditor != e.target) { // The textarea the user clicked on was *not* the one we're already working on anyhow.
-            MusicBrainz.thereCanBeOnlyOne();
             e.stopPropagation();
+            MusicBrainz.thereCanBeOnlyOne();
         }
     } else {
         MusicBrainz.activeArtistEditor = e.target;
@@ -936,6 +906,7 @@ $(".editTAs").live("click", function (e) {
 /* This next function is used only when a track artist has only either 0 or 1 artists as constituant artists. */
 $(".addArtist").live("click", function (e) {
     if ($("#artistEditBox").length > 0) {
+        e.stopPropagation();
         MusicBrainz.thereCanBeOnlyOne();
     } else {
         MusicBrainz.activeArtistEditor = e.target;
