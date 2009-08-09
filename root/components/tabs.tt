@@ -2,7 +2,7 @@
     [%- list.last.1 = '<span>' _ l('Currently editing&hellip;') _ '</span>' -%]
 [%- END -%]
 <div class="tabs">
-    <ul class="tabs">
+    <ul class="tabs" id="tabs">
         [%- FOREACH link IN list -%]
             <li
                 [% IF link.0 == page %] class="sel"

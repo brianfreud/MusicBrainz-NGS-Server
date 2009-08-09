@@ -348,7 +348,7 @@ div.tabs {
 .page table.tbl th.count { width: 2em; }
 .page table.tbl th.rating { width: 50px; }
 .page table.tbl .c { text-align: center; }
-th.treleases { width: 3em; }
+th.tdur { width: 3em; }
 .page table.tbl .t { text-align: right; }
 
 p.nfo span {

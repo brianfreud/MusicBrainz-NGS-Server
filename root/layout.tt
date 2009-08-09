@@ -92,5 +92,10 @@
         <!--[if lt IE 7]><script src="/static/scripts/IE7.js" type="text/javascript"></script><![endif]-->
         <!--[if lt IE 8]><script src="/static/scripts/IE8.js" type="text/javascript"></script><![endif]-->
         [%- END -%]
+        [%- IF trackData.defined -%]
+            <script type="text/javascript">
+                $(function () {[%- trackData -%]});
+            </script>
+        [%- END -%]
     </body>
 </html>

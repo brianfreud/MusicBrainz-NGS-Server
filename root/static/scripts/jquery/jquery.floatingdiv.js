@@ -17,9 +17,10 @@
 // .makeFloatingDiv({
 //                  background  : "#FFF",                          <-- the background color.  Do not define this using the css arguments. Default: #fff
 //                  borderColor : "#000",                          <-- the border color.  Do not define this using the css arguments. Default: #000
+//                  classes     : { 1: "bar", 2: "baz" },          <-- classes to be given to the generated div. Default: none
 //                  css         : { color  : "red" },              <-- any css customization. Defaults: see settings var below.
 //                  id          : "foo",                           <-- id to be given to the generated div. Default: "floatdiv"
-//                  classes     : { 1: "bar", 2: "baz" },          <-- classes to be given to the generated div. Default: none
+//                  innerPad    : 7,                               <-- padding to be assigned to the inner div.  Default: 7px
 //                  position    : "bl",                            <-- align to which corner of the parent element: bl, tl, br, tr.  Default: bl
 //                  round       : true                             <-- add shadowing visual effects. Default: true
 //                  shadow      : true                             <-- add round corner visual effects. Default: true
@@ -68,6 +69,12 @@ $.fn.makeFloatingDiv = function (options) {
     if (typeof(options.borderColor) != "undefined") {
             settings.backgroundColor = options.borderColor;
     }
+    if (typeof(options.round) == "undefined") {
+        options.round = true;
+    }
+    if (typeof(options.shadow) == "undefined") {
+        options.shadow = true;
+    }
     switch (options.position) {
         case "bl":
             $.extend(settings, {
@@ -98,24 +105,13 @@ $.fn.makeFloatingDiv = function (options) {
         $.extend(settings, options.css);
     }
     floatBox.css(settings);
-    /* This next bit of magic overloads the $.css() function, so that whenever the css is changed for the
-     * floating div created by this function, we change the css, but then also run the function to recalculate
-     * the drop shadow, ensuring that the shadow always is in the right place, with the right size. */
-    if (options.roundShadow) {
-        floatBox.extend({
-            css: function(elem, name) {
-                                      var returnVal = $(this).css(elem, name);
-                                      shadowMe(floatBox);
-                                      return returnVal;
-                                      }
-        });
-    }
-    $(this).after(floatBox);
+    $(this).append(floatBox);
     floatBoxInner.css({
                       backgroundColor : (typeof(options.background) == "undefined") ? "#fff" : options.background,
-                      height          : parseInt(floatBox.height(), 10) - 2,
+                      height          : parseInt(floatBox.height(), 10) - ((typeof(options.innerPad) == "undefined") ? 16 : (options.innerPad * 2) + 2),
                       margin          : "1px",
-                      width           : parseInt(floatBox.width(), 10) - 2
+                      padding         : (typeof(options.innerPad) == "undefined") ? "7px" : options.innerPad + "px",
+                      width           : parseInt(floatBox.width(), 10) - ((typeof(options.innerPad) == "undefined") ? 16 : (options.innerPad * 2) + 2)
                       });
     floatBox.append(floatBoxInner);
     if (options.round !== false) {

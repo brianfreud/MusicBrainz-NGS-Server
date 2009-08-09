@@ -2,6 +2,8 @@
  *   Displayed text                                                                         *
  ===========================================================================================*/
 var text                   = {
+       AddArtist             : "[% l("Click here to add another artist.") %]",
+       AddArtistShort        : "[% l("Add another Artist&hellip;") %]",
        AddRE                 : "[% l("Add a release event") %]",
        AmazonCatalog         : "[% l("This would appear to be an Amazon ASIN, and not a catalog number.  Please note that Amazon ASINs should not be entered here, but should instead be added as a release - url Advanced Relationship.") %]",
        AnnotationEditorHide  : "[% l("Hide Annotation Editor") %]",
@@ -9,6 +11,10 @@ var text                   = {
        RERemove              : "[% l("Remove release event") %]",
        AddTrack              : "[% l("Add Track") %]",
        Angle                 : "[% l("unbalanced angle bracket:") %]",
+       ArtistCredit          : "[% l("Artist Credit") %]",
+       ArtistJoiner          : "[% l("Joiner") %]",
+       ArtistName            : "[% l("Artist Name") %]",
+       ArtistEditorError     : "[% l("You can only have one artist editor open at a time.  Please finish with the other artist editor first.") %]",
        Braces                : "[% l("unbalanced brace:") %]",
        ButtonGuessAll        : "[% l("Guess All") %]",
        ButtonGuessCase       : "[% l("Guess Case") %]",
@@ -47,6 +53,7 @@ var text                   = {
        displayCatalogNumber  : "[% l("Catalog Number") %]",
        displayBarcode        : "[% l("Barcode") %]",
        displayCountry        : "[% l("Country of Release") %]",
+       Done                  : "[% l("Done") %]",
        DoubleAngle           : "[% l("unbalanced double angle bracket:") %]",
        DragArtist            : "[% l("Drag this icon onto another track to copy this artist to that track.") %]",
        DragTrack             : "[% l("Drag this icon up or down to move a track within this medium.") %]",
@@ -71,6 +78,8 @@ var text                   = {
        GuessAll              : "[% l("Guess All") %]",
        GuessCasePrefs        : "[% l("Select your preferences for Guess Case") %]",
        Guillemets            : "[% l("unbalanced guillemet:") %]",
+       HelpHide              : "[% l("Hide Help Buttons") %]",
+       HelpShow              : "[% l("Show Help Buttons") %]",
        Hill                  : "[% l("unbalanced hill bracket:") %]",
        HillDouble            : "[% l("unbalanced double hill bracket:") %]",
        Hook                  : "[% l("unbalanced hook bracket:") %]",

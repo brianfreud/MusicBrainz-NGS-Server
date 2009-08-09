@@ -1,6 +1,16 @@
 /*jslint undef: true, browser: true*/
 /*global jQuery, $, mb, text, convertToHTML, convertToMarkup*/
 
+jQuery.fn.log = function (msg) {
+    console ? console.log("%s: %o", msg, this) : "";
+    return this;
+};
+
+jQuery.fn.dir = function (msg) {
+    console ? console.dir(this) : "";
+    return this;
+};
+
 var experimental = false;
 
 var charMap = {
@@ -19,6 +29,31 @@ var charMap = {
 var MusicBrainz = {
 
     artistData : {},
+
+    newArtistLabels : '<div class="artistLine labelLine">' +
+                          '<div class="labelArtist">' +
+                              text.ArtistName +
+                          '</div>' +
+                          '<div class="labelCredit">' +
+                              text.ArtistCredit +
+                          '</div>' +
+                          '<div class="labelJoiner">' +
+                              text.ArtistJoiner +
+                          '</div>' +
+                      '</div>',
+
+    newArtistLine : '<div class="artistLine">' +
+                         '<div class="removeArtist"/>' + 
+                         '<input type="text" class="artistName"/>' +
+                         '<input class="artistCredit"/>' +
+                         '<input class="joinPhrase hidden"/>' +
+                    '</div>',
+
+    newArtistButtonAdd : '<input type="button" value="' + text.AddArtistShort + '" class="NewArtistButton"/>',
+
+    newArtistButtonDone : '<input type="button" value="' + text.Done + '" class="ArtistDoneButton"/>',
+
+    newArtistButtonRemove : '<div class="removeArtist" class="artistLine"/>',
 
     roundness  : "round 6px",
 
@@ -156,11 +191,11 @@ var MusicBrainz = {
         MusicBrainz.addToolButton(text.AnnotationEditorShow, "btnAnnotationEditor");
         /* Set the click event controls for the Show / Hide Annotation Editor button. */
         $("#btnAnnotationEditor").click(function () {
-            if ($(this).val() == text.AnnotationEditorShow) { // Show the track parser.
-                $(".annotationFS").show();
+            if ($(this).val() === text.AnnotationEditorShow) { // Show the track parser.
+                $(".annotationFS").css("display","block");
                 $(this).val(text.AnnotationEditorHide);
             } else { // Hide the track parser.
-                $(".annotationFS").hide();
+                $(".annotationFS").css("display","none");
                 $(this).val(text.AnnotationEditorShow);
             }
         });
@@ -245,7 +280,7 @@ var MusicBrainz = {
                 formatSelect = $(this),
                 presetFormat = $("input.medium.format:eq(" + i + ")").val();
             $.each(mb.format, function (i) {
-                if (mb.format[i][0] != 13) {
+                if (mb.format[i][0] !== 13) {
                     formatSelect.addOption(mb.format[i][0],mb.format[i][2]);
                 } else {
                     otherVal = i;
@@ -264,12 +299,9 @@ var MusicBrainz = {
     },
 
     makeStatusBox : function () {
-        $("table.tbl > thead:eq(0) > tr:eq(0) > th:eq(1)").append(mb.HTMLsnippets.editBox);
-        $(".tabs:eq(0)").after(mb.HTMLsnippets.docsBox);
-        $("#editMsgBox").corner(MusicBrainz.roundness);
+        $("#statusHead").append(mb.HTMLsnippets.editBox);
+        $("#tabs").after(mb.HTMLsnippets.docsBox);
         $("#editMsg").corner(MusicBrainz.roundness);
-        $("#wikiHelpBox").corner(MusicBrainz.roundness);
-        $("#wikiHelpInnerBox").corner(MusicBrainz.roundness);
     },
 
     makeSwappableSelectList : function (entity, toSwap, commonArray, swapArray) {
@@ -300,13 +332,14 @@ var MusicBrainz = {
             var toggleclass = this;
             $('.editable.' + toggleclass[0]).each(function (i) {
                 $(this).click(function () { // We cannot just toggle toggleclass, as we only want to swap the one item, not the whole group.
-                    $('.editable.' + toggleclass[0] + ':eq(' + i + ')').hide(); // Hide the specific item's text.
+                    $('.editable.' + toggleclass[0] + ':eq(' + i + ')').css("display","none"); // Hide the specific item's text.
                     $('.hidden.' + toggleclass[0] + ':eq(' + i + ')').show() // Show the specific item's editing form field.
                                                                      .find("textarea") // Find any textareas in that field,
                                                                      .autogrow() // and expand them to fit the contents, if needed.
                                                                      .end() // Return selection to the parent td.
                                                                      .find('input:visible:first, textarea:visible:first') // Find the first edit field,
-                                                                     .focus(); // and give it focus.
+                                                                     .focus() // and give it focus.
+                                                                     .click(); // and click it (to trigger the artist editor).
                 });
             });
         });
@@ -345,14 +378,14 @@ var MusicBrainz = {
                    "ƒ","₴","₭","₤","₥","₦","№","₧","₰","£","៛",
                      "₨","₪","৳","₮","₩","¥","♠","♣","♥","♦","²","³",
                    "®","©","™"];
-        for (var i=0; i < chars.length; i++) {
+        for (var i = 0, charCount = chars.length; i < charCount; i++) {
             charMap.characters.dropMenu[i] = {
                                              name      : chars[i][0],
                                              openWith  : chars[i][0],
                                              className : "skip" + chars[i][1]
                                              };
         }
-        for (var j=0; j < symbols.length; j++) {
+        for (var j = 0, symCount = symbols.length; j < symCount; j++) {
             charMap.symbols.dropMenu[j] = {
                                           name      : symbols[j],
                                           openWith  : symbols[j],
@@ -399,18 +432,18 @@ var MusicBrainz = {
     },
 
     swapShortLongList : function (select, button, commonarray, bigarray) {
-        if (typeof(select.selectedValues()[0]) != "undefined") { // If there actually is a currently selected item,
+        if (typeof(select.selectedValues()[0]) !== "undefined") { // If there actually is a currently selected item,
             var selecteditem = select.selectedValues()[0]; // then store the currently selected item.
         }
-        select.hide(); // Avoid needless (and very slow) DOM redraws.
+        select.css("display","none"); // Avoid needless (and very slow) DOM redraws.
         select.removeOption(/./); // Empty the select list.
-        if (button.attr("value") == text.FullList) { // Switch to the full list.
+        if (button.attr("value") === text.FullList) { // Switch to the full list.
             button.attr("value", text.ShortList); // Change the text on the button.
             select.addOption(bigarray, false); // Populate the select list.
         } else { // Switch to the short list.
             button.attr("value", text.FullList); // Change the text on the button.
-            if ($.inArray(parseInt(selecteditem, 10), commonarray) == -1 && typeof(selecteditem) != "undefined") {
-                if (typeof(bigarray[selecteditem]) != "undefined") { // Make sure the selected item is in the list,
+            if ($.inArray(parseInt(selecteditem, 10), commonarray) === -1 && typeof(selecteditem) !== "undefined") {
+                if (typeof(bigarray[selecteditem]) !== "undefined") { // Make sure the selected item is in the list,
                     select.addOption(selecteditem, bigarray[selecteditem]); // even if it isn't in the short list.
                 }
             }
@@ -429,7 +462,7 @@ var MusicBrainz = {
         var show = $("#toolsHead").hasClass("toolsHeadGrey") ? false : true;
         $("#toolsHead").attr("title",show ? text.toolsShow : text.toolsHide)
                        .attr("alt",show ? text.toolsShow : text.toolsHide);
-        show = show ? $(".toolbox").hide() : $(".toolbox").show();
+        show = show ? $(".toolbox").css("display","none") : $(".toolbox").show();
         $("table.tbl").removeClass("hidden");
     },
 
@@ -439,7 +472,7 @@ var MusicBrainz = {
                 minutes = 0;
             $(this).find(".trackdur > input").each(function () {
                 var thisValue = $(this).val();
-                if (thisValue.length > 0 && thisValue != "?:??") {
+                if (thisValue.length > 0 && thisValue !== "?:??") {
                     minutes += parseInt(thisValue.split(":")[0], 10);
                     seconds += parseInt(thisValue.split(":")[1], 10);
                 }
@@ -451,7 +484,7 @@ var MusicBrainz = {
             if (seconds < 10) {
                 seconds = "0" + seconds; // Pad out :0 - :9
             }
-            if (minutes + ":" + seconds != "0:00") {
+            if (minutes + ":" + seconds !== "0:00") {
                 $(this).find(".medium.trackdur > span").text(minutes + ":" + seconds);
             } else {
                 $(this).find(".medium.trackdur > span").text("?:??");
@@ -462,20 +495,32 @@ var MusicBrainz = {
     updatePositionFields : function () {
         $(".tbl.release > tbody").each(function () {
             var originalPositions = $($(this).find(".editable.trackposition")),
-                newPositions = $($(this).find('.trackposition:not(".editable")')),
-                mediumTrackCount = $(this).find(".editable.trackposition").length;
-            for (var i = 0; i < mediumTrackCount; i++) {
-                if ($(originalPositions[i]).text() != i+1) { // If the original position != the current position,
+                newPositions = $($(this).find('.trackposition:not(".editable")'));
+            for (var i = 0, mediumTrackCount = $(this).find(".editable.trackposition").length; i < mediumTrackCount; i++) {
+                if ($(originalPositions[i]).text() !== i+1) { // If the original position != the current position,
                     $(originalPositions[i]).click(); // The track position field now has been edited (via a remove or reorder), so show the edit field,
                     $(newPositions[i]).find("input:eq(0)").val(i+1); // and populate the input with the new position.
                 }
             }
         });
+    },
+
+    updateTrackArtist : function () {
+        $("#artistEditBox").prev()
+                           .prev()
+                           .find("textarea")
+                           .val($("#artistEditBox").find("input.artistCredit")
+                                                   .map(function(i) {
+                                                       return $(this).val() + $("#artistEditBox").find("input.joinPhrase:eq(" + i + ")").val();
+                                                   })
+                                                   .get()
+                                                   .join("")
+                           );
     }
 };
 
 $(function () {
-
+console.time("Sidebar")
     /* ==== Start functions that initially manipulate the sidebar DOM. ==== */
 
     /* Populate basic select lists. */
@@ -483,22 +528,24 @@ $(function () {
     $("#select-edit-release-status").addOption(mb.releasestatus, false);
 
     /* Populate the format list, in alphabetical order, and with "Other" at the bottom. */
+// FireFox: 30ms Opera: 13ms
     MusicBrainz.makeFormatList();
 
     /* Setup and initialize language and script selects.  */
     $("#select-edit-release-language").addOption($("#edit-release-language-value").val(), "");
+// FireFox: 29ms Opera: 80ms
     MusicBrainz.swapShortLongList($("#select-edit-release-language"), $("#btn-switch-language-list"), mb.commonLangs, mb.language);
     $("#select-edit-release-script").addOption($("#edit-release-script-value").val(), "");
+// FireFox: 6ms Opera: 5ms
     MusicBrainz.swapShortLongList($("#select-edit-release-script"), $("#btn-switch-script-list"), mb.commonScripts, mb.script);
-    $('.editable.release-language').click(function () {
+
+    $('dd.editable.release-language').click(function () {
         MusicBrainz.makeSwappableSelectList("release", "language", mb.commonLangs, mb.language);
     });
-    $('.editable.release-script').click(function () {
+
+    $('dd.editable.release-script').click(function () {
         MusicBrainz.makeSwappableSelectList("release", "script", mb.commonScripts, mb.script);
     });
-
-    /* Add and activate the Annotation Editor toolbox button. */
-    MusicBrainz.addAnnotationButton();
 
     /* This next duplicates the jQuery UI accordion, except it also allows the pegboard effect. */
     $("#accordion").addClass("ui-accordion ui-widget ui-helper-reset")
@@ -521,15 +568,20 @@ $(function () {
                    })
                    .next()
                    .addClass("ui-accordion-content ui-helper-reset ui-widget-content ui-corner-bottom")
-                   .hide();
+                   .css("display","none");
 
-    /* Add the show help button to the tool box. */
-    MusicBrainz.addToolButton("Show Help Buttons", "btnHelp");
+    /* Add the show help button to the tool box, and round the corners on the docs display div. */
+    setTimeout(function () {
+        $("#wikiHelpBox").corner(MusicBrainz.roundness);
+        $("#wikiHelpInnerBox").corner(MusicBrainz.roundness);
+        MusicBrainz.addToolButton("Show Help Buttons", "btnHelp")
+    },1000);
 
     /* ==== End functions that initially manipulate the sidebar DOM. ==== */
 
-    $("#sidebar").show();
-
+    $("#sidebar").css("display","block");
+console.timeEnd("Sidebar")
+console.time("Tracklist")
     /* ==== Only functions that affect the initial DOM for the tracklist should go here. ==== */
 
     /* Hide the top line for the first of the two theads; would need a CSS3 selector to do it via the css file. */
@@ -546,10 +598,8 @@ $(function () {
                    .attr("alt",text.toolsShow);
 
     /* Add the track movement and removal icons. */
-    $("td.toolbox").append('<div class="removeTrack" alt="' + text.RemoveTrack + '" title="' + text.RemoveTrack + '">' +
-                           '</div>' +
-                           '<div class="handleIcon" alt="' + text.DragTrack + '" title="' + text.DragTrack + '">' +
-                           '</div>');
+    $("td.toolbox").append('<div class="removeTrack" alt="' + text.RemoveTrack + '" title="' + text.RemoveTrack + '"></div>' +
+                           '<div class="handleIcon" alt="' + text.DragTrack + '" title="' + text.DragTrack + '"></div>');
 
     /* Add functionality to the show/hide controls for the toolbox column */
     $("#toolsHead").click(function () {
@@ -558,19 +608,26 @@ $(function () {
     });
 
     /* Insert help icons. */
-    $(".datumItem dt, th.release").prepend($('<img src="/static/images/blank.gif" class="helpIcon"/>')
-                                  .hide());
+    $("dl.datumList div dt, th.release").prepend('<img src="/static/images/blank.gif" class="helpIcon"/>');
 
     /* Insert the artist duplication icons. */
 //    $(".trackartist").prepend('<div class="copyArtist" alt="' + text.DragArtist + '" title="' + text.DragArtist + '"></div>');
 
+    /* Create the add artist button for tracks which only have 0 or 1 artist in the track artist. */
+    $(".oneArtist").parent().after('<div class="addArtist" alt="' + text.AddArtist + '" title="' + text.AddArtist + '"></div>');
+
     /* Set the initial total durations for each medium. */
+// FireFox: 13ms Opera: 8ms
     MusicBrainz.updateMediumTotalDuration();
 
     /* ==== End functions that initially manipulate the tracklist's DOM. ==== */
 
     /* Show the tracklist. */
-    $("table.tbl").removeClass("hidden");
+    $("table.tbl").css("display","block");
+    $("#loader").css("display","none");
+
+console.timeEnd("Tracklist")
+console.time("Notes")
 
     /* ==== Only functions that affect the initial DOM for the edit note or annotation should go here. ==== */
 
@@ -586,14 +643,17 @@ $(function () {
     }
 
     /* Attach and activate the editor for the annotation and edit note. */
-    $('#annotation, #edit-releaseedit_note').markItUp(MusicBrainz.markup.wiki);
+    /* Each of these takes about 350ms to run; neither is needed immediately, so */
+    /* rather than slow down the page initialization, delay it until afterwards. */
+    setTimeout("$('#edit-releaseedit_note').markItUp(MusicBrainz.markup.wiki)", 1000);
+    setTimeout("$('#annotation').markItUp(MusicBrainz.markup.wiki);MusicBrainz.addAnnotationButton()", 2000);
 
     /* ==== End functions that initially manipulate the edit note or annotation DOM. ==== */
 
     /* Show the edit note. */
-    $("#loader").hide();
-    $("fieldset.editNote").removeClass("hidden");
-
+    $("fieldset.editNote").css("display","block");
+console.timeEnd("Notes")
+console.time("MouseEvents")
     /* ==== Start functions that attach mouse events. ==== */
 
    /* Set click behaviour for editable fields (where there is qty 1 of that field type). */
@@ -616,19 +676,18 @@ $(function () {
                                          ]);
 
     /* Per-medium show/hide */
-    $(".mediumToggle").live("click", function () {
+    $("div.mediumToggle").live("click", function () {
         if ($(this).hasClass("mediumToggleClosed")) {
             $(this).removeClass("mediumToggleClosed");
-            $(this).parents("tbody:first").find("> tr:not(:has(th))").show();
+            $(this).parents("tbody:first")
+                   .find("> tr:not(:has(th))")
+                   .show();
         } else {
             $(this).addClass("mediumToggleClosed");
-            $(this).parents("tbody:first").find("> tr:not(:has(th))").hide();
+            $(this).parents("tbody:first")
+                   .find("> tr:not(:has(th))")
+                   .css("display","none");
         }
-    });
-
-    /* Add background and cursor hover behaviours for editable fields. */
-    $(".artistDisplay td:has(textarea)").each(function (event) {
-        $(this).css("cursor", "text");
     });
 
     /* Attach functionality to the the track dragging icons. */
@@ -656,7 +715,7 @@ $(function () {
                                           .removeClass("ev") // Unstripe the track.
                            );
         $("#removedTracks").removeClass("hidden"); // Make sure that Removed Tracks is visible.
-        $("#removedTracks tr .removeTrack").hide(); // Hide the removed track's remove track icon.
+        $("#removedTracks tr .removeTrack").css("display","none"); // Hide the removed track's remove track icon.
         MusicBrainz.stripeTracks();
 //        MusicBrainz.updatePositionFields();
         MusicBrainz.updateMediumTotalDuration();
@@ -670,10 +729,12 @@ $(function () {
                                           .autotab({format: 'numeric'});
 
     /* Attach functionality to the show/hide help button. */
-    $("#btnHelp").click(function () {
-        $(".helpIcon").toggle();
-        $("#btnHelp").val($("#btnHelp").val() == "Show Help Buttons" ? "Hide Help Buttons" : "Show Help Buttons");
-    });
+    setTimeout(function () {
+        $("#btnHelp").click(function () {
+            $(".helpIcon").toggle();
+            $("#btnHelp").val($("#btnHelp").val() === text.HelpShow ? text.HelpHide : text.HelpShow);
+        });
+    }, 2000);
 
     /* Attach click events to the help buttons. */
     MusicBrainz.attachHelpButtonEvents([
@@ -708,7 +769,8 @@ $(function () {
                                                         });
 
     /* ==== End functions that attach mouse events. ==== */
-
+console.timeEnd("MouseEvents")
+console.time("Other")
     /* ==== Start other functions. ==== */
 
     /* Clean out the "Loading..." div.  .remove() is slow, so we do this last, not at the instant we're initially done with that div. */
@@ -721,20 +783,196 @@ $(function () {
 /* Everything below is rough code in progress. */
 
 
-$(".oneArtist").parent().after('<div class="addArtist" alt="' + text.RemoveTrack + '" title="' + text.RemoveTrack + '"></div>');
+
+
+
+
+
+$("input.artistCredit, input.joinPhrase").live("change", function () {
+    MusicBrainz.updateTrackArtist();
+}).live("keyup", function () {
+    MusicBrainz.updateTrackArtist();
+}).live("paste", function () {
+    MusicBrainz.updateTrackArtist();
+});
 
 
 
 
 
 
-// plus.grey.png
-// plus.green.png
 
 
+/* Keep the AC synched to the artist name, but only if the AC hasn't been modified independantly. */
+$(".artistName").live("keydown", function () {
+    $(this).data("oldVal").push($(this).val());
+}).live("keyup", function () {
+    var thisAC = $(this).next().val();
+    if (thisAC.length == 0 || $.inArray(thisAC, $(this).data("oldVal"))) {
+        $(this).next().val($.trim($(this).val()));
+        MusicBrainz.updateTrackArtist();
+    }
+}).live("paste", function () {
+    var artistbox = this;
+    setTimeout(function () {
+        if ($(this).next().val().length == 0) {
+            $(this).next().val($.trim($(this).val()));
+            MusicBrainz.updateTrackArtist();
+        }
+    }, 1);
+}).live("blur", function () {
+    $(this).data("oldVal",[]);
+});
+
+/* This next function is used when a track artist has more than 1 artist as constituant artists. */
+$(".editTAs").live("click", function () {
+    if ($("#artistEditBox").length > 0) {
+        alert(text.ArtistEditorError);
+    } else {
+        var artistCell = $(this).parent().parent(),
+            artistData = $(this).parent().data("TAs"),
+            dataHTML = "",
+            lineHeight = 0;
+        for (var i = 0, loops = artistData.length; i < loops; i++) {
+            dataHTML += '<div class="artistLine">' +
+                            '<div class="removeArtist"/>' + 
+                            '<input type="text" class="artistName" value="' + artistData[i].name + '"/>' +
+                            '<input class="artistCredit" value="' + artistData[i].credit + '"/>' +
+                            '<input class="joinPhrase" value="' + artistData[i].join + '"/>' +
+                        '</div>';
+        }
+        $(this).bind("sizeChange", function (e, changeHeight) {
+                   $("#artistEditBox").css("top", artistCell.position().top + artistCell.outerHeight() + changeHeight)
+                                      .redrawShadow();
+               })
+               .parent()
+               .parent()
+               .makeFloatingDiv({
+                                background  : "#F9F9F9",
+                                borderColor : "#666",
+                                css         : {
+                                              height : "5em",
+                                              width  : "50em"
+                                              },
+                                id          : "artistEditBox",
+                                round       : false
+                                })
+               .find("div:first")
+               .append(MusicBrainz.newArtistButtonAdd + MusicBrainz.newArtistButtonDone)
+               .append(MusicBrainz.newArtistLabels)
+               .append(dataHTML)
+               .find("input:last")
+               .css("display","none");
+        $(".artistName").data("oldVal",[]);
+        lineHeight = $(".artistLine:first").outerHeight() + 11;
+        $("#artistEditBox").css("height", $("#artistEditBox").height() + (lineHeight * artistData.length))
+                           .redrawShadow()
+                           .find("div:first")
+                           .css("height", $("#artistEditBox").find("div:first").height() + (lineHeight * artistData.length));
+    }
+});
 
 
+/* This next function is used only when a track artist has only either 0 or 1 artists as constituant artists. */
+$(".addArtist").live("click", function () {
+    if ($("#artistEditBox").length > 0) {
+        alert(text.ArtistEditorError);
+    } else {
+        var artistCell = $(this).parent().parent();
+        $(this).parent()
+               .makeFloatingDiv({
+                                background  : "#F9F9F9",
+                                borderColor : "#666",
+                                css         : {
+                                              height : "11em",
+                                              width  : "50em"
+                                              },
+                                id          : "artistEditBox",
+                                round       : false
+                                })
+               .find("div:first")
+               .append(MusicBrainz.newArtistButtonAdd + MusicBrainz.newArtistButtonDone)
+               .append(MusicBrainz.newArtistLabels)
+               .parent()
+               .parent()
+               .find("div:first")
+               .append('<textarea readonly="readonly" class="editTAs">' + 
+                       $(this).parent().find("div:first").find("input").val() +
+                       '</textarea>')
+               .find("input")
+               .appendTo("#artistEditBox > div:first")
+               .wrap('<div class="artistLine"></div>')
+               .removeClass("oneArtist")
+               .before(MusicBrainz.newArtistButtonRemove)
+               .after('<input class="artistCredit"/><input class="joinPhrase" value="&"/>')
+               .addClass("artistName")
+               .parent()
+               .after(MusicBrainz.newArtistLine)
+               .parents("td:first")
+               .find("div:first")
+               .find("textarea") // Find the textarea,
+               .bind("sizeChange", function (e, changeHeight) {
+                       $("#artistEditBox").css("top", artistCell.position().top + artistCell.outerHeight() + changeHeight)
+                                          .redrawShadow();
+               })
+               .autogrow()
+        $(this).remove();
+        $(".artistName").data("oldVal",[]);
+        $(".artistCredit:eq(0)").val($("#artistEditBox").find("div:first").find("input:eq(2)").val());
+    }
+});
 
+    $(".NewArtistButton").live("click", function () {
+        var lineHeight = $(".artistLine:first").outerHeight() + 11;
+        $(this).parent()
+               .find("input")	
+               .show()
+               .end()
+               .append(MusicBrainz.newArtistLine)
+               .css("height", $(this).parent().height() + lineHeight)
+               .parent()
+               .css("height", $(this).parent().parent().height() + lineHeight)
+               .redrawShadow();
+        $("div.removeArtist:first").css("height","16px");
+        $("div.labelJoiner").css("display","inline");
+        MusicBrainz.updateTrackArtist();
+// TODO: Add a new entry to the data array store for the new artist.
+    });
+
+    $(".ArtistDoneButton").live("click", function () {
+// TODO: Insert a check here that all artists have actually been identified
+        var thisTextarea = $(this).parent()
+                                  .parent()
+                                  .parent()
+                                  .find("div:first")
+                                  .find("textarea");
+        $("#artistEditBox").removeShadow()
+                           .remove();
+        $(thisTextarea).focus(); // Force focus to the textarea; this forces the textarea's position to be updated, and avoids the textarea ending
+    });                          // up aligned to the absolute top of the td.  It's not perfectly centered, but about as good as css allows us to do.
+
+
+    $(".removeArtist").live("click", function () {
+// TODO: Clear out the data array store for this artist.
+        var lineHeight = $(".artistLine:first").outerHeight() + 11;
+        $(this).parent().remove();
+        $("#artistEditBox").css("height", $("#artistEditBox").height() - lineHeight)
+                           .find("div:first")
+                           .css("height", $("#artistEditBox").find("div:first").height() - lineHeight)
+                           .find("input:last")
+                           .val("")
+                           .css("display","none")
+                           .end()
+                           .end()
+                           .redrawShadow();
+        var removeIcons = $("div.removeArtist");
+        if (removeIcons.length == 1) {
+            removeIcons.css("height","0");
+            $("div.labelJoiner").css("display","none");
+        }
+        MusicBrainz.updateTrackArtist();
+//            MusicBrainz.updateJoinPhrases(thisSingleArtist.find(".addartist"));
+    });
 
 
 
@@ -746,7 +984,7 @@ $(".name").each(function () {
     $(this).click(function () {
         var foo = $(this).makeFloatingDiv({
             borderColor : "#666",
-            id          : "artistLookupBox",
+            id          : "artistEditBox",
             round       : false
         })
     });
@@ -762,7 +1000,7 @@ $(".name").each(function () {
                   .removeClass("hidden");  // Show the "Joiner" header text.
         $(artistRows).filter(":last")
                      .after(MusicBrainz.makeHTMLNewArtist(tNum, mNum)); // Insert the new artist row.
-        MusicBrainz.updateComboArtist($(artistRows[0])); // Update the displayed "combo artist" to include the new join phrases.
+        MusicBrainz.updateTrackArtist($(artistRows[0])); // Update the displayed "combo artist" to include the new join phrases.
         MusicBrainz.updateJoinPhrases(targetArtists.find(".addartist"));
     },
 
@@ -783,28 +1021,7 @@ $(".name").each(function () {
     },
 
 
-    updateComboArtist : function (artist) {
-        var targetArtists = $(artist).parents("table:first"),
-            comboArtist = "",
-            removeArtistButtons = targetArtists.find(".removeArtist");
-        $(targetArtists).find('input[type=text]:not(:last)') // Get all input fields except the last (which is the joiner after the last artist).
-                     .each(function (i) {
-                                       var inputValue = $.trim($(this).val());
-                                       if (i % 2) { // Input field is an artist name field
-                                           comboArtist += (inputValue == ",") ? "" : " ";
-                                           comboArtist += (inputValue + " ");
-                                       } else {
-                                           comboArtist += inputValue;
-                                       }
-                     });
-        targetArtists.find("textarea:first")
-                     .val($.trim(comboArtist));
-        if (removeArtistButtons.length == 1) {
-            removeArtistButtons.hide();  // Can't remove the artist if there's only one.
-        } else {
-            removeArtistButtons.show();
-        }
-    },
+
 
 
     updateJoinPhrases : function (artistJoinPhrases) {
@@ -835,11 +1052,11 @@ $(".name").each(function () {
 
     /* Add auto-updating of the "combo artist" field, based on the artist fields' contents. */
     $(".addartist input").live("keyup", function () { // User typed into an artist or join phrase field.
-        MusicBrainz.updateComboArtist(this);
+        MusicBrainz.updateTrackArtist();
     }).live("paste", function () { // User pasted via mouse into an artist or join phrase field.
         var artistbox = this; // The value of "this" doesn't carry over into a setTimeout.
         setTimeout(function () { // The onpaste event fires before the data is actually inserted into the form field; we need to
-            MusicBrainz.updateComboArtist(artistbox); // delay until after that occurs, so we can read out that inserted data.
+            MusicBrainz.updateTrackArtist(); // delay until after that occurs, so we can read out that inserted data.
         }, 1);
     });
 
@@ -848,7 +1065,7 @@ $(".name").each(function () {
         $(".artistDisplay").each(function () { // Find all artist textarea display fields,
             $(this).parents("table:first") // find their parent artist tables,
                    .find("tr:not(:first)") // find all rows of those tables, except the one with the textarea display text,
-                   .hide() // hide them
+                   .css("display","none") // hide them
                    .end() // go back up to the parent artist tables level,
                    .find("tr:first") // select only the first one - the one with the textarea display text,
                    .addClass("notActive"); // and remove the bottom box line from it.
@@ -895,7 +1112,7 @@ $(".name").each(function () {
                      $(targetArtists[k]).val($(sourceArtists[k]).val()); // Copy over the artist name
                      $(targetJoiners[k]).val($(sourceJoiners[k]).val()); // Copy over the join phrases
                  }
-                 MusicBrainz.updateComboArtist(targetAddArtistBtn);
+                 MusicBrainz.updateTrackArtist();
              });
 
     /* Add functionality to the "Add another artist" buttons. */
@@ -903,13 +1120,6 @@ $(".name").each(function () {
         MusicBrainz.addSingleArtist(this);
     });
 
-    /* Attach functionality to the the remove artist icons. */
-    $(".removeArtist").live("click", function () {
-        var thisSingleArtist = $(this).parents("table:first");
-        $(this).parents("tr:first").remove();
-        MusicBrainz.updateJoinPhrases(thisSingleArtist.find(".addartist"));
-        MusicBrainz.updateComboArtist(thisSingleArtist.find("tr:eq(2)"));
-    });
 
 
 /* TODO: pre-populate:
@@ -965,6 +1175,7 @@ $(".name").each(function () {
 
  MusicBrainz.showErrorForSidebar("release-date", "Test sidebar error");
 
+console.timeEnd("Other")
 });
 
 MusicBrainz.initializeTrackParser = function () {
@@ -974,11 +1185,11 @@ MusicBrainz.initializeTrackParser = function () {
     MusicBrainz.addToolButton(text.TrackParserShow, "btnTrackParser");
     /* Set the click event controls for the Show / Hide Track Parser button. */
     $("#btnTrackParser").click(function () {
-        if ($(this).val() == text.TrackParserShow) { // Show the track parser.
+        if ($(this).val() === text.TrackParserShow) { // Show the track parser.
             $("#js-fieldset-tp").show();
             $(this).val(text.TrackParserHide);
         } else { // Hide the track parser.
-            $("#js-fieldset-tp").hide();
+            $("#js-fieldset-tp").css("display","none");
             $(this).val(text.TrackParserShow);
         }
     });

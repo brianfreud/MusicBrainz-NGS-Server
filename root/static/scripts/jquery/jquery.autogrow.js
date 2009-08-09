@@ -3,6 +3,11 @@
  * by Chrys Bader (www.chrysbader.com)
  * chrysb@gmail.com
  *
+ * Modified by Brian Schweitzer (BrianFreud) 2009-09-08: Add line 125 to add in an event-driven callback capability.
+ *                                                       Also commented out line 68, which was causing the height to be adjusted twice
+ *                                                       per instance (and screwing up follow-on adjustments based on the css change
+ *                                                       when using the callback event.)
+ *
  * Special thanks to:
  * Jake Chapa - jake@hybridstudio.com
  * John Resig - jeresig@gmail.com
@@ -62,7 +67,7 @@
             }).bind('blur', function () {
                 self.stopExpand()
             });
-            this.checkExpand();
+//            this.checkExpand();
         },
         startExpand: function () {
             var self = this;
@@ -117,6 +122,7 @@
                             height: (this.dummy.height()) + 'px'
                         },
                         100);
+                        this.textarea.trigger("sizeChange", this.dummy.height() - this.textarea.height());
                     }
                 }
             }

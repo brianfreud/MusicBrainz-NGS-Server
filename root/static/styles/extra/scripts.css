@@ -445,6 +445,7 @@ display:block;
 /* Help icons */
 
 .helpIcon {
+ display: none;
  cursor: pointer;
  height: 12px;
  margin-right: .2em;
@@ -488,7 +489,7 @@ table.tbl th.first {
  width: 6%!important;
 }
 
-table.tbl th.treleases {
+table.tbl th.tdur {
  width: 10%!important;
 }
 
@@ -496,7 +497,7 @@ table.tbl th.tartist,
 table.tbl th.ttitle,
 table.tbl td.trackartist,
 table.tbl td.trackname {
- width: 43%!important;
+ width: 44%!important;
 }
 
 table.tbl td {
@@ -565,24 +566,33 @@ th.medium.trackdur {
  padding-left: .9em!important;
 }
 
-.page table.tbl tr {
+/* The :not and :first-child selectors won't work in IE, but that's ok. In IE, the medium info line will also
+get this css applied, while in other browsers, that line will be skipped (and things will look a little nicer). */
+table.tbl tbody tr:not(:first-child),
+table.tbl tfoot tr:not(:first-child) {
  height: 1.9em;
  line-height: 1.9em;
 }
 
-.page table.tbl td.trackname,
-.page table.tbl tr.ev td.trackname,
-.page table.tbl td.trackartist,
-.page table.tbl tr.ev td.trackartist,
-.page table.tbl td.trackdur,
-.page table.tbl tr.ev td.trackdur {
+table.tbl td.trackname,
+table.tbl tr.ev td.trackname,
+table.tbl td.trackartist,
+table.tbl tr.ev td.trackartist,
+table.tbl td.trackdur,
+table.tbl tr.ev td.trackdur {
  padding: 0!important;
 }
 
 /* Artist editor / selector */
 
+.editArtist,
+.editArtist textarea {
+ display: inline!important;
+}
+
 .editArtist {
  float: left;
+ min-height: 1.9em;
  width: 93%;
 }
 
@@ -599,7 +609,86 @@ th.medium.trackdur {
  height: 16px;
  width: 16px;
  float: right;
- margin-top: 4px;
+ margin-top: 3px;
+}
+
+#artistEditBox .ArtistDoneButton,
+#artistEditBox .NewArtistButton {
+ bottom: 8px;
+ position: absolute;
+ padding: 0 1em;
+}
+
+#artistEditBox .NewArtistButton {
+ float: left;
+ right: 8px;
+}
+
+#artistEditBox .ArtistDoneButton {
+ float: right;
+ left: 8px;
+ margin-left: 1.5em;
+}
+
+#artistEditBox .artistLine {
+ clear: both;
+ float: left;
+ padding-bottom: 3px;
+ width: 100%;
+}
+
+#artistEditBox .labelLine {
+ padding-left: 19px;
+ width: 100%;
+ float: left;
+}
+
+#artistEditBox .labelArtist,
+#artistEditBox .labelCredit,
+#artistEditBox .labelJoiner,
+#artistEditBox .artistName,
+#artistEditBox .artistCredit,
+#artistEditBox .joinPhrase {
+ padding: 2px;
+ font-size: 100%;
+ float: left;
+}
+
+#artistEditBox .labelArtist,
+#artistEditBox .labelCredit,
+#artistEditBox .labelJoiner,
+#artistEditBox .artistName,
+#artistEditBox .artistCredit {
+ display: inline;
+}
+
+#artistEditBox .labelArtist,
+#artistEditBox .labelCredit,
+#artistEditBox .labelJoiner {
+ font-weight: bold;
+ margin-left: .8em;
+}
+
+#artistEditBox .artistName,
+#artistEditBox .artistCredit,
+#artistEditBox .joinPhrase {
+ margin-left: .5em;
+}
+
+#artistEditBox .labelArtist,
+#artistEditBox .labelCredit,
+#artistEditBox .artistName,
+#artistEditBox .artistCredit {
+ width: 19em;
+}
+
+#artistEditBox .labelJoiner,
+#artistEditBox .joinPhrase {
+ width: 3em;
+}
+
+#artistEditBox .joinPhrase {
+ text-align: center;
 }
 
 /*
@@ -662,10 +751,7 @@ tr.editartist input.joiner {
  text-align:center;
 }
 
-tr.editartist input[type="button"] {
- margin-bottom: 4px;
- float:right;
-}
+
 */
 
 .removeArtist {
@@ -674,7 +760,7 @@ tr.editartist input[type="button"] {
  height: 16px;
  padding-right: 3px;
  margin-top: 4px;
- width: 5%!important;
+ width: 16px;
 }
 
 /* Remove track */

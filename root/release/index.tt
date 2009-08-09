@@ -11,6 +11,9 @@
             [%- l("Loading&hellip;") -%]
         </div>
     [%- END -%]
+    [%- IF edit -%]
+        [%- trackData = '' -%]
+    [%- END -%]
     <table class="tbl[%- IF edit -%] release hidden[%- END -%]">
         [%- IF edit -%]
             <thead>
@@ -18,7 +21,7 @@
                     <th style="background: #FFF!important; width: 2em;">
                         <div id="toolsHead"> </div>
                     </th>
-                    <th colspan="5" style="background: #FFF!important">
+                    <th colspan="5" style="background: #FFF!important" id="statusHead">
                     </th>
                 </tr>
             [%- END -%]
@@ -40,11 +43,11 @@
                 [%- IF !edit -%]
                     <th class="rating c">[% l('Rating') %]</th>
                 [%- END -%]
-                <th class="treleases[%- IF edit -%] release[%- END-%]">[% l('Length') %]</th>
+                <th class="tdur[%- IF edit -%] release[%- END-%]">[% l('Length') %]</th>
             </tr>
         </thead>
-[%- i = 0 -%]
-[%- WHILE i < 4 -%]
+[%#- i = 0 -%]
+[%#- WHILE i < 4 -%]
         [%- FOR medium=release.mediums -%]
             <tbody[%- IF edit -%] id="medium-[%- loop.count -%]"[%- END -%]>
                 <tr class="subh[%- IF edit -%] nodrop nodrag[%- END -%]">
@@ -90,11 +93,11 @@
                         <th style="background: url(/static/images/table-header-2.gif) repeat-x 0 50%!important;" class="medium trackdur"><span></span></th>
                     [%- END -%]
                 </tr>
-                [%- INCLUDE 'tracklist/tracklist.tt' tracklist=medium.tracklist -%]
+                [%- PROCESS 'tracklist/tracklist.tt' tracklist=medium.tracklist mediumNumber=loop.count -%]
             </tbody>
         [%- END -%]
-[%- i = i+1 -%]
-[%- END -%]
+[%#- i = i+1 -%]
+[%#- END -%]
         [%- IF edit -%]
             <tfoot id="removedTracks" class="hidden">
                 <tr class="subh[%- IF edit -%] nodrop nodrag[%- END -%]">
