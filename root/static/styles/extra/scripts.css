@@ -632,32 +632,29 @@ table.tbl tr.ev td.trackdur {
 #artistEditBox .ArtistDoneButton,
 #artistEditBox .NewArtistButton {
  bottom: 8px;
- position: absolute;
  padding: 0 1em;
+ margin: 1em 0 .2em 0;
 }
 
 #artistEditBox .NewArtistButton {
- float: left;
+ position: absolute;
  right: 8px;
 }
 
 #artistEditBox .ArtistDoneButton {
- float: right;
  left: 8px;
  margin-left: 1.5em;
 }
 
 #artistEditBox .artistLine {
  clear: both;
- float: left;
  padding-bottom: 3px;
  width: 100%;
 }
 
 #artistEditBox .labelLine {
- padding-left: 19px;
+ padding-left: 15px;
  width: 100%;
- float: left;
 }
 
 #artistEditBox .labelArtist,
@@ -668,7 +665,12 @@ table.tbl tr.ev td.trackdur {
 #artistEditBox .joinPhrase {
  padding: 2px;
  font-size: 100%;
- float: left;
+}
+
+#artistEditBox .artistName,
+#artistEditBox .artistCredit,
+#artistEditBox .joinPhrase {
+ border-style: ridge;
 }
 
 #artistEditBox .labelArtist,
@@ -682,6 +684,7 @@ table.tbl tr.ev td.trackdur {
 #artistEditBox .labelArtist,
 #artistEditBox .labelCredit,
 #artistEditBox .labelJoiner {
+ float: left;
  font-weight: bold;
  margin-left: .8em;
 }
@@ -707,6 +710,46 @@ table.tbl tr.ev td.trackdur {
 
 #artistEditBox .joinPhrase {
  text-align: center;
+}
+
+#artistEditBox input {
+ font-size: 100%;
+}
+
+#lookupControls div {
+ font-weight: bold;
+}
+
+#lookupInfo {
+ font-style: italic;
+ font-weight: normal!important;
+ border-bottom: 1px solid #000;
+ padding-bottom: .5em;
+ width: 100%;
+}
+
+#lookupInfo span {
+ font-style: normal;
+ font-weight: bold;
+}
+
+#lookupResults {
+ padding-top: .5em;
+ width: 100%;
+}
+
+div.result {
+ padding: 0.5em 1em;
+ margin: 3px 0;
+}
+
+div.result:hover {
+ background-color: #FFCD78!important;
+}
+
+div.result div.artist {
+ font-size: 106%;
+ font-weight: bold;
 }
 
 /*

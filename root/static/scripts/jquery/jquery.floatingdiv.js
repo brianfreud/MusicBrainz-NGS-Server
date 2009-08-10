@@ -36,7 +36,6 @@ $.fn.makeFloatingDiv = function (options) {
                    backgroundColor  : "#000",
                    border           : "none",
                    color            : "#000",
-                   height           : "10em",
                    position         : "absolute",
                    width            : "20em",
                    zIndex           : (thisZIndex < 10 || thisZIndex == "auto") ? 10 : (parseInt(thisZIndex, 10) + 1)
@@ -117,7 +116,7 @@ $.fn.makeFloatingDiv = function (options) {
     }
     floatBoxInner.css({
                       backgroundColor : (typeof(options.background) == "undefined") ? "#fff" : options.background,
-                      height          : parseInt(floatBox.height(), 10) - ((typeof(options.innerPad) == "undefined") ? 16 : (options.innerPad * 2) + 2),
+                      height          : "100%",
                       margin          : "1px",
                       padding         : (typeof(options.innerPad) == "undefined") ? "7px" : options.innerPad + "px",
                       width           : parseInt(floatBox.width(), 10) - ((typeof(options.innerPad) == "undefined") ? 16 : (options.innerPad * 2) + 2)
