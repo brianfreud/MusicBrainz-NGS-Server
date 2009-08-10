@@ -326,48 +326,15 @@ display:block;
 
 /* Editing Tools menu */
 
-#editMenu,
-#editMenuPullout {
- background-color:#FFBA58;
- border:1px solid #A1A1A1;
- color:#000;
- cursor:pointer;
- left:0;
- position:absolute;
- padding:0;
-}
-
-#editMenu {
- font-weight:700;
- width:0;
- padding:.3em;
-}
-
-#editMenuPullout {
- width:1em;
-}
-
-#editMenu div {
- margin-bottom:.25em;
-}
-
-#editMenuSubmit,
-#editMenuControlsGC,
 #editMenuControlsInline {
  padding-top:.5em;
  padding-bottom:.5em;
 }
 
 #editMenuControlsReveal,
-#editMenuSubmit,
-#editMenuControlsGC,
 #editMenuControlsInline {
  background:#FFF;
  text-align:center;
-}
-
-#editMenu input {
- width:92%;
 }
 
 #editMenuControlsInline {
@@ -383,12 +350,6 @@ display:block;
 #editMenuControlsReveal input {
  margin-bottom:.1em;
  margin-top:.1em;
-}
-
-#editMenuPullout span {
- font-weight:bolder;
- font-size:160%;
- padding-right:.2em;
 }
 
 #editMenuSubmit {
@@ -415,11 +376,6 @@ display:block;
  margin-right:auto;
  text-align:center;
  padding:5px;
-}
-
-#editHelpMsg {
- height:1em;
- margin-top:1px;
 }
 
 /* Tooltips used for heads up warnings. */
@@ -705,7 +661,7 @@ table.tbl tr.ev td.trackdur {
 
 #artistEditBox .labelJoiner,
 #artistEditBox .joinPhrase {
- width: 3em;
+ width: 4em;
 }
 
 #artistEditBox .joinPhrase {
@@ -715,6 +671,8 @@ table.tbl tr.ev td.trackdur {
 #artistEditBox input {
  font-size: 100%;
 }
+
+/* Artist lookup */
 
 #lookupControls div {
  font-weight: bold;
@@ -734,7 +692,6 @@ table.tbl tr.ev td.trackdur {
 }
 
 #lookupResults {
- padding-top: .5em;
  width: 100%;
 }
 
@@ -753,7 +710,7 @@ div.result div.artist {
 }
 
 div.result div.disambiguation {
- padding: 2px 0 0 1em;
+ padding: 1px 0 0 1em;
 }
 
 /*

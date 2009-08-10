@@ -1,18 +1,24 @@
 /*jslint undef: true, browser: true*/
 /*global jQuery, $, mb, text, convertToHTML, convertToMarkup*/
 
-var foo = "";
-
 $.extend(jQuery.fn, {
-    log: function (msg) {
-        console ? console.log("%s: %o", msg, this) : "";
+    count: function (msg) {
+        console ? console.count(this) : "";
         return this;
     },
     dir: function (msg) {
         console ? console.dir(this) : "";
         return this;
     },
-    profile: function (argA, argB) {
+    log: function (msg) {
+        console ? console.log("%s: %o", msg, this) : "";
+        return this;
+    },
+    profile: function (msg) {
+        console ? console.profile(this) : "";
+        return this;
+    },
+    time: function (argA, argB) {
         if (console) {
             if (argB == true || argB == false) {
                 console ? (argB ? console.timeEnd(argA) : console.time(argA)) : "";
@@ -20,6 +26,10 @@ $.extend(jQuery.fn, {
                 console.timeEnd(argA).time(argB);
             }
         }
+        return this;
+    },
+    trace: function (msg) {
+        console ? console.trace(this) : "";
         return this;
     }
 });
@@ -43,7 +53,18 @@ var MusicBrainz = {
 
     roundness  : "round 6px",
 
+    annotationEditorBuilt : false,
+
     artistEditor : {
+                   editor_window       : {
+                                         background  : "#F9F9F9",
+                                         borderColor : "#666",
+                                         css         : {
+                                                       width  : "51em"
+                                                       },
+                                         id          : "artistEditBox",
+                                         round       : false
+                                         },
                    editor_inputs       : 'input.artistName, input.artistCredit, input.joinPhrase',
                    html_button_add     : '<input type="button" value="' + text.AddArtistShort + '" class="NewArtistButton"/>',
                    html_button_done    : '<input type="button" value="' + text.Done + '" class="ArtistDoneButton"/>',
@@ -64,13 +85,13 @@ var MusicBrainz = {
                                              '<div class="labelCredit">' +
                                                  text.ArtistCredit +
                                              '</div>' +
-                                             '<div class="labelJoiner">' +
+                                             '<div class="labelJoiner" style="width:8em;">' +
                                                  text.ArtistJoiner +
                                              '</div>' +
                                          '</div>',
                    store_active_editor : "",
                    searchServer        : "/ajax/search",
-                   queryBase           : "type=artist&query=",
+                   queryBase           : "type=artist&limit=20&query=",
                    destroyGeneric      : function (element) {
                                                             $(element).removeShadow()
                                                                       .hide()
@@ -84,9 +105,8 @@ var MusicBrainz = {
                                                      },
                    flashEditorWindow   : function () {
                                                      $("#artistEditBox").find("div:first")
-                                                                        .effect("highlight", {}, 1000)
-                                                                        .effect("highlight", {}, 1000)
-                                                                        .effect("highlight", {}, 1000);
+                                                                        .effect("highlight", {}, 800)
+                                                                        .effect("highlight", {}, 800);
                                                      },
                    processResults      : function (data) {
                                                          $("#lookupSearching").css("display","none");
@@ -114,19 +134,24 @@ var MusicBrainz = {
                                                              $("#lookupMatches").text(data.hits);
                                                              var alreadyLoaded = parseInt($("#lookupLoaded").text(),10);
                                                              $("#lookupLoaded").text(((alreadyLoaded == "NaN") ? alreadyLoaded : 0) + data.results.length);
-                                                             $("#lookupResults > div").slice(0,10)
-                                                                                      .show()
-                                                                                      .filter(":even")
-                                                                                      .css("background-color","#F1F1F1")
-                                                                                      .end()
-                                                                                      .filter(":odd")
-                                                                                      .css("background-color","#FEFEFE")
-                                                                                      .end()
-                                                                                      .corner();
+                                                             $("#lookupResults").css("padding-top",".5em")
+                                                                                .find("div.result")
+                                                                                .filter(":even")
+                                                                                .css("background-color","#F1F1F1")
+                                                                                .end()
+                                                                                .filter(":odd")
+                                                                                .css("background-color","#FEFEFE")
+                                                                                .end()
+                                                                                .slice(0,10)
+                                                                                .show()
+                                                                                .corner();
+                                                             if ($("#lookupResults").css("display") == "none") {
+                                                                 $("#lookupResults").slideDown("fast");
+                                                             }
                                                          }
                                                          },
                    resetAppearance     : function () {
-                                                     $(MusicBrainz.artistEditor.editor_inputs).css("backgroundColor","#ccc");
+                                                     $(MusicBrainz.artistEditor.editor_inputs).css("backgroundColor","#cacaca");
                                                      $("#artistLookup").removeShadow()
                                                                        .hide()
                                                                        .remove();
@@ -163,7 +188,7 @@ var MusicBrainz = {
                                                                         );
                                                      },
                    events              : {
-                                         init            : function () { 
+                                         init            : function () {
                                                                        MusicBrainz.artistEditor.events.makeEditor_One();
                                                                        MusicBrainz.artistEditor.events.makeEditor_Many();
                                                                        MusicBrainz.artistEditor.events.synchTextareas();
@@ -172,7 +197,7 @@ var MusicBrainz = {
                                                                        MusicBrainz.artistEditor.events.synchACJPcolors();
                                                                        },
                                          synchTextareas  : function () { /* Keep the AC synched to the artist name, but only if the AC hasn't been modified independently. */
-                                                                       $(".artistName").live("keydown", function () {
+                                                                       $("input.artistName").live("keydown", function () {
                                                                            $(this).data("oldVal").push($(this).val());
                                                                        }).live("keyup", function () {
                                                                            var thisAC = $(this).next().val();
@@ -193,7 +218,7 @@ var MusicBrainz = {
                                                                        });
                                                                        },
                                          makeEditor_One  : function () { /* This is used when a track artist has only 0 or 1 artist as constituant artist. */
-                                                                       $(".addArtist").live("click", function (e) {
+                                                                       $("div.addArtist").live("click", function (e) {
                                                                            if ($("#artistEditBox").length > 0) {
                                                                                e.stopPropagation();
                                                                                MusicBrainz.artistEditor.thereCanBeOnlyOne();
@@ -201,15 +226,7 @@ var MusicBrainz = {
                                                                                MusicBrainz.artistEditor.store_active_editor = e.target;
                                                                                var artistCell = $(this).parent().parent();
                                                                                $(this).parent()
-                                                                                      .makeFloatingDiv({
-                                                                                                       background  : "#F9F9F9",
-                                                                                                       borderColor : "#666",
-                                                                                                       css         : {
-                                                                                                                     width  : "50em"
-                                                                                                                     },
-                                                                                                       id          : "artistEditBox",
-                                                                                                       round       : false
-                                                                                                       })
+                                                                                      .makeFloatingDiv(MusicBrainz.artistEditor.editor_window)
                                                                                       .find("div:first")
                                                                                       .append('<div>' + 
                                                                                               MusicBrainz.artistEditor.html_line_header +
@@ -246,7 +263,7 @@ var MusicBrainz = {
                                                                        });
                                                                        },
                                          makeEditor_Many : function () { /* This is used when a track artist has more than 1 artist as constituant artists. */
-                                                                       $(".editTAs").live("click", function (e) {
+                                                                       $("textarea.editTAs").live("click", function (e) {
                                                                            if ($("#artistEditBox").length > 0) { // If another artist editor is already active, don't open another one.
                                                                                if (MusicBrainz.artistEditor.store_active_editor != e.target) { // The textarea the user clicked on was *not* the one already being edited.
                                                                                    e.stopPropagation();
@@ -267,15 +284,7 @@ var MusicBrainz = {
                                                                                }
                                                                                $(this).parent()
                                                                                       .parent()
-                                                                                      .makeFloatingDiv({
-                                                                                                       background  : "#F9F9F9",
-                                                                                                       borderColor : "#666",
-                                                                                                       css         : {
-                                                                                                                     width  : "50em"
-                                                                                                                     },
-                                                                                                       id          : "artistEditBox",
-                                                                                                       round       : false
-                                                                                                       })
+                                                                                      .makeFloatingDiv(MusicBrainz.artistEditor.editor_window)
                                                                                       .find("div:first")
                                                                                       .append('<div>' + 
                                                                                               MusicBrainz.artistEditor.html_line_header +
@@ -304,7 +313,7 @@ var MusicBrainz = {
                                                                        });
                                                                        },
                                          initLookupBox   : function () { /* Create the initial lookup float box, with the structure to fill in results later. */
-                                                                       $('.artistName').live("focusin", function () {
+                                                                       $('input.artistName').live("focusin", function () {
                                                                            MusicBrainz.artistEditor.resetAppearance();
                                                                            $(this).parent()
                                                                                   .find("input")
@@ -345,7 +354,7 @@ var MusicBrainz = {
                                                                                               text.ArtistLookupLoaded +
                                                                                               ' <span id="lookupLoaded"></span>' +
                                                                                           '</div>' +
-                                                                                          '<div id="lookupResults">' +
+                                                                                          '<div id="lookupResults" style="display:none;">' +
                                                                                           '</div>' +
                                                                                           '<div id="lookupAddNew">' +
                                                                                               '<input type="button" value="' + text.AddArtistNew + '" id="btnArtistAdd" class="hidden" tabindex="-1"/>' +
@@ -353,7 +362,7 @@ var MusicBrainz = {
                                                                        })
                                                                        },
                                          synchACJPcolors : function () { /* Keep coloring and lookup box synched for AC and Join Phrase fields. */
-                                                                       $('.artistCredit, .joinPhrase').live("focusin", function () {
+                                                                       $('input.artistCredit, input.joinPhrase').live("focusin", function () {
                                                                            MusicBrainz.artistEditor.resetAppearance();
                                                                            $(this).parent()
                                                                                   .find("input")
@@ -496,9 +505,13 @@ var MusicBrainz = {
         MusicBrainz.addToolButton(text.AnnotationEditorShow, "btnAnnotationEditor");
         /* Set the click event controls for the Show / Hide Annotation Editor button. */
         $("#btnAnnotationEditor").click(function () {
-            if ($(this).val() === text.AnnotationEditorShow) { // Show the track parser.
-                $(".annotationFS").css("display","block");
+            if ($(this).val() === text.AnnotationEditorShow) { // Show the annotation editor.
                 $(this).val(text.AnnotationEditorHide);
+                if (!MusicBrainz.annotationEditorBuilt) { /* The annotation editor only needs to be initialized once. */
+                    $('#annotation').markItUp(MusicBrainz.markup.wiki); /* This takes about 350ms, hence we don't do it on page load. */
+                    MusicBrainz.annotationEditorBuilt = true;
+                }
+                $(".annotationFS").css("display","block");
             } else { // Hide the track parser.
                 $(".annotationFS").css("display","none");
                 $(this).val(text.AnnotationEditorShow);
@@ -507,30 +520,29 @@ var MusicBrainz = {
     },
 
     addAnnotationSwitcher : function () {
-        $('#annotation').before('<ul id="ChangeMarkup">' +
-                                    '<li>' +
-                                        text.MarkupLanguage +
-                                    ' </li>' +
-                                    '<li class="wiki currentSet">' +
-                                        '<a href="#">' +
-                                            text.Wiki +
-                                        '</a>' +
-                                    '</li>' +
-                                    '<li class="html">' +
-                                        '<a href="#">' +
-                                            text.HTML +
-                                        '</a>' +
-                                    '</li>' +
-                                '</ul>');
         if (experimental) {
+            $('#annotation').before('<ul id="ChangeMarkup">' +
+                                        '<li>' +
+                                            text.MarkupLanguage +
+                                        ' </li>' +
+                                        '<li class="wiki currentSet">' +
+                                            '<a href="#">' +
+                                                text.Wiki +
+                                            '</a>' +
+                                        '</li>' +
+                                        '<li class="html">' +
+                                            '<a href="#">' +
+                                                text.HTML +
+                                            '</a>' +
+                                        '</li>' +
+                                    '</ul>');
             $('#annotation').before('<br/><br/><em>Note: Converting from HTML to Wikiformat and editing using HTML mode are both experimental at the moment!</em>');
         }
     },
 
     addToolButton : function (buttonText, buttonID) {
-        $("#editMenuControlsInline").append('<input type="button" id="' + buttonID + '" value="' + buttonText + '"/>');
-        $("#editMenuControlsInline").show();
-        MusicBrainz.setPulloutHeight();
+        $("#editMenuControlsInline").append('<input type="button" id="' + buttonID + '" value="' + buttonText + '"/>')
+                                    .css("display","block");
     },
 
     attachHelpButtonEvents : function (helpArray) {
@@ -705,14 +717,6 @@ var MusicBrainz = {
         }
         charMap.symbols.dropMenu[charMap.symbols.dropMenu.length] = { name: "[", openWith: "&91;", className: "skip0" };
         charMap.symbols.dropMenu[charMap.symbols.dropMenu.length] = { name: "]", openWith: "&93;", className: "skip0" };
-    },
-
-    setPulloutHeight : function () {
-        var pulloutHeight = ($("#editMenu").height() + 10) + "px";
-        $("#editMenuPullout").css({
-                                  height: pulloutHeight,
-                                  lineHeight: pulloutHeight
-                                  });
     },
 
     setStatus : function (status, showThrobber) {
@@ -943,9 +947,10 @@ $(function () {
 
     /* Attach and activate the editor for the annotation and edit note. */
     /* Each of these takes about 350ms to run; neither is needed immediately, so */
-    /* rather than slow down the page initialization, delay it until afterwards. */
+    /* rather than slow down the page initialization, delay creating the edit note editor
+    /* until after page load, and only initialize the annotation editor if it is needed. */
     setTimeout("$('#edit-releaseedit_note').markItUp(MusicBrainz.markup.wiki)", 1000);
-    setTimeout("$('#annotation').markItUp(MusicBrainz.markup.wiki);MusicBrainz.addAnnotationButton()", 2000);
+    MusicBrainz.addAnnotationButton();
 
     /* ==== End functions that initially manipulate the edit note or annotation DOM. ==== */
 
@@ -1338,13 +1343,14 @@ MusicBrainz.artistEditor.events.init();
 //console.timeEnd("Other")
 });
 
-MusicBrainz.initializeTrackParser = function () {
+
+//MusicBrainz.initializeTrackParser = function () {
     /* Insert the track parser into the document. */
-    $(".tbl.release").before(mb.HTMLsnippets.trackParser);
+//    $(".tbl.release").before(mb.HTMLsnippets.trackParser);
     /* Create the tool button. */
-    MusicBrainz.addToolButton(text.TrackParserShow, "btnTrackParser");
+//    MusicBrainz.addToolButton(text.TrackParserShow, "btnTrackParser");
     /* Set the click event controls for the Show / Hide Track Parser button. */
-    $("#btnTrackParser").click(function () {
+/*    $("#btnTrackParser").click(function () {
         if ($(this).val() === text.TrackParserShow) { // Show the track parser.
             $("#js-fieldset-tp").show();
             $(this).val(text.TrackParserHide);
@@ -1353,10 +1359,11 @@ MusicBrainz.initializeTrackParser = function () {
             $(this).val(text.TrackParserShow);
         }
     });
-    /* Set textarea height auto-adjustment for the track parser input field. */
-    $('#tp-textarea').autogrow({ minHeight: 30 });
+*/    /* Set textarea height auto-adjustment for the track parser input field. */
+/*    $('#tp-textarea').autogrow({ minHeight: 30 });
 };
 
 $(function () {
     MusicBrainz.initializeTrackParser();
 });
+*/
