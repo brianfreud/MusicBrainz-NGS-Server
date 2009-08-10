@@ -752,6 +752,10 @@ div.result div.artist {
  font-weight: bold;
 }
 
+div.result div.disambiguation {
+ padding: 2px 0 0 1em;
+}
+
 /*
 .tartist table {
  border-spacing: 0;
