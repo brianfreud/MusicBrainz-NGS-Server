@@ -819,7 +819,7 @@ var MusicBrainz = {
 MusicBrainz.artistEditor.html_line_artist = MusicBrainz.artistEditor.html_line_artist();
 
 $(function () {
-console.time("Sidebar")
+//console.time("Sidebar")
     /* ==== Start functions that initially manipulate the sidebar DOM. ==== */
 
     /* Populate basic select lists. */
@@ -879,8 +879,8 @@ console.time("Sidebar")
     /* ==== End functions that initially manipulate the sidebar DOM. ==== */
 
     $("#sidebar").css("display","block");
-console.timeEnd("Sidebar")
-console.time("Tracklist")
+//console.timeEnd("Sidebar")
+//console.time("Tracklist")
     /* ==== Only functions that affect the initial DOM for the tracklist should go here. ==== */
 
     /* Hide the top line for the first of the two theads; would need a CSS3 selector to do it via the css file. */
@@ -925,8 +925,8 @@ console.time("Tracklist")
     $("table.tbl").css("display","block");
     $("#loader").css("display","none");
 
-console.timeEnd("Tracklist")
-console.time("Notes")
+//console.timeEnd("Tracklist")
+//console.time("Notes")
 
     /* ==== Only functions that affect the initial DOM for the edit note or annotation should go here. ==== */
 
@@ -951,8 +951,8 @@ console.time("Notes")
 
     /* Show the edit note. */
     $("fieldset.editNote").css("display","block");
-console.timeEnd("Notes")
-console.time("MouseEvents")
+//console.timeEnd("Notes")
+//console.time("MouseEvents")
     /* ==== Start functions that attach mouse events. ==== */
 
    /* Set click behaviour for editable fields (where there is qty 1 of that field type). */
@@ -1068,8 +1068,8 @@ console.time("MouseEvents")
                                                         });
 
     /* ==== End functions that attach mouse events. ==== */
-console.timeEnd("MouseEvents")
-console.time("Other")
+//console.timeEnd("MouseEvents")
+//console.time("Other")
     /* ==== Start other functions. ==== */
 
     /* Clean out the "Loading..." div.  .remove() is slow, so we do this last, not at the instant we're initially done with that div. */
@@ -1335,7 +1335,7 @@ MusicBrainz.artistEditor.events.init();
 
  MusicBrainz.showErrorForSidebar("release-date", "Test sidebar error");
 
-console.timeEnd("Other")
+//console.timeEnd("Other")
 });
 
 MusicBrainz.initializeTrackParser = function () {
