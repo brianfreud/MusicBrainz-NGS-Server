@@ -47,7 +47,7 @@
             </tr>
         </thead>
         [%- FOR medium=release.mediums -%]
-            [%- PROCESS 'medium/medium.tt' -%]
+            [%- PROCESS 'medium/medium.tt' mediumNumber=loop.count -%]
         [%- END -%]
         [%- IF edit -%]
             <tfoot id="removedTracks" class="hidden">

@@ -1,2 +1,8 @@
-cat ../root/static/scripts/jquery/jquery.autogrow.js ../root/static/scripts/jquery/jquery.autotab.js ../root/static/scripts/jquery/jquery.bt.js ../root/static/scripts/jquery/jquery.corner.js ../root/static/scripts/jquery/jquery.dropshapdow.js ../root/static/scripts/jquery/jquery.firebugwrap.js ../root/static/scripts/jquery/jquery.floatingdiv.js ../root/static/scripts/jquery/jquery.hoverintent.js ../root/static/scripts/jquery/jquery.iff.js ../root/static/scripts/jquery/jquery.liveExtension.js ../root/static/scripts/jquery/jquery.lorem.js ../root/static/scripts/jquery/jquery.markitup.js ../root/static/scripts/jquery/jquery.outerHTML.js ../root/static/scripts/jquery/jquery.replace.js ../root/static/scripts/jquery/jquery.scrollTo.js ../root/static/scripts/jquery/jquery.selectboxes.js ../root/static/scripts/jquery/jquery.swap.js ../root/static/scripts/jquery/jquery.tablednd.js ../root/static/scripts/libraries/wikiToHTML.js > combined.js
-java -jar yuicompressor-2.4.2/build/yuicompressor-2.4.2.jar --type js combined.js -o ../root/static/scripts/CompressedJS.js
+#!/bin/bash
+rm ../root/static/scripts/CompressedJS.js
+JQUERY="../root/static/scripts/jquery/jquery."
+cat "$JQUERY"autogrow.js "$JQUERY"autotab.js "$JQUERY"bt.js "$JQUERY"corner.js "$JQUERY"dropshapdow.js "$JQUERY"firebugwrap.js "$JQUERY"floatingdiv.js "$JQUERY"hoverintent.js "$JQUERY"iff.js "$JQUERY"liveExtension.js "$JQUERY"lorem.js "$JQUERY"markitup.js "$JQUERY"outerHTML.js "$JQUERY"replace.js "$JQUERY"scrollTo.js "$JQUERY"selectboxes.js "$JQUERY"swap.js "$JQUERY"tablednd.js ../root/static/scripts/libraries/wikiToHTML.js > combined.js
+java -jar yuicompressor-2.4.2/build/yuicompressor-2.4.2.jar --type js combined.js -o packed.js
+cat "$JQUERY"jquery-ui.js packed.js > ../root/static/scripts/CompressedJS.js
+rm combined.js
+rm packed.js

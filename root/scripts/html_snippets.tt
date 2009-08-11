@@ -1,5 +1,5 @@
 [%#- The use of tabs in this file is on purpose.  Do not replace them! -%]
-mb.HTMLsnippets          = {
+mb.HTMLsnippets = {
 
 [%- editBox = '
 	<div id="editMsgBox">
@@ -35,4 +35,4 @@ newMedium : '[% newMedium.remove("[\t\n]").replace("'","\\'").replace(" +"," ").
 
 [%- newTrack = PROCESS 'tracklist/tracklist.tt' edit=1 clean=1 -%]
 newTrack : '[% newTrack.remove("[\t\n]").replace("'","\\'").replace(" +"," ").replace("> <","><").replace("^ ","") %]'
-                           };
+};

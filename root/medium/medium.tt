@@ -42,5 +42,8 @@
             <th style="background: url(/static/images/table-header-2.gif) repeat-x 0 50%!important;" class="medium trackdur"><span></span></th>
         [%- END -%]
     </tr>
-    [%- PROCESS 'tracklist/tracklist.tt' tracklist=medium.tracklist mediumNumber=loop.count -%]
+    [%- FOR track=medium.tracklist.tracks;
+        recording = track.recording %]
+        [%- PROCESS 'tracklist/tracklist.tt' mediumNumber=mediumNumber -%]
+    [%- END -%]
 </tbody>

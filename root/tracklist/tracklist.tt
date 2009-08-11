@@ -1,96 +1,83 @@
-[%- MACRO make_track(track) BLOCK -%]
-    <tr[% ' class="ev"' IF loop.count % 2 == 0 && !clean %]>
-        [%- IF edit %]
-            <td class="toolbox hidden"></td>
-        [%- END -%]
-        <td[%- IF edit %] class="editable trackposition"[% END %]>[% track.position %]</td>
-        [%- IF edit %]
-            <td class="hidden trackposition"><input type="text" value="[% track.position %]"></td>
-        [%- END -%]
-        <td[%- IF edit %] class="editable trackname"[%- END -%]>
-        [%- IF !edit -%]
-            [% link_recording(recording, 'show', track.name) %]
+<tr[% ' class="ev"' IF loop.count % 2 == 0 && !clean %]>
+    [%- IF edit %]
+        <td class="toolbox hidden"></td>
+    [%- END -%]
+    <td[%- IF edit %] class="editable trackposition"[% END %]>[% track.position %]</td>
+    [%- IF edit %]
+        <td class="hidden trackposition"><input type="text" value="[% track.position %]"></td>
+    [%- END -%]
+    <td[%- IF edit %] class="editable trackname"[%- END -%]>
+    [%- IF !edit -%]
+        [% link_recording(recording, 'show', track.name) %]
+    [%- ELSE -%]
+        <div>
+            [%- track.name -%]
+        </div>
+    [%- END -%]
+    </td>
+    [%- IF edit %]
+        <td class="hidden trackname"><textarea>[% track.name %]</textarea></td>
+    [%- END -%]
+    <td class="[%- IF !edit -%][% ' hidden"' IF !show_artists %][%- ELSE -%] trackartist editable[%- END -%]">
+        [%- IF !edit %]
+            [%- IF show_artists -%]
+                [% artist_credit(track.artist_credit) %]
+            [%- END -%]
         [%- ELSE -%]
             <div>
-                [%- track.name -%]
+                [% artist_credit(track.artist_credit, plain=1) %]
             </div>
-        [%- END -%]
-        </td>
-        [%- IF edit %]
-            <td class="hidden trackname"><textarea>[% track.name %]</textarea></td>
-        [%- END -%]
-        <td class="[%- IF !edit -%][% ' hidden"' IF !show_artists %][%- ELSE -%] trackartist editable[%- END -%]">
-            [%- IF !edit %]
-                [%- IF show_artists -%]
-                    [% artist_credit(track.artist_credit) %]
-                [%- END -%]
-            [%- ELSE -%]
-                <div>
-                    [% artist_credit(track.artist_credit, plain=1) %]
-                </div>
-                </td>
-                <td class="trackartist hidden">
-                    [%#- ------------------------------------------------------------------------------------------------ -%]
-                    [%#- For future reference, since the variable names in the hash array here get rather confusing:      -%]
-                    [%#- Track Artist:                                                                                    -%]
-                    [%#-     AC as link: artist_credit(track.artist_credit, plain=1)                                      -%]
-                    [%#-     AC as text: artist_credit(track.artist_credit)                                               -%]
-                    [%#-     Count of how many artists are in the track artist: track.artist_credit.artist_count          -%]
-                    [%#-                                                                                                  -%]
-                    [%#- Each artist in the track artist (each 'name' in 'names')                                         -%]
-                    [%#-     AC: track.artist_credit.names.name                                                           -%]
-                    [%#-     disambig: Not currently available in this context                                            -%]
-                    [%#-     GID: track.artist_credit.names.artist.gid                                                    -%]
-                    [%#-     join phrase (specific to this track artist): track.artist_credit.names.join_phrase           -%]
-                    [%#-     name: track.artist_credit.names.artist.name                                                  -%]
-                    [%#-     rowid: track.artist_credit.names.artist_id and artist_credit.names.artist.id                 -%]
-                    [%#- ------------------------------------------------------------------------------------------------ -%]
-                    <div class="editArtist">
-                        [%- IF track.artist_credit.artist_count > 1 || name.artist.name != name.name -%]
-                            <textarea readonly="readonly" class="editTAs">[% artist_credit(track.artist_credit, plain=1) %]</textarea>
-                        [%- ELSE -%]
-                            <input type="text" class="oneArtist" value="[% track.artist_credit.names.0.artist.name %]"/>
-                        [%- END -%]
-                    </div>
-                    [%# TODO: populate this next with the AC for the track artist. %]
-                    <input type="hidden" value=""/>
-                    [%- trackNum = loop.count -%]
-                    [%- trackData = trackData _ '$("tbody:eq(' _ (mediumNumber - 1) _ ') div.editArtist:eq(' _ (trackNum - 1) _ ')").data("TAs",[' -%]
-                    [%- FOREACH name IN track.artist_credit.names -%]
-                        [%# TODO: populate this next with the correct disambig variable for this artist, once it is made available in this context. %]
-                        [%- trackData = trackData _ '{credit:"' _ html_escape(name.name) _ '",'
-                                                   _ 'disambig:"Placeholder Disambiguation Comment",'
-                                                   _ 'gid:"' _ name.artist.gid _ '",'
-                                                   _ 'join:"' _ html_escape(name.join_phrase) _ '",'
-                                                   _ 'name:"' _ html_escape(name.artist.name) _ '",'
-                                                   _ 'rowID:' _ name.artist.id
-                                                   _ '}' -%]
-                        [%- IF loop.count != loop.size -%]
-                            [%- trackData = trackData _ ',' -%]
-                        [%- ELSE -%]
-                            [%- trackData = trackData _ ']);' -%]
-                        [%- END -%]
+            </td>
+            <td class="trackartist hidden">
+                [%#- ------------------------------------------------------------------------------------------------ -%]
+                [%#- For future reference, since the variable names in the hash array here get rather confusing:      -%]
+                [%#- Track Artist:                                                                                    -%]
+                [%#-     AC as link: artist_credit(track.artist_credit, plain=1)                                      -%]
+                [%#-     AC as text: artist_credit(track.artist_credit)                                               -%]
+                [%#-     Count of how many artists are in the track artist: track.artist_credit.artist_count          -%]
+                [%#-                                                                                                  -%]
+                [%#- Each artist in the track artist (each 'name' in 'names')                                         -%]
+                [%#-     AC: track.artist_credit.names.name                                                           -%]
+                [%#-     disambig: Not currently available in this context                                            -%]
+                [%#-     GID: track.artist_credit.names.artist.gid                                                    -%]
+                [%#-     join phrase (specific to this track artist): track.artist_credit.names.join_phrase           -%]
+                [%#-     name: track.artist_credit.names.artist.name                                                  -%]
+                [%#-     rowid: track.artist_credit.names.artist_id and artist_credit.names.artist.id                 -%]
+                [%#- ------------------------------------------------------------------------------------------------ -%]
+                <div class="editArtist">
+                    [%- IF track.artist_credit.artist_count > 1 || name.artist.name != name.name -%]
+                        <textarea readonly="readonly" class="editTAs">[%- artist_credit(track.artist_credit, plain=1) -%]</textarea>
+                    [%- ELSE -%]
+                        <input type="text" class="oneArtist" value="[% track.artist_credit.names.0.artist.name %]"/>
                     [%- END -%]
-                </td>
-            [%- END -%]
-        </td>
-        [%- IF !edit %]
-            <td class="c">[% rating_stars(recording) %]</td>
+                </div>
+                [%# TODO: populate this next with the AC for the track artist. %]
+                <input type="hidden" value=""/>
+                [%- trackNum = loop.count -%]
+                [%- trackData = trackData _ '$("tbody:eq(' _ (mediumNumber - 1) _ ') div.editArtist:eq(' _ (trackNum - 1) _ ')").data("TAs",[' -%]
+                [%- FOREACH name IN track.artist_credit.names -%]
+                    [%# TODO: populate this next with the correct disambig variable for this artist, once it is made available in this context. %]
+                    [%- trackData = trackData _ '{credit:"' _ html_escape(name.name) _ '",'
+                                               _ 'disambig:"Placeholder Disambiguation Comment",'
+                                               _ 'gid:"' _ name.artist.gid _ '",'
+                                               _ 'join:"' _ html_escape(name.join_phrase) _ '",'
+                                               _ 'name:"' _ html_escape(name.artist.name) _ '",'
+                                               _ 'rowID:' _ name.artist.id
+                                               _ '}' -%]
+                    [%- IF loop.count != loop.size -%]
+                        [%- trackData = trackData _ ',' -%]
+                    [%- ELSE -%]
+                        [%- trackData = trackData _ ']);' -%]
+                    [%- END -%]
+                [%- END -%]
+            </td>
         [%- END -%]
-        <td[%- ' class="editable trackdur"><span' IF edit -%]>[% recording.length | format_time %][%- '</span>' IF edit -%]</td>
-        [%- IF edit %]
-            <td class="hidden trackdur"><input type="text" value="[% recording.length | format_time %]"></td>
-        [%- END -%]
-    </tr>
-    <tr class="hidden" id="error-track-[%- loop.count -%]">
-        <td id="error-track-position-[%- loop.count -%]"/>
-        <td id="error-track-title-[%- loop.count -%]"/>
-        <td id="error-track-artist-[%- loop.count -%]"/>
-        <td id="error-track-duration-[%- loop.count -%]"/>
-    </tr>
-[%- END -%]
-[%- FOR track=tracklist.tracks;
-    recording = track.recording %]
-    [%- make_track(track) -%]
-[%- END -%]
-[%- IF clean; make_track(); END -%]
+    </td>
+    [%- IF !edit %]
+        <td class="c">[% rating_stars(recording) %]</td>
+    [%- END -%]
+    <td[%- ' class="editable trackdur"><span' IF edit -%]>[% recording.length | format_time %][%- '</span>' IF edit -%]</td>
+    [%- IF edit %]
+        <td class="hidden trackdur"><input type="text" value="[% recording.length | format_time %]"></td>
+    [%- END -%]
+</tr>
