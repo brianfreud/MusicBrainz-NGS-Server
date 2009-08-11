@@ -3,6 +3,12 @@
 .trash  0 -1698px;
 */
 
+
+div.labelCredit,
+input.artistCredit {
+ display: none;
+}
+
 #artistLookup div.center {
  margin: 0 auto;
  text-align: center;
@@ -576,10 +582,8 @@ table.tbl tr.ev td.trackdur {
 }
 
 #artistEditBox .labelArtist,
-#artistEditBox .labelCredit,
 #artistEditBox .labelJoiner,
-#artistEditBox .artistName,
-#artistEditBox .artistCredit {
+#artistEditBox .artistName {
  display: inline;
 }
 
@@ -619,6 +623,10 @@ table.tbl tr.ev td.trackdur {
 }
 
 /* Artist lookup */
+
+#lookupBottomControls {
+ height: 1.5em;
+}
 
 #lookupControls div {
  font-weight: bold;
@@ -1250,6 +1258,7 @@ tr:hover .copyArtist {
 .ui-accordion .ui-accordion-content { padding: 1em 2.2em; border-top: 0; margin-top: -2px; position: relative; top: 1px; margin-bottom: 2px; overflow: auto; display: none; }
 .ui-accordion .ui-accordion-content-active { display: block; }/* Datepicker
 ----------------------------------*/
+/*
 .ui-datepicker { width: 17em; padding: .2em .2em 0; }
 .ui-datepicker .ui-datepicker-header { position:relative; padding:.2em 0; }
 .ui-datepicker .ui-datepicker-prev, .ui-datepicker .ui-datepicker-next { position:absolute; top: 2px; width: 1.8em; height: 1.8em; }
@@ -1272,8 +1281,9 @@ tr:hover .copyArtist {
 .ui-datepicker .ui-datepicker-buttonpane { background-image: none; margin: .7em 0 0 0; padding:0 .2em; border-left: 0; border-right: 0; border-bottom: 0; }
 .ui-datepicker .ui-datepicker-buttonpane button { float: right; margin: .5em .2em .4em; cursor: pointer; padding: .2em .6em .3em .6em; width:auto; overflow:visible; }
 .ui-datepicker .ui-datepicker-buttonpane button.ui-datepicker-current { float:left; }
-
+*/
 /* with multiple calendars */
+/*
 .ui-datepicker.ui-datepicker-multi { width:auto; }
 .ui-datepicker-multi .ui-datepicker-group { float:left; }
 .ui-datepicker-multi .ui-datepicker-group table { width:95%; margin:0 auto .4em; }
@@ -1284,8 +1294,9 @@ tr:hover .copyArtist {
 .ui-datepicker-multi .ui-datepicker-group-middle .ui-datepicker-header { border-left-width:0; }
 .ui-datepicker-multi .ui-datepicker-buttonpane { clear:left; }
 .ui-datepicker-row-break { clear:both; width:100%; }
-
+*/
 /* RTL support */
+/*
 .ui-datepicker-rtl { direction: rtl; }
 .ui-datepicker-rtl .ui-datepicker-prev { right: 2px; left: auto; }
 .ui-datepicker-rtl .ui-datepicker-next { left: 2px; right: auto; }
@@ -1297,7 +1308,7 @@ tr:hover .copyArtist {
 .ui-datepicker-rtl .ui-datepicker-group { float:right; }
 .ui-datepicker-rtl .ui-datepicker-group-last .ui-datepicker-header { border-right-width:0; border-left-width:1px; }
 .ui-datepicker-rtl .ui-datepicker-group-middle .ui-datepicker-header { border-right-width:0; border-left-width:1px; }
-
+*/
 /* IE6 IFRAME FIX (taken from datepicker 1.5.3 */
 .ui-datepicker-cover {
     display: none; /*sorry for IE5*/

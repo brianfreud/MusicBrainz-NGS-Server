@@ -12,6 +12,7 @@ var text                   = {
        RERemove              : "[% l("Remove release event") %]",
        AddTrack              : "[% l("Add Track") %]",
        Angle                 : "[% l("unbalanced angle bracket:") %]",
+       HasDiffArtistCredit   : "[% l("Credited using a variation on this name.") %]",
        ArtistCredit          : "[% l("Artist Credit") %]",
        ArtistJoiner          : "[% l("Join Phrase") %]",
        ArtistName            : "[% l("Artist Name") %]",

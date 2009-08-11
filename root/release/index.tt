@@ -46,58 +46,9 @@
                 <th class="tdur[%- IF edit -%] release[%- END-%]">[% l('Length') %]</th>
             </tr>
         </thead>
-[%#- i = 0 -%]
-[%#- WHILE i < 4 -%]
         [%- FOR medium=release.mediums -%]
-            <tbody[%- IF edit -%] id="medium-[%- loop.count -%]"[%- END -%]>
-                <tr class="subh[%- IF edit -%] nodrop nodrag[%- END -%]">
-                    [%- IF edit -%]
-                        <th style="background: url(/static/images/table-header-2.gif) repeat-x 0 50%!important;" class="toolbox hidden"> </th>
-                    [%- END -%]
-                    <th style="background: url(/static/images/table-header-2.gif) repeat-x 0 50%!important;">
-                        [%- IF edit -%]
-                            <div class="mediumToggle"></div>
-                        [%- ELSE -%]
-                            &nbsp;
-                        [%- END -%]
-                    </th>
-                    <th colspan="[%- IF edit -%]2[%- ELSE -%][% IF show_artists %]4[% ELSE %]3[% END %][%- END -%]" style="background: url(/static/images/table-header-2.gif) repeat-x 0 50%!important;">
-                        [%- IF !edit -%]<a href="[% c.uri_for_action('/tracklist/show', [medium.tracklist.id]) %]">
-                        [%- ELSE -%]<span class="medium format editable">
-                        [%- END -%]
-                        [% medium.format_name or l("Medium") | html %]
-                        [%- IF edit -%]
-                            </span>
-                            <select class="medium format hidden"></select>
-                            <input type="hidden" class="medium format" value="[%- medium.format_id -%]"/>
-                        [%- END -%]
-                        [%- IF edit %]<span class="medium position">
-                        [%- END %] [% medium.position %]
-                        [%- IF edit %]</span>
-                            <input type="text" class="medium position hidden"/>
-                        [%- END %]
-                        [%- IF medium.name || edit -%]:
-                        [%- END %]
-                        [%- IF edit %]<span class="medium title editable">[%- END -%]
-                            [%- IF medium.name %]
-                                [% medium.name | html -%]
-                            [%- ELSE -%]
-                                [%- IF edit %][%- " [ " _ l("untitled") _ " ]" -%][%- END -%]
-                            [%- END -%]
-                        [%- IF edit %]</span>
-                            <input type="text" class="medium title hidden"/>
-                        [%- ELSE -%]</a>
-                        [%- END -%]
-                    </th>
-                    [%- IF edit -%]
-                        <th style="background: url(/static/images/table-header-2.gif) repeat-x 0 50%!important;" class="medium trackdur"><span></span></th>
-                    [%- END -%]
-                </tr>
-                [%- PROCESS 'tracklist/tracklist.tt' tracklist=medium.tracklist mediumNumber=loop.count -%]
-            </tbody>
+            [%- PROCESS 'medium/medium.tt' -%]
         [%- END -%]
-[%#- i = i+1 -%]
-[%#- END -%]
         [%- IF edit -%]
             <tfoot id="removedTracks" class="hidden">
                 <tr class="subh[%- IF edit -%] nodrop nodrag[%- END -%]">

@@ -25,11 +25,12 @@ var experimental = false,
                                          background  : "#F9F9F9",
                                          borderColor : "#666",
                                          css         : {
-                                                       width  : "51em"
+                                                       width  : "31em"
                                                        },
                                          id          : "artistEditBox",
                                          round       : false
                                          },
+                   edit_width_with_AC  : "51em",
                    editor_inputs       : 'input.artistName, input.artistCredit, input.joinPhrase',
                    html_button_add     : '<input type="button" value="' + text.AddArtistShort + '" class="NewArtistButton"/>',
                    html_button_done    : '<input type="button" value="' + text.Done + '" class="ArtistDoneButton"/>',
@@ -79,8 +80,14 @@ var experimental = false,
                                          '</div>' +
                                          '<div id="lookupResults" style="display:none;">' +
                                          '</div>' +
-                                         '<div id="lookupAddNew">' +
-                                             '<input type="button" value="' + text.AddArtistNew + '" id="btnArtistAdd" class="hidden" tabindex="-1"/>' +
+                                         '<div id="lookupBottomControls" class="hidden">' +
+                                             '<div id="lookupHasAC" style="float:left">' +
+                                                 '<input type="checkbox" value="false" class="hasAC" tabindex="-1"/>' +
+                                                 ' <label>' + text.HasDiffArtistCredit + '</label>' +
+                                             '</div>' +
+                                             '<div style="float:right">' +
+                                                 '<input type="button" value="' + text.AddArtistNew + '" id="btnArtistAdd" tabindex="-1"/>' +
+                                             '</div>' +
                                          '</div>',
                    lookupBox           : {
                                          after       : true,
@@ -118,11 +125,12 @@ var experimental = false,
                                                          } else {
                                                              $("#lookupInfo").css("display","block");
                                                              $.each($.map(data.results, function (result) {
-                                                                    var resultstring = '<div class="result" style="display:none;"><div class="artist">' +
-                                                                                           result.name +
+                                                                    var resultstring = '<div class="result" style="display:none;">' +
+                                                                                           '<div class="artist">' +
+                                                                                               result.name +
+                                                                                           '</div>' +
+                                                                                           ((typeof(result.comment) != "undefined") ? '<div class="disambiguation">' + result.comment + '</div>' : '') +
                                                                                        '</div>';
-                                                                    resultstring += (typeof(result.comment) != "undefined") ? '<div class="disambiguation">' + result.comment + '</div>' : '';
-                                                                    resultstring += '</div>';
                                                                     return $(resultstring);
                                                              }), function (i) {
                                                                  var thisResult = data.results[i];
@@ -139,6 +147,7 @@ var experimental = false,
                                                              $("#lookupLoaded").text(((alreadyLoaded == "NaN") ? alreadyLoaded : 0) + data.results.length);
                                                              $("#lookupResults").css("padding-top",".5em")
                                                                                 .find("div.result")
+                                                                                .corner()
                                                                                 .filter(":even")
                                                                                 .css("background-color","#F1F1F1")
                                                                                 .end()
@@ -146,16 +155,19 @@ var experimental = false,
                                                                                 .css("background-color","#FEFEFE")
                                                                                 .end()
                                                                                 .slice(0,10)
-                                                                                .show()
-                                                                                .corner();
+                                                                                .show();
                                                              if ($("#lookupResults").css("display") == "none") {
                                                                  $("#lookupResults").slideDown(200);
+                                                                 $("#lookupBottomControls").css({
+                                                                                                marginTop: "1em",
+                                                                                                display: "block"
+                                                                                                });
                                                                  setTimeout('$("#artistLookup").redrawShadow();',225);
                                                              }
                                                          }
                                                          },
                    resetAppearance     : function () {
-                                                     $(artistEditor.editor_inputs).css("backgroundColor","#cacaca");
+                                                     $(artistEditor.editor_inputs).css("backgroundColor","#dadada");
                                                      $("#artistLookup").removeShadow()
                                                                        .hide()
                                                                        .remove();

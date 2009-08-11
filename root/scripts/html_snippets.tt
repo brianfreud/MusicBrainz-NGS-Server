@@ -29,4 +29,7 @@ docsBox : '[% docsBox.remove("[\t\n]").replace("'","\\'") %]',
 
 [%- trackParser = PROCESS "scripts/module_track_parser.tt" -%]
 trackParser : '[% trackParser.remove("[\t\n]").replace("'","\\'").replace(" +"," ") %]',
+
+[%- newMedium = INCLUDE "medium/medium.tt" -%]
+newMedium : '[% newMedium.remove("[\t\n]").replace("'","\\'").replace(" +"," ").replace("> <","><") %]'
                            };
