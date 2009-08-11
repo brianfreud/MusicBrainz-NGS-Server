@@ -1,6 +1,6 @@
 /*jslint undef: true, browser: true*/
 /*global jQuery, $, mb, text, convertToHTML, convertToMarkup*/
-console.time("A")
+
 var experimental = false,
     charMap = {
     characters : {
@@ -82,6 +82,16 @@ var experimental = false,
                                          '<div id="lookupAddNew">' +
                                              '<input type="button" value="' + text.AddArtistNew + '" id="btnArtistAdd" class="hidden" tabindex="-1"/>' +
                                          '</div>',
+                   lookupBox           : {
+                                         after       : true,
+                                         borderColor : "#666",
+                                         css         : {
+                                                       float  : "left",
+                                                       width  : "12em"
+                                                       },
+                                         id          : "artistLookup",
+                                         round       : false
+                                         },
                    store_active_editor : "",
                    searchServer        : "/ajax/search",
                    queryBase           : "type=artist&limit=20&query=",
@@ -139,7 +149,8 @@ var experimental = false,
                                                                                 .show()
                                                                                 .corner();
                                                              if ($("#lookupResults").css("display") == "none") {
-                                                                 $("#lookupResults").slideDown("fast");
+                                                                 $("#lookupResults").slideDown(200);
+                                                                 setTimeout('$("#artistLookup").redrawShadow();',225);
                                                              }
                                                          }
                                                          },
@@ -259,7 +270,6 @@ var experimental = false,
                                                                        },
                                          makeEditor_Many : function () { /* This is used when a track artist has more than 1 artist as constituant artists. */
                                                                        $("textarea.editTAs").live("click", function (e) {
-console.timeEnd("A")
                                                                            if ($("#artistEditBox").length > 0) { // If another artist editor is already active, don't open another one.
                                                                                if (artistEditor.store_active_editor != e.target) { // The textarea the user clicked on was *not* the one already being edited.
                                                                                    e.stopPropagation();
@@ -313,16 +323,7 @@ console.timeEnd("A")
                                                                            artistEditor.destroyLookup();
                                                                            $(this).parent()
                                                                                   .parent()
-                                                                                  .makeFloatingDiv({
-                                                                                                   after       : true,
-                                                                                                   borderColor : "#666",
-                                                                                                   css         : {
-                                                                                                                 float  : "left",
-                                                                                                                 width  : "12em"
-                                                                                                                 },
-                                                                                                   id          : "artistLookup",
-                                                                                                   round       : false
-                                                                                                   })
+                                                                                  .makeFloatingDiv(artistEditor.lookupBox)
                                                                                   .find("div:first")
                                                                                   .append(artistEditor.html_lookup_box);
                                                                            $("#artistLookup").redrawShadow();
@@ -336,16 +337,7 @@ console.timeEnd("A")
                                                                                   .css("backgroundColor","#fff")
                                                                                   .end()
                                                                                   .find("input.artistName")
-                                                                                  .makeFloatingDiv({
-                                                                                                   after       : true,
-                                                                                                   borderColor : "#666",
-                                                                                                   css         : {
-                                                                                                                 float  : "left",
-                                                                                                                 width  : "12em"
-                                                                                                                 },
-                                                                                                   id          : "artistLookup",
-                                                                                                   round       : false
-                                                                                                   })
+                                                                                  .makeFloatingDiv(artistEditor.lookupBox)
                                                                                   .find("div:first")
                                                                                   .append(artistEditor.html_lookup_box);
                                                                            $("#artistLookup").redrawShadow();
@@ -1142,7 +1134,7 @@ $("#btnArtistSearch").live("click", function () {
         setTimeout(function () { /* Load the effect now, but delay sending it, so that it happens while the ajax request is taking place. */
                                $("#artistLookup >div:first").css("width","");
                                $("#artistLookup").animate({width:"45em"},300);
-                               setTimeout('$("#artistLookup").redrawShadow();',301);
+                               setTimeout('$("#artistLookup").redrawShadow();',310);
                                }, 1);
         $.ajax({
                async    : false,
