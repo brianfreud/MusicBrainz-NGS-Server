@@ -1,3 +1,6 @@
+/*jslint undef: true, browser: true*/
+/*global jQuery, $*/
+
 /*
     VERSION: Drop Shadow jQuery Plugin 1.6  12-13-2007
 
@@ -118,13 +121,10 @@
                     and it is not supported in any way. Use it at your own risk.
 */
 
+(function ($) {
 
-(function($){
-
-    var dropShadowZindex;  //z-index counter
-
-    $.fn.dropShadow = function(options)
-    {
+    var dropShadowZindex; //z-index counter
+    $.fn.dropShadow = function (options) {
         // Default options
         var opt = $.extend({
             left: 4,
@@ -133,22 +133,21 @@
             opacity: ".5",
             color: "black",
             swap: false
-            }, options);
-        var jShadows = $([]);  //empty jQuery collection
-        
+        },
+        options);
+        var jShadows = $([]); //empty jQuery collection
         // Loop through original elements
-        this.not(".dropShadow").each(function()
-        {
-                        dropShadowZindex = parseInt($(this).css("z-index"), 10);
+        this.not(".dropShadow").each(function () {
+            dropShadowZindex = parseInt($(this).css("z-index"), 10);
             var jthis = $(this),
-                shadows = [],
-                blur = (opt.blur <= 0) ? 0 : opt.blur,
-                opacity = (blur === 0) ? opt.opacity : opt.opacity / (blur * 8),
-                zOriginal = (opt.swap) ? dropShadowZindex : dropShadowZindex + 1,
-                zShadow = (opt.swap) ? dropShadowZindex + 1 : dropShadowZindex,
-            
+            shadows = [],
+            blur = (opt.blur <= 0) ? 0 : opt.blur,
+            opacity = (blur === 0) ? opt.opacity : opt.opacity / (blur * 8),
+            zOriginal = (opt.swap) ? dropShadowZindex : dropShadowZindex + 1,
+            zShadow = (opt.swap) ? dropShadowZindex + 1 : dropShadowZindex,
+
             // Create ID for shadow
-                shadowId;
+            shadowId;
             if (this.id) {
                 shadowId = this.id + "_dropShadow";
             }
@@ -159,9 +158,7 @@
             // Modify original element
             $.data(this, "shadowId", shadowId); //store id in expando
             $.data(this, "shadowOptions", options); //store options in expando
-            jthis
-                .attr("shadowId", shadowId)
-                .css("zIndex", zOriginal);
+            jthis.attr("shadowId", shadowId).css("zIndex", zOriginal);
             if (jthis.css("position") != "absolute") {
                 jthis.css({
                     position: "relative",
@@ -170,76 +167,89 @@
             }
 
             // Create first shadow layer
-            bgColor = jthis.css("backgroundColor");
+            var bgColor = jthis.css("backgroundColor");
             if (bgColor == "rgba(0, 0, 0, 0)") {
-                            bgColor = "transparent";  //Safari
-                        }
-            if (bgColor != "transparent" || jthis.css("backgroundImage") != "none" || this.nodeName == "SELECT" || this.nodeName == "INPUT" || this.nodeName == "TEXTAREA") {        
-                shadows[0] = $("<div></div>")
-                    .css("background", opt.color);                                
+                bgColor = "transparent"; //Safari
+            }
+            if (bgColor != "transparent" || jthis.css("backgroundImage") != "none" || this.nodeName == "SELECT" || this.nodeName == "INPUT" || this.nodeName == "TEXTAREA") {
+                shadows[0] = $("<div></div>").css("background", opt.color);
             }
             else {
-                shadows[0] = jthis
-                    .clone()
-                    .removeAttr("id")
-                    .removeAttr("name")
-                    .removeAttr("shadowId")
-                    .css("color", opt.color);
+                shadows[0] = jthis.clone().removeAttr("id").removeAttr("name").removeAttr("shadowId").css("color", opt.color);
             }
-            shadows[0]
-                .addClass("dropShadow")
-                .css({
-                    height: jthis.outerHeight(),
-                    left: blur,
-                    opacity: opacity,
-                    position: "absolute",
-                    top: blur,
-                    width: jthis.outerWidth(),
-                    zIndex: zShadow
-                });
-                
+            shadows[0].addClass("dropShadow").css({
+                height: jthis.outerHeight(),
+                left: blur,
+                opacity: opacity,
+                position: "absolute",
+                top: blur,
+                width: jthis.outerWidth(),
+                zIndex: zShadow
+            });
+
             // Create other shadow layers
             var layers = (8 * blur) + 1;
-            for (i = 1; i < layers; i++) {
+            for (var i = 1; i < layers; i++) {
                 shadows[i] = shadows[0].clone();
             }
 
             // Position layers
             var k = 1,
-                j = blur;
+            j = blur;
             while (j > 0) {
-                shadows[k].css({left: j * 2, top: 0});           //top
-                shadows[k + 1].css({left: j * 4, top: j * 2});   //right
-                shadows[k + 2].css({left: j * 2, top: j * 4});   //bottom
-                shadows[k + 3].css({left: 0, top: j * 2});       //left
-                shadows[k + 4].css({left: j * 3, top: j});       //top-right
-                shadows[k + 5].css({left: j * 3, top: j * 3});   //bottom-right
-                shadows[k + 6].css({left: j, top: j * 3});       //bottom-left
-                shadows[k + 7].css({left: j, top: j});           //top-left
+                shadows[k].css({
+                    left: j * 2,
+                    top: 0
+                }); //top
+                shadows[k + 1].css({
+                    left: j * 4,
+                    top: j * 2
+                }); //right
+                shadows[k + 2].css({
+                    left: j * 2,
+                    top: j * 4
+                }); //bottom
+                shadows[k + 3].css({
+                    left: 0,
+                    top: j * 2
+                }); //left
+                shadows[k + 4].css({
+                    left: j * 3,
+                    top: j
+                }); //top-right
+                shadows[k + 5].css({
+                    left: j * 3,
+                    top: j * 3
+                }); //bottom-right
+                shadows[k + 6].css({
+                    left: j,
+                    top: j * 3
+                }); //bottom-left
+                shadows[k + 7].css({
+                    left: j,
+                    top: j
+                }); //top-left
                 k += 8;
                 j--;
             }
 
             // Create container
-            var divShadow = $("<div></div>")
-                .attr("id", shadowId) 
-                .addClass("dropShadow")
-                .css({
-                    left: jthis.position().left + opt.left - blur,
-                    marginTop: jthis.css("marginTop"),
-                    marginRight: jthis.css("marginRight"),
-                    marginBottom: jthis.css("marginBottom"),
-                    marginLeft: jthis.css("marginLeft"),
-                    position: "absolute",
-                    top: jthis.position().top + opt.top - blur,
-                    zIndex: zShadow
-                });
+            var divShadow = $("<div></div>").attr("id", shadowId).addClass("dropShadow").css({
+                left: jthis.position().left + opt.left - blur,
+                marginTop: jthis.css("marginTop"),
+                marginRight: jthis.css("marginRight"),
+                marginBottom: jthis.css("marginBottom"),
+                marginLeft: jthis.css("marginLeft"),
+                position: "absolute",
+                top: jthis.position().top + opt.top - blur,
+                zIndex: zShadow
+            });
 
             // Add layers to container    
             for (i = 0; i < layers; i++) {
                 divShadow.append(shadows[i]);
             }
-            
+
             // Add container to DOM
             jthis.after(divShadow);
 
@@ -247,58 +257,46 @@
             jShadows = jShadows.add(divShadow);
 
             // Re-align shadow on window resize
-            $(window).resize(function()
-            {
+            $(window).resize(function () {
                 try {
                     divShadow.css({
                         left: jthis.position().left + opt.left - blur,
                         top: jthis.position().top + opt.top - blur
                     });
                 }
-                catch(e){}
+                catch(e) {}
             });
-            
+
             // Increment z-index counter
             dropShadowZindex += 2;
 
-        });  //end each
-        
+        }); //end each
         return this.pushStack(jShadows);
     };
 
-
-    $.fn.redrawShadow = function()
-    {
+    $.fn.redrawShadow = function () {
         // Remove existing shadows
         this.removeShadow();
-        
+
         // Draw new shadows
-        return this.each(function()
-        {
+        return this.each(function () {
             var shadowOptions = $.data(this, "shadowOptions");
             $(this).dropShadow(shadowOptions);
         });
     };
 
-
-    $.fn.removeShadow = function()
-    {
-        return this.each(function()
-        {
+    $.fn.removeShadow = function () {
+        return this.each(function () {
             var shadowId = $(this).shadowId();
             $("div#" + shadowId).remove();
         });
     };
 
-
-    $.fn.shadowId = function()
-    {
+    $.fn.shadowId = function () {
         return $.data(this[0], "shadowId");
     };
 
-
-    $(function()  
-    {
+    $(function () {
         // Suppress printing of shadows
         var noPrint = "<style type='text/css' media='print'>";
         noPrint += ".dropShadow{visibility:hidden;}</style>";

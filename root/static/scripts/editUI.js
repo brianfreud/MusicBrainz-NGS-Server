@@ -1,39 +1,6 @@
 /*jslint undef: true, browser: true*/
 /*global jQuery, $, mb, text, convertToHTML, convertToMarkup*/
 
-$.extend(jQuery.fn, {
-    count: function (msg) {
-        console ? console.count(this) : "";
-        return this;
-    },
-    dir: function (msg) {
-        console ? console.dir(this) : "";
-        return this;
-    },
-    log: function (msg) {
-        console ? console.log("%s: %o", msg, this) : "";
-        return this;
-    },
-    profile: function (msg) {
-        console ? console.profile(this) : "";
-        return this;
-    },
-    time: function (argA, argB) {
-        if (console) {
-            if (argB == true || argB == false) {
-                console ? (argB ? console.timeEnd(argA) : console.time(argA)) : "";
-            } else {
-                console.timeEnd(argA).time(argB);
-            }
-        }
-        return this;
-    },
-    trace: function (msg) {
-        console ? console.trace(this) : "";
-        return this;
-    }
-});
-
 var experimental = false,
     charMap = {
     characters : {
@@ -183,7 +150,8 @@ var experimental = false,
                                                                                                 })
                                                                                                 .get()
                                                                                                 .join("")
-                                                                        );
+                                                                        )
+                                                                        .trigger("update");
                                                      },
                    events              : {
                                          init            : function () {
@@ -206,7 +174,7 @@ var experimental = false,
                                                                        }).live("paste", function () {
                                                                            var artistbox = this;
                                                                            setTimeout(function () {
-                                                                               if ($(this).log().next().log().val().length == 0) {
+                                                                               if ($(this).next().val().length == 0) {
                                                                                    $(this).next().val($.trim($(this).val()));
                                                                                    artistEditor.updateTrackArtist();
                                                                                }
@@ -248,10 +216,10 @@ var experimental = false,
                                                                                       .addClass("artistName")
                                                                                       .parent()
                                                                                       .after(artistEditor.html_line_artist)
-                                                                                      .parents("td:first")
+                                                                                      .parents("td.trackartist")
                                                                                       .find("div:first")
-                                                                                      .find("textarea") // Find the textarea,
-                                                                                      .autogrow()
+                                                                                      .find("textarea")
+                                                                                      .autogrow({minHeight: 1, expandTolerance: 0});
                                                                                artistEditor.updateTrackArtist();
                                                                                $("#artistEditBox > div:first > div:first > div:eq(1) > input:first").focus();
                                                                                $(this).remove();
@@ -656,9 +624,9 @@ var experimental = false,
                 $(this).click(function () { // We cannot just toggle toggleclass, as we only want to swap the one item, not the whole group.
                     $('.editable.' + toggleclass[0] + ':eq(' + i + ')').css("display","none"); // Hide the specific item's text.
                     $('.hidden.' + toggleclass[0] + ':eq(' + i + ')').show() // Show the specific item's editing form field.
-                                                                     .find("textarea") // Find any textareas in that field,
-                                                                     .autogrow() // and expand them to fit the contents, if needed.
-                                                                     .end() // Return selection to the parent td.
+                                                                     .find('textarea:visible:first')
+                                                                     .autogrow({minHeight: 1, expandTolerance: 0})
+                                                                     .end()
                                                                      .find('input:visible:first, textarea:visible:first') // Find the first edit field,
                                                                      .focus() // and give it focus.
                                                                      .click(); // and click it (to trigger the artist editor).

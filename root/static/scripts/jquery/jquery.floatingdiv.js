@@ -6,7 +6,7 @@
  * Corner rounding requires: http://jquery.malsup.com/corner/
  * Shadows requires: http://eyebulb.com/dropshadow/
  *
- * version 1.0: 2009-09-06
+ * version 0.2: 2009-09-11
  * by Brian Schweitzer (BrianFreud)
  *
  * Dual licensed under the MIT and GPL licenses:
@@ -26,34 +26,32 @@
 //                  round       : true                             <-- add shadowing visual effects. Default: true
 //                  shadow      : true                             <-- add round corner visual effects. Default: true
 //                  });
-
 $.fn.makeFloatingDiv = function (options) {
     $("#floatdiv").remove();
     var thisZIndex = $(this).css("z-index"),
-        floatBox = $("<div></div>"),
-        floatBoxInner = $("<div></div>"),
-        settings = {
-                   backgroundColor  : "#000",
-                   border           : "none",
-                   color            : "#000",
-                   position         : "absolute",
-                   width            : "20em",
-                   zIndex           : (thisZIndex < 10 || thisZIndex == "auto") ? 10 : (parseInt(thisZIndex, 10) + 1)
+    floatBox = $("<div></div>"),
+    floatBoxInner = $("<div></div>"),
+    settings = {
+        backgroundColor: "#000",
+        border: "none",
+        color: "#000",
+        position: "absolute",
+        width: "20em",
+        zIndex: (thisZIndex < 10 || thisZIndex == "auto") ? 10 : (parseInt(thisZIndex, 10) + 1)
     },
-        shadowMe = function (element, round) {
-            /* If it's the first time this has been run, curve the corners and create the drop shadow divs. */
-            if (typeof(element.shadowId()) == "undefined") {
-                element.dropShadow();
-                if (round !== false) {
-                    $("#" + element.shadowId() + " div").corner("round 6px")
-                                                        .dropShadow();
-                }
-            /* Otherwise, leave the corners alone, and just recalculate the positions for the drop shadow div. */
-            } else {
-                element.redrawShadow();
-                $("#" + element.shadowId() + " div").redrawShadow();
+    shadowMe = function (element, round) {
+        /* If it's the first time this has been run, curve the corners and create the drop shadow divs. */
+        if (typeof(element.shadowId()) == "undefined") {
+            element.dropShadow();
+            if (round !== false) {
+                $("#" + element.shadowId() + " div").corner("round 6px").dropShadow();
             }
-        };
+            /* Otherwise, leave the corners alone, and just recalculate the positions for the drop shadow div. */
+        } else {
+            element.redrawShadow();
+            $("#" + element.shadowId() + " div").redrawShadow();
+        }
+    };
     if (typeof(options.classes) != "undefined") {
         $.each(options.classes, function () {
             floatBox.addClass(this);
@@ -67,7 +65,7 @@ $.fn.makeFloatingDiv = function (options) {
     }
     floatBox.attr("id", options.id);
     if (typeof(options.borderColor) != "undefined") {
-            settings.backgroundColor = options.borderColor;
+        settings.backgroundColor = options.borderColor;
     }
     if (typeof(options.round) == "undefined") {
         options.round = true;
@@ -76,30 +74,30 @@ $.fn.makeFloatingDiv = function (options) {
         options.shadow = true;
     }
     switch (options.position) {
-        case "bl":
-            $.extend(settings, {
-                               left : $(this).position().left + 1,
-                               top  : $(this).position().top + $(this).outerHeight() - 1
-                               });
-            break;
-        case "tl":
-            $.extend(settings, {
-                               left : $(this).position().left + 1,
-                               top  : $(this).position().top
-                               });
-            break;
-        case "br":
-            $.extend(settings, {
-                               left : $(this).position().left + $(this).outerWidth(),
-                               top  : $(this).position().top + $(this).outerHeight() - 1
-                               });
-            break;
-        case "tr":
-            $.extend(settings, {
-                               left : $(this).position().left + $(this).outerWidth(),
-                               top  : $(this).position().top
-                               });
-            break;
+    case "bl":
+        $.extend(settings, {
+            left: $(this).position().left + 1,
+            top: $(this).position().top + $(this).outerHeight() - 1
+        });
+        break;
+    case "tl":
+        $.extend(settings, {
+            left: $(this).position().left + 1,
+            top: $(this).position().top
+        });
+        break;
+    case "br":
+        $.extend(settings, {
+            left: $(this).position().left + $(this).outerWidth(),
+            top: $(this).position().top + $(this).outerHeight() - 1
+        });
+        break;
+    case "tr":
+        $.extend(settings, {
+            left: $(this).position().left + $(this).outerWidth(),
+            top: $(this).position().top
+        });
+        break;
     }
     if (typeof(options.css) != "undefined") {
         $.extend(settings, options.css);
@@ -115,12 +113,12 @@ $.fn.makeFloatingDiv = function (options) {
         $(this).append(floatBox);
     }
     floatBoxInner.css({
-                      backgroundColor : (typeof(options.background) == "undefined") ? "#fff" : options.background,
-                      height          : "100%",
-                      margin          : "1px",
-                      padding         : (typeof(options.innerPad) == "undefined") ? "7px" : options.innerPad + "px",
-                      width           : parseInt(floatBox.width(), 10) - ((typeof(options.innerPad) == "undefined") ? 16 : (options.innerPad * 2) + 2)
-                      });
+        backgroundColor: (typeof(options.background) == "undefined") ? "#fff" : options.background,
+        height: "100%",
+        margin: "1px",
+        padding: (typeof(options.innerPad) == "undefined") ? "7px" : options.innerPad + "px",
+        width: parseInt(floatBox.width(), 10) - ((typeof(options.innerPad) == "undefined") ? 16 : (options.innerPad * 2) + 2)
+    });
     floatBox.append(floatBoxInner);
     if (options.round !== false) {
         floatBox.corner("round 6px");
@@ -131,4 +129,3 @@ $.fn.makeFloatingDiv = function (options) {
     }
     return floatBox;
 };
-

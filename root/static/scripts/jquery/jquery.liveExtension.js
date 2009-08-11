@@ -1,3 +1,6 @@
+/*jslint undef: true, browser: true*/
+/*global jQuery, $*/
+
 /**
  * http://plugins.jquery.com/project/Live-Extension
  * @author Alexander Farkas
@@ -110,8 +113,7 @@
         if (!$.support.bubblingChange) {
 
             var oldLive = $.fn.live,
-            oldDie = $.fn.die;
-
+            oldDie = $.fn.die,
             detectChange = function (fn) {
                 return $.event.proxy(fn, function (e) {
                     var jElm = $(e.target);
@@ -138,8 +140,7 @@
                         }
                     }
                 });
-            };
-
+            },
             createChangeProxy = function (fn) {
                 return $.event.proxy(fn, function (e) {
                     if (e.type === 'change') {
@@ -179,7 +180,7 @@
         }
     })();
 
-/**
+    /**
  * Copyright (c) 2007 Jörn Zaefferer
  */
 

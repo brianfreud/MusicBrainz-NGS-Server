@@ -1,3 +1,6 @@
+/*jslint undef: true, browser: true*/
+/*global jQuery, $*/
+
 /**
  * Autotab - jQuery plugin 1.1b
  * http://www.lousyllama.com/sandbox/jquery-autotab
