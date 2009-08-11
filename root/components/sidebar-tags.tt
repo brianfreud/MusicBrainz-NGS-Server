@@ -20,6 +20,7 @@ END -%]
             </dl>
         [% END %]
         [% IF c.user_exists %]
+            [%- IF !tags.size; '<br/>'; END; -%]
             [% link_entity(entity, 'tag', tag_this_text) %]
         [% END %]
         </div>
