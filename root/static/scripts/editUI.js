@@ -54,6 +54,34 @@ var experimental = false,
                                                  text.ArtistJoiner +
                                              '</div>' +
                                          '</div>',
+                   html_lookup_box     : '<div id="lookupControls" class="center">' +
+                                             '<input type="button" value="' + text.SearchArtist + '" id="btnArtistSearch" tabindex="-1"/>' +
+                                             '<div style="display:none;" id="lookupNoArtist">' + 
+                                                 text.ArtistNameIsEmpty +
+                                             '</div>' +
+                                             '<div style="display:none;" id="lookupNoResults">' +
+                                                 text.ArtistLookupNoResults +
+                                             '</div>' +
+                                             '<div style="display:none;" id="lookupSearching">' +
+                                                 '<img src="/static/images/loading-small.gif"/> ' +
+                                                 text.ArtistLookupSearching +
+                                             '</div>' +
+                                         '</div>' +
+                                         '<div style="display:none;" id="lookupInfo">' +
+                                             '<span>' +
+                                                 text.ArtistLookupResults +
+                                             '</span>' +
+                                             ' ' + text.ArtistLookupMatches +
+                                             ' <span id="lookupMatches"></span>' +
+                                             ', ' +
+                                             text.ArtistLookupLoaded +
+                                             ' <span id="lookupLoaded"></span>' +
+                                         '</div>' +
+                                         '<div id="lookupResults" style="display:none;">' +
+                                         '</div>' +
+                                         '<div id="lookupAddNew">' +
+                                             '<input type="button" value="' + text.AddArtistNew + '" id="btnArtistAdd" class="hidden" tabindex="-1"/>' +
+                                         '</div>',
                    store_active_editor : "",
                    searchServer        : "/ajax/search",
                    queryBase           : "type=artist&limit=20&query=",
@@ -159,7 +187,8 @@ var experimental = false,
                                                                        artistEditor.events.makeEditor_Many();
                                                                        artistEditor.events.synchTextareas();
                                                                        artistEditor.events.keepTACorrect();
-                                                                       artistEditor.events.initLookupBox();
+                                                                       artistEditor.events.initLookupBoxOne();
+                                                                       artistEditor.events.initLookupBoxMany();
                                                                        artistEditor.events.synchACJPcolors();
                                                                        },
                                          synchTextareas  : function () { /* Keep the AC synched to the artist name, but only if the AC hasn't been modified independently. */
@@ -278,7 +307,27 @@ var experimental = false,
                                                                            artistEditor.updateTrackArtist();
                                                                        });
                                                                        },
-                                         initLookupBox   : function () { /* Create the initial lookup float box, with the structure to fill in results later. */
+                                         initLookupBoxOne: function () {
+                                                                       $('input.oneArtist').live("focusin", function () {
+                                                                           artistEditor.destroyLookup();
+                                                                           $(this).parent()
+                                                                                  .parent()
+                                                                                  .makeFloatingDiv({
+                                                                                                   after       : true,
+                                                                                                   borderColor : "#666",
+                                                                                                   css         : {
+                                                                                                                 float  : "left",
+                                                                                                                 width  : "12em"
+                                                                                                                 },
+                                                                                                   id          : "artistLookup",
+                                                                                                   round       : false
+                                                                                                   })
+                                                                                  .find("div:first")
+                                                                                  .append(artistEditor.html_lookup_box);
+                                                                           $("#artistLookup").redrawShadow();
+                                                                       })
+                                                                       },
+                                         initLookupBoxMany: function () { /* Create the initial lookup float box, with the structure to fill in results later. */
                                                                        $('input.artistName').live("focusin", function () {
                                                                            artistEditor.resetAppearance();
                                                                            $(this).parent()
@@ -297,34 +346,7 @@ var experimental = false,
                                                                                                    round       : false
                                                                                                    })
                                                                                   .find("div:first")
-                                                                                  .append('<div id="lookupControls" class="center">' +
-                                                                                              '<input type="button" value="' + text.SearchArtist + '" id="btnArtistSearch" tabindex="-1"/>' +
-                                                                                              '<div style="display:none;" id="lookupNoArtist">' + 
-                                                                                                  text.ArtistNameIsEmpty +
-                                                                                              '</div>' +
-                                                                                              '<div style="display:none;" id="lookupNoResults">' +
-                                                                                                  text.ArtistLookupNoResults +
-                                                                                              '</div>' +
-                                                                                              '<div style="display:none;" id="lookupSearching">' +
-                                                                                                  '<img src="/static/images/loading-small.gif"/> ' +
-                                                                                                  text.ArtistLookupSearching +
-                                                                                              '</div>' +
-                                                                                          '</div>' +
-                                                                                          '<div style="display:none;" id="lookupInfo">' +
-                                                                                              '<span>' +
-                                                                                              text.ArtistLookupResults +
-                                                                                              '</span>' +
-                                                                                              ' ' + text.ArtistLookupMatches +
-                                                                                              ' <span id="lookupMatches"></span>' +
-                                                                                              ', ' +
-                                                                                              text.ArtistLookupLoaded +
-                                                                                              ' <span id="lookupLoaded"></span>' +
-                                                                                          '</div>' +
-                                                                                          '<div id="lookupResults" style="display:none;">' +
-                                                                                          '</div>' +
-                                                                                          '<div id="lookupAddNew">' +
-                                                                                              '<input type="button" value="' + text.AddArtistNew + '" id="btnArtistAdd" class="hidden" tabindex="-1"/>' +
-                                                                                          '</div>')
+                                                                                  .append(artistEditor.html_lookup_box);
                                                                            $("#artistLookup").redrawShadow();
                                                                        })
                                                                        },
@@ -1104,7 +1126,7 @@ Artist text view:
 
 
 $("#btnArtistSearch").live("click", function () {
-    var artistInput  = $("#artistLookup").prev().find("input.artistName").val();
+    var artistInput  = $("#artistLookup").prev().find("input.artistName, input.oneArtist").val();
     if (artistInput.length == 0) {
         $("#btnArtistSearch").css("display","none");
         $("#lookupNoArtist").css("display","block");
