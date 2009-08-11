@@ -1,6 +1,5 @@
-[%- FOR track=tracklist.tracks;
-    recording = track.recording %]
-    <tr[% ' class="ev"' IF loop.count % 2 == 0 %]>
+[%- MACRO make_track(track) BLOCK -%]
+    <tr[% ' class="ev"' IF loop.count % 2 == 0 && !clean %]>
         [%- IF edit %]
             <td class="toolbox hidden"></td>
         [%- END -%]
@@ -90,3 +89,8 @@
         <td id="error-track-duration-[%- loop.count -%]"/>
     </tr>
 [%- END -%]
+[%- FOR track=tracklist.tracks;
+    recording = track.recording %]
+    [%- make_track(track) -%]
+[%- END -%]
+[%- IF clean; make_track(); END -%]

@@ -1,7 +1,7 @@
 /*jslint undef: true, browser: true*/
 /*global jQuery, $*/
 
-/*!
+/*
  * jQuery corner plugin: simple corner rounding
  * Examples and documentation at: http://jquery.malsup.com/corner/
  * version 1.98 (02-JUN-2009)

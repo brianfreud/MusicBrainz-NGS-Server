@@ -1,7 +1,7 @@
 /*jslint undef: true, browser: true*/
 /*global jQuery, $*/
 
-/*!
+/*
  * iff - v0.2 - 6/3/2009
  * http://benalman.com/projects/jquery-iff-plugin/
  * 

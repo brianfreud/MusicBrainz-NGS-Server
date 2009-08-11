@@ -534,9 +534,20 @@ var experimental = false,
         }
     },
 
+    addArtistEditorButton : function (context) {
+        context.find(".oneArtist").parent().after('<div class="addArtist" alt="' + text.AddArtist + '" title="' + text.AddArtist + '"></div>');
+        return context;
+    },
+
     addToolButton : function (buttonText, buttonID) {
         $("#editMenuControlsInline").append('<input type="button" id="' + buttonID + '" value="' + buttonText + '"/>')
                                     .css("display","block");
+    },
+
+    addTrackTools : function (context) {
+        context.find("td.toolbox").append('<div class="removeTrack" alt="' + text.RemoveTrack + '" title="' + text.RemoveTrack + '"></div>' +
+                                          '<div class="handleIcon" alt="' + text.DragTrack + '" title="' + text.DragTrack + '"></div>');
+        return context;
     },
 
     attachHelpButtonEvents : function (helpArray) {
@@ -900,8 +911,8 @@ $(function () {
                    .attr("alt",text.toolsShow);
 
     /* Add the track movement and removal icons. */
-    $("td.toolbox").append('<div class="removeTrack" alt="' + text.RemoveTrack + '" title="' + text.RemoveTrack + '"></div>' +
-                           '<div class="handleIcon" alt="' + text.DragTrack + '" title="' + text.DragTrack + '"></div>');
+    MusicBrainz.addTrackTools($("table.tbl"));
+    mb.HTMLsnippets.newTrack = MusicBrainz.addTrackTools($(mb.HTMLsnippets.newTrack)).outerHTML();
 
     /* Add functionality to the show/hide controls for the toolbox column */
     $("#toolsHead").click(function () {
@@ -916,7 +927,8 @@ $(function () {
 //    $(".trackartist").prepend('<div class="copyArtist" alt="' + text.DragArtist + '" title="' + text.DragArtist + '"></div>');
 
     /* Create the add artist button for tracks which only have 0 or 1 artist in the track artist. */
-    $(".oneArtist").parent().after('<div class="addArtist" alt="' + text.AddArtist + '" title="' + text.AddArtist + '"></div>');
+    MusicBrainz.addArtistEditorButton($("table.tbl"));
+//    mb.HTMLsnippets.newTrack = MusicBrainz.addArtistEditorButton($(mb.HTMLsnippets.newTrack)).html();
 
     /* Set the initial total durations for each medium. */
 // FireFox: 13ms Opera: 8ms
