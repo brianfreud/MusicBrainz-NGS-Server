@@ -1,3 +1,6 @@
+/*jslint undef: true, browser: true*/
+/*global jQuery, $*/
+
 /*!
  * iff - v0.2 - 6/3/2009
  * http://benalman.com/projects/jquery-iff-plugin/
@@ -8,13 +11,9 @@
  */
 
 (function($){
-  '$:nomunge'; // Used by YUI compressor.
   
   $.fn.iff = function( test ) {
-    var elems = !test || $.isFunction( test )
-      && !test.apply( this, Array.prototype.slice.call(arguments, 1) )
-      ? []
-      : this;
+    var elems = !test || $.isFunction( test ) && !test.apply( this, Array.prototype.slice.call(arguments, 1) ) ? [] : this;
     return this.pushStack( elems, 'iff', test );
   };
   

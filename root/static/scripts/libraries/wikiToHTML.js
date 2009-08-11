@@ -103,6 +103,7 @@ function convertToMarkup(processingString) {
             } else {
                 return '\n' + x + "* ";
             }
+            break;
         case '\n<pre>':
             return "\n        ";
         default:
@@ -112,7 +113,9 @@ function convertToMarkup(processingString) {
                     x = x + "    ";
                 }
                 return '\n' + x + str.split('"')[1] + ". ";
-            } else return str;
+            } else {
+                return str;
+            }
         }
     }
     function makeURL(str) {
@@ -198,7 +201,7 @@ function convertToHTML(processingString) {
         }
         // ----------------------------------------------------------------------------------
         // Pre + Code, can only happen at 8 spaces in
-        if (str.match(/\s{8}[^   ..|\* ..|\d\d?\. ?.]/) != null) {
+        if (str.match(/\s{8}[^   ..|\* ..|\d\d?\. ?.]/) !== null) {
             str = '<pre><code>' + str.slice(str.length - 4, str.length);
             return str;
         }
@@ -207,11 +210,10 @@ function convertToHTML(processingString) {
         // If it's *, it's an UL.  Otherwise it's an OL.
         currentDepth = str.split('    ').length - 1;
         var y = "";
-        switch (str.split('    ')[currentDepth].slice(0, 1)) {
-        case '*':
+        if (str.split('    ')[currentDepth].slice(0, 1)) {
             if (currentDepth == lastDepth) {
-                if (lasttype == 'ol') y = '</ol><ul>';
-                else if (lasttype == '') y = '<ul>';
+                if (lasttype == 'ol') { y = '</ol><ul>'; }
+                else if (lasttype === '') { y = '<ul>'; }
             } else if (currentDepth > lastDepth) {
                 y = '<ul>';
                 listTypes[listTypes.length] = 'ul>';
@@ -223,11 +225,10 @@ function convertToHTML(processingString) {
             }
             y = y + '<li>' + str.slice(str.length - 2);
             lasttype = 'ul';
-            break;
-        default:
+        } else {
             if (currentDepth == lastDepth) {
-                if (lasttype == 'ul') y = '</ul><ol>';
-                else if (lasttype == '') y = '<ol>';
+                if (lasttype == 'ul') { y = '</ul><ol>'; }
+                else if (lasttype === '') { y = '<ol>'; }
             } else if (currentDepth > lastDepth) {
                 listTypes[listTypes.length] = 'ol>';
                 y = '<ol>';
@@ -238,10 +239,9 @@ function convertToHTML(processingString) {
                 }
             }
             var z = str.slice(str.length - 3).split(' ')[1];
-            if (z == undefined) z = "";
+            if (typeof(z) == "undefined") { z = ""; }
             y = y + '<li>' + z;
             lasttype = 'ol';
-            break;
         }
         return y;
     }
@@ -354,9 +354,9 @@ function convertToHTML(processingString) {
             if (zzz[i].split(/\s{4}\s*..../).length == 1) {
                 // close lists
                 if (inList === true) {
-                    for (d = listTypes.length; d > 0; d--) {
-                        if (d == 1) zzz[i] = '</' + listTypes.shift() + '\n\n' + zzz[i];
-                        else zzz[i] = '</' + listTypes.shift() + zzz[i];
+                    for (var d = listTypes.length; d > 0; d--) {
+                        if (d == 1) { zzz[i] = '</' + listTypes.shift() + '\n\n' + zzz[i]; }
+                        else { zzz[i] = '</' + listTypes.shift() + zzz[i]; }
                     }
                     lastDepth = 0;
                 }
@@ -381,12 +381,10 @@ function convertToHTML(processingString) {
             default:
             }
             // Take care of non-<p> line breaks
-            if (i < zzz.length - 1 && zzz[i].match(/^[\w|"|']/) != null && zzz[i].match(/^[\w|"|']/) != null && zzz[i].length > 0 && zzz[i + 1].length > 0) processingString = processingString
-
-            + zzz[i] + '<br>';
-            else if (i < zzz.length - 1 && zzz[i].match(/>$/) != null && zzz[i].match(/^</) != null) processingString = processingString + zzz[i];
-            else if (zzz[i].match(/-{4}/) != null) processingString = processingString + '<hr>';
-            else processingString = processingString + zzz[i] + '\n';
+            if (i < zzz.length - 1 && zzz[i].match(/^[\w|"|']/) !== null && zzz[i].match(/^[\w|"|']/) !== null && zzz[i].length > 0 && zzz[i + 1].length > 0) { processingString = processingString + zzz[i] + '<br>'; }
+            else if (i < zzz.length - 1 && zzz[i].match(/>$/) !== null && zzz[i].match(/^</) !== null) { processingString = processingString + zzz[i]; }
+            else if (zzz[i].match(/-{4}/) !== null) { processingString = processingString + '<hr>'; }
+            else { processingString = processingString + zzz[i] + '\n'; }
         }
         processingString = processingString.replace(/\n\n/g, "</p>\n<p>");
         processingString = processingString.replace(/\n/g, "<br>");
@@ -414,7 +412,7 @@ function convertToHTML(processingString) {
             if (processingString.charAt(i) == "'") {
                 if (processingString.charAt(i + 1) == "'") {
                     if (processingString.charAt(i + 2) == "'") {
-                        if (bold == false) {
+                        if (bold === false) {
                             processingString = processingString.slice(0, i) + '<strong><X>' + processingString.slice((i + 3));
                             i += 3;
                             bold = true;
@@ -424,7 +422,7 @@ function convertToHTML(processingString) {
                             bold = false;
                         }
                     } else {
-                        if (italics == false) {
+                        if (italics === false) {
                             processingString = processingString.slice(0, i) + '<em><X>' + processingString.slice((i + 2));
                             i += 2;
                             italics = true;
@@ -464,9 +462,9 @@ function convertToHTML(processingString) {
                                            .replace(/\n?<p>\n?<br>\n?<pre>\n?/g, '\n<pre>')
                                            .replace(/\n?<\/pre>\n?<br>\n?<\/ol>\n?(<\/li>)?\n?/g, '</pre>\n')
                                            .replace(/<\/pre>\n<br>/g, '</pre>')
-                                           .replace(/=<br>/g, '=\n')
+                                           .replace(/\=<br>/g, '=\n')
                                            .replace(/<p>=/g, '=')
-                                           .replace(/=<\/p>/g, '=')
+                                           .replace(/\=<\/p>/g, '=')
                                            .replace(/(<p>={1,6}\s.+=\s{1,6}<\/p>)|(^={1,6}\s.+\s={1,6}$)/gm, convertToHTMLHeadersCallback)
         // Next two lines prevent lists from collapsing over multiple conversions
                                            .replace(/<\/p><ul>/g, '<\/p>\n<ul>')
