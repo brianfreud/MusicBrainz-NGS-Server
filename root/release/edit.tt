@@ -5,8 +5,6 @@
     [%- extra_js = "libraries/excanvas.js jquery/jquery.bgiframe.min.js " _ extra_js -%]
 [%- END -%]
 
-[%- extra_css = "markitup.css jquery/jquery-ui.custom.css" -%]
-
 [%- edit=1 -%]
 
 [%- USE CGI -%]

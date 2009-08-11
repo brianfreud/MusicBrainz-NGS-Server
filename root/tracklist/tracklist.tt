@@ -56,7 +56,7 @@
                     [%# TODO: populate this next with the AC for the track artist. %]
                     <input type="hidden" value=""/>
                     [%- trackNum = loop.count -%]
-                    [%- trackData = trackData _ '$("tbody:eq(' _ (mediumNumber - 1) _ ') div.editArtist:eq(' _ (trackNum - 1) _ ')").data("TAs", [' -%]
+                    [%- trackData = trackData _ '$("tbody:eq(' _ (mediumNumber - 1) _ ') div.editArtist:eq(' _ (trackNum - 1) _ ')").data("TAs",[' -%]
                     [%- FOREACH name IN track.artist_credit.names -%]
                         [%# TODO: populate this next with the correct disambig variable for this artist, once it is made available in this context. %]
                         [%- trackData = trackData _ '{credit:"' _ html_escape(name.name) _ '",'

@@ -1,6 +1,6 @@
 /*jslint undef: true, browser: true*/
 /*global jQuery, $, mb, text, convertToHTML, convertToMarkup*/
-
+console.time("A")
 var experimental = false,
     charMap = {
     characters : {
@@ -259,6 +259,7 @@ var experimental = false,
                                                                        },
                                          makeEditor_Many : function () { /* This is used when a track artist has more than 1 artist as constituant artists. */
                                                                        $("textarea.editTAs").live("click", function (e) {
+console.timeEnd("A")
                                                                            if ($("#artistEditBox").length > 0) { // If another artist editor is already active, don't open another one.
                                                                                if (artistEditor.store_active_editor != e.target) { // The textarea the user clicked on was *not* the one already being edited.
                                                                                    e.stopPropagation();
