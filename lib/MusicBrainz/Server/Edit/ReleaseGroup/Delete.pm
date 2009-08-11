@@ -34,11 +34,6 @@ has 'release_group' => (
     is => 'rw'
 );
 
-sub release_group_id
-{
-    return shift->data->{release_group};
-}
-
 sub initialize
 {
     my ($self, %args) = @_;

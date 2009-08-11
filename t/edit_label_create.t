@@ -11,6 +11,7 @@ use MusicBrainz::Server::Types qw( $STATUS_APPLIED );
 use MusicBrainz::Server::Test;
 
 my $c = MusicBrainz::Server::Test->create_test_context();
+MusicBrainz::Server::Test->prepare_test_database($c, '+labeltype');
 MusicBrainz::Server::Test->prepare_test_database($c, <<'SQL');
     SET client_min_messages TO warning;
     TRUNCATE label CASCADE;
@@ -51,7 +52,6 @@ $c->model('Edit')->reject($edit);
 
 $edit = $c->model('Edit')->get_by_id($edit->id);
 $c->model('Edit')->load_all($edit);
-diag($edit->label);
 ok(!defined $edit->label);
 
 done_testing;

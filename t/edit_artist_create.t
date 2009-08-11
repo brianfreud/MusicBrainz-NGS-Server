@@ -11,6 +11,7 @@ use MusicBrainz::Server::Types qw( $STATUS_APPLIED );
 use MusicBrainz::Server::Test;
 
 my $c = MusicBrainz::Server::Test->create_test_context();
+MusicBrainz::Server::Test->prepare_test_database($c, '+gender');
 MusicBrainz::Server::Test->prepare_test_database($c, <<'SQL');
     SET client_min_messages TO warning;
     TRUNCATE artist CASCADE;
