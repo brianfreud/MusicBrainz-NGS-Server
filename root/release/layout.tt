@@ -59,12 +59,6 @@
     [%- INCLUDE "components/sidebar-rating.tt" entity=release -%]
     [%- INCLUDE "components/sidebar-tags.tt" tags=top_tags entity=release.release_group tag_this_text=l('Tag this release group') -%]
     [%- IF !edit -%]
-        <br/>
-        <div class="datumGroup">
-            <a href="[% c.uri_for_action('/release_group/show', [release.release_group.gid]) %]">
-                See other versions of this release
-            </a>
-        </div>
         [% IF c.user_exists %]
             <br/>
             <div class="datumGroup">
@@ -77,6 +71,12 @@
                 [% END %]
             </div>
         [% END %]
+        <br/>
+        <div class="datumGroup">
+            <a href="[% c.uri_for_action('/release_group/show', [release.release_group.gid]) %]">
+                See other versions of this release
+            </a>
+        </div>
     [%- ELSE -%]
         <br/>
         <div id="accordion" class="ui-widget hidden">
