@@ -18,7 +18,14 @@
     [%- IF edit %]
         <td class="hidden trackname"><textarea rows="1" cols="1">[% track.name %]</textarea></td>
     [%- END -%]
-    <td class="[%- IF !edit -%][% ' hidden"' IF !show_artists %][%- ELSE -%] trackartist editable[%- END -%]">
+    <td
+        [%- IF edit %] class="trackartist editable
+        [%- ELSE -%]
+            [%- IF !show_artists %]
+                class="hidden"
+            [%- END -%]
+        [%- END -%]
+    >
         [%- IF !edit %]
             [%- IF show_artists -%]
                 [% artist_credit(track.artist_credit) %]
