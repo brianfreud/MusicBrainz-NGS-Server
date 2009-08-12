@@ -91,6 +91,7 @@ var experimental = false,
                                          '</div>',
                    lookupBox           : {
                                          after       : true,
+                                         background  : '#f0f0f0',
                                          borderColor : "#666",
                                          css         : {
                                                        float  : "left",
@@ -157,7 +158,8 @@ var experimental = false,
                                                                                 .slice(0,10)
                                                                                 .show();
                                                              if ($("#lookupResults").css("display") == "none") {
-                                                                 $("#lookupResults").slideDown(200);
+                                                                 $("#lookupResults").css("backgroundColor","#fff")
+                                                                                    .slideDown(200);
                                                                  $("#lookupBottomControls").css({
                                                                                                 marginTop: "1em",
                                                                                                 display: "block"
@@ -824,8 +826,9 @@ var experimental = false,
              addArtistCopiers : function () {
                                             /* Attach functionality to the the artist duplication icons. */
                                             $(".copyArtist").draggable({
-                                                                       helper: 'clone',
-                                                                       opacity: 0.5
+                                                                       helper  : 'clone',
+                                                                       opacity : 0.5, // Firefox, Safari, Opera
+                                                                       filter  : 'alpha(opacity=50)' // IE
                                                                        })
                                                             .live('dragstart', function () {
                                                                 artistEditor.store_artist_edit = $(this).parents("table:first");
@@ -1134,21 +1137,23 @@ $(function () {
             interval: 1,
             sensitivity: 1,
             timeout: 300,
-            over: function () {
+            over: function (e) {
                               /* Expand the select's width, and bump it to the left. */
-                              $(this).removeClass("width100", "normal")
-                                     .addClass("shiftSelect", "normal");
+                              $(this).data("stopped",false)
+                              $(this).addClass("shiftSelect", "fast");
                               },
-            out: function () {
-                              /* Return the select to normal width and position. */
-                             $(this).addClass("width100", "normal")
-                                    .removeClass("shiftSelect", "normal");
+            out: function (e) {
+                              /* Return the select to normal width and position, if the following change event hasn't already done it. */
+                              /* (hoverintent ignores stopImmediatePropagation; without this conditional, removeClass here ends up     */
+                              /* actually reversing the effects of the hoverintent events - adding on out and removing on in.          */
+                                  if ($(this).is(".shiftSelect")) { // same as .hasClass(), but generally about 2ms faster.
+                                     $(this).removeClass("shiftSelect", "normal");
+                                  }
                              }
-        }).change(function () {
+        }).change(function (e) {
                               /* Make the action of the select returning to normal width and position act more responsively when
                                * the user makes a selection. (The hoverIntent event takes 300 extra ms to take notice and act.) */
-                              $(this).addClass("width100", "fast")
-                                     .removeClass("shiftSelect", "fast");
+                              $(this).data("stopped",true).removeClass("shiftSelect", "fast");
                               });
     }
 
@@ -1358,11 +1363,8 @@ artistEditor.events.init();
 // TODO: Fix everything to support multiple mediums. (artist; note that the onclick is off by one for medium 2, likely off by n+1 for medium n)
 // TODO: Medium addition.
 // TODO: Missing medium support
-// TODO: Medium titles.
-// TODO: Medium numbering.
 // TODO: Release artist editing.
 // TODO: Release title editing.
-// TODO: Medium type selection.
 // TODO: Setting all track artists from release artist.
 // TODO: track parser support
 // TODO: track parser template layout
@@ -1372,8 +1374,6 @@ artistEditor.events.init();
 // TODO: data loading via url args support
 // TODO: add/remove label
 // TODO: extend existing label functionality to support multiple labels
-// TODO: Copy in a clean track for later use
-// TODO: Copy in a clean medium line for later use
 // TODO: Copy in a clean label for later use
 // TODO: Loading of each single artist for each combo-artist
 // TODO: Block /n's in field textareas.
@@ -1384,6 +1384,8 @@ artistEditor.events.init();
 // TODO: RG selection / addition
 // TODO: Replace "tag this" with inlined functionality
 // TODO: Tracks dragged into deleted tracks shouldn't show the X
+// TODO: Add offset support to artist lookup
+
 
  MusicBrainz.showErrorForSidebar("release-date", "Test sidebar error");
 

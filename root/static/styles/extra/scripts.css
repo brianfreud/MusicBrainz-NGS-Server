@@ -250,6 +250,7 @@ table.tbl .hidden textarea,
  position:absolute;
  right:106px;
  z-index:100;
+ width: 430px;
 }
 
 /* Control buttons placed on the right side of the screen. */
