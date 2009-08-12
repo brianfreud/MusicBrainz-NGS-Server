@@ -48,7 +48,7 @@
                     [%- IF track.artist_credit.artist_count > 1 || name.artist.name != name.name -%]
                         <textarea readonly="readonly" class="editTAs" rows="1" cols="1">[%- artist_credit(track.artist_credit, plain=1) -%]</textarea>
                     [%- ELSE -%]
-                        <input type="text" class="oneArtist" value="[% track.artist_credit.names.0.artist.name %]"/>
+                        <input type="text" class="oneArtist" value="[% track.artist_credit.names.0.artist.name | html %]"/>
                     [%- END -%]
                 </div>
                 [%# TODO: populate this next with the AC for the track artist. %]
@@ -70,7 +70,6 @@
                         [%- trackData = trackData _ ']);' -%]
                     [%- END -%]
                 [%- END -%]
-            </td>
         [%- END -%]
     </td>
     [%- IF !edit %]
