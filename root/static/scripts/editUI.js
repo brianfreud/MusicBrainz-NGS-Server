@@ -535,7 +535,7 @@ var experimental = false,
     },
 
     addArtistEditorButton : function (context) {
-        context.find(".oneArtist").parent().after('<div class="addArtist hidden" alt="' + text.AddArtist + '" title="' + text.AddArtist + '"></div>');
+        context.find(".oneArtist").parent().after('<div class="addArtist" alt="' + text.AddArtist + '" title="' + text.AddArtist + '"></div>');
         return context;
     },
 
@@ -1313,9 +1313,8 @@ artistEditor.events.init();
 
 /* TODO: pre-populate:
                           * Packaging
-                          * Status
-                          * Barcodes
-                          * Countries */
+                          * Status 
+                          * Country */
 
 // TODO:   /* Set click behaviour for editable fields (where there is more than one of that field type). */
     MusicBrainz.makeTogglable([
