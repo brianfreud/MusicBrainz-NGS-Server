@@ -84,13 +84,9 @@
                 </a>
             </h3>
             <div class="ui-widget-content" id="MenuGuessCase">
-                <div id="editMenuControlsReveal">
-                    <input type="button" id="btnGuessAll" value="[%- l(" Guess All ") -%]"/>
-                    <div style="padding:.2em 0;clear:both;">
-                        [%- l("using") -%]
-                    </div>
-                    <select id="edit-select-gc-mode">
-                    </select>
+                <input type="button" id="btnGuessAll" value="[%- l(" Guess All ") -%]"/>
+                <div>
+                    [%- l("using") -%]
                 </div>
             </div>
             <h3>
@@ -99,15 +95,11 @@
                 </a>
             </h3>
             <div class="ui-widget-content" id="MenuEditTools">
-                <div id="editMenuControlsReveal">
-                    <input type="button" id="btnEditTitles" value="[%- l(" Edit all Titles") -%]"/>
-                    <input type="button" id="btnEditArtists" value="[%- l(" Edit all Artists") -%]"/>
-                    <input type="button" id="btnEditDurations" value="[%- l(" Edit all Durations") -%]"/>
-                    <input type="button" id="btnEditAll" value="[%- l(" Edit Everything") -%]"/>
-                </div>
+                <input type="button" id="btnEditTitles" value="[%- l(" Edit all Titles") -%]"/>
+                <input type="button" id="btnEditArtists" value="[%- l(" Edit all Artists") -%]"/>
+                <input type="button" id="btnEditDurations" value="[%- l(" Edit all Durations") -%]"/>
+                <input type="button" id="btnEditAll" value="[%- l(" Edit Everything") -%]"/>
                 <hr/>
-                <div id="editMenuControlsInline">
-                </div>
             </div>
         </div>
     [%- END -%]

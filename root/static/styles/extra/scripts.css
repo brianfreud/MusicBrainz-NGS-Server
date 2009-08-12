@@ -253,64 +253,21 @@ select.medium,
  margin-bottom:3px!important;
 }
 
-/* Guess Case menu */
-
-#MenuGuessCase input,
-#MenuGuessCase div,
-#MenuGuessCase select {
-display:block;
- margin-left:auto;
- margin-right:auto;
- text-align:center;
-}
-
-#MenuGuessCase input {
- width: 75%;
-}
-
-#MenuGuessCase div {
- font-weight: bold;
-}
-
-#MenuGuessCase select {
- width: 90%;
-}
-
 /* Editing Tools menu */
 
-#editMenuControlsInline {
- padding-top:.5em;
- padding-bottom:.5em;
+#accordion div {
+ background: #FFF;
+ display: block;
+ padding: 6px;
+ text-align: center;
 }
 
-#editMenuControlsReveal,
-#editMenuControlsInline {
- background:#FFF;
- text-align:center;
-}
 
-#editMenuControlsInline {
- display: none;
- margin-top:.3em;
-}
-
-#editMenuControlsInline input {
- margin-bottom:.2em;
- margin-top:.2em;
-}
-
-#editMenuControlsReveal input {
- margin-bottom:.1em;
- margin-top:.1em;
-}
-
-#editMenuSubmit {
- background:#8B0000;
-}
-
-#editMenuControlsReveal {
- margin-bottom:.3em;
- padding-top:.1em;
+#accordion div select,
+#accordion div input {
+ margin: 2px 0;
+ padding: 1px 0;
+ width: 85%;
 }
 
 #editMsgBox {

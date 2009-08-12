@@ -540,8 +540,7 @@ var experimental = false,
     },
 
     addToolButton : function (buttonText, buttonID) {
-        $("#editMenuControlsInline").append('<input type="button" id="' + buttonID + '" value="' + buttonText + '"/>')
-                                    .css("display","block");
+        $("#MenuEditTools").append('<input type="button" id="' + buttonID + '" value="' + buttonText + '"/>');
     },
 
     addTrackTools : function (context) {
@@ -907,6 +906,7 @@ $(function () {
                async    : true,
                cache    : true,
                success  : function () {
+                                      $("#MenuGuessCase").append('<select id="edit-select-gc-mode"></select>');
                                       $("#accordion").addClass("ui-accordion ui-widget ui-helper-reset")
                                                      .find("h3")
                                                      .addClass("ui-accordion-header ui-helper-reset ui-state-default ui-corner-top ui-corner-bottom")
