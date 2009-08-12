@@ -8,7 +8,7 @@
     <p>
         [% USE r = FormRenderer(form) %]
         [% r.label('edit_note', '<strong>' _ l('Edit note:') _ '</strong>') %]
-        [% r.textarea('edit_note', class => 'edit-note' rows="10") %]
+        [% r.textarea('edit_note', class => 'edit-note' rows="10" cols="80") %]
     </p>
 [%- END -%]
 

@@ -233,3 +233,7 @@ END -%]
 [% END %]
 ]
 [%- END -%]
+
+[%- MACRO trim_extra_space(html) BLOCK;
+    html.replace("(\n +)|(\n\n+)","\n").replace(" +"," ").replace("> +<","><");
+END -%]

@@ -47,7 +47,7 @@
             </tr>
         </thead>
         [%- FOR medium=release.mediums -%]
-            [%- PROCESS 'medium/medium.tt' mediumNumber=loop.count -%]
+            [%- mediumString = PROCESS 'medium/medium.tt' mediumNumber=loop.count; trim_extra_space(mediumString) -%]
         [%- END -%]
         [%- IF edit -%]
             <tfoot id="removedTracks" class="hidden">

@@ -64,7 +64,7 @@ select.medium,
  color: #000;
 }
 
-.hidden textarea,
+table.tbl .hidden textarea,
 .trackposition.hidden input,
 .trackdur.hidden input {
  border: 0 solid #000000; 

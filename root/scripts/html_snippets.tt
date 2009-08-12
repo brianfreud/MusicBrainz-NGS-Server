@@ -28,11 +28,11 @@ editBox : '[% editBox.replace("[\t\n]","").replace("'","\\'") %]',
 docsBox : '[% docsBox.remove("[\t\n]").replace("'","\\'") %]',
 
 [%- trackParser = PROCESS "scripts/module_track_parser.tt" -%]
-trackParser : '[% trackParser.remove("[\t\n]").replace("'","\\'").replace(" +"," ") %]',
+trackParser : '[% trim_extra_space(trackParser.remove("[\t\n]").replace("'","\\'")) %]',
 
 [%- newMedium = INCLUDE "medium/medium.tt" edit=1 -%]
-newMedium : '[% newMedium.remove("[\t\n]").replace("'","\\'").replace(" +"," ").replace("> <","><") %]',
+newMedium : '[% trim_extra_space(newMedium.remove("[\t\n]").replace("'","\\'")) %]',
 
 [%- newTrack = PROCESS 'tracklist/tracklist.tt' edit=1 clean=1 -%]
-newTrack : '[% newTrack.remove("[\t\n]").replace("'","\\'").replace(" +"," ").replace("> <","><").replace("^ ","") %]'
+newTrack : '[% trim_extra_space(newTrack.remove("[\t\n]").replace("'","\\'")) %]'
 };
