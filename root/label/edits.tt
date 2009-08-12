@@ -1,0 +1,4 @@
+[% WRAPPER 'layout.tt' full_width=1 %]
+    <h1>[% l('Open edits for {label}', { label = label.name }) %]</h1>
+    [% INCLUDE 'edit/list.tt' %]
+[% END %]

@@ -1,36 +1,7 @@
 [%- WRAPPER 'layout.tt' -%]
     <h1>[% l('Edit #{id}', {id = edit.id}) %]</h1>
-    <table class="details">
-        <tr>
-            <th>[% l('Edit ID:') %]</th>
-            <td>[% edit.id %]</td>
-        <tr>
-            <th>[% l('Editor:') %]</th>
-            <td>[%- link_editor(edit.editor) -%]</td>
-        </tr>
-        <tr>
-            <th>[% l('Edit Type:') %]</th>
-            <td>[% edit.edit_name %]</td>
-        </tr>
-        <tr>
-            <th>[% l('Status:') %]</th>
-            <td>[% edit.status_name %]</td>
-        </tr>
-        <tr>
-            <th>[% l('Opened') %]</th>
-            <td>[% UserDate.format(edit.created_time) %]</td>
-        </tr>
-        <tr>
-        [% IF edit.is_open %]
-            <th>[% l('Expires') %]</th>
-            <td>[% UserDate.format(edit.expires_time) %]</td>
-        [% ELSE %]
-            <th>[% l('Closed') %]</th>
-            <td>[% UserDate.format(edit.close_time) %]</td>
-        [% END %]
-        </tr>
-    </table>
 
+    [%- INCLUDE "edit/info.tt" -%]
     [%- edit_template = edit.edit_name.replace('\s+', '_') | lower;
         INCLUDE "edit/details/${edit_template}.tt" %]
 [%- END -%]

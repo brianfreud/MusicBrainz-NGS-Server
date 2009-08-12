@@ -1,87 +1,38 @@
-<table class="moderation_list">
-    [%- FOREACH moderation=edits -%]
-        <tr class="seperator">
-            <td colspan="3">
-            </td>
-        </tr>
-        <tr>
-            <td style="width: 15%">
-                <table class="details">
+[% IF edits.size %]
+    [% WRAPPER 'components/with-pager.tt' %]
+
+        <table class="edit-list">
+            [%- FOREACH edit=edits -%]
+                <tr class="seperator">
+                    <td colspan="3">
+                    </td>
+                </tr>
+                <tr>
+                    <td class="edit-info">
+                        [% INCLUDE 'edit/info.tt' %]
+                    </td>
+                    <td class="edit-details">
+                        [%- edit_template = edit.edit_name.replace('\s+', '_') | lower;
+                            INCLUDE "edit/details/${edit_template}.tt" %]
+                    </td>
+                    <td class="vote-actions">
+                        [% edit.yes_votes %] 
+                        [% l('yes') %] :
+                        [% edit.no_votes %] 
+                        [% l('no') %]
+                    </td>
+                </tr>
+                [% IF edit.notes.size %]
                     <tr>
-                        <th>
-                            [% l('Editor:') %]
-                        </th>
-                        <td>
-                            <a href="[% c.uri_for('/user/profile', moderation.moderator.name) %]">
-                                [% moderation.moderator.name %]
-                            </a>
+                        <td colspan="3">
+                            [% INCLUDE "edit/notes.tt" %]
                         </td>
                     </tr>
-                    <tr>
-                        <th>
-                            [% l('Edit ID:') %]
-                        </th>
-                        <td>
-                            <a href="[%- c.entity_url(moderation, 'show') -%]">
-                                [% moderation.id %]
-                            </a>
-                        </td>
-                    </tr>
-                    [%- IF moderation.language -%]
-                        <tr>
-                            <th>
-                                [% l('Language:') %]
-                            </th>
-                            <td>
-                                [% moderation.language.name %]
-                            </td>
-                        </tr>
-                    [%- END -%]
-                    <tr>
-                        <th>
-                            [% l('Expired:') %]
-                        </th>
-                        <td>
-                            [% UserDate.format(moderation.expire_time) %]
-                        </td>
-                    </tr>
-                </table>
-            </td>
-            <td>
-                [% INCLUDE "moderation/info.tt" %]
-            </td>
-            <td class="actions">
-                [% moderation.yes_votes %] 
-                [% l('yes') %] :
-                [% moderation.no_votes %] 
-                [% l('no') %]
-                <br />
-                [% links = [
-                    { link => c.entity_url(moderation, 'add_note'), text => l('Add note') },
-                    { link => c.entity_url(moderation, 'approve'),  text => l('Approve') },
-                ] %]
-                [%- INCLUDE "components/piped-list.tt" list=links -%]
-            </td>
-        </tr>
-        <tr>
-            <td class="under_info">
-                &nbsp;
-            </td>
-            <td class="changes">
-                [% INCLUDE "moderation/mods/${moderation.template}.tt"
-                    new=(moderation.new_unpacked  || moderation.new_data)
-                    prev=(moderation.prev_unpacked || moderation.previous_data) %]
-            </td>
-            <td class="vote_choice">
-                [% INCLUDE "moderation/vote_options.tt" %]
-            </td>
-        </tr>
-        [% IF moderation.Notes.size %]
-            <tr>
-                <td colspan="3">
-                    [% INCLUDE "moderation/notes.tt" %]
-                </td>
-            </tr>
-        [% END %]
-    [%- END -%]
-</table>
+                [% END %]
+            [%- END -%]
+        </table>
+    [% END %]
+
+[% ELSE %]
+    <p>No edits</p>
+[% END %]
