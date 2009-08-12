@@ -3,4 +3,5 @@
     gid = release.gid
     type = 'release'
     no_annotation = l('This release does not have an annotation')
+    noedit = 1
 -%]

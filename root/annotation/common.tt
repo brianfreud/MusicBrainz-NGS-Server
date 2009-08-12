@@ -32,15 +32,17 @@
         <div class="details">
             [% no_annotation %]
         </div>
-        <div class="options">
-            [%- IF c.user_exists -%]
-                <a href="[% c.uri_for_action("/$type/edit_annotation", [ gid ]) %]">
-                    [% l('Add an annotation') %]
-                </a>
-            [%- ELSE -%]
-                [% l('Please {uri|log in} to add an annotation.', {uri => c.uri_for('/user/login')}) %]
-            [%- END -%]
-        </div>
+        [%- IF !noedit -%]
+            <div class="options">
+                [%- IF c.user_exists -%]
+                    <a href="[% c.uri_for_action("/$type/edit_annotation", [ gid ]) %]">
+                        [% l('Add an annotation') %]
+                    </a>
+                [%- ELSE -%]
+                    [% l('Please {uri|log in} to add an annotation.', {uri => c.uri_for('/user/login')}) %]
+                [%- END -%]
+            </div>
+        [%- END -%]
     </div>
     [%- END -%]
 </div>
