@@ -535,7 +535,7 @@ var experimental = false,
     },
 
     addArtistEditorButton : function (context) {
-        context.find(".oneArtist").parent().after('<div class="addArtist" alt="' + text.AddArtist + '" title="' + text.AddArtist + '"></div>');
+        context.find(".oneArtist").parent().after('<div class="addArtist hidden" alt="' + text.AddArtist + '" title="' + text.AddArtist + '"></div>');
         return context;
     },
 

@@ -19,7 +19,7 @@
         <td class="hidden trackname"><textarea rows="1" cols="1">[% track.name %]</textarea></td>
     [%- END -%]
     <td
-        [%- IF edit %] class="trackartist editable
+        [%- IF edit %] class="trackartist editable"
         [%- ELSE -%]
             [%- IF !show_artists %]
                 class="hidden"
