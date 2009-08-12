@@ -587,16 +587,12 @@ var experimental = false,
         $.each(mb.country, function (i) {
             /* Add country <option> to the <select>. */
             countrySelect.addOption(mb.country[i][0], mb.country[i][1]);
-            /* This next pushes CSS2 engines and only works in FireFox at the moment.  As the results either look really
-             * ugly or do nothing at all in the other browsers, don't even try to do it on any browser but FireFox. */
+            // This next bit only actually displays in Firefox, so don't bother wasting time doing it in other browsers.
             if ($.browser.mozilla) {
-                /* Add flag icon to the left of the <option>'s text. */
-                countrySelect.children(":last")
-                             .before($("<optgroup/>").css({
-                                                          background: "url(/static/images/icon/flags.png) no-repeat " + mb.country[i][3] + "px"
-                                                          })
-                                                     .addClass("icon")
-                             );
+                countrySelect.children(":last").prepend($("<span>").css({
+                                                                        backgroundPosition: mb.country[i][3] + "px"
+                                                                        })
+                                                       );
             }
         });
     },
@@ -1130,6 +1126,32 @@ $(function () {
                                                         MusicBrainz.updateMediumTotalDuration();
                                                         });
 
+    /* This next chunk works around a problem present in IE, Chrome, and FireFox, where option lists with long text, such as
+     * the very long country names, scroll right off the page. This problem is not present in how Safari and Opera handle
+     * long option text, so those are left to operate normally, without the workaround. */
+    if (!$.browser.safari && !$.browser.opera) {
+        $("#select-edit-release-country").hoverIntent({
+            interval: 1,
+            sensitivity: 1,
+            timeout: 300,
+            over: function () {
+                              /* Expand the select's width, and bump it to the left. */
+                              $(this).removeClass("width100", "normal")
+                                     .addClass("shiftSelect", "normal");
+                              },
+            out: function () {
+                              /* Return the select to normal width and position. */
+                             $(this).addClass("width100", "normal")
+                                    .removeClass("shiftSelect", "normal");
+                             }
+        }).change(function () {
+                              /* Make the action of the select returning to normal width and position act more responsively when
+                               * the user makes a selection. (The hoverIntent event takes 300 extra ms to take notice and act.) */
+                              $(this).addClass("width100", "fast")
+                                     .removeClass("shiftSelect", "fast");
+                              });
+    }
+
     /* ==== End functions that attach mouse events. ==== */
 //console.timeEnd("MouseEvents")
 //console.time("Other")
@@ -1150,6 +1172,9 @@ $(function () {
 // TODO: Add new artist
 // TODO: Artist lookup
 // TODO: Updating join phrases
+
+
+
 
 
 /*
@@ -1358,6 +1383,7 @@ artistEditor.events.init();
 // TODO: Format is a medium concept, not a release one.
 // TODO: RG selection / addition
 // TODO: Replace "tag this" with inlined functionality
+// TODO: Tracks dragged into deleted tracks shouldn't show the X
 
  MusicBrainz.showErrorForSidebar("release-date", "Test sidebar error");
 

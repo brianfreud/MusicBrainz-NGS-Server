@@ -78,6 +78,18 @@ table.tbl .hidden textarea,
  cursor: pointer;
 }
 
+/* Country flags in select lists. */
+
+#select-edit-release-country option span {
+ background-image: url(/static/images/icon/flags.png);
+ background-repeat: no-repeat;
+ display: inline-block;
+ height: 12px;
+ padding-right: 8px;
+ width: 12px;
+ vertical-align: middle;
+}
+
 /* Medium show / hide */
 .mediumToggle {
  background: transparent url(/static/images/icon/arrow.down.png) no-repeat;
@@ -345,25 +357,6 @@ table.tbl .hidden textarea,
  float: right;
  height: 16px;
  width: 16px;
-}
-
-/* Country flags in select lists. */
-
-#select-edit-release-country optgroup.icon {
- background: transparent none no-repeat scroll left top;
- float: left;
- height: 16px;
- margin-left: 2px;
- vertical-align: middle;
- width: 16px;
-}
-
-#select-edit-release-country option {
- float: left;
- margin-bottom :6px;
- margin-top: -20px;
- padding-left: 21px;
- vertical-align: middle;
 }
 
 /* Track fields. */
