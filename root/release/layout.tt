@@ -59,21 +59,23 @@
     [%- INCLUDE "components/sidebar-rating.tt" entity=release -%]
     [%- INCLUDE "components/sidebar-tags.tt" tags=top_tags entity=release.release_group tag_this_text=l('Tag this release group') -%]
     [%- IF !edit -%]
-        <p>
+        <br/>
+        <div class="datumGroup">
             <a href="[% c.uri_for_action('/release_group/show', [release.release_group.gid]) %]">
                 See other versions of this release
             </a>
-        </p>
+        </div>
         [% IF c.user_exists %]
-        <p>
-            [% IF in_collection %]
-            [ <a href="[% c.uri_for_action("/user/collection/remove", { id => release.id }) %]">
-                [%- l('Remove from collection') %]</a> ]
-            [% ELSE %]
-            [ <a href="[% c.uri_for_action("/user/collection/add", { id => release.id }) %]">
-                [%- l('Add to collection') %]</a> ]
-            [% END %]
-        </p>
+            <br/>
+            <div class="datumGroup">
+                [% IF in_collection %]
+                <a href="[% c.uri_for_action("/user/collection/remove", { id => release.id }) %]">
+                    [%- l('Remove from your collection') %]</a>
+                [% ELSE %]
+                <a href="[% c.uri_for_action("/user/collection/add", { id => release.id }) %]">
+                    [%- l('Add to your collection') %]</a>
+                [% END %]
+            </div>
         [% END %]
     [%- ELSE -%]
         <br/>
