@@ -555,12 +555,12 @@ ul.links {
  overflow: hidden;
 }
 
-.datumItem {
+.datumItem,
+.datumLabels {
  line-height: 2.2em;
- overflow: hidden;
 }
 
-.datumItem dd {
+.datumItem {
  min-height: normal;
 }
 

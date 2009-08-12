@@ -27,26 +27,22 @@ END -%]
     <dl class="datumList">
         [%- FOREACH datum=dataCollection -%]
             [%- IF edit -%]
-                <div class="datumItem">
                     <dt class="exp datumLabels" id="[%- entity -%]-[% datum.edit %][%- IF datum.number.defined -%]-[% datum.number %][%- END -%]-dt">
                         [%- datum.title -%]:
                     </dt>
-                    <dd class="exp editable [%- entity -%]-[% datum.edit %] width54" id="[%- entity -%]-[% datum.edit %][%- IF datum.number.defined -%]-[% datum.number %][%- END -%]-view">
+                    <dd class="exp datumItem editable [%- entity -%]-[% datum.edit %] width54" id="[%- entity -%]-[% datum.edit %][%- IF datum.number.defined -%]-[% datum.number %][%- END -%]-view">
                         [%- check_if_unknown(${datum.field}, datum.data) %]
                     </dd>
-                    <dd class="exp hidden [% entity -%]-[% datum.edit %] width54" id="[%- entity -%]-[% datum.edit %][%- IF datum.number.defined -%]-[% datum.number %][%- END -%]-edit">
+                    <dd class="exp datumItem hidden [% entity -%]-[% datum.edit %] width54" id="[%- entity -%]-[% datum.edit %][%- IF datum.number.defined -%]-[% datum.number %][%- END -%]-edit">
                         [%- insert_editfield(datum.type, datum.edit, get_editfield_text(datum.data, datum.plaintext.0), datum.plaintext.1, datum.plaintext.2) -%]
                     </dd>
-                </div>
             [%- ELSIF ${datum.field} %]
-                <div class="datumItem">
                     <dt class="exp datumLabels">
                         [%- datum.title -%]:
                     </dt>
-                    <dd class="exp width54">
+                    <dd class="exp width54 datumItem">
                         [%- datum.data %]
                     </dd>
-                </div>
             [%- END -%]
         [%- END -%]
     </dl>
