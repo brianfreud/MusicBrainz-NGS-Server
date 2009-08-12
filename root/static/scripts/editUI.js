@@ -1,6 +1,11 @@
 /*jslint undef: true, browser: true*/
 /*global jQuery, $, mb, text, convertToHTML, convertToMarkup*/
 
+if (window.console) {
+    console.time("init");
+    console.time("libraries")
+}
+
 var experimental = false,
     charMap = {
     characters : {
@@ -104,15 +109,21 @@ var experimental = false,
                    searchServer        : "/ajax/search",
                    queryBase           : "type=artist&limit=20&query=",
                    destroyGeneric      : function (element) {
+(window.console) ? console.time("destroyGeneric") : '';
                                                             $(element).removeShadow()
                                                                       .hide()
                                                                       .remove();
+(window.console) ? console.timeEnd("destroyGeneric") : '';
                                                             },
                    destroySelf         : function () {
+(window.console) ? console.time("destroySelf") : '';
                                                      MusicBrainz.destroyGeneric("#artistEditBox");
+(window.console) ? console.timeEnd("destroySelf") : '';
                                                      },
                    destroyLookup       : function () {
+(window.console) ? console.time("destroyLookup") : '';
                                                      MusicBrainz.destroyGeneric("#artistLookup");
+(window.console) ? console.timeEnd("destroyLookup") : '';
                                                      },
                    flashEditorWindow   : function () {
                                                      $("#artistEditBox").find("div:first")
@@ -120,6 +131,7 @@ var experimental = false,
                                                                         .effect("highlight", {}, 800);
                                                      },
                    processResults      : function (data) {
+(window.console) ? console.time("processResults") : '';
                                                          $("#lookupSearching").css("display","none");
                                                          if (data.results.length == 0) {
                                                              $("#lookupNoResults").css("display","block");
@@ -147,8 +159,9 @@ var experimental = false,
                                                              var alreadyLoaded = parseInt($("#lookupLoaded").text(),10);
                                                              $("#lookupLoaded").text(((alreadyLoaded == "NaN") ? alreadyLoaded : 0) + data.results.length);
                                                              $("#lookupResults").css("padding-top",".5em")
+                                                                                .css("backgroundColor","#fff")
                                                                                 .find("div.result")
-                                                                                .corner()
+                                                                                .corner() 
                                                                                 .filter(":even")
                                                                                 .css("background-color","#F1F1F1")
                                                                                 .end()
@@ -158,8 +171,9 @@ var experimental = false,
                                                                                 .slice(0,10)
                                                                                 .show();
                                                              if ($("#lookupResults").css("display") == "none") {
-                                                                 $("#lookupResults").css("backgroundColor","#fff")
-                                                                                    .slideDown(200);
+                                                                 $("#artistLookup").find("div:first")
+                                                                                   .animate({ backgroundColor: "#fff"});
+                                                                 $("#lookupResults").slideDown(200);
                                                                  $("#lookupBottomControls").css({
                                                                                                 marginTop: "1em",
                                                                                                 display: "block"
@@ -167,6 +181,7 @@ var experimental = false,
                                                                  setTimeout('$("#artistLookup").redrawShadow();',225);
                                                              }
                                                          }
+(window.console) ? console.timeEnd("processResults") : '';
                                                          },
                    resetAppearance     : function () {
                                                      $(artistEditor.editor_inputs).css("backgroundColor","#dadada");
@@ -870,10 +885,10 @@ $.extend(MusicBrainz, {
                       html_line_artist : MusicBrainz.artistEditor.html_line_artist()
 });
 
-
+(window.console) ? console.timeEnd("libraries") : '';
 
 $(function () {
-//console.time("Sidebar")
+(window.console) ? console.time("sidebar") : '';
     /* ==== Start functions that initially manipulate the sidebar DOM. ==== */
 
     /* Populate basic select lists. */
@@ -946,8 +961,10 @@ $(function () {
     /* ==== End functions that initially manipulate the sidebar DOM. ==== */
 
     $("#sidebar").css("display","block");
-//console.timeEnd("Sidebar")
-//console.time("Tracklist")
+if (window.console) {
+    console.timeEnd("sidebar")
+    console.time("Tracklist")
+}
     /* ==== Only functions that affect the initial DOM for the tracklist should go here. ==== */
 
     /* Insert the status display box. */
@@ -988,9 +1005,10 @@ $(function () {
     $("table.tbl").css("display","block");
     $("#loader").css("display","none");
 
-//console.timeEnd("Tracklist")
-//console.time("Notes")
-
+if (window.console) {
+    console.timeEnd("Tracklist")
+    console.time("Notes")
+}
     /* ==== Only functions that affect the initial DOM for the edit note or annotation should go here. ==== */
 
     /* Populate the character and symbol arrays for the annotation editor. */
@@ -1015,8 +1033,10 @@ $(function () {
 
     /* Show the edit note. */
     $("fieldset.editNote").css("display","block");
-//console.timeEnd("Notes")
-//console.time("MouseEvents")
+if (window.console) {
+    console.timeEnd("Notes")
+    console.time("MouseEvents")
+}
     /* ==== Start functions that attach mouse events. ==== */
 
    /* Set click behaviour for editable fields (where there is qty 1 of that field type). */
@@ -1158,8 +1178,10 @@ $(function () {
     }
 
     /* ==== End functions that attach mouse events. ==== */
-//console.timeEnd("MouseEvents")
-//console.time("Other")
+if (window.console) {
+    console.timeEnd("MouseEvents")
+    console.time("Other")
+}
     /* ==== Start other functions. ==== */
 
     /* Add the track movement and removal icons and the add artist button to the blank track template. */
@@ -1385,11 +1407,15 @@ artistEditor.events.init();
 // TODO: Replace "tag this" with inlined functionality
 // TODO: Tracks dragged into deleted tracks shouldn't show the X
 // TODO: Add offset support to artist lookup
-
+// TODO: Take out manual position editing
 
  MusicBrainz.showErrorForSidebar("release-date", "Test sidebar error");
+if (window.console) {
+    console.timeEnd("Other")
+    console.timeEnd("init")
+}
 
-//console.timeEnd("Other")
+
 });
 
 
