@@ -11,7 +11,7 @@
                     [% IF !edit -%]
                         hidden
                     [%- END -%]
-                    	" id="editToggle"
+                     " id="editToggle"
                 [%- END -%]
             >[% link.1 %]</li>
         [%- END -%]

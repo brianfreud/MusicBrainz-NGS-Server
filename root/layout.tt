@@ -100,14 +100,16 @@
         [%- FOREACH js IN page.js %]
             <script type="text/javascript" src="/static/scripts/[% js %]"></script>
         [%- END %]
-        [%- IF browserIsIE -%]
-            <script type="text/javascript">
-                $(function () {
+        <script type="text/javascript">
+            $(function () {
+                [%#- Hide the edit tab from any browser that doesn't have javascript enabled (or which is broken for jQuery). -%]
+                $("#editToggle").show();
+                [%- IF browserIsIE -%]
                     [%#- IE ignores quote tags.  This fixes that. -%]
                     $("q").prepend("&#8220;").append("&#8221;");
-                });
-            </script>
-        [%- END -%]
+                    [%- END -%]
+            });
+        </script>
         [%#- The next two scripts make IE lower than IE8 handle css in a much more standards-compliant manner. -%]
         [%#- As an additional benefit, they also make IE as low as IE5 semi-able to handle alpha-transparency in png files. -%]
         [%- IF browserIsIE -%]

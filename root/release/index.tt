@@ -16,6 +16,21 @@
     [%- END -%]
     <table class="tbl[%- IF edit -%] release hidden[%- END -%]" rules="none">
         [%#- 5 cols in either view: View mode: Position, Title, Artist, Rating, Length; Edit mode: Tools, Position, Title, Artist, Length -%]
+        [%- IF edit -%]
+        <colgroup>
+            <col class="tools"/>
+        </colgroup>
+        [%- END -%]
+        <colgroup>
+            <col class="position"/>
+            <col class="title"/>
+            <col class="artist[%- IF !show_artists %] hidden[%- END -%]"/>
+            [%- IF !edit -%]
+                <col class="rating"/>
+            [%- END -%]
+            <col class="duration"/>
+        </colgroup>
+
         <thead>
             [%- IF edit -%]
                 <tr style="height:3em;" id="statusLine">
@@ -32,12 +47,7 @@
                 [%- END -%]
                 <th class="first[%- IF edit -%] release[%- END-%]" style="width:1em;text-align:right;">#</th>
                 <th[%- IF edit -%] class="ttitle release"[%- END-%]>[% l('Title') %]</th>
-                <th class="tartist
-                    [%- IF !edit -%]
-                        [%- IF !show_artists %] hidden[%- END -%]
-                    [%- ELSE %] release
-                    [%- END -%]
-                    ">[% l('Artist') %]
+                <th class="tartist">[% l('Artist') %]
                 </th>
                 [%- IF !edit -%]
                     <th class="rating c">[% l('Rating') %]</th>
