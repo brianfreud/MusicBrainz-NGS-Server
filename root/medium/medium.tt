@@ -17,7 +17,9 @@
             [% medium.format_name or l("Medium") | html %]
             [%- IF edit -%]
                 </span>
-                <select class="medium format hidden"></select>
+                <select class="medium format hidden">
+                    <option selected="selected" value="">[%- l('[ Select One ]') -%]</option>
+                </select>
                 <input type="hidden" class="medium format" value="[%- medium.format_id -%]"/>
             [%- END -%]
             [%- IF edit %]<span class="medium position">
