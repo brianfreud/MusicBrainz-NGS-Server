@@ -3,6 +3,9 @@
 .trash  0 -1698px;
 */
 
+#statusLine th {
+ border-top: 0 none #fff;
+}
 
 div.labelCredit,
 input.artistCredit {

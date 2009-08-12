@@ -14,9 +14,10 @@
     [%- IF edit -%]
         [%- trackData = '' -%]
     [%- END -%]
-    <table class="tbl[%- IF edit -%] release hidden[%- END -%]">
-        [%- IF edit -%]
-            <thead>
+    <table class="tbl[%- IF edit -%] release hidden[%- END -%]" rules="none">
+        [%#- 5 cols in either view: View mode: Position, Title, Artist, Rating, Length; Edit mode: Tools, Position, Title, Artist, Length -%]
+        <thead>
+            [%- IF edit -%]
                 <tr style="height:3em;" id="statusLine">
                     <th style="background: #FFF!important; width: 2em;">
                         <div id="toolsHead"> </div>
@@ -25,8 +26,6 @@
                     </th>
                 </tr>
             [%- END -%]
-            </thead>
-        <thead>
             <tr>
                 [%- IF edit -%]
                     <th class="toolbox hidden"> </th>
@@ -46,17 +45,18 @@
                 <th class="tdur[%- IF edit -%] release[%- END-%]">[% l('Length') %]</th>
             </tr>
         </thead>
-        [%- FOR medium=release.mediums -%]
-            [%- mediumString = PROCESS 'medium/medium.tt' mediumNumber=loop.count; trim_extra_space(mediumString) -%]
-        [%- END -%]
         [%- IF edit -%]
-            <tfoot id="removedTracks" class="hidden">
+            <tfoot id="removedTracks" style="visibility:collapse">
+            [%#- We have to use visibility, due to a Firefox table order rendering bug when changing the css display setting on a tfoot. -%]
                 <tr class="subh[%- IF edit -%] nodrop nodrag[%- END -%]">
                     <td class="hidden">&nbsp;</td><td colspan="5">
                             [%- l("Removed Tracks") -%]
                     </td>
                 </tr>
             </tfoot>
+        [%- END -%]
+        [%- FOR medium=release.mediums -%]
+            [%- mediumString = PROCESS 'medium/medium.tt' mediumNumber=loop.count; trim_extra_space(mediumString) -%]
         [%- END -%]
     </table>
     [%- IF edit -%]

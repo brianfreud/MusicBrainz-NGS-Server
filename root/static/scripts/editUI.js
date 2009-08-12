@@ -951,9 +951,6 @@ $(function () {
 //console.time("Tracklist")
     /* ==== Only functions that affect the initial DOM for the tracklist should go here. ==== */
 
-    /* Hide the top line for the first of the two theads; would need a CSS3 selector to do it via the css file. */
-    $("table.tbl > thead:eq(0) > tr > th").css("border-top", "0");
-
     /* Insert the status display box. */
     MusicBrainz.makeStatusBox();
 
@@ -1069,7 +1066,7 @@ $(function () {
                                                            .children(".removeTrack")
                                                           .show(); // then re-show the remove track icon.
                                                 if ($("#removedTracks > tr").length <= 1) { // If Removed Tracks now has no tracks in it,
-                                                    $("#removedTracks").addClass("hidden"); // re-hide Remove Tracks.
+                                                    $("#removedTracks").css("visibility","collapse"); // re-hide Remove Tracks.
                                                 }
                                             }
                                             MusicBrainz.updateMediumTotalDuration();
@@ -1081,7 +1078,7 @@ $(function () {
         $("#removedTracks").append($(this).parents("tr:first")
                                           .removeClass("ev") // Unstripe the track.
                            );
-        $("#removedTracks").removeClass("hidden"); // Make sure that Removed Tracks is visible.
+        $("#removedTracks").css("visibility","visible"); // Make sure that Removed Tracks is visible.
         $("#removedTracks tr .removeTrack").css("display","none"); // Hide the removed track's remove track icon.
         MusicBrainz.stripeTracks();
 //        MusicBrainz.updatePositionFields();
