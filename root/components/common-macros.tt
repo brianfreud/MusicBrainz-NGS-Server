@@ -11,7 +11,7 @@
 [%- MACRO make_widget(field, label) INCLUDE 'forms/generic/row.tt' field=form.field(field) label=label -%]
 [%- USE UserDate(c.user.preferences) -%]
 [%- MACRO doc_link(to) BLOCK -%]
-    [% c.uri_for('/doc', to) %]
+    [%- c.uri_for('/doc', to) %]
 [%- END -%]
 [%- MACRO wiki_history_link(server, id, version) BLOCK -%]
 http://[%- server -%]/[%- id -%]?oldid=[%- version -%]

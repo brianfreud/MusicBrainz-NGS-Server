@@ -824,6 +824,48 @@ var experimental = false,
             }
         });
     },
+
+    events : {
+             addArtistCopiers : function () {
+                                            /* Attach functionality to the the artist duplication icons. */
+                                            $(".copyArtist").draggable({
+                                                                       helper: 'clone',
+                                                                       opacity: 0.5
+                                                                       })
+                                                            .live('dragstart', function () {
+                                                                artistEditor.store_artist_edit = $(this).parents("table:first");
+                                                            });
+                                        
+                                            /* Attach artist duplication target functionality to the the tracks. */
+                                        // TODO: Add multi-medium support.
+                                            $('.tartist').parent().droppable({ accept: '.copyArtist' })
+                                                         .bind('drop', function() {
+                                        // TODO: Abstract this out, so it can less-redundantly also be accomplished when reading in a stash.
+                                                         var sourceArtists = artistEditor.store_artist_edit.find("input.name"),
+                                                             sourceJoiners = artistEditor.store_artist_edit.find("input.joiner"),
+                                                             sourceArtistCount = sourceArtists.length,
+                                                             targetArtistCell = $(this).find("table:first"),
+                                                             targetArtists = targetArtistCell.find("input.name"),
+                                                             targetJoiners = targetArtistCell.find("input.joiner"),
+                                                             targetArtistCount = targetArtistCell.find(".addartist").length,
+                                                             artistCountDifference = sourceArtistCount - targetArtistCount,
+                                                             targetAddArtistBtn = targetArtistCell.find("input[type=button]");
+                                                         $(this).find("td.editable:eq(2)").click();
+                                                         if (artistCountDifference < 0) { // The target track has more single artist fields than exist for the source track.
+                                                             targetArtistCell.find(".addartist:not(:first)").remove();
+                                                             artistCountDifference = sourceArtistCount - 1;
+                                                         }
+                                                         for (var j = 0; j < artistCountDifference; j++) { // Add artist fields, such that there's enough to equal the
+                                                             MusicBrainz.addSingleArtist(targetAddArtistBtn); // number of artists in the combo-artist being copied over.
+                                                         }
+                                                         for (var k = 0; k < sourceArtistCount; k++) {
+                                                             $(targetArtists[k]).val($(sourceArtists[k]).val()); // Copy over the artist name
+                                                             $(targetJoiners[k]).val($(sourceJoiners[k]).val()); // Copy over the join phrases
+                                                         }
+                                                         artistEditor.updateTrackArtist();
+                                                     });
+                                            }
+             },
 },
     artistEditor = MusicBrainz.artistEditor;
 $.extend(MusicBrainz, {
@@ -861,27 +903,39 @@ $(function () {
     });
 
     /* This next duplicates the jQuery UI accordion, except it also allows the pegboard effect. */
-    $("#accordion").addClass("ui-accordion ui-widget ui-helper-reset")
-                   .find("h3")
-                   .addClass("ui-accordion-header ui-helper-reset ui-state-default ui-corner-top ui-corner-bottom")
-                   .prepend('<span class="ui-icon ui-icon-triangle-1-e"/>')
-                   .click(function () {
-                       $(this).toggleClass("ui-accordion-header-active")
-                              .toggleClass("ui-state-active")
-                              .toggleClass("ui-state-default")
-                              .toggleClass("ui-corner-bottom")
-                              .find("> .ui-icon")
-                              .toggleClass("ui-icon-triangle-1-e")
-                              .toggleClass("ui-icon-triangle-1-s")
-                              .end()
-                              .next()
-                              .toggleClass("ui-accordion-content-active")
-                              .toggle();
-                       return false;
-                   })
-                   .next()
-                   .addClass("ui-accordion-content ui-helper-reset ui-widget-content ui-corner-bottom")
-                   .css("display","none");
+        $.ajax({
+               async    : true,
+               cache    : true,
+               success  : function () {
+                                      $("#accordion").addClass("ui-accordion ui-widget ui-helper-reset")
+                                                     .find("h3")
+                                                     .addClass("ui-accordion-header ui-helper-reset ui-state-default ui-corner-top ui-corner-bottom")
+                                                     .prepend('<span class="ui-icon ui-icon-triangle-1-e"/>')
+                                                     .click(function () {
+                                                         $(this).toggleClass("ui-accordion-header-active")
+                                                                .toggleClass("ui-state-active")
+                                                                .toggleClass("ui-state-default")
+                                                                .toggleClass("ui-corner-bottom")
+                                                                .find("> .ui-icon")
+                                                                .toggleClass("ui-icon-triangle-1-e")
+                                                                .toggleClass("ui-icon-triangle-1-s")
+                                                                .end()
+                                                                .next()
+                                                                .toggleClass("ui-accordion-content-active")
+                                                                .toggle();
+                                                         return false;
+                                                     })
+                                                     .next()
+                                                     .addClass("ui-accordion-content ui-helper-reset ui-widget-content ui-corner-bottom")
+                                                     .css("display","none")
+                                                     .end()
+                                                     .end()
+                                                     .fadeIn("slow");
+                          },
+               dataType : "script",
+               type     : "GET",
+               url      : "/static/scripts/jquery/jquery.jquery-ui.js"
+        });
 
     /* Add the show help button to the tool box, and round the corners on the docs display div. */
     setTimeout(function () {
@@ -912,7 +966,6 @@ $(function () {
 
     /* Add the track movement and removal icons. */
     MusicBrainz.addTrackTools($("table.tbl"));
-    mb.HTMLsnippets.newTrack = MusicBrainz.addTrackTools($(mb.HTMLsnippets.newTrack)).outerHTML();
 
     /* Add functionality to the show/hide controls for the toolbox column */
     $("#toolsHead").click(function () {
@@ -928,7 +981,6 @@ $(function () {
 
     /* Create the add artist button for tracks which only have 0 or 1 artist in the track artist. */
     MusicBrainz.addArtistEditorButton($("table.tbl"));
-//    mb.HTMLsnippets.newTrack = MusicBrainz.addArtistEditorButton($(mb.HTMLsnippets.newTrack)).html();
 
     /* Set the initial total durations for each medium. */
 // FireFox: 13ms Opera: 8ms
@@ -1088,6 +1140,9 @@ $(function () {
 //console.time("Other")
     /* ==== Start other functions. ==== */
 
+    /* Add the track movement and removal icons and the add artist button to the blank track template. */
+    mb.HTMLsnippets.newTrack = MusicBrainz.addArtistEditorButton(MusicBrainz.addTrackTools($(mb.HTMLsnippets.newTrack))).outerHTML();
+
     /* Clean out the "Loading..." div.  .remove() is slow, so we do this last, not at the instant we're initially done with that div. */
     $("#loader").remove();
 
@@ -1227,7 +1282,7 @@ artistEditor.events.init();
     });
 
 
-
+// MusicBrainz.events.addArtistCopiers();
 
 
 /*
@@ -1259,43 +1314,6 @@ artistEditor.events.init();
 
 */
 
-    /* Attach functionality to the the artist duplication icons. */
-    $(".copyArtist").draggable({
-                               helper: 'clone',
-                               opacity: 0.5
-                               })
-                    .live('dragstart', function () {
-                        artistEditor.store_artist_edit = $(this).parents("table:first");
-                    });
-
-    /* Attach artist duplication target functionality to the the tracks. */
-// TODO: Add multi-medium support.
-    $('.tartist').parent().droppable({ accept: '.copyArtist' })
-                 .bind('drop', function() {
-// TODO: Abstract this out, so it can less-redundantly also be accomplished when reading in a stash.
-                 var sourceArtists = artistEditor.store_artist_edit.find("input.name"),
-                     sourceJoiners = artistEditor.store_artist_edit.find("input.joiner"),
-                     sourceArtistCount = sourceArtists.length,
-                     targetArtistCell = $(this).find("table:first"),
-                     targetArtists = targetArtistCell.find("input.name"),
-                     targetJoiners = targetArtistCell.find("input.joiner"),
-                     targetArtistCount = targetArtistCell.find(".addartist").length,
-                     artistCountDifference = sourceArtistCount - targetArtistCount,
-                     targetAddArtistBtn = targetArtistCell.find("input[type=button]");
-                 $(this).find("td.editable:eq(2)").click();
-                 if (artistCountDifference < 0) { // The target track has more single artist fields than exist for the source track.
-                     targetArtistCell.find(".addartist:not(:first)").remove();
-                     artistCountDifference = sourceArtistCount - 1;
-                 }
-                 for (var j = 0; j < artistCountDifference; j++) { // Add artist fields, such that there's enough to equal the
-                     MusicBrainz.addSingleArtist(targetAddArtistBtn); // number of artists in the combo-artist being copied over.
-                 }
-                 for (var k = 0; k < sourceArtistCount; k++) {
-                     $(targetArtists[k]).val($(sourceArtists[k]).val()); // Copy over the artist name
-                     $(targetJoiners[k]).val($(sourceJoiners[k]).val()); // Copy over the join phrases
-                 }
-                 artistEditor.updateTrackArtist();
-             });
 
 
 /* TODO: pre-populate:

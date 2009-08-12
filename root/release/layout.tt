@@ -77,7 +77,7 @@
         [% END %]
     [%- ELSE -%]
         <br/>
-        <div id="accordion" class="ui-widget">
+        <div id="accordion" class="ui-widget hidden">
             <h3>
                 <a href="#" class="ui-widget-header release">
                     [%- l("Guess Case") -%]
