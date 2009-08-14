@@ -16,7 +16,7 @@
  */
 
 jQuery.bt = {
-    version: '0.9.5-rc1'
+//    version: '0.9.5-rc1'
 };
 
 /*

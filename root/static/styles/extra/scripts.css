@@ -3,6 +3,17 @@
 .trash  0 -1698px;
 */
 
+input.addLabel {
+ float: right;
+ margin-top: .5em;
+}
+
+dd.datumItem select,
+dd input.notDate {
+ float: left;
+ width: 109%;
+}
+
 #statusLine th {
  border-top: 0 none #fff;
 }
@@ -80,15 +91,6 @@ table.tbl .hidden textarea,
 
 /* Country flags in select lists. */
 
-#select-edit-release-country option span {
- background-image: url(/static/images/icon/flags.png);
- background-repeat: no-repeat;
- display: inline-block;
- height: 12px;
- padding-right: 8px;
- width: 12px;
- vertical-align: middle;
-}
 
 /* Medium show / hide */
 .mediumToggle {
@@ -244,15 +246,6 @@ table.tbl .hidden textarea,
  padding-bottom: 0!important;
 }
 
-/* Class used to shift the country list - makeEditMenu function in the editor's js */
-
-.shiftSelect {
- position:absolute;
- right:106px;
- z-index:100;
- width: 430px;
-}
-
 /* Control buttons placed on the right side of the screen. */
 
 .rightsidebutton {
@@ -263,6 +256,12 @@ table.tbl .hidden textarea,
 }
 
 /* Side accordion */
+
+#accordion {
+ float: left;
+ width: 100%;
+ margin-top: 1em;
+}
 
 .ui-accordion .ui-accordion-content-active {
  border-top:1px solid gray!important;
@@ -482,6 +481,11 @@ table.tbl tr.ev td.trackdur {
  color: #000;
  border: 0;
  font-size: 100%;
+}
+
+.editArtist input[type="text"],
+.editArtist textarea {
+ background: #ffb!important; /* Background highlighting for unresolved artists. */
 }
 
 .addArtist {
@@ -1329,3 +1333,32 @@ tr:hover .copyArtist {
 .ui-tabs .ui-tabs-nav li a, .ui-tabs.ui-tabs-collapsible .ui-tabs-nav li.ui-tabs-selected a { cursor: pointer; } /* first selector in group seems obsolete, but required to overcome bug in Opera applying cursor: text overall if defined elsewhere... */
 .ui-tabs .ui-tabs-panel { padding: 1em 1.4em; display: block; border-width: 0; background: none; }
 .ui-tabs .ui-tabs-hide { display: none !important; }
+
+/* Selectmenu
+----------------------------------*/
+/* Note: This is not the pre-packaged css; there have been a good number of tweaks in here, to make icons show more correctly, and to make the
+         closed selectmenu the same height as a normal select. */
+.ui-selectmenu { display: block; position:relative; text-decoration: none; overflow:hidden;}
+.ui-selectmenu-icon { position:absolute; right:6px; margin-top:-8px; top: 50%; }
+.ui-selectmenu-menu { padding:0; margin:0; list-style:none; position:absolute; top: 0; visibility: hidden; overflow: auto; }
+.ui-selectmenu-open { visibility: visible; }
+.ui-selectmenu-menu-popup { margin-top: -1px; }
+.ui-selectmenu-menu-dropdown { }
+.ui-selectmenu-menu li { padding:0; margin:0; display: block; border-top: 1px dotted transparent; border-bottom: 1px dotted transparent; border-right-width: 0 !important; border-left-width: 0 !important; font-weight: normal !important; }
+.ui-selectmenu-menu li a,.ui-selectmenu-status {line-height: 1.4em; display:block; padding:0; outline:none; text-decoration:none; }
+.ui-selectmenu-menu li.ui-selectmenu-hasIcon a,
+.ui-selectmenu-hasIcon .ui-selectmenu-status { padding-left: 20px; position: relative; margin-left: 5px; }
+.ui-selectmenu-menu li .ui-icon, .ui-selectmenu-status .ui-icon { position: absolute; top: 3px; left: 2px; }
+.ui-selectmenu-status { line-height: 1.4em; }
+.ui-selectmenu-open li.ui-selectmenu-item-focus a {  }
+.ui-selectmenu-open li.ui-selectmenu-item-selected { }
+.ui-selectmenu-menu li span,.ui-selectmenu-status span { display:block; margin-bottom: .2em; }
+.ui-selectmenu-menu li .ui-selectmenu-item-header { font-weight: bold; }
+.ui-selectmenu-menu li .ui-selectmenu-item-content {  }
+.ui-selectmenu-menu li .ui-selectmenu-item-footer { opacity: .8; }
+/*for optgroups*/
+.ui-selectmenu-menu .ui-selectmenu-group { font-size: 1em; }
+.ui-selectmenu-menu .ui-selectmenu-group .ui-selectmenu-group-label { line-height: 1.4em; display:block; padding:.6em .5em 0; font-weight: bold; }
+.ui-selectmenu-menu .ui-selectmenu-group ul { margin: 0; padding: 0; }
+
+

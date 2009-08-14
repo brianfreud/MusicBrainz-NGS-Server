@@ -552,12 +552,14 @@ ul.links {
 }
 
 .datumGroup {
- overflow: hidden;
+ float: left;
+ width: 100%;
+ height: 100%;
 }
 
 .datumItem,
 .datumLabels {
- line-height: 2.2em;
+ line-height: 2.3em;
 }
 
 .datumItem {

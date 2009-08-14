@@ -14,7 +14,7 @@ END -%]
             <select id="select-edit-[%- entity -%]-[% edit %]" class="width100"><option value="">[ [% l('Select&hellip;') %] ]</option></select>
             <input type="hidden" id="edit-[%- entity -%]-[% edit %]-value" value="[%- data1 -%]"/>
         [%- CASE "text" -%]
-            <input type="text" size="13" id="edit-[%- entity -%]-[% edit %]" value="[%- data1 -%]"/>
+            <input type="text" class="notDate" size="13" id="edit-[%- entity -%]-[% edit %]" value="[%- data1 -%]"/>
         [%- CASE "date" -%]
             <div class="nowrap">
                 <input type="text" class="width3" maxlength="4" id="edit-[%- entity -%]-[% edit %]-y" value="[% data1 %]"/> &ndash;
@@ -31,17 +31,21 @@ END -%]
                         [%- datum.title -%]:
                     </dt>
                     <dd class="exp datumItem editable [%- entity -%]-[% datum.edit %] width54" id="[%- entity -%]-[% datum.edit %][%- IF datum.number.defined -%]-[% datum.number %][%- END -%]-view">
-                        [%- check_if_unknown(${datum.field}, datum.data) %]
+                        [%- check_if_unknown(${datum.field}, get_editfield_text(datum.data, datum.plaintext.0)) %]
                     </dd>
                     <dd class="exp datumItem hidden [% entity -%]-[% datum.edit %] width54" id="[%- entity -%]-[% datum.edit %][%- IF datum.number.defined -%]-[% datum.number %][%- END -%]-edit">
-                        [%- insert_editfield(datum.type, datum.edit, get_editfield_text(datum.data, datum.plaintext.0), datum.plaintext.1, datum.plaintext.2) -%]
+                        [%- IF datum.type == 'option' -%]
+                            [%- insert_editfield(datum.type, datum.edit, datum.data) -%]
+                        [%- ELSE -%]
+                            [%- insert_editfield(datum.type, datum.edit, get_editfield_text(datum.data, datum.plaintext.0), datum.plaintext.1, datum.plaintext.2) -%]
+                        [%- END -%]
                     </dd>
             [%- ELSIF ${datum.field} %]
                     <dt class="exp datumLabels">
                         [%- datum.title -%]:
                     </dt>
                     <dd class="exp width54 datumItem">
-                        [%- datum.data %]
+                        [%- get_editfield_text(datum.data, datum.plaintext.0) %]
                     </dd>
             [%- END -%]
         [%- END -%]

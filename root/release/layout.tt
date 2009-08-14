@@ -17,10 +17,10 @@
         { field="release.date.year"          title => l('Released')  edit => 'date'      type='date'   data => release.date.format 
           plaintext => [ release.date.year, release.date.month, release.date.day ],
         },
-        { field="release.packaging"          title => l('Packaging') edit => 'packaging' type='option' data => html_escape(release.packaging.name) },
-        { field="release.status"             title => l('Status')    edit => 'status'    type='option' data => html_escape(release.status.name) },
-        { field="release.language"           title => l('Language')  edit => 'language'  type='option' data => html_escape(release.language.name) },
-        { field="release.script"             title => l('Script')    edit => 'script'    type='option' data => html_escape(release.script.name) },
+        { field="release.packaging"          title => l('Packaging') edit => 'packaging' type='option' data => release.packaging_id plaintext => [ html_escape(release.packaging.name) ] },
+        { field="release.status"             title => l('Status')    edit => 'status'    type='option' data => release.status_id    plaintext => [ html_escape(release.status.name) ] },
+        { field="release.language"           title => l('Language')  edit => 'language'  type='option' data => release.language_id  plaintext => [ html_escape(release.language.name) ] },
+        { field="release.script"             title => l('Script')    edit => 'script'    type='option' data => release.script_id    plaintext => [ html_escape(release.script.name) ] },
     ] -%]
     [%- PROCESS "components/sidebar-data.tt" entity="release" -%]
 
@@ -45,14 +45,15 @@
                       plaintext => [ html_escape(label.label.name) ] },
                     { field="label.catalog_number"   title => l('Catalog #') edit => 'catalog' type='text'   data => html_escape(label.catalog_number) number => loop.count },
                     { field="release.barcode"        title => l('Barcode')   edit => 'barcode' type='text'   data => html_escape(release.barcode)      number => loop.count },
-                    { field="release.country"        title => l('Country')   edit => 'country' type='option' data => html_escape(release.country.name) number => loop.count },
+                    { field="release.country"        title => l('Country')   edit => 'country' type='option' data => release.country_id                number => loop.count
+                      plaintext => [ html_escape(release.country.name) ] },
             ] -%]
             [%- PROCESS "components/sidebar-data.tt" entity="release" -%]
         [%- END -%]
     [%- END -%]
     [%- IF edit -%]
         <div class="datumGroup">
-            <input type="button" value="[%- l('Add another&hellip;') -%]" style="float: right;"/>
+            <input type="button" value="[%- l('Add another&hellip;') -%]" class="addLabel"/>
         </div>
     [%- END -%]
     [%- INCLUDE "components/sidebar-rating.tt" entity=release -%]
