@@ -1,10 +1,10 @@
 /*jslint undef: true, browser: true*/
-/*global jQuery, $, mb, text, convertToHTML, convertToMarkup*/
+/*global jQuery, $, mb, text, window, convertToHTML, convertToMarkup, escape */
 
 if (window.console) {
 //    console.profile();
     console.time("init");
-    console.time("libraries")
+    console.time("libraries");
 }
 
 // Map IE functions to W3C DOM level 2 Style functions.
@@ -15,12 +15,13 @@ if (document.styleSheets[0].rules) {
         this.removeRule(ruleIndex);
     };
     sheet.insertRule = function (ruleText, ruleIndex) { 
-        rule = ruleText.match(/(.*){(.*)}/);
-        sheet.addRule(rule[0], rule[1], ruleIndex);
+        ruleText = ruleText.match(/(.*)\{(.*)\}/);
+        sheet.addRule(ruleText[0], ruleText[1], ruleIndex);
     };
 }
 
-var experimental = false,
+var artistEditor,
+    experimental = false,
     charMap = {
         characters : {
             name: 'Characters',
@@ -128,22 +129,22 @@ var experimental = false,
                    searchServer        : "/ajax/search",
                    queryBase           : "type=artist&limit=20&query=",
                    destroyGeneric      : function (element) {
-(window.console) ? console.time("destroyGeneric") : '';
+//(window.console) ? console.time("destroyGeneric") : '';
                                                             $(element).removeShadow()
                                                                       .css("display","none")
                                                                       .remove();
-(window.console) ? console.timeEnd("destroyGeneric") : '';
+//(window.console) ? console.timeEnd("destroyGeneric") : '';
                                                             },
                    destroySelf         : function () {
-(window.console) ? console.time("destroySelf") : '';
+//(window.console) ? console.time("destroySelf") : '';
                                                      MusicBrainz.destroyGeneric("#artistEditBox");
-(window.console) ? console.timeEnd("destroySelf") : '';
+//(window.console) ? console.timeEnd("destroySelf") : '';
                                                      },
                    destroyLookup       : function () {
-(window.console) ? console.time("destroyLookup") : '';
+//(window.console) ? console.time("destroyLookup") : '';
                                                      artistEditor.currentTrack = "";
                                                      MusicBrainz.destroyGeneric("#artistLookup");
-(window.console) ? console.timeEnd("destroyLookup") : '';
+//(window.console) ? console.timeEnd("destroyLookup") : '';
                                                      },
                    flashEditorWindow   : function () {
                                                      $("#artistEditBox").find("div:first")
@@ -151,17 +152,17 @@ var experimental = false,
                                                                         .effect("highlight", {}, 800);
                                                      },
                    identifyUnresolved  : function (data) {
-(window.console) ? console.time("identifyUnresolved") : '';
+//(window.console) ? console.time("identifyUnresolved") : '';
                                                          $('.trackartist').css("backgroundColor","transparent");
                                                          $('.trackartist:has(> div > input[type=text]:visible), .trackartist:has(div > textarea:visible)').css("backgroundColor","#ffb");
-(window.console) ? console.timeEnd("identifyUnresolved") : '';
+//(window.console) ? console.timeEnd("identifyUnresolved") : '';
                                                      },
                    processResults      : function (data) {
-(window.console) ? console.time("processResults") : '';
+//(window.console) ? console.time("processResults") : '';
                                                          artistEditor.currentTrack = ""; // Clear the current track store, so a new lookup can be done
                                                          $("#lookupSearching").css("display","none"); // (for new text, etc) on that same artist field.
                                                          $("#artistLookup").bind("outerClick", artistEditor.destroyLookup);
-                                                         if (data.results.length == 0) {
+                                                         if (data.results.length === 0) {
                                                              $("#lookupNoResults").css("display","block");
                                                          } else {
                                                              $("#lookupInfo").css("display","block");
@@ -207,13 +208,15 @@ var experimental = false,
                                                                                                 marginTop: "1em",
                                                                                                 display: "block"
                                                                                                 });
-                                                                 setTimeout('$("#artistLookup").redrawShadow();',225);
+                                                                 setTimeout(function () {
+                                                                                        $("#artistLookup").redrawShadow();
+                                                                                        }, 225);
                                                              }
                                                          }
-(window.console) ? console.timeEnd("processResults") : '';
+//(window.console) ? console.timeEnd("processResults") : '';
                                                          },
                    resetAppearance     : function () {
-(window.console) ? console.time("resetAppearance") : '';
+//(window.console) ? console.time("resetAppearance") : '';
                                                      $(artistEditor.editor_inputs).css("backgroundColor","#dadada");
                                                      if ($("#artistLookup").length > 0) {
                                                          $("#artistLookup").removeShadow()
@@ -221,21 +224,21 @@ var experimental = false,
                                                                            .remove();
                                                          artistEditor.destroyLookup();
                                                      }
-(window.console) ? console.timeEnd("resetAppearance") : '';
+//(window.console) ? console.timeEnd("resetAppearance") : '';
                                                      },
                                          synchNextInput  : function (thisElement, override) {
-(window.console) ? console.time("synchNextInput") : '';
+//(window.console) ? console.time("synchNextInput") : '';
                                                      var artistbox = $($(thisElement).next());
                                                      setTimeout(function () {
-                                                                            if (artistbox.val().length == 0 || override) {
+                                                                            if (artistbox.val().length === 0 || override) {
                                                                                 artistbox.val($.trim($(thisElement).val()));
                                                                                 artistEditor.updateTrackArtist();
                                                                             }
                                                      }, 1);
-(window.console) ? console.timeEnd("synchNextInput") : '';
+//(window.console) ? console.timeEnd("synchNextInput") : '';
                                                      },
                    thereCanBeOnlyOne   : function () {
-(window.console) ? console.time("thereCanBeOnlyOne") : '';
+//(window.console) ? console.time("thereCanBeOnlyOne") : '';
                                                      $('<div>' + text.ArtistEditorError + '</div>').dialog({
                                                                  buttons       : { "Ok" : function() { 
                                                                                                      $(this).dialog("close");
@@ -252,10 +255,10 @@ var experimental = false,
                                                                  title         : text.ErrorTitle,
                                                                  zIndex        : 10000
                                                                  });
-(window.console) ? console.timeEnd("thereCanBeOnlyOne") : '';
+//(window.console) ? console.timeEnd("thereCanBeOnlyOne") : '';
                                                      },
                    updateTrackArtist   : function () {
-(window.console) ? console.time("updateTrackArtist") : '';
+//(window.console) ? console.time("updateTrackArtist") : '';
                                                      $("#artistEditBox").prev()
                                                                         .prev()
                                                                         .find("textarea")
@@ -267,11 +270,11 @@ var experimental = false,
                                                                                                 .join("")
                                                                         )
                                                                         .trigger("update");
-(window.console) ? console.timeEnd("updateTrackArtist") : '';
+//(window.console) ? console.timeEnd("updateTrackArtist") : '';
                                                      },
                    events              : {
                                          init            : function () {
-(window.console) ? console.time("initEvents") : '';
+//(window.console) ? console.time("initEvents") : '';
                                                                        artistEditor.events.makeEditor_One();
                                                                        artistEditor.events.makeEditor_Many();
                                                                        artistEditor.events.synchArtistInputs();
@@ -279,10 +282,10 @@ var experimental = false,
                                                                        artistEditor.events.initLookupBoxOne();
                                                                        artistEditor.events.initLookupBoxMany();
                                                                        artistEditor.events.synchACJPcolors();
-(window.console) ? console.timeEnd("initEvents") : '';
+//(window.console) ? console.timeEnd("initEvents") : '';
                                                                        },
                                          synchArtistInputs  : function () { /* Keep the AC synched to the artist name, but only if the AC hasn't been modified independently. */
-(window.console) ? console.time("synchArtistInputs") : '';
+//(window.console) ? console.time("synchArtistInputs") : '';
                                                                        $("table.tbl input.artistName").live("keydown", function () {
                                                                            $(this).data("oldVal").push($(this).val());
                                                                        }).live("keyup", function () {
@@ -296,10 +299,10 @@ var experimental = false,
                                                                        }).live("blur", function () {
                                                                            $(this).data("oldVal", []);
                                                                        });
-(window.console) ? console.timeEnd("synchArtistInputs") : '';
+//(window.console) ? console.timeEnd("synchArtistInputs") : '';
                                                                        },
                                          makeEditor_One  : function () { /* This is used when a track artist has only 0 or 1 artist as constituant artist. */
-(window.console) ? console.time("makeEditor_One") : '';
+//(window.console) ? console.time("makeEditor_One") : '';
                                                                        $("div.addArtist").live("click", function (e) {
                                                                            artistEditor.destroyLookup();
                                                                            if ($("#artistEditBox").length > 0) {
@@ -307,7 +310,6 @@ var experimental = false,
                                                                                artistEditor.thereCanBeOnlyOne();
                                                                            } else {
                                                                                artistEditor.store_active_editor = e.target;
-                                                                               var artistCell = $(this).parent().parent();
                                                                                $(this).parent()
                                                                                       .makeFloatingDiv(artistEditor.editor_window)
                                                                                       .find("div:first")
@@ -345,10 +347,10 @@ var experimental = false,
                                                                                $(".artistCredit:eq(0)").val($("#artistEditBox").find("div:first").find("input:eq(2)").val());
                                                                            }
                                                                        });
-(window.console) ? console.timeEnd("makeEditor_One") : '';
+//(window.console) ? console.timeEnd("makeEditor_One") : '';
                                                                        },
                                          makeEditor_Many : function () { /* This is used when a track artist has more than 1 artist as constituant artists. */
-(window.console) ? console.time("makeEditor_Many") : '';
+//(window.console) ? console.time("makeEditor_Many") : '';
                                                                        $("textarea.editTAs").live("click", function (e) {
                                                                            if ($("#artistEditBox").length > 0) { // If another artist editor is already active, don't open another one.
                                                                                if (artistEditor.store_active_editor != e.target) { // The textarea the user clicked on was *not* the one already being edited.
@@ -357,8 +359,7 @@ var experimental = false,
                                                                                }
                                                                            } else {
                                                                                artistEditor.store_active_editor = e.target;
-                                                                               var artistCell = $(this).parent().parent(),
-                                                                                   artistData = $(this).parent().data("TAs"),
+                                                                               var artistData = $(this).parent().data("TAs"),
                                                                                    dataHTML = "";
                                                                                for (var i = 0, loops = artistData.length; i < loops; i++) {
                                                                                    dataHTML += '<div class="artistLine">' +
@@ -389,10 +390,10 @@ var experimental = false,
                                                                                $("#artistEditBox > div:first > div:first > div:eq(1) > input:first").focus();
                                                                            }
                                                                        });
-(window.console) ? console.timeEnd("makeEditor_Many") : '';
+//(window.console) ? console.timeEnd("makeEditor_Many") : '';
                                                                        },
                                          keepTACorrect   : function () { /* Listen for changes to ACs or join phrases, to keep the trackartist textareas updated. */
-(window.console) ? console.time("keepTACorrect") : '';
+//(window.console) ? console.time("keepTACorrect") : '';
                                                                        $("input.artistCredit, input.joinPhrase").live("change", function () {
                                                                            artistEditor.updateTrackArtist();
                                                                        }).live("keyup", function () {
@@ -400,12 +401,12 @@ var experimental = false,
                                                                        }).live("paste", function () {
                                                                            artistEditor.updateTrackArtist();
                                                                        });
-(window.console) ? console.timeEnd("keepTACorrect") : '';
+//(window.console) ? console.timeEnd("keepTACorrect") : '';
                                                                        },
                                          initLookupBoxOne: function () {
 
                                                                        $('input.oneArtist').live("focusin", function (e) {
-(window.console) ? console.time("initLookupBoxOne") : '';
+//(window.console) ? console.time("initLookupBoxOne") : '';
                                                                            if (artistEditor.currentTrack != e.target) {
                                                                                artistEditor.currentTrack = e.target;
                                                                                artistEditor.destroyLookup();
@@ -420,12 +421,12 @@ var experimental = false,
                                                                                $("#artistLookup").redrawShadow()
                                                                                                  .data("linkedText",e.target);
                                                                            }
-(window.console) ? console.timeEnd("initLookupBoxOne") : '';
-                                                                       })
+//(window.console) ? console.timeEnd("initLookupBoxOne") : '';
+                                                                       });
                                                                        },
                                          initLookupBoxMany: function () { /* Create the initial lookup float box, with the structure to fill in results later. */
                                                                        $('input.artistName').live("focusin", function (e) {
-(window.console) ? console.time("initLookupBoxMany") : '';
+//(window.console) ? console.time("initLookupBoxMany") : '';
                                                                            if (artistEditor.currentTrack != e.target) { // have we changed input fields?
                                                                                artistEditor.currentTrack = e.target;
                                                                                artistEditor.resetAppearance();
@@ -440,18 +441,18 @@ var experimental = false,
                                                                                $("#artistLookup").redrawShadow()
                                                                                                  .data("linkedText",e.target);
                                                                            }
-(window.console) ? console.timeEnd("initLookupBoxMany") : '';
-                                                                       })
+//(window.console) ? console.timeEnd("initLookupBoxMany") : '';
+                                                                       });
                                                                        },
                                          synchACJPcolors : function () { /* Keep coloring and lookup box synched for AC and Join Phrase fields. */
-(window.console) ? console.time("synchACJPcolors") : '';
+//(window.console) ? console.time("synchACJPcolors") : '';
                                                                        $('input.artistCredit, input.joinPhrase').live("focusin", function () {
                                                                            artistEditor.resetAppearance();
                                                                            $(this).parent()
                                                                                   .find("input")
                                                                                   .css("backgroundColor","#fff");
                                                                        });
-(window.console) ? console.timeEnd("synchACJPcolors") : '';
+//(window.console) ? console.timeEnd("synchACJPcolors") : '';
                                                                        }
                                          }
                    },
@@ -564,7 +565,7 @@ var experimental = false,
                  },
 
     activateAnnotationSwitcher : function () {
-(window.console) ? console.time("activateAnnotationSwitcher") : '';
+//(window.console) ? console.time("activateAnnotationSwitcher") : '';
         $('#ChangeMarkup li:not(:first)').click(function () {
             $('#ChangeMarkup li').removeClass('currentSet');
             var newSet = $(this).attr('class');
@@ -583,7 +584,7 @@ var experimental = false,
                 }
             return false;
         });
-(window.console) ? console.timeEnd("activateAnnotationSwitcher") : '';
+//(window.console) ? console.timeEnd("activateAnnotationSwitcher") : '';
     },
 
     addAnnotationButton : function () {
@@ -687,7 +688,6 @@ var experimental = false,
             optionString = "",
             addStyle = MusicBrainz.addStyle,
             selectArray = [],
-            styleArray = [],
             i = mb.country.length,
             n = i % 8,
             processItem = function () {
@@ -696,13 +696,13 @@ var experimental = false,
                 // Add the flag class to the global editor stylesheet.
                 addStyle('.flag-' + country[2] + '{background:transparent url(/static/images/icon/flags.png) no-repeat scroll ' + country[3] + 'px!important;height:12px;width:16px;}');
                 selectArray.push({find:'.span-' + country[2], icon:'flag-' + country[2]});
-            }
+            };
         if (n > 0) {
             do {
                 processItem();
             } while (--n); 
         }
-        n = parseInt(i / 8);
+        n = parseInt(i / 8, 10);
         do {
             processItem();
             processItem();
@@ -713,7 +713,7 @@ var experimental = false,
             processItem();
             processItem();
         } while (--n); // n must be greater than 0 here
-        document.getElementById("select-edit-release-country").innerHTML = optionString; // Populate the select.
+        document.getElementById("select-edit-release-country").innerHTML = '<option value="">[ ' + text.Select + ' ]</option>' + optionString; // Populate the select.
         MusicBrainz.countrySelectArray = selectArray; // Store the country array for this select's later conversion.
     },
     makeFormatList : function () {
@@ -750,9 +750,8 @@ var experimental = false,
         var swapList = "#select-edit-" + entity + "-" + toSwap,
             swapButton = "btn-switch-" + toSwap + "-list";
         $('.' + entity + '-' + toSwap + ':not(dt)').toggle();
-        $(swapList).after('<input type="button" value="' + text.ShortList + '" id="' + swapButton + '"/>');
+        $(swapList).after('<input type="button" value="' + text.FullList + '" id="' + swapButton + '"/>');
         swapButton = '#' + swapButton;
-        MusicBrainz.swapShortLongList($(swapList), $(swapButton), commonArray, swapArray);
         $(swapButton).addClass("rightsidebutton")
                      .click(function () {
                                         MusicBrainz.swapShortLongList($(swapList), $(swapButton), commonArray, swapArray);
@@ -871,29 +870,51 @@ var experimental = false,
     },
 
     swapShortLongList : function (select, button, commonarray, bigarray) {
-        if (typeof(select.selectedValues()[0]) !== "undefined") { // If there actually is a currently selected item,
-            var selecteditem = select.selectedValues()[0]; // then store the currently selected item.
-        }
-        select.css("display","none"); // Avoid needless (and very slow) DOM redraws.
-        select.removeOption(/./); // Empty the select list.
-        if (button.attr("value") === text.FullList) { // Switch to the full list.
-            button.attr("value", text.ShortList); // Change the text on the button.
-            select.addOption(bigarray, false); // Populate the select list.
-        } else { // Switch to the short list.
-            button.attr("value", text.FullList); // Change the text on the button.
-console.log(selecteditem)
-            if ($.inArray(parseInt(selecteditem, 10), commonarray) === -1 && typeof(selecteditem) !== "undefined") {
-                if (typeof(bigarray[selecteditem]) !== "undefined") { // Make sure the selected item is in the list,
-                    select.addOption(selecteditem, bigarray[selecteditem]); // even if it isn't in the short list.
+        var item,
+            selecteditem = -1,
+            showFullList = false,
+            optionString = '',
+            i = bigarray.length,
+            n = i % 8,
+            processItem = function () {
+                item = bigarray[--i];
+                if (!showFullList) {
+                    if ($.inArray(item[0], commonarray) > -1 || item[0] == selecteditem) { // If the current item is also in the common items array,
+                        optionString = '<option value="' + item[0] + '">' + item[1] + '</option>' + optionString; // add it to the string.
+                    }
+                } else {
+                    optionString = '<option value="' + item[0] + '">' + item[1] + '</option>' + optionString; // add it to the string.
                 }
-            }
-            var arrayInt = parseInt(this, 10);
-            $.each(commonarray, function () {
-                select.addOption(arrayInt, bigarray[arrayInt]); // Populate the select list.
-            });
+            };
+        if (typeof(select.selectedValues()[0]) !== "undefined") { // If there actually is a currently selected item,
+            selecteditem = select.selectedValues()[0]; // then store the currently selected item.
         }
-        select.addOption("", '[ ' + text.Select + ' ]', false); // Reset the displayed text for the non-option option.
-        select.val(selecteditem); // Re-select the selected item.
+        select.css("display","none") // Avoid needless (and very slow) DOM redraws.
+              .removeOption(/./); // Empty the select list.
+        if (button.attr("value") === text.FullList) { // Switching to the full list.
+            button.attr("value", text.ShortList); // Change the text on the button.
+            showFullList = true;
+        } else {
+            button.attr("value", text.FullList); // Change the text on the button.
+        }
+        if (n > 0) {
+            do {
+                processItem();
+            } while (--n); 
+        }
+        n = parseInt(i / 8, 10);
+        do {
+            processItem();
+            processItem();
+            processItem();
+            processItem();
+            processItem();
+            processItem();
+            processItem();
+            processItem();
+        } while (--n); // n must be greater than 0 here
+        select.html('<option value="">[ ' + text.Select + ' ]</option>' + optionString) // Populate the select.
+              .val(selecteditem); // Re-select the selected item.
     },
 
     toggleTools : function () {
@@ -947,7 +968,7 @@ console.log(selecteditem)
 
     events : {
              addArtistCopiers : function () {
-(window.console) ? console.time("addArtistCopiers") : '';
+//(window.console) ? console.time("addArtistCopiers") : '';
                                             /* Attach functionality to the the artist duplication icons. */
                                             $(".copyArtist").draggable({
                                                                        helper  : 'clone',
@@ -988,7 +1009,7 @@ console.log(selecteditem)
                                                          }
                                                          artistEditor.updateTrackArtist();
                                                      });
-(window.console) ? console.timeEnd("addArtistCopiers") : '';
+//(window.console) ? console.timeEnd("addArtistCopiers") : '';
                                             }
              }
 },
@@ -997,10 +1018,10 @@ $.extend(MusicBrainz, {
                       html_line_artist : MusicBrainz.artistEditor.html_line_artist()
 });
 
-(window.console) ? console.timeEnd("libraries") : '';
+//(window.console) ? console.timeEnd("libraries") : '';
 
 $(function () {
-(window.console) ? console.time("sidebar") : '';
+//(window.console) ? console.time("sidebar") : '';
     /* ==== Start functions that initially manipulate the sidebar DOM. ==== */
 
     /* Populate basic select lists. */
@@ -1014,10 +1035,10 @@ $(function () {
     /* Setup and initialize language and script selects.  */
     $("#select-edit-release-language").addOption($("#edit-release-language-value").val(), "");
 // FireFox: 29ms Opera: 80ms
-//    MusicBrainz.swapShortLongList($("#select-edit-release-language"), $("#btn-switch-language-list"), mb.commonLangs, mb.language);
+    MusicBrainz.swapShortLongList($("#select-edit-release-language"), $("#btn-switch-language-list"), mb.commonLangs, mb.language);
     $("#select-edit-release-script").addOption($("#edit-release-script-value").val(), "");
 // FireFox: 6ms Opera: 5ms
-//    MusicBrainz.swapShortLongList($("#select-edit-release-script"), $("#btn-switch-script-list"), mb.commonScripts, mb.script);
+    MusicBrainz.swapShortLongList($("#select-edit-release-script"), $("#btn-switch-script-list"), mb.commonScripts, mb.script);
 
     $('dd.editable.release-language').click(function () {
         MusicBrainz.makeSwappableSelectList("release", "language", mb.commonLangs, mb.language);
@@ -1029,97 +1050,75 @@ $(function () {
 
     /* This next duplicates the jQuery UI accordion, except it also allows the pegboard effect. */
     MusicBrainz.makeCountryList();
-/*
-        $.ajax({
-               async    : true,
-               cache    : true,
-               success  : function () {
-*/
-                                      $("#MenuGuessCase").append('<select id="edit-select-gc-mode"></select>');
-(window.console) ? console.time("Accordion") : '';
-                                      $("#accordion").addClass("ui-accordion ui-widget ui-helper-reset")
-                                                     .find("h3")
-                                                     .addClass("ui-accordion-header ui-helper-reset ui-state-default ui-corner-top ui-corner-bottom")
-                                                     .prepend('<span class="ui-icon ui-icon-triangle-1-e"/>')
-                                                     .click(function () {
-                                                         $(this).toggleClass("ui-accordion-header-active")
-                                                                .toggleClass("ui-state-active")
-                                                                .toggleClass("ui-state-default")
-                                                                .toggleClass("ui-corner-bottom")
-                                                                .find("> .ui-icon")
-                                                                .toggleClass("ui-icon-triangle-1-e")
-                                                                .toggleClass("ui-icon-triangle-1-s")
-                                                                .end()
-                                                                .next()
-                                                                .toggleClass("ui-accordion-content-active")
-                                                                .toggle();
-                                                         return false;
-                                                     })
-                                                     .next()
-                                                     .addClass("ui-accordion-content ui-helper-reset ui-widget-content ui-corner-bottom")
-                                                     .css("display","none")
-                                                     .end()
-                                                     .end()
-                                                     .fadeIn("slow");
-(window.console) ? console.timeEnd("Accordion") : '';
-setTimeout(function () { // We need to delay slightly, to give the country select time to finish populating and the DOM to update calculated positions.
-    (window.console) ? console.time("countryselect") : '';
-                                      var visibleDD = $("#release-date-view"),
-                                          vDDwidth;
-                                      vDDwidth = visibleDD.outerWidth() + 12;
-                                      $('#select-edit-release-country').selectmenu({
-                                                                                   icons: MusicBrainz.countrySelectArray,
-                                                                                   handleWidth: 0,
-                                                                                   width: vDDwidth
-                                                                                   });
-                                      $(".ui-selectmenu-menu").addClass("countrySelectmenu");
-                                      $('#select-edit-release-packaging').selectmenu({
-                                                                                   handleWidth: 0,
-                                                                                   width: vDDwidth
-                                                                                   });
-                                      $('#select-edit-release-status').selectmenu({
-                                                                                   handleWidth: 0,
-                                                                                   width: vDDwidth
-                                                                                   });
-                                      $('#select-edit-release-script').selectmenu({
-                                                                                   handleWidth: 0,
-                                                                                   width: vDDwidth
-                                                                                   });
-                                      $('#select-edit-release-language').selectmenu({
-                                                                                   handleWidth: 0,
-                                                                                   width: vDDwidth
-                                                                                   });
-                                      $(".ui-selectmenu-menu").css({
-                                                                   width: '400px',
-                                                                   zIndex: '20',
-                                                                   left: (visibleDD.offset().left + vDDwidth - 400) + "px"
-                                                                   });
-                                      $(".ui-selectmenu-menu.countrySelectmenu").css({
-                                                                   height: '75%',
-                                                                   });
-    (window.console) ? console.timeEnd("countryselect") : '';
-}, 1);
-/*
-                                      },
-               dataType : "script",
-               type     : "GET",
-               url      : "/static/scripts/CompressedUI.js"
-        });
-*/
+
+    $("#MenuGuessCase").append('<select id="edit-select-gc-mode"></select>');
+//(window.console) ? console.time("Accordion") : '';
+    $("#accordion").addClass("ui-accordion ui-widget ui-helper-reset")
+                   .find("h3")
+                   .addClass("ui-accordion-header ui-helper-reset ui-state-default ui-corner-top ui-corner-bottom")
+                   .prepend('<span class="ui-icon ui-icon-triangle-1-e"/>')
+                   .click(function () {
+                                      $(this).toggleClass("ui-accordion-header-active")
+                                             .toggleClass("ui-state-active")
+                                             .toggleClass("ui-state-default")
+                                             .toggleClass("ui-corner-bottom")
+                                             .find("> .ui-icon")
+                                             .toggleClass("ui-icon-triangle-1-e")
+                                             .toggleClass("ui-icon-triangle-1-s")
+                                             .end()
+                                             .next()
+                                             .toggleClass("ui-accordion-content-active")
+                                             .toggle();
+                                      return false;
+                                      })
+                   .next()
+                   .addClass("ui-accordion-content ui-helper-reset ui-widget-content ui-corner-bottom")
+                   .css("display","none")
+                   .end()
+                   .end()
+                   .fadeIn("slow");
+//(window.console) ? console.timeEnd("Accordion") : '';
+    setTimeout(function () { // We need to delay slightly, to give the select time to finish populating and the DOM to update calculated positions.
+//(window.console) ? console.time("select-conversion") : '';
+                           var visibleDD = $("#release-date-view"),
+                               vDDwidth,
+                               makeMenu = function (selector) {
+                                                              $(selector).selectmenu({
+                                                                                     handleWidth: 0,
+                                                                                     maxHeight: 400,
+                                                                                     width: vDDwidth
+                                                                                     });
+                                                              };
+                           vDDwidth = visibleDD.outerWidth() + 12;
+                           /* Create the style for left-opening selects. */
+                           MusicBrainz.addStyle('.leftOpenMenu{width:400px!important;z-index:20;left:' + (visibleDD.offset().left + vDDwidth - 400) + 'px;}');
+                           $('#select-edit-release-country').selectmenu({
+                                                                        icons: MusicBrainz.countrySelectArray,
+                                                                        handleWidth: 0,
+                                                                        maxHeight: 400,
+                                                                        width: vDDwidth
+                                                                        });
+                           makeMenu('#select-edit-release-packaging');
+                           makeMenu('#select-edit-release-status');
+                           makeMenu('#select-edit-release-script');
+                           makeMenu('#select-edit-release-language');
+                           $("ul.ui-selectmenu-menu").addClass("leftOpenMenu");
+//(window.console) ? console.timeEnd("select-conversion") : '';
+    }, 1);
 
     /* Add the show help button to the tool box, and round the corners on the docs display div. */
     setTimeout(function () {
         $("#wikiHelpBox").corner(MusicBrainz.roundness);
         $("#wikiHelpInnerBox").corner(MusicBrainz.roundness);
-        MusicBrainz.addToolButton("Show Help Buttons", "btnHelp")
+        MusicBrainz.addToolButton("Show Help Buttons", "btnHelp");
     },1000);
 
     /* ==== End functions that initially manipulate the sidebar DOM. ==== */
 
     $("#sidebar").css("display","block");
 if (window.console) {
-    console.timeEnd("sidebar")
-    console.time("Tracklist")
+    console.timeEnd("sidebar");
+    console.time("Tracklist");
 }
     /* ==== Only functions that affect the initial DOM for the tracklist should go here. ==== */
 
@@ -1165,8 +1164,8 @@ if (window.console) {
     $("#loader").css("display","none");
 
 if (window.console) {
-    console.timeEnd("Tracklist")
-    console.time("Notes")
+    console.timeEnd("Tracklist");
+    console.time("Notes");
 }
     /* ==== Only functions that affect the initial DOM for the edit note or annotation should go here. ==== */
 
@@ -1181,11 +1180,10 @@ if (window.console) {
         MusicBrainz.activateAnnotationSwitcher();
     }
 
-    /* Attach and activate the editor for the annotation and edit note. */
-    /* Each of these takes about 350ms to run; neither is needed immediately, so */
-    /* rather than slow down the page initialization, delay creating the edit note editor
-    /* until after page load, and only initialize the annotation editor if it is needed. */
-    setTimeout("$('#edit-releaseedit_note').markItUp(MusicBrainz.markup.wiki)", 1000);
+    /* Attach and activate the editor for the annotation and edit note.                   */
+    setTimeout(function () {
+                           $('#edit-releaseedit_note').markItUp(MusicBrainz.markup.wiki);
+                           } , 1000);
     MusicBrainz.addAnnotationButton();
 
     /* ==== End functions that initially manipulate the edit note or annotation DOM. ==== */
@@ -1193,8 +1191,8 @@ if (window.console) {
     /* Show the edit note. */
     $("fieldset.editNote").css("display","block");
 if (window.console) {
-    console.timeEnd("Notes")
-    console.time("MouseEvents")
+    console.timeEnd("Notes");
+    console.time("MouseEvents");
 }
     /* ==== Start functions that attach mouse events. ==== */
 
@@ -1310,8 +1308,8 @@ if (window.console) {
 
     /* ==== End functions that attach mouse events. ==== */
 if (window.console) {
-    console.timeEnd("MouseEvents")
-    console.time("Other")
+    console.timeEnd("MouseEvents");
+    console.time("Other");
 }
     /* ==== Start other functions. ==== */
 
@@ -1377,7 +1375,7 @@ Artist text view:
 
 $("#btnArtistSearch").live("click", function () {
     var artistInput  = $("#artistLookup").prev().find("input.artistName, input.oneArtist").val();
-    if (artistInput.length == 0) {
+    if (artistInput.length === 0) {
         $("#btnArtistSearch").css("display","none");
         $("#lookupNoArtist").css("display","block");
     } else {
@@ -1391,7 +1389,9 @@ $("#btnArtistSearch").live("click", function () {
         setTimeout(function () { /* Load the effect now, but delay sending it, so that it happens while the ajax request is taking place. */
                                $("#artistLookup >div:first").css("width","");
                                $("#artistLookup").animate({width:"45em"},300);
-                               setTimeout('$("#artistLookup").redrawShadow();',310);
+                               setTimeout(function () {
+                                                      $("#artistLookup").redrawShadow();
+                                                      }, 310);
                                }, 1);
         $.ajax({
                async    : false,
@@ -1462,7 +1462,7 @@ artistEditor.events.init();
 
 
     $(".NewArtistButton").live("click", function () {
-        artistEditor.resetAppearance()
+        artistEditor.resetAppearance();
         $("#artistEditBox").find("div:first > div:first")
                            .find("input")
                            .show()
@@ -1486,14 +1486,14 @@ artistEditor.events.init();
                                   .find("div:first")
                                   .find("textarea");
         artistEditor.resetAppearance();
-        artistEditor.destroySelf()
+        artistEditor.destroySelf();
         $(thisTextarea).focus(); // Force focus to the textarea; this forces the textarea's position to be updated, and avoids the textarea ending
     });                          // up aligned to the absolute top of the td.  It's not perfectly centered, but about as good as css allows us to do.
 
 
     $(".removeArtist").live("click", function () {
 // TODO: Clear out the data array store for this artist.
-        artistEditor.resetAppearance()
+        artistEditor.resetAppearance();
         $(this).parent()
                .css("display","none")
                .remove();
@@ -1599,8 +1599,8 @@ artistEditor.events.init();
 
  MusicBrainz.showErrorForSidebar("release-date", "Test sidebar error");
 if (window.console) {
-    console.timeEnd("Other")
-    console.timeEnd("init")
+    console.timeEnd("Other");
+    console.timeEnd("init");
 //    console.profileEnd();
 }
 });

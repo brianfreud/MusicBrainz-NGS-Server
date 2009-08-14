@@ -11,13 +11,15 @@
  * http://wiki.jqueryui.com/Selectmenu
  */
 
-// 2009-08-13 Brian Schweitzer - Note 1: Commented out; it resets the left position, which we don't want.  By default, the menu
+// 2009-08    Brian Schweitzer - Note 1: Commented out; it resets the left position, which we don't want.  By default, the menu
 //                               drops open to the right; we're changing the menu's left position after the menu is created, so the menu
 //                               can open to the left.  If this line isn't commented out, this left override would be cleared.
 //                               Note 2: has been added.  It's a bit of a hack, until this is dealt with in the widget better, but without it, 
 //                               each time the selectmenu closes, little bits of the selectmenu's top and bottom borders get viably left behind.
 //                               Note 3: The entire icon handling bit has been rewritten.  For a 254 item array, each item with an icon, the plugin was
 //                               taking 13,500 ms to create the menu.  With the rewritten icon code, it takes around 1050 ms - a 12,450 ms improvement.
+// This plugin has been significantly modified, for greater compatability, much faster functionality, etc.  It should not be upgraded without
+// a good deal of care to maintain changes.  (The contact email address for filamentgroup is not working, so patches cannot be sent upstream.)
 
 (function ($) {
 
@@ -153,11 +155,11 @@
                     parentOptGroup = selectOptionData[i].parentOptGroup;
                 if (classCollection !== "undefined") {
                     if(typeof(iconGroup[classCollection]) !== "undefined") {
-                        iconString = '<span class="' + self.widgetBaseClass + '-item-icon ui-icon ' + iconGroup[classCollection] + '"></span>';
+                        iconString = '<span class="' + self.widgetBaseClass + '-item-icon ui-icon ' + iconGroup[classCollection] + '">&nbsp;&nbsp;</span>';
                         hasIcon = true;
                     }
                 }
-                thisLi = jQuery('<li><a href="#" tabindex="-1" role="option" aria-selected="false">' + iconString + "&nbsp;" + selectOptionData[i].text + '</a></li>').data('index', i).addClass(classCollection).data('optionClasses', classCollection).mouseup(function (event) {
+                thisLi = jQuery('<li><a href="#" tabindex="-1" role="option" aria-selected="false">' + iconString + selectOptionData[i].text + '</a></li>').data('index', i).addClass(classCollection).data('optionClasses', classCollection).mouseup(function (event) {
                     if (self._safemouseup) {
                         var changed = jQuery(this).data('index') !== self._selectedIndex();
                         self.value(jQuery(this).data('index'));
