@@ -43,8 +43,9 @@ sub show : Chained('load') PathPart('')
     my ($self, $c) = @_;
     my $edit = $c->stash->{edit};
 
-    $c->model('Editor')->load($edit);
     $c->model('Edit')->load_all($edit);
+    $c->model('Vote')->load_for_edits($edit);
+    $c->model('Editor')->load($edit, @{ $edit->votes });
 
     $c->stash->{template} = 'edit/index.tt';
 }

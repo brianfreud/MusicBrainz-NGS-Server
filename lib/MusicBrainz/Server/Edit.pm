@@ -82,6 +82,16 @@ has 'edit_notes' => (
     }
 );
 
+has 'votes' => (
+    isa => 'ArrayRef',
+    is => 'rw',
+    default => sub { [] },
+    metaclass => 'Collection::Array',
+    provides => {
+        push => 'add_vote',
+    }
+);
+
 sub is_open
 {
     return shift->status == $STATUS_OPEN;
