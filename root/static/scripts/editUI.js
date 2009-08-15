@@ -120,7 +120,7 @@ var artistEditor,
                                          borderColor : "#666",
                                          css         : {
                                                        float   : "left",
-                                                       width   : "10em"
+                                                       width   : "11em"
                                                        },
                                          id          : "artistLookup",
                                          round       : false

@@ -22,10 +22,8 @@
 // a good deal of care to maintain changes.  (The contact email address for filamentgroup is not working, so patches cannot be sent upstream.)
 
 (function ($) {
-// console.log("sm: main")
     jQuery.widget("ui.selectmenu", {
         _init: function () {
-// console.log("sm: _init")
             var self = this,
                 num,
                 tabindex,
@@ -132,7 +130,7 @@
             });
 
             //create menu portion
-/* */            this.list = jQuery('<ul class="' + ((o.style === 'dropdown') ? widgetBaseClass + "-menu-dropdown " : widgetBaseClass + "-menu-popup ") + widgetBaseClass + '-menu ui-widget ui-widget-content' + ((o.style === "dropdown") ? " ui-corner-bottom" : " ui-corner-all") + '" aria-hidden="true" role="listbox" aria-multiselectable="false" aria-labelledby="' + this.ids[0] + '" id="' + this.ids[1] + '"></ul>');
+            this.list = jQuery('<ul class="' + ((o.style === 'dropdown') ? widgetBaseClass + "-menu-dropdown " : widgetBaseClass + "-menu-popup ") + widgetBaseClass + '-menu ui-widget ui-widget-content' + ((o.style === "dropdown") ? " ui-corner-bottom" : " ui-corner-all") + '" aria-hidden="true" role="listbox" aria-multiselectable="false" aria-labelledby="' + this.ids[0] + '" id="' + this.ids[1] + '"></ul>');
 
             //active state class is only used in popup style
             activeClass = (self.options.style === "popup") ? " ui-state-active" : "";
@@ -190,14 +188,14 @@
                 if (parentOptGroup) {
                     var optGroupName = widgetBaseClass + '-group-' + parentOptGroup;
                     if (this.list.find('li.' + optGroupName).size()) {
-/* */                        this.list.find('li.' + optGroupName + ':last ul').append(thisLi);
+                        this.list.find('li.' + optGroupName + ':last ul').append(thisLi);
                     }
                     else {
-/* */                        jQuery('<li class="' + widgetBaseClass + '-group ' + optGroupName + '"><span class="' + widgetBaseClass + '-group-label">' + parentOptGroup + '</span><ul></ul></li>').appendTo(this.list).find('ul').append(thisLi);
+                        jQuery('<li class="' + widgetBaseClass + '-group ' + optGroupName + '"><span class="' + widgetBaseClass + '-group-label">' + parentOptGroup + '</span><ul></ul></li>').appendTo(this.list).find('ul').append(thisLi);
                     }
                 }
                 else {
-/* */                    thisLi.appendTo(this.list);
+                    thisLi.appendTo(this.list);
                 }
 
                 //this allows for using the scrollbar in an overflowed list
@@ -304,7 +302,6 @@
             return this.ids[1];
         },
         destroy: function () {
-// console.log("sm: destroy")
             var e = this.element;
             e.removeData(this.widgetName).removeClass(this.widgetBaseClass + '-disabled' + ' ' + this.namespace + '-state-disabled').removeAttr('aria-disabled');
 
@@ -315,7 +312,6 @@
             e.show();
         },
         _typeAhead: function (code, eventType) {
-// console.log("sm: _typeAhead")
             var self = this;
             //define self._prevChar if needed
             if (!self._prevChar) {
@@ -347,19 +343,17 @@
             this._prevChar[0] = C;
         },
         _uiHash: function () {
-// console.log("sm: _uiHash")
             return {
                 value: this.value()
             };
         },
         open: function (event) {
-// console.log("sm: open")
             var self = this;
             this._refreshPosition();
             this._closeOthers(event);
             this.newelement.attr('aria-expanded', true).addClass('ui-state-active');
 
-/* */            this.list.appendTo('body').addClass(widgetBaseClass + '-open').attr('aria-hidden', false).find('li:not(.' + widgetBaseClass + '-group):eq(' + this._selectedIndex() + ') a').focus();
+            this.list.appendTo('body').addClass(widgetBaseClass + '-open').attr('aria-hidden', false).find('li:not(.' + widgetBaseClass + '-group):eq(' + this._selectedIndex() + ') a').focus();
             if (this.options.style == "dropdown") {
                 this.newelement.removeClass('ui-corner-all').addClass('ui-corner-top');
             }
@@ -368,7 +362,6 @@
             jQuery(".ui-selectmenu-menu").show();  /* Brian Schweitzer 2009-08-14: See note 1 up top. */
         },
         close: function (event, retainFocus) {
-// console.log("sm: close")
             if (this.newelement.is('.ui-state-active')) {
                 this.newelement.attr('aria-expanded', false).removeClass('ui-state-active');
                 this.list.attr('aria-hidden', true).removeClass(this.widgetBaseClass + '-open');
@@ -383,23 +376,19 @@
             }
         },
         change: function (event) {
-// console.log("sm: change")
             this.element.trigger('change');
             this._trigger("change", event, this._uiHash());
         },
         select: function (event) {
-// console.log("sm: select")
             this._trigger("select", event, this._uiHash());
         },
         _closeOthers: function (event) {
-// console.log("sm: closeOthers")
             jQuery('.' + this.widgetBaseClass + '.ui-state-active').not(this.newelement).each(function () {
                 jQuery(this).data('selectelement').selectmenu('close', event);
             });
             jQuery('.' + this.widgetBaseClass + '.ui-state-hover').trigger('mouseout');
         },
         _toggle: function (event, retainFocus) {
-// console.log("sm: _toggle")
             if (this.list.is('.' + this.widgetBaseClass + '-open')) {
                 this.close(event, retainFocus);
             }
@@ -408,25 +397,20 @@
             }
         },
         _selectedIndex: function () {
-// console.log("sm: _selectedIndex")
             return this.element[0].selectedIndex;
         },
         _selectedOptionLi: function () {
-// console.log("sm: _selectedOptionLi")
             return this._optionLis.eq(this._selectedIndex());
         },
         _focusedOptionLi: function () {
-// console.log("sm: _focusedOptionLi")
             return this.list.find('.' + this.widgetBaseClass + '-item-focus');
         },
         _moveSelection: function (amt) {
-// console.log("sm: _moveSelection")
             var currIndex = parseInt(this._selectedOptionLi().data('index'), 10);
             var newIndex = currIndex + amt;
             return this._optionLis.eq(newIndex).trigger('mouseup');
         },
         _moveFocus: function (amt) {
-// console.log("sm: _moveFocus")
             var newIndex; 
             if (!isNaN(amt)) {
                 var currIndex = parseInt(this._focusedOptionLi().data('index'), 10);
@@ -446,13 +430,11 @@
             this._optionLis.eq(newIndex).find('a:eq(0)').focus();
         },
         _scrollPage: function (direction) {
-// console.log("sm: _scrollPage")
             var numPerPage = Math.floor(this.list.outerHeight() / this.list.find('li:first').outerHeight());
             numPerPage = (direction == 'up') ? -numPerPage : numPerPage;
             this._moveFocus(numPerPage);
         },
         _setData: function (key, value) {
-// console.log("sm: _setData")
             this.options[key] = value;
             if (key == 'disabled') {
                 this.element.add(this.newelement).add(this.list)[value ? 'addClass' : 'removeClass'](
@@ -460,7 +442,6 @@
             }
         },
         value: function (newValue) {
-// console.log("sm: value")
             if (arguments.length) {
                 this.element[0].selectedIndex = newValue;
                 this._refreshValue();
@@ -469,7 +450,6 @@
             return this.element[0].selectedIndex;
         },
         _refreshValue: function () {
-// console.log("sm: _refreshValue")
             var activeClass = (this.options.style == "popup") ? " ui-state-active" : "";
             //deselect previous
             this.list.find('.' + this.widgetBaseClass + '-item-selected').removeClass(this.widgetBaseClass + "-item-selected" + activeClass).find('a').attr('aria-selected', 'false');
@@ -482,7 +462,6 @@
             this._selectedOptionLi().find('a:eq(0)').html());
         },
         _refreshPosition: function () {
-// console.log("sm: _refreshPosition")
             //set left value
             if (this.options.openLeft) {
                 this.list.addClass("leftOpenMenu");
