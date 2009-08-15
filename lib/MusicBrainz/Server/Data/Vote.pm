@@ -3,7 +3,7 @@ use Moose;
 
 use Moose::Util::TypeConstraints qw( find_type_constraint );
 use MusicBrainz::Server::Data::Utils qw( placeholders query_to_list );
-use MusicBrainz::Server::Types;
+use MusicBrainz::Server::Types qw( $VOTE_YES $VOTE_NO );
 
 extends 'MusicBrainz::Server::Data::Entity';
 
@@ -45,13 +45,44 @@ sub enter_votes
     my $sql = Sql->new($self->c->raw_dbh);
     my $query;
     Sql::RunInTransaction(sub {
+        # Filter votes on edits that are open and were not created by the voter
+        my $edits = $self->c->model('Edit')->get_by_ids(map { $_->{edit_id} } @votes);
+        @votes = grep {
+            my $edit = $edits->{ $_->{edit_id} };
+            defined $edit && $edit->is_open && $edit->editor_id != $editor_id
+        } @votes;
+
+        return unless @votes;
+
+        # Supersede any existing votes
         $query = 'UPDATE vote SET superseded = TRUE' .
-                 ' WHERE editor = ? AND edit IN (' . placeholders(@votes) . ')';
-        $sql->Do($query, $editor_id, map { $_->{edit_id} } @votes);
+                 ' WHERE editor = ? AND superseded = FALSE AND edit IN (' . placeholders(@votes) . ')'.
+                 ' RETURNING edit, vote';
+        my $superseded = $sql->SelectListOfHashes($query, $editor_id, map { $_->{edit_id} } @votes);
+
+        my %delta;
+        # Change the vote count delta for any votes that were changed
+        for my $s (@$superseded) {
+            my $id = $s->{edit};
+            --( $delta{ $id }->{no}  ) if $s->{vote} == $VOTE_NO;
+            --( $delta{ $id }->{yes} ) if $s->{vote} == $VOTE_YES;
+        }
 
         $query = 'INSERT INTO vote (editor, edit, vote) VALUES ';
         $query .= join ", ", (('(?, ?, ?)') x @votes);
-        $sql->Do($query, map { $editor_id, $_->{edit_id}, $_->{vote} } @votes);
+        $query .= ' RETURNING edit, vote';
+        my $voted = $sql->SelectListOfHashes($query, map { $editor_id, $_->{edit_id}, $_->{vote} } @votes);
+
+        # Change the vote count delta for any votes that were changed
+        for my $s (@$voted) {
+            my $id = $s->{edit};
+            ++( $delta{ $id }->{no}  ) if $s->{vote} == $VOTE_NO;
+            ++( $delta{ $id }->{yes} ) if $s->{vote} == $VOTE_YES;
+
+            $query = 'UPDATE edit SET yesvotes = yesvotes + ?, novotes = novotes + ?' .
+                     ' WHERE id = ?';
+            $sql->Do($query, $delta{ $id }->{yes} || 0, $delta{ $id }->{no} || 0, $id);
+        }
     }, $sql);
 }
 
