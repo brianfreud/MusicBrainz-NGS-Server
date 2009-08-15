@@ -1,5 +1,5 @@
 [%#- extra_js = "jquery/jquery.replace.js jquery/jquery.swap.js jquery/jquery.outerHTML.js jquery/jquery.liveExtension.js jquery/jquery.dropshapdow.js jquery/jquery.scrollTo.js jquery/jquery.iff.js jquery/jquery.corner.js jquery/jquery.selectboxes.js jquery/jquery.hoverintent.js jquery/jquery.autotab.js jquery/jquery.bt.js jquery/jquery.lorem.js jquery/jquery.autogrow.js jquery/jquery.jquery-ui.js jquery/jquery.tablednd.js jquery/jquery.markitup.js jquery/jquery.floatingdiv.js libraries/wikiToHTML.js editUI.js" -%]
-[%- extra_js = "CompressedJS.js editUI.js" -%]
+[%- extra_js = "CompressedJS.js jquery/jquery.ui.selectmenu.js editUI.js" -%]
 
 [%- IF browserIsIE -%]
     [%- extra_js = "libraries/excanvas.js jquery/jquery.bgiframe.min.js " _ extra_js -%]

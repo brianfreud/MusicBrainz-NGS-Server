@@ -1,3 +1,5 @@
+@charset "UTF-8";
+
 /* Other icons in editor.png
 .file  0 -396px;
 .trash  0 -1698px;
@@ -5,7 +7,7 @@
 
 input.addLabel {
  float: right;
- margin-top: .5em;
+ margin-top: 0.5em;
 }
 
 dd.datumItem select,
@@ -320,7 +322,7 @@ table.tbl .hidden textarea,
  padding: 6px 0 6px 6px;
  overflow-y: scroll;
  overflow-x: hidden;
- margin-bottom: .3em;
+ margin-bottom: 0.3em;
 }
 
 #wikiHelpBox {
@@ -345,7 +347,7 @@ table.tbl .hidden textarea,
  display: none;
  cursor: pointer;
  height: 12px;
- margin-right: .2em;
+ margin-right: 0.2em;
  vertical-align: middle;
  width: 12px;
 }
@@ -423,7 +425,7 @@ th.trackdur span {
 .trackdur,
 .trackname,
 .trackposition {
- padding-top: .4em!important;
+ padding-top: 0.4em!important;
  vertical-align: top;
 }
 
@@ -441,7 +443,7 @@ th.medium.trackdur {
 }
 
 .trackposition {
- padding-left: .9em!important;
+ padding-left: 0.9em!important;
 }
 
 /* The :not and :first-child selectors won't work in IE, but that's ok. In IE, the medium info line will also
@@ -495,19 +497,19 @@ table.tbl tr.ev td.trackdur {
  margin-top: 3px;
 }
 
-#artistEditBox .ArtistDoneButton,
-#artistEditBox .NewArtistButton {
+#ArtistDoneButton,
+#NewArtistButton {
  bottom: 8px;
  padding: 0 1em;
- margin: 1em 0 .2em 0;
+ margin: 1em 0 0.2em 0;
 }
 
-#artistEditBox .NewArtistButton {
+#NewArtistButton {
  position: absolute;
  right: 8px;
 }
 
-#artistEditBox .ArtistDoneButton {
+#ArtistDoneButton {
  left: 8px;
  margin-left: 1.5em;
 }
@@ -550,14 +552,14 @@ table.tbl tr.ev td.trackdur {
 #artistEditBox .labelJoiner {
  float: left;
  font-weight: bold;
- margin-left: .8em;
+ margin-left: 0.8em;
 }
 
 .removeArtist,
 #artistEditBox .artistName,
 #artistEditBox .artistCredit,
 #artistEditBox .joinPhrase {
- margin-right: .5em;
+ margin-right: 0.5em;
 }
 
 #artistEditBox .labelArtist,
@@ -594,7 +596,7 @@ table.tbl tr.ev td.trackdur {
  font-style: italic;
  font-weight: normal!important;
  border-bottom: 1px solid #000;
- padding-bottom: .5em;
+ padding-bottom: 0.5em;
  width: 100%;
 }
 
@@ -997,9 +999,9 @@ tr:hover .copyArtist {
 .ui-state-error, .ui-widget-content .ui-state-error {border: 1px solid #cd0a0a; background: #fef1ec url(/static/images/icon/jquery/ui-bg_inset-soft_95_fef1ec_1x100.png) 50% bottom repeat-x; color: #cd0a0a; }
 .ui-state-error a, .ui-widget-content .ui-state-error a { color: #cd0a0a; }
 .ui-state-error-text, .ui-widget-content .ui-state-error-text { color: #cd0a0a; }
-.ui-state-disabled, .ui-widget-content .ui-state-disabled { opacity: .35; filter:Alpha(Opacity=35); background-image: none; }
+.ui-state-disabled, .ui-widget-content .ui-state-disabled { opacity: 0.35; filter:Alpha(Opacity=35); background-image: none; }
 .ui-priority-primary, .ui-widget-content .ui-priority-primary { font-weight: bold; }
-.ui-priority-secondary, .ui-widget-content .ui-priority-secondary { opacity: .7; filter:Alpha(Opacity=70); font-weight: normal; }
+.ui-priority-secondary, .ui-widget-content .ui-priority-secondary { opacity: 0.7; filter:Alpha(Opacity=70); font-weight: normal; }
 
 /* Icons
 ----------------------------------*/
@@ -1205,19 +1207,19 @@ tr:hover .copyArtist {
 .ui-corner-all { -moz-border-radius: 4px; -webkit-border-radius: 4px; }
 
 /* Overlays */
-.ui-widget-overlay { background: #aaaaaa url(/static/images/icon/jquery/ui-bg_flat_0_aaaaaa_40x100.png) 50% 50% repeat-x; opacity: .30;filter:Alpha(Opacity=30); }
-.ui-widget-shadow { margin: -6px 0 0 -6px; padding: 6px; background: #aaaaaa url(/static/images/icon/jquery/ui-bg_flat_0_aaaaaa_40x100.png) 50% 50% repeat-x; opacity: .30;filter:Alpha(Opacity=30); -moz-border-radius: 6px; -webkit-border-radius: 6px; }/* Accordion
+.ui-widget-overlay { background: #aaaaaa url(/static/images/icon/jquery/ui-bg_flat_0_aaaaaa_40x100.png) 50% 50% repeat-x; opacity: 0.30;filter:Alpha(Opacity=30); }
+.ui-widget-shadow { margin: -6px 0 0 -6px; padding: 6px; background: #aaaaaa url(/static/images/icon/jquery/ui-bg_flat_0_aaaaaa_40x100.png) 50% 50% repeat-x; opacity: 0.30;filter:Alpha(Opacity=30); -moz-border-radius: 6px; -webkit-border-radius: 6px; }/* Accordion
 ----------------------------------*/
 .ui-accordion .ui-accordion-header { cursor: pointer; position: relative; margin-top: 1px; zoom: 1; }
 .ui-accordion .ui-accordion-li-fix { display: inline; }
 .ui-accordion .ui-accordion-header-active { border-bottom: 0 !important; }
-.ui-accordion .ui-accordion-header a { display: block; font-size: 1em; padding: .5em .5em .5em 2.2em; }
-.ui-accordion .ui-accordion-header .ui-icon { position: absolute; left: .5em; top: 50%; margin-top: -8px; }
+.ui-accordion .ui-accordion-header a { display: block; font-size: 1em; padding: 0.5em 0.5em 0.5em 2.2em; }
+.ui-accordion .ui-accordion-header .ui-icon { position: absolute; left: 0.5em; top: 50%; margin-top: -8px; }
 .ui-accordion .ui-accordion-content { padding: 1em 2.2em; border-top: 0; margin-top: -2px; position: relative; top: 1px; margin-bottom: 2px; overflow: auto; display: none; }
 .ui-accordion .ui-accordion-content-active { display: block; }/* Datepicker
 ----------------------------------*/
 /*
-.ui-datepicker { width: 17em; padding: .2em .2em 0; }
+.ui-datepicker { width: 17em; padding: 0.2em 0.2em 0; }
 .ui-datepicker .ui-datepicker-header { position:relative; padding:.2em 0; }
 .ui-datepicker .ui-datepicker-prev, .ui-datepicker .ui-datepicker-next { position:absolute; top: 2px; width: 1.8em; height: 1.8em; }
 .ui-datepicker .ui-datepicker-prev-hover, .ui-datepicker .ui-datepicker-next-hover { top: 1px; }
@@ -1232,19 +1234,19 @@ tr:hover .copyArtist {
 .ui-datepicker select.ui-datepicker-month, 
 .ui-datepicker select.ui-datepicker-year { width: 49%;}
 .ui-datepicker .ui-datepicker-title select.ui-datepicker-year { float: right; }
-.ui-datepicker table {width: 100%; font-size: .9em; border-collapse: collapse; margin:0 0 .4em; }
-.ui-datepicker th { padding: .7em .3em; text-align: center; font-weight: bold; border: 0;  }
+.ui-datepicker table {width: 100%; font-size: 0.9em; border-collapse: collapse; margin:0 0 0.4em; }
+.ui-datepicker th { padding: 0.7em 0.3em; text-align: center; font-weight: bold; border: 0;  }
 .ui-datepicker td { border: 0; padding: 1px; }
-.ui-datepicker td span, .ui-datepicker td a { display: block; padding: .2em; text-align: right; text-decoration: none; }
-.ui-datepicker .ui-datepicker-buttonpane { background-image: none; margin: .7em 0 0 0; padding:0 .2em; border-left: 0; border-right: 0; border-bottom: 0; }
-.ui-datepicker .ui-datepicker-buttonpane button { float: right; margin: .5em .2em .4em; cursor: pointer; padding: .2em .6em .3em .6em; width:auto; overflow:visible; }
+.ui-datepicker td span, .ui-datepicker td a { display: block; padding: 0.2em; text-align: right; text-decoration: none; }
+.ui-datepicker .ui-datepicker-buttonpane { background-image: none; margin: 0.7em 0 0 0; padding:0 0.2em; border-left: 0; border-right: 0; border-bottom: 0; }
+.ui-datepicker .ui-datepicker-buttonpane button { float: right; margin: 0.5em 0.2em 0.4em; cursor: pointer; padding: 0.2em 0.6em 0.3em 0.6em; width:auto; overflow:visible; }
 .ui-datepicker .ui-datepicker-buttonpane button.ui-datepicker-current { float:left; }
 */
 /* with multiple calendars */
 /*
 .ui-datepicker.ui-datepicker-multi { width:auto; }
 .ui-datepicker-multi .ui-datepicker-group { float:left; }
-.ui-datepicker-multi .ui-datepicker-group table { width:95%; margin:0 auto .4em; }
+.ui-datepicker-multi .ui-datepicker-group table { width:95%; margin:0 auto 0.4em; }
 .ui-datepicker-multi-2 .ui-datepicker-group { width:50%; }
 .ui-datepicker-multi-3 .ui-datepicker-group { width:33.3%; }
 .ui-datepicker-multi-4 .ui-datepicker-group { width:25%; }
@@ -1280,15 +1282,15 @@ tr:hover .copyArtist {
     height: 200px; /*must have*/
 }/* Dialog
 ----------------------------------*/
-.ui-dialog { position: relative; padding: .2em; width: 300px; }
-.ui-dialog .ui-dialog-titlebar { padding: .5em .3em .3em 1em; position: relative;  }
-.ui-dialog .ui-dialog-title { float: left; margin: .1em 0 .2em; } 
-.ui-dialog .ui-dialog-titlebar-close { position: absolute; right: .3em; top: 50%; width: 19px; margin: -10px 0 0 0; padding: 1px; height: 18px; }
+.ui-dialog { position: relative; padding: 0.2em; width: 300px; }
+.ui-dialog .ui-dialog-titlebar { padding: 0.5em 0.3em 0.3em 1em; position: relative;  }
+.ui-dialog .ui-dialog-title { float: left; margin: 0.1em 0 0.2em; } 
+.ui-dialog .ui-dialog-titlebar-close { position: absolute; right: 0.3em; top: 50%; width: 19px; margin: -10px 0 0 0; padding: 1px; height: 18px; }
 .ui-dialog .ui-dialog-titlebar-close span { display: block; margin: 1px; }
 .ui-dialog .ui-dialog-titlebar-close:hover, .ui-dialog .ui-dialog-titlebar-close:focus { padding: 0; }
-.ui-dialog .ui-dialog-content { border: 0; padding: .5em 1em; background: none; overflow: auto; zoom: 1; }
-.ui-dialog .ui-dialog-buttonpane { text-align: left; border-width: 1px 0 0 0; background-image: none; margin: .5em 0 0 0; padding: .3em 1em .5em .4em; }
-.ui-dialog .ui-dialog-buttonpane button { float: right; margin: .5em .4em .5em 0; cursor: pointer; padding: .2em .6em .3em .6em; line-height: 1.4em; width:auto; overflow:visible; }
+.ui-dialog .ui-dialog-content { border: 0; padding: 0.5em 1em; background: none; overflow: auto; zoom: 1; }
+.ui-dialog .ui-dialog-buttonpane { text-align: left; border-width: 1px 0 0 0; background-image: none; margin: 0.5em 0 0 0; padding: 0.3em 1em 0.5em 0.4em; }
+.ui-dialog .ui-dialog-buttonpane button { float: right; margin: 0.5em 0.4em 0.5em 0; cursor: pointer; padding: 0.2em 0.6em 0.3em 0.6em; line-height: 1.4em; width:auto; overflow:visible; }
 .ui-dialog .ui-resizable-se { width: 14px; height: 14px; right: 3px; bottom: 3px; }
 .ui-draggable .ui-dialog-titlebar { cursor: move; }
 /* Progressbar
@@ -1310,24 +1312,24 @@ tr:hover .copyArtist {
 ----------------------------------*/
 .ui-slider { position: relative; text-align: left; }
 .ui-slider .ui-slider-handle { position: absolute; z-index: 2; width: 1.2em; height: 1.2em; cursor: default; }
-.ui-slider .ui-slider-range { position: absolute; z-index: 1; font-size: .7em; display: block; border: 0; }
+.ui-slider .ui-slider-range { position: absolute; z-index: 1; font-size: 0.7em; display: block; border: 0; }
 
-.ui-slider-horizontal { height: .8em; }
+.ui-slider-horizontal { height: 0.8em; }
 .ui-slider-horizontal .ui-slider-handle { top: -.3em; margin-left: -.6em; }
 .ui-slider-horizontal .ui-slider-range { top: 0; height: 100%; }
 .ui-slider-horizontal .ui-slider-range-min { left: 0; }
 .ui-slider-horizontal .ui-slider-range-max { right: 0; }
 
-.ui-slider-vertical { width: .8em; height: 100px; }
+.ui-slider-vertical { width: 0.8em; height: 100px; }
 .ui-slider-vertical .ui-slider-handle { left: -.3em; margin-left: 0; margin-bottom: -.6em; }
 .ui-slider-vertical .ui-slider-range { left: 0; width: 100%; }
 .ui-slider-vertical .ui-slider-range-min { bottom: 0; }
 .ui-slider-vertical .ui-slider-range-max { top: 0; }/* Tabs
 ----------------------------------*/
-.ui-tabs { padding: .2em; zoom: 1; }
-.ui-tabs .ui-tabs-nav { list-style: none; position: relative; padding: .2em .2em 0; }
-.ui-tabs .ui-tabs-nav li { position: relative; float: left; border-bottom-width: 0 !important; margin: 0 .2em -1px 0; padding: 0; }
-.ui-tabs .ui-tabs-nav li a { float: left; text-decoration: none; padding: .5em 1em; }
+.ui-tabs { padding: 0.2em; zoom: 1; }
+.ui-tabs .ui-tabs-nav { list-style: none; position: relative; padding: 0.2em 0.2em 0; }
+.ui-tabs .ui-tabs-nav li { position: relative; float: left; border-bottom-width: 0 !important; margin: 0 0.2em -1px 0; padding: 0; }
+.ui-tabs .ui-tabs-nav li a { float: left; text-decoration: none; padding: 0.5em 1em; }
 .ui-tabs .ui-tabs-nav li.ui-tabs-selected { padding-bottom: 1px; border-bottom-width: 0; }
 .ui-tabs .ui-tabs-nav li.ui-tabs-selected a, .ui-tabs .ui-tabs-nav li.ui-state-disabled a, .ui-tabs .ui-tabs-nav li.ui-state-processing a { cursor: text; }
 .ui-tabs .ui-tabs-nav li a, .ui-tabs.ui-tabs-collapsible .ui-tabs-nav li.ui-tabs-selected a { cursor: pointer; } /* first selector in group seems obsolete, but required to overcome bug in Opera applying cursor: text overall if defined elsewhere... */
@@ -1352,13 +1354,11 @@ tr:hover .copyArtist {
 .ui-selectmenu-status { line-height: 1.4em; }
 .ui-selectmenu-open li.ui-selectmenu-item-focus a {  }
 .ui-selectmenu-open li.ui-selectmenu-item-selected { }
-.ui-selectmenu-menu li span,.ui-selectmenu-status span { display:block; margin-bottom: .2em; }
+.ui-selectmenu-menu li span,.ui-selectmenu-status span { display:block; margin-bottom: 0.2em; }
 .ui-selectmenu-menu li .ui-selectmenu-item-header { font-weight: bold; }
 .ui-selectmenu-menu li .ui-selectmenu-item-content {  }
-.ui-selectmenu-menu li .ui-selectmenu-item-footer { opacity: .8; }
+.ui-selectmenu-menu li .ui-selectmenu-item-footer { opacity: 0.8; }
 /*for optgroups*/
 .ui-selectmenu-menu .ui-selectmenu-group { font-size: 1em; }
-.ui-selectmenu-menu .ui-selectmenu-group .ui-selectmenu-group-label { line-height: 1.4em; display:block; padding:.6em .5em 0; font-weight: bold; }
+.ui-selectmenu-menu .ui-selectmenu-group .ui-selectmenu-group-label { line-height: 1.4em; display:block; padding:.6em 0.5em 0; font-weight: bold; }
 .ui-selectmenu-menu .ui-selectmenu-group ul { margin: 0; padding: 0; }
-
-

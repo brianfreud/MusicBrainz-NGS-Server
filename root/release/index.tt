@@ -14,7 +14,7 @@
     [%- IF edit -%]
         [%- trackData = '' -%]
     [%- END -%]
-    <table class="tbl[%- IF edit -%] release hidden[%- END -%]" rules="none">
+    <table class="tbl[%- IF edit -%] release hidden[%- END -%]" rules="none"[%- IF edit -%] id="releasetable"[%- END -%]>
         [%#- 5 cols in either view: View mode: Position, Title, Artist, Rating, Length; Edit mode: Tools, Position, Title, Artist, Length -%]
         [%- IF edit -%]
         <colgroup>

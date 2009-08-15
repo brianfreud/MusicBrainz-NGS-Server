@@ -56,8 +56,8 @@ var artistEditor,
                                          },
                    edit_width_with_AC  : "51em",
                    editor_inputs       : 'input.artistName, input.artistCredit, input.joinPhrase',
-                   html_button_add     : '<input type="button" value="' + text.AddArtistShort + '" class="NewArtistButton"/>',
-                   html_button_done    : '<input type="button" value="' + text.Done + '" class="ArtistDoneButton"/>',
+                   html_button_add     : '<input type="button" value="' + text.AddArtistShort + '" id="NewArtistButton"/>',
+                   html_button_done    : '<input type="button" value="' + text.Done + '" id="ArtistDoneButton"/>',
                    html_button_remove  : '<div class="removeArtist"/>',
                    html_input_joiner   : '<input class="artistCredit"/>',
                    html_line_artist    : function () {
@@ -286,7 +286,7 @@ var artistEditor,
                                                                        },
                                          synchArtistInputs  : function () { /* Keep the AC synched to the artist name, but only if the AC hasn't been modified independently. */
 //(window.console) ? console.time("synchArtistInputs") : '';
-                                                                       $("table.tbl input.artistName").live("keydown", function () {
+                                                                       $("input.artistName").live("keydown", function () {
                                                                            $(this).data("oldVal").push($(this).val());
                                                                        }).live("keyup", function () {
                                                                            var thisAC = $(this).next().val();
@@ -344,7 +344,7 @@ var artistEditor,
                                                                                $(this).css("display","none")
                                                                                       .remove();
                                                                                $(".artistName").data("oldVal",[]);
-                                                                               $(".artistCredit:eq(0)").val($("#artistEditBox").find("div:first").find("input:eq(2)").val());
+                                                                               $(".artistCredit:first").val($("#artistEditBox").find("div:first").find("input:eq(2)").val());
                                                                            }
                                                                        });
 //(window.console) ? console.timeEnd("makeEditor_One") : '';
@@ -588,6 +588,7 @@ var artistEditor,
     },
 
     addAnnotationButton : function () {
+//(window.console) ? console.time("addAnnotationButton") : '';
         /* Create the tool button. */
         MusicBrainz.addToolButton(text.AnnotationEditorShow, "btnAnnotationEditor");
         /* Set the click event controls for the Show / Hide Annotation Editor button. */
@@ -604,9 +605,11 @@ var artistEditor,
                 $(this).val(text.AnnotationEditorShow);
             }
         });
+//(window.console) ? console.timeEnd("addAnnotationButton") : '';
     },
 
     addAnnotationSwitcher : function () {
+//(window.console) ? console.time("addAnnotationSwitcher") : '';
         if (experimental) {
             $('#annotation').before('<ul id="ChangeMarkup">' +
                                         '<li>' +
@@ -625,31 +628,43 @@ var artistEditor,
                                     '</ul>');
             $('#annotation').before('<br/><br/><em>Note: Converting from HTML to Wikiformat and editing using HTML mode are both experimental at the moment!</em>');
         }
+//(window.console) ? console.timeEnd("addAnnotationSwitcher") : '';
     },
 
     addArtistEditorButton : function (context) {
-        context.find(".oneArtist").parent().after('<div class="addArtist" alt="' + text.AddArtist + '" title="' + text.AddArtist + '"></div>');
+//(window.console) ? console.time("addArtistEditorButton") : '';
+        context.find(".oneArtist")
+               .parent()
+               .after('<div class="addArtist" alt="' + text.AddArtist + '" title="' + text.AddArtist + '"></div>');
+//(window.console) ? console.timeEnd("addArtistEditorButton") : '';
         return context;
     },
 
     addStyle : function (rule) {
+//(window.console) ? console.time("addStyle") : '';
         if (document.styleSheets) {
             var sheet = document.styleSheets[1];
             sheet.insertRule(rule, sheet.cssRules.length);
         }
+//(window.console) ? console.timeEnd("addStyle") : '';
     },
 
     addToolButton : function (buttonText, buttonID) {
+//(window.console) ? console.time("addToolButton") : '';
         $("#MenuEditTools").append('<input type="button" id="' + buttonID + '" value="' + buttonText + '"/>');
+//(window.console) ? console.timeEnd("addToolButton") : '';
     },
 
     addTrackTools : function (context) {
+//(window.console) ? console.time("addTrackTools") : '';
         context.find("td.toolbox").append('<div class="removeTrack" alt="' + text.RemoveTrack + '" title="' + text.RemoveTrack + '"></div>' +
                                           '<div class="handleIcon" alt="' + text.DragTrack + '" title="' + text.DragTrack + '"></div>');
+//(window.console) ? console.timeEnd("addTrackTools") : '';
         return context;
     },
 
     attachHelpButtonEvents : function (helpArray) {
+//(window.console) ? console.time("attachHelpButtonEvents") : '';
         $.each(helpArray, function (i) {
             $(helpArray[i][0] + " img").click(function () {
                 $("#wikiDocName").html(helpArray[i][1]);
@@ -666,33 +681,40 @@ var artistEditor,
                 /* END */
             });
         });
+//(window.console) ? console.timeEnd("attachHelpButtonEvents") : '';
     },
 
     clearStatus : function () {
+//(window.console) ? console.time("clearStatus") : '';
         $("#editStatusMsg").html("&nbsp;");
+//(window.console) ? console.timeEnd("clearStatus") : '';
     },
 
     destroyGeneric : function (element) {
+//(window.console) ? console.time("destroyGeneric") : '';
         $(element).removeShadow()
                   .css("display","none")
                   .remove();
+//(window.console) ? console.timeEnd("destroyGeneric") : '';
    },
 
     hideErrorForSidebar : function (element) {
+//(window.console) ? console.time("hideErrorForSidebar") : '';
         $("#" + element + "-dt").btOff();
+//(window.console) ? console.timeEnd("hideErrorForSidebar") : '';
     },
 
     makeCountryList : function () {
         var countries = mb.country,
             country,
-            optionString = "",
+            optionArray = [],
             addStyle = MusicBrainz.addStyle,
             selectArray = [],
             i = mb.country.length,
             n = i % 8,
             processItem = function () {
                 country = countries[--i];
-                optionString = '<option value="' + country[0] + '" class="span-' + country[2] + '">' + country[1] + '</option>' + optionString;
+                optionArray.push('<option value="' + country[0] + '" class="span-' + country[2] + '">' + country[1] + '</option>');
                 // Add the flag class to the global editor stylesheet.
                 addStyle('.flag-' + country[2] + '{background:transparent url(/static/images/icon/flags.png) no-repeat scroll ' + country[3] + 'px!important;height:12px;width:16px;}');
                 selectArray.push({find:'.span-' + country[2], icon:'flag-' + country[2]});
@@ -713,7 +735,7 @@ var artistEditor,
             processItem();
             processItem();
         } while (--n); // n must be greater than 0 here
-        document.getElementById("select-edit-release-country").innerHTML = '<option value="">[ ' + text.Select + ' ]</option>' + optionString; // Populate the select.
+        document.getElementById("select-edit-release-country").innerHTML = '<option value="">[ ' + text.Select + ' ]</option>' + optionArray.reverse().join(""); // Populate the select.
         MusicBrainz.countrySelectArray = selectArray; // Store the country array for this select's later conversion.
     },
     makeFormatList : function () {
@@ -740,6 +762,18 @@ var artistEditor,
         });
     },
 
+    makeSelectSideBar : function (selector, width, leftOpening, height) {
+        if (typeof(leftOpening) === "undefined") {
+            leftOpening = false;
+        }
+        selector.selectmenu({
+                            handleWidth: 0,
+                            maxHeight: (height || 400),
+                            width: width,
+                            openLeft: leftOpening
+                            });
+    },
+
     makeStatusBox : function () {
         $("#statusHead").append(mb.HTMLsnippets.editBox);
         $("#tabs").after(mb.HTMLsnippets.docsBox);
@@ -748,13 +782,14 @@ var artistEditor,
 
     makeSwappableSelectList : function (entity, toSwap, commonArray, swapArray) {
         var swapList = "#select-edit-" + entity + "-" + toSwap,
-            swapButton = "btn-switch-" + toSwap + "-list";
+            swapButton = "btn-switch-" + toSwap + "-list",
+            swapEntity = $(swapList);
         $('.' + entity + '-' + toSwap + ':not(dt)').toggle();
-        $(swapList).after('<input type="button" value="' + text.FullList + '" id="' + swapButton + '"/>');
+        swapEntity.after('<input type="button" value="' + text.FullList + '" id="' + swapButton + '"/>');
         swapButton = '#' + swapButton;
         $(swapButton).addClass("rightsidebutton")
                      .click(function () {
-                                        MusicBrainz.swapShortLongList($(swapList), $(swapButton), commonArray, swapArray);
+                                        MusicBrainz.swapShortLongList(swapEntity, $(swapButton), commonArray, swapArray);
                                         });
     },
 
@@ -792,6 +827,7 @@ var artistEditor,
     },
 
     populateCharArrays : function () {
+//(window.console) ? console.time("populateCharArrays") : '';
         var chars = [
                 ["Á",1],["Ć",1],["É",3],["Í",2],["Ĺ",1],["Ń",0],["Ó",2],["Ŕ",0],["Ś",1],["Ú",3],["Ý",0],["Ź",0],
                 ["á",1],["ć",1],["é",3],["í",2],["ĺ",1],["ń",0],["ó",2],["ŕ",0],["ś",1],["ú",3],["ý",0],["ź",0],
@@ -840,6 +876,7 @@ var artistEditor,
         }
         charMap.symbols.dropMenu[charMap.symbols.dropMenu.length] = { name: "[", openWith: "&91;", className: "skip0" };
         charMap.symbols.dropMenu[charMap.symbols.dropMenu.length] = { name: "]", openWith: "&93;", className: "skip0" };
+//(window.console) ? console.timeEnd("populateCharArrays") : '';
     },
 
     setStatus : function (status, showThrobber) {
@@ -861,7 +898,7 @@ var artistEditor,
     },
 
     stripeTracks : function () {
-        $("table.tbl > tbody").each(function () {
+        $("#releasetable > tbody").each(function () {
                                    $(this).children("tr")
                                           .removeClass("ev") // Unstripe the tracks.
                                           .filter(":visible:even")
@@ -870,20 +907,21 @@ var artistEditor,
     },
 
     swapShortLongList : function (select, button, commonarray, bigarray) {
+//(window.console) ? console.time("swapShortLongList") : '';
         var item,
             selecteditem = -1,
             showFullList = false,
-            optionString = '',
+            optionArray = [],
             i = bigarray.length,
             n = i % 8,
             processItem = function () {
                 item = bigarray[--i];
                 if (!showFullList) {
                     if ($.inArray(item[0], commonarray) > -1 || item[0] == selecteditem) { // If the current item is also in the common items array,
-                        optionString = '<option value="' + item[0] + '">' + item[1] + '</option>' + optionString; // add it to the string.
+                        optionArray.push('<option value="' + item[0] + '">' + item[1] + '</option>'); // add it to the string.
                     }
                 } else {
-                    optionString = '<option value="' + item[0] + '">' + item[1] + '</option>' + optionString; // add it to the string.
+                    optionArray.push('<option value="' + item[0] + '">' + item[1] + '</option>'); // add it to the string.
                 }
             };
         if (typeof(select.selectedValues()[0]) !== "undefined") { // If there actually is a currently selected item,
@@ -913,25 +951,29 @@ var artistEditor,
             processItem();
             processItem();
         } while (--n); // n must be greater than 0 here
-        select.html('<option value="">[ ' + text.Select + ' ]</option>' + optionString) // Populate the select.
+        select.html('<option value="">[ ' + text.Select + ' ]</option>' + optionArray.reverse().join("")) // Populate the select.
               .val(selecteditem); // Re-select the selected item.
+//(window.console) ? console.timeEnd("swapShortLongList") : '';
     },
 
     toggleTools : function () {
-        $("table.tbl").addClass("hidden");
+//(window.console) ? console.time("toggleTools") : '';
+        $("#releasetable").addClass("hidden");
         $("#toolsHead").toggleClass("toolsHeadGrey");
         var show = $("#toolsHead").hasClass("toolsHeadGrey") ? false : true;
         $("#toolsHead").attr("title",show ? text.toolsShow : text.toolsHide)
                        .attr("alt",show ? text.toolsShow : text.toolsHide);
         show = show ? $(".toolbox").css("display","none") : $(".toolbox").show();
-        $("table.tbl").removeClass("hidden");
+        $("#releasetable").removeClass("hidden");
+//(window.console) ? console.timeEnd("toggleTools") : '';
     },
 
     updateMediumTotalDuration : function () {
-        $("table.tbl > tbody").each(function () {
+//(window.console) ? console.time("updateMediumTotalDuration") : '';
+        $("#releasetable > tbody").each(function () {
             var seconds = 0,
                 minutes = 0;
-            $(this).find(".trackdur > input").each(function () {
+            $(this).find("input.dur").each(function () {
                 var thisValue = $(this).val();
                 if (thisValue.length > 0 && thisValue !== "?:??") {
                     minutes += parseInt(thisValue.split(":")[0], 10);
@@ -951,26 +993,29 @@ var artistEditor,
                 $(this).find(".medium.trackdur > span").text("?:??");
             }
         });
+//(window.console) ? console.timeEnd("updateMediumTotalDuration") : '';
     },
 
     updatePositionFields : function () {
-        $(".tbl.release > tbody").each(function () {
+//(window.console) ? console.time("updatePositionFields") : '';
+        $("#releasetable > tbody").each(function () {
             var originalPositions = $($(this).find(".editable.trackposition")),
                 newPositions = $($(this).find('.trackposition:not(".editable")'));
             for (var i = 0, mediumTrackCount = $(this).find(".editable.trackposition").length; i < mediumTrackCount; i++) {
                 if ($(originalPositions[i]).text() !== i+1) { // If the original position != the current position,
                     $(originalPositions[i]).click(); // The track position field now has been edited (via a remove or reorder), so show the edit field,
-                    $(newPositions[i]).find("input:eq(0)").val(i+1); // and populate the input with the new position.
+                    $(newPositions[i]).find("input:first").val(i+1); // and populate the input with the new position.
                 }
             }
         });
+//(window.console) ? console.timeEnd("updatePositionFields") : '';
     },
 
     events : {
              addArtistCopiers : function () {
 //(window.console) ? console.time("addArtistCopiers") : '';
                                             /* Attach functionality to the the artist duplication icons. */
-                                            $(".copyArtist").draggable({
+/*                                            $(".copyArtist").draggable({
                                                                        helper  : 'clone',
                                                                        opacity : 0.5, // Firefox, Safari, Opera
                                                                        filter  : 'alpha(opacity=50)' // IE
@@ -978,9 +1023,10 @@ var artistEditor,
                                                             .live('dragstart', function () {
                                                                 artistEditor.store_artist_edit = $(this).parents("table:first");
                                                             });
+*/
                                         
                                             /* Attach artist duplication target functionality to the the tracks. */
-                                        // TODO: Add multi-medium support.
+/*                                        // TODO: Add multi-medium support.
                                             $('.tartist').parent().droppable({ accept: '.copyArtist' })
                                                          .bind('drop', function() {
                                         // TODO: Abstract this out, so it can less-redundantly also be accomplished when reading in a stash.
@@ -1009,20 +1055,28 @@ var artistEditor,
                                                          }
                                                          artistEditor.updateTrackArtist();
                                                      });
+*/
 //(window.console) ? console.timeEnd("addArtistCopiers") : '';
                                             }
              }
 },
     artistEditor = MusicBrainz.artistEditor;
-$.extend(MusicBrainz, {
-                      html_line_artist : MusicBrainz.artistEditor.html_line_artist()
+$.extend(artistEditor, {
+                      html_line_artist : artistEditor.html_line_artist()
 });
 
 //(window.console) ? console.timeEnd("libraries") : '';
 
-$(function () {
+$(function ($) { // Bring jQuery into the local scope, shaving about 50 ms off the page init time.
 //(window.console) ? console.time("sidebar") : '';
+
     /* ==== Start functions that initially manipulate the sidebar DOM. ==== */
+
+    /* Create the style for left-opening selects. */
+    setTimeout(function () { // This has to be slightly time-delayed post-document ready, or it won't get the correct offset value.
+        var sidebarDD = $("#release-date-view");
+        MusicBrainz.addStyle('.leftOpenMenu{width:375px!important;z-index:20;left:' + (sidebarDD.offset().left + sidebarDD.outerWidth() + 12 - 375) + 'px;}');
+    }, 1);
 
     /* Populate basic select lists. */
     $("#select-edit-release-packaging").addOption(mb.packaging, false);
@@ -1079,31 +1133,20 @@ $(function () {
                    .fadeIn("slow");
 //(window.console) ? console.timeEnd("Accordion") : '';
     setTimeout(function () { // We need to delay slightly, to give the select time to finish populating and the DOM to update calculated positions.
-//(window.console) ? console.time("select-conversion") : '';
-                           var visibleDD = $("#release-date-view"),
-                               vDDwidth,
-                               makeMenu = function (selector) {
-                                                              $(selector).selectmenu({
-                                                                                     handleWidth: 0,
-                                                                                     maxHeight: 400,
-                                                                                     width: vDDwidth
-                                                                                     });
-                                                              };
-                           vDDwidth = visibleDD.outerWidth() + 12;
-                           /* Create the style for left-opening selects. */
-                           MusicBrainz.addStyle('.leftOpenMenu{width:400px!important;z-index:20;left:' + (visibleDD.offset().left + vDDwidth - 400) + 'px;}');
+(window.console) ? console.time("select-conversion") : '';
+                           var vDDwidth = $("#release-date-view").outerWidth() + 12;
                            $('#select-edit-release-country').selectmenu({
                                                                         icons: MusicBrainz.countrySelectArray,
                                                                         handleWidth: 0,
                                                                         maxHeight: 400,
-                                                                        width: vDDwidth
-                                                                        });
-                           makeMenu('#select-edit-release-packaging');
-                           makeMenu('#select-edit-release-status');
-                           makeMenu('#select-edit-release-script');
-                           makeMenu('#select-edit-release-language');
-                           $("ul.ui-selectmenu-menu").addClass("leftOpenMenu");
-//(window.console) ? console.timeEnd("select-conversion") : '';
+                                                                        width: vDDwidth,
+                                                                        openLeft: true
+                                                                        })
+                           MusicBrainz.makeSelectSideBar($('#select-edit-release-packaging'), vDDwidth, true);
+                           MusicBrainz.makeSelectSideBar($('#select-edit-release-status'), vDDwidth, true);
+                           MusicBrainz.makeSelectSideBar($('#select-edit-release-language'), vDDwidth, true);
+                           MusicBrainz.makeSelectSideBar($('#select-edit-release-script'), vDDwidth, true);
+(window.console) ? console.timeEnd("select-conversion") : '';
     }, 1);
 
     /* Add the show help button to the tool box, and round the corners on the docs display div. */
@@ -1133,7 +1176,7 @@ if (window.console) {
                    .attr("alt",text.toolsShow);
 
     /* Add the track movement and removal icons. */
-    MusicBrainz.addTrackTools($("table.tbl"));
+    MusicBrainz.addTrackTools($("#releasetable"));
 
     /* Add functionality to the show/hide controls for the toolbox column */
     $("#toolsHead").click(function () {
@@ -1148,7 +1191,7 @@ if (window.console) {
 //    $(".trackartist").prepend('<div class="copyArtist" alt="' + text.DragArtist + '" title="' + text.DragArtist + '"></div>');
 
     /* Create the add artist button for tracks which only have 0 or 1 artist in the track artist. */
-    MusicBrainz.addArtistEditorButton($("table.tbl"));
+    MusicBrainz.addArtistEditorButton($("#releasetable"));
 
     /* Set the initial total durations for each medium. */
 // FireFox: 13ms Opera: 8ms
@@ -1160,7 +1203,7 @@ if (window.console) {
     /* ==== End functions that initially manipulate the tracklist's DOM. ==== */
 
     /* Show the tracklist. */
-    $("table.tbl").css("display","block");
+    $("#releasetable").css("display","block");
     $("#loader").css("display","none");
 
 if (window.console) {
@@ -1231,14 +1274,14 @@ if (window.console) {
     });
 
     /* Attach functionality to the the track dragging icons. */
-    $(".tbl").tableDnD({ // Add drag and drop reordering to the track rows.
+    $("#releasetable").tableDnD({ // Add drag and drop reordering to the track rows.
         dragHandle: "toolbox",
         onDragClass: "upDown",
         onDrop: function (table, movedRow) {
                                             MusicBrainz.stripeTracks();
 //                                            MusicBrainz.updatePositionFields();
                                             if (!$(movedRow).parents("#removedTracks").length) { // If the track was not dropped within Removed Tracks,
-                                                $(movedRow).children("td:eq(0)")
+                                                $(movedRow).children("td:first")
                                                            .children(".removeTrack")
                                                           .show(); // then re-show the remove track icon.
                                                 if ($("#removedTracks > tr").length <= 1) { // If Removed Tracks now has no tracks in it,
@@ -1274,7 +1317,7 @@ if (window.console) {
             $(".helpIcon").toggle();
             $("#btnHelp").val($("#btnHelp").val() === text.HelpShow ? text.HelpHide : text.HelpShow);
         });
-    }, 2000);
+    }, 1000);
 
     /* Attach click events to the help buttons. */
     MusicBrainz.attachHelpButtonEvents([
@@ -1288,10 +1331,10 @@ if (window.console) {
                                        ["dt[id^=release-catalog]", text.displayCatalogNumber, "http://"],
                                        ["dt[id^=release-barcode]", text.displayBarcode, "http://"],
                                        ["dt[id^=release-country]", text.displayCountry, "http://"],
-                                       ["th.release:eq(0)", text.displayTrackNumber, "http://"],
+                                       ["th.release:first", text.displayTrackNumber, "http://"],
                                        ["th.release:eq(1)", text.displayTrackTitle, "http://"],
                                        ["th.release:eq(2)", text.displayTrackArtist, "http://"],
-                                       ["th.release:eq(3)", text.displayTrackDuration, "http://"]
+                                       ["th.release:last", text.displayTrackDuration, "http://"]
                                        ]);
 
    /* Create and attach click event for the documentation display close button. */
@@ -1302,9 +1345,9 @@ if (window.console) {
     });
 
     /* Update total duration for each medium when track duration is changed. */
-    $("td.trackdur > input").live("change", function () {
-                                                        MusicBrainz.updateMediumTotalDuration();
-                                                        });
+    $("input.dur").live("change", function () {
+                                                      MusicBrainz.updateMediumTotalDuration();
+                                                      });
 
     /* ==== End functions that attach mouse events. ==== */
 if (window.console) {
@@ -1461,24 +1504,24 @@ $("div.result").live("click", function () {
 artistEditor.events.init();
 
 
-    $(".NewArtistButton").live("click", function () {
+    $("#NewArtistButton").live("click", function () {
         artistEditor.resetAppearance();
-        $("#artistEditBox").find("div:first > div:first")
-                           .find("input")
-                           .show()
+        $(".artistLine > input.joinPhrase")
+                           .show() // Show all join phrases (all but the last already should be visible).
                            .css("visibility","visible")
-                           .end()
-                           .append(artistEditor.html_line_artist)
+                           .parent()
+                           .parent()
+                           .append(artistEditor.html_line_artist) // Add the new artist line
                            .parent()
                            .parent()
                            .redrawShadow();
-        $("div.removeArtist:first").css("height","16px");
+        $("div.removeArtist:first").css("height","16px"); // Show the remove artist icon on the first artist line, if it wasn't already showing.
         $("div.labelJoiner").css("visibility","visible");
         artistEditor.updateTrackArtist();
 // TODO: Add a new entry to the data array store for the new artist.
     });
 
-    $(".ArtistDoneButton").live("click", function () {
+    $("#ArtistDoneButton").live("click", function () {
 // TODO: Insert a check here that all artists have actually been identified
         var thisTextarea = $(this).parent()
                                   .parent()
@@ -1491,7 +1534,7 @@ artistEditor.events.init();
     });                          // up aligned to the absolute top of the td.  It's not perfectly centered, but about as good as css allows us to do.
 
 
-    $(".removeArtist").live("click", function () {
+    $("div.removeArtist").live("click", function () {
 // TODO: Clear out the data array store for this artist.
         artistEditor.resetAppearance();
         $(this).parent()
@@ -1596,6 +1639,9 @@ artistEditor.events.init();
 // TODO: Add offset support to artist lookup
 // TODO: Take out manual position editing
 // TODO: hide join phrase label on initial window opening for artist converted from 1 to Artist editor (many)
+// TODO: Add artist button is broken
+// TODO: Finish updatePositionFields
+// TODO: rewrite/rework artist copiers
 
  MusicBrainz.showErrorForSidebar("release-date", "Test sidebar error");
 if (window.console) {
@@ -1608,7 +1654,7 @@ if (window.console) {
 
 //MusicBrainz.initializeTrackParser = function () {
     /* Insert the track parser into the document. */
-//    $(".tbl.release").before(mb.HTMLsnippets.trackParser);
+//    $("#releasetable.release").before(mb.HTMLsnippets.trackParser);
     /* Create the tool button. */
 //    MusicBrainz.addToolButton(text.TrackParserShow, "btnTrackParser");
     /* Set the click event controls for the Show / Hide Track Parser button. */

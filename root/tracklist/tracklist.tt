@@ -84,6 +84,6 @@
     [%- END -%]
     <td[%- ' class="editable trackdur"><span' IF edit -%]>[% recording.length | format_time %][%- '</span>' IF edit -%]</td>
     [%- IF edit %]
-        <td class="hidden trackdur"><input type="text" value="[% recording.length | format_time %]"/></td>
+        <td class="hidden trackdur"><input type="text" class="dur" value="[% recording.length | format_time %]"/></td>
     [%- END -%]
 </tr>
