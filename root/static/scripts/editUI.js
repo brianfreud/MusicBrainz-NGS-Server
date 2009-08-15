@@ -120,7 +120,7 @@ var artistEditor,
                                          borderColor : "#666",
                                          css         : {
                                                        float   : "left",
-                                                       width   : "12em"
+                                                       width   : "10em"
                                                        },
                                          id          : "artistLookup",
                                          round       : false
@@ -334,7 +334,7 @@ var artistEditor,
                                                                                              '<input class="joinPhrase" value="&"/>')
                                                                                       .addClass("artistName")
                                                                                       .parent()
-                                                                                      .after(artistEditor.html_line_artist).log()
+                                                                                      .after(artistEditor.html_line_artist)
                                                                                       .parents("td.trackartist")
                                                                                       .find("div:first")
                                                                                       .find("textarea")
@@ -817,7 +817,7 @@ var artistEditor,
                                                                      .end()
                                                                      .find('input:visible:first, textarea:visible:first') // Find the first edit field,
                                                                      .focus() // and give it focus.
-                                                                     .click(); // and click it (to trigger the artist editor).
+                                                                     .click(); // and click it (to trigger the initial artist editor, basic or complex).
                     if (toggleclass[0] == "trackartist") {
                         artistEditor.identifyUnresolved(); // Check unresolved artist highlighting when toggling an artist.
                     }
