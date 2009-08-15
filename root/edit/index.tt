@@ -4,4 +4,25 @@
     [%- INCLUDE "edit/info.tt" -%]
     [%- edit_template = edit.edit_name.replace('\s+', '_') | lower;
         INCLUDE "edit/details/${edit_template}.tt" %]
+
+    [% IF c.user_exists %]
+        <form action="[% c.uri_for_action('/edit/enter_votes') %]" method="post">
+            <input type="hidden" value="[% c.req.uri %]" name="url" />
+            <table>
+                <tr>
+                    <th>[% l('Vote:') %]</th>
+                    <td>
+                        [% INCLUDE 'edit/vote.tt' %]
+                    </td>
+                </tr>
+            </table>
+
+            [% form_submit(l('Enter votes')) %]
+        </form>
+    [% ELSE %]
+        <p>
+            [% l('You must be logged in to vote on edits') %]
+            [% request_login() %]
+        </p>
+    [% END %]
 [%- END -%]

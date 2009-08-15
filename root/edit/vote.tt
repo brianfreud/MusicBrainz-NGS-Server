@@ -1,0 +1,17 @@
+[% DEFAULT n = 0 %]
+[% name = "enter-vote.vote.${n}" %]
+
+[% MACRO vote_checkbox(label, value) BLOCK %]
+    <input type="checkbox" value="[% value %]" name="[% name %].vote" /><br />
+    <label for="id-[% name %].vote">[% label %]</label>
+[% END %]   
+
+<input type="hidden" value="[% edit.id %]" name="[% name %].edit_id" />
+<table>
+    <tr>
+        <td>[% vote_checkbox(l('No vote'), -2) %]</td>
+        <td>[% vote_checkbox(l('Abstain'), -1) %]</td>
+        <td>[% vote_checkbox(l('No'), 0) %]</td>
+        <td>[% vote_checkbox(l('Yes'), 1) %]</td>
+    </tr>
+</table>
