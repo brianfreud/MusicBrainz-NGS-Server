@@ -138,6 +138,7 @@ var text                   = {
        Parens                : "[% l("unbalanced parenthesis:") %]",
        PickGuideline         : "[% l("Please select a Style Guideline from the dropdown:") %]",
        PromptTitle           : "[% l("Caution!") %]",
+       Results               : "[% l("Showing results:") %]",
        Remove                : "[% l("Remove") %]",
        RemoveArtist          : "[% l("Click here to remove this artist.") %]",
        RemoveTrack           : "[% l("Click here to remove this track.") %]",

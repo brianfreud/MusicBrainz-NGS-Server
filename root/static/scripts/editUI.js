@@ -102,12 +102,17 @@ var artistEditor,
                                              ', ' +
                                              text.ArtistLookupLoaded +
                                              ' <span id="lookupLoaded"></span>' +
+                                             ', ' +
+                                             text.Results +
+                                             ' <span id="resultsStart"></span>' +
+                                             ' &ndash; ' +
+                                             ' <span id="resultsEnd"></span>' +
                                          '</div>' +
                                          '<div id="lookupResults" style="display:none;">' +
                                          '</div>' +
                                          '<div id="lookupBottomControls" class="hidden">' +
                                              '<div id="lookupHasAC" style="float:left">' +
-                                                 '<input type="checkbox" value="false" class="hasAC" tabindex="-1"/>' +
+                                                 '<input type="checkbox" value="false" id="hasAC" tabindex="-1"/>' +
                                                  ' <label>' + text.HasDiffArtistCredit + '</label>' +
                                              '</div>' +
                                              '<div style="float:right">' +
@@ -199,6 +204,8 @@ var artistEditor,
                                                                                 .end()
                                                                                 .slice(0,10)
                                                                                 .show();
+                                                             $("#resultsStart").text(1);
+                                                             $("#resultsEnd").text((data.results.length > 9) ? 10 : data.results.length);
                                                              if ($("#lookupResults").css("display") == "none") {
                                                                  $("#artistLookup").find("div:first")
                                                                                    .animate({ backgroundColor: "#fff"},{queue: false});
