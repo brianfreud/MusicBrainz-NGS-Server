@@ -1,3 +1,6 @@
+/*jslint undef: true, browser: true*/
+/*global Math, String, document, isNaN, jQuery, parseInt, setTimeout, jQuery*/
+
 /*
  * jQuery UI selectmenu
  *
@@ -26,50 +29,85 @@
         _init: function () {
             var self = this,
                 num,
-                tabindex,
                 e = this.element,
                 o = this.options,
-                cornerClass,
                 selectOptionData = [],
                 activeClass,
+                thisNewElement,
                 iconCollection,
                 iconGroup = [],
-                widgetBaseClass = self.widgetBaseClass,
-                temp;
-
+                selectWidth,
+                thisUl,
+                widgetBaseClass = this.widgetBaseClass,
+                temp,
+                hoverThis = function () {
+                    self._selectedOptionLi().addClass(activeClass);
+                    self._focusedOptionLi().removeClass(widgetBaseClass + '-item-focus ui-state-hover');
+                    jQuery(this).removeClass('ui-state-active').addClass(widgetBaseClass + '-item-focus ui-state-hover');
+                },
+                returnFalse = function () {
+                    return false;
+                },
+                blurThis = function () {
+                    if (jQuery(this).is(self._selectedOptionLi())) {
+                        jQuery(this).addClass(activeClass);
+                    }
+                    jQuery(this).removeClass(widgetBaseClass + '-item-focus ui-state-hover');
+                },
+                mouseupThis = function (event) {
+                    if (self._safemouseup) {
+                        var changed,
+                            temp = jQuery(this),
+                            thisData;
+                            thisData = temp.data('index')
+                        changed = thisData !== self._selectedIndex();
+                        self.value(thisData);
+                        self.select(event);
+                        if (changed) {
+                            self.change(event);
+                        }
+                        self.close(event, true);
+                    }
+                    return false;
+                },
+                getIcon = function (i) {
+                    iconGroup[this.find.slice(1)] = this.icon; // The key is named find; this isn't using find().
+                };
             //quick array of button and menu id's
             num = Math.round(Math.random() * 1000);
             this.ids = [e.attr('id') + '_' + 'button' + '_' + num, e.attr('id') + '_' + 'menu' + '_' + num];
-
             //define safe mouseup for future toggling
             this._safemouseup = true;
-
             //serialize selectmenu element options	
             e.find('option').each(function () {
                 temp = jQuery(this);
                 selectOptionData.push({
                     value: temp.attr('value'),
-                    text: self.options.format ? self.options.format(temp.text()) : temp.text(),
+                    text: o.format ? o.format(temp[0].firstChild.nodeValue) : temp[0].firstChild.nodeValue(),
                     selected: temp.attr('selected'),
                     classes: temp.attr('class'),
-                    parentOptGroup: temp.parent('optgroup').attr('label')
+                    parentOptGroup: (o.usesOptGroups) ? temp.parent('optgroup').attr('label') : false
                 });
             });
-
             //create menu button wrapper and add menu icon
-            this.newelement = jQuery('<a tabindex="' + (e.attr('tabindex') || '0') + '" class="' + ((o.style === 'dropdown') ? widgetBaseClass + "-dropdown " : widgetBaseClass + "-popup ") + this.widgetBaseClass + ' ui-widget ui-state-default ui-corner-all" id="' + this.ids[0] + '" role="button" href="#" aria-haspopup="true" aria-owns="' + this.ids[1] + '" aria-expanded="false"></a>').prepend('<span class="' + widgetBaseClass + '-status">' + selectOptionData[this._selectedIndex()].text + '</span><span class="' + ((o.style === "popup") ? 'ui-icon-triangle-2-n-s ' : 'ui-icon-triangle-1-s ') + this.widgetBaseClass + '-icon ui-icon"></span>').insertAfter(e);
+            this.newelement = thisNewElement = jQuery('<a tabindex="' + (e.attr('tabindex') || '0') + '" class="' + ((o.style === 'dropdown') ? widgetBaseClass +
+                                     "-dropdown " : widgetBaseClass + "-popup ") + this.widgetBaseClass +
+                                     ' ui-widget ui-state-default ui-corner-all" id="' + this.ids[0] +
+                                     '" role="button" href="#" aria-haspopup="true" aria-owns="' + this.ids[1] + '" aria-expanded="false"></a>')
+                                     .prepend('<span class="' + widgetBaseClass + '-status">' + selectOptionData[this._selectedIndex()].text +
+                                              '</span><span class="' + ((o.style === "popup") ? 'ui-icon-triangle-2-n-s ' : 'ui-icon-triangle-1-s ') +
+                                              widgetBaseClass + '-icon ui-icon"></span>')
+                                     .insertAfter(e);
 
             //save reference to select in data for ease in calling methods
-            this.newelement.data('selectelement', e);
-
+            thisNewElement.data('selectelement', e);
             //make associated form label trigger focus
             jQuery('label[for=' + e.attr('id') + ']').attr('for', this.ids[0]).bind('click', function () {
-                self.newelement.focus();
+                thisNewElement.focus();
                 return false;
             });
-
             //click toggle for menu visibility
-            this.newelement.bind('mousedown', function (event) {
+            thisNewElement.bind('mousedown', function (event) {
                 self._toggle(event);
                 //make sure a click won't open/close instantly
                 if (o.style === "popup") {
@@ -83,139 +121,113 @@
             }).bind('click', function () {
                 return false;
             }).keydown(function (event) {
-                var ret = true;
                 switch (event.keyCode) {
                 case jQuery.ui.keyCode.ENTER:
-                    ret = true;
-                    break;
+                    return false;
                 case jQuery.ui.keyCode.SPACE:
-                    ret = false;
                     self._toggle(event);
-                    break;
+                    return false;
                 case jQuery.ui.keyCode.UP:
                 case jQuery.ui.keyCode.LEFT:
-                    ret = false;
                     self._moveSelection(-1);
-                    break;
+                    return false;
                 case jQuery.ui.keyCode.DOWN:
                 case jQuery.ui.keyCode.RIGHT:
-                    ret = false;
                     self._moveSelection(1);
-                    break;
-                case jQuery.ui.keyCode.TAB:
-                    ret = true;
-                    break;
+                    return false;
                 default:
-                    ret = false;
                     self._typeAhead(event.keyCode, 'mouseup');
-                    break;
+                    return false;
                 }
-                return ret;
+                return true;
             }).bind('mouseover focus', function () {
                 jQuery(this).addClass(widgetBaseClass + '-focus ui-state-hover');
             }).bind('mouseout blur', function () {
                 jQuery(this).removeClass(widgetBaseClass + '-focus ui-state-hover');
             });
-
             //document click closes menu
             jQuery(document).mousedown(function (event) {
                 self.close(event);
             });
-
             //change event on original selectmenu
             e.click(function () {
                 this._refreshValue();
             }).focus(function () {
-                this.newelement.focus();
+                thisNewElement.focus();
             });
-
             //create menu portion
-            this.list = jQuery('<ul class="' + ((o.style === 'dropdown') ? widgetBaseClass + "-menu-dropdown " : widgetBaseClass + "-menu-popup ") + widgetBaseClass + '-menu ui-widget ui-widget-content' + ((o.style === "dropdown") ? " ui-corner-bottom" : " ui-corner-all") + '" aria-hidden="true" role="listbox" aria-multiselectable="false" aria-labelledby="' + this.ids[0] + '" id="' + this.ids[1] + '"></ul>');
-
+            this.list = jQuery('<ul class="' + ((o.style === 'dropdown') ? widgetBaseClass + "-menu-dropdown " : widgetBaseClass + "-menu-popup ") +
+                                widgetBaseClass + '-menu ui-widget ui-widget-content' + ((o.style === "dropdown") ? " ui-corner-bottom" : " ui-corner-all") +
+                                '" aria-hidden="true" role="listbox" aria-multiselectable="false" aria-labelledby="' + this.ids[0] + '" id="' + this.ids[1] +
+                                '"></ul>');
             //active state class is only used in popup style
-            activeClass = (self.options.style === "popup") ? " ui-state-active" : "";
-
+            activeClass = (o.style === "popup") ? " ui-state-active" : "";
             //write li's
             iconCollection = o.icons || [];
             if (iconCollection.length > 0) {
-                jQuery.each(iconCollection, function () {
-                    iconGroup[this.find.slice(1)] = this.icon;
-                    });
+                jQuery.each(iconCollection, getIcon);
             }
-            for (var i in selectOptionData) {
-                var classCollection = selectOptionData[i].classes,
-                    thisLi,
-                    iconString = "",
+            for (var i = 0, loops = selectOptionData.length; i < loops; i++) {
+                var thisLi,
+                    iconString,
                     hasIcon = false,
-                    parentOptGroup = selectOptionData[i].parentOptGroup;
-                if (classCollection !== "undefined") {
-                    if(typeof(iconGroup[classCollection]) !== "undefined") {
-                        iconString = '<span class="' + widgetBaseClass + '-item-icon ui-icon ' + iconGroup[classCollection] + '">&nbsp;&nbsp;</span>';
-                        hasIcon = true;
-                    }
+                    parentOptGroup,
+                    classCollection,
+                    thisUl = this.list,
+                    thisselectOptionData = selectOptionData[i];
+                classCollection = thisselectOptionData.classes || "";
+                parentOptGroup = thisselectOptionData.parentOptGroup;
+
+                if(classCollection !== "") {
+                    iconString = '<span class="' + widgetBaseClass + '-item-icon ui-icon ' + iconGroup[classCollection] + '">&nbsp;&nbsp;</span>';
+                    hasIcon = true;
                 }
-                thisLi = jQuery('<li ' + ((hasIcon) ? 'class="' + widgetBaseClass + '-hasIcon"' : "") + '><a href="#" tabindex="-1" class="' + classCollection + '" role="option" aria-selected="false">&nbsp;' + iconString + selectOptionData[i].text + '</a></li>').data('index', i).data('optionClasses', classCollection).mouseup(function (event) {
-                    if (self._safemouseup) {
-                        var changed,
-                            temp = jQuery(this);
-                        changed = temp.data('index') !== self._selectedIndex();
-                        self.value(temp.data('index'));
-                        self.select(event);
-                        if (changed) {
-                            self.change(event);
-                        }
-                        self.close(event, true);
-                    }
-                    return false;
-                }).click(function () {
-                    return false;
-                }).bind('mouseover focus', function () {
-                    self._selectedOptionLi().addClass(activeClass);
-                    self._focusedOptionLi().removeClass(widgetBaseClass + '-item-focus ui-state-hover');
-                    jQuery(this).removeClass('ui-state-active').addClass(widgetBaseClass + '-item-focus ui-state-hover');
-                }).bind('mouseout blur', function () {
-                    if (jQuery(this).is(self._selectedOptionLi())) {
-                        jQuery(this).addClass(activeClass);
-                    }
-                    jQuery(this).removeClass(widgetBaseClass + '-item-focus ui-state-hover');
-                });
+                thisLi = jQuery('<li ' + ((hasIcon) ? 'class="' + widgetBaseClass + '-hasIcon"' : "") + '><a class="' + classCollection +
+                                 '" role="option" aria-selected="false" href="#" tabindex="-1">' + ((hasIcon) ? iconString : "") + '&nbsp;' +
+                                 thisselectOptionData.text + '</a></li>')
+                                .data('index', i)
+                                .data('optionClasses', classCollection);
 
                 if (hasIcon) {
                     thisLi.data('optionClasses', classCollection + ' ' + widgetBaseClass + '-hasIcon');
                 }
 
                 //optgroup or not...
-                if (parentOptGroup) {
-                    var optGroupName = widgetBaseClass + '-group-' + parentOptGroup;
-                    if (this.list.find('li.' + optGroupName).size()) {
-                        this.list.find('li.' + optGroupName + ':last ul').append(thisLi);
-                    }
-                    else {
-                        jQuery('<li class="' + widgetBaseClass + '-group ' + optGroupName + '"><span class="' + widgetBaseClass + '-group-label">' + parentOptGroup + '</span><ul></ul></li>').appendTo(this.list).find('ul').append(thisLi);
-                    }
+                if (!parentOptGroup) {
+                    thisUl.append(thisLi);
                 }
                 else {
-                    thisLi.appendTo(this.list);
+                    var optGroupName = widgetBaseClass + '-group-' + parentOptGroup;
+                    if (thisUl.find('li.' + optGroupName).size()) {
+                        thisUl.find('li.' + optGroupName + ':last ul').append(thisLi);
+                    }
+                    else {
+                        jQuery(thisUl).append(jQuery('<li class="' + widgetBaseClass + '-group ' + optGroupName + '"><span class="' + widgetBaseClass +
+                                              '-group-label">' + parentOptGroup + '</span><ul></ul></li>'))
+                                      .find('ul')
+                                      .append(thisLi);
+                    }
                 }
-
-                //this allows for using the scrollbar in an overflowed list
-                this.list.bind('mousedown mouseup', function () {
-                    return false;
-                });
             }
+            this.list.find("li").mouseover(hoverThis)
+                                .focus(hoverThis)
+                                .mouseout(blurThis)
+                                .blur(blurThis)
+                                .mouseup(mouseupThis)
+                                .click(returnFalse)
+                     .end()
 
+            //this allows for using the scrollbar in an overflowed list
+                     .bind('mousedown mouseup', returnFalse);
             //transfer classes to selectmenu and list
             if (o.transferClasses) {
                 var transferClasses = e.attr('class') || '';
-                this.newelement.add(this.list).addClass(transferClasses);
+                thisNewElement.add(this.list).addClass(transferClasses);
             }
-
             //original selectmenu width
-            var selectWidth = e.width();
-
+            selectWidth = e.width();
             //set menu button width
-            this.newelement.width((o.width) ? o.width : selectWidth);
-
+            thisNewElement.width((o.width) ? o.width : selectWidth);
             //set menu width to either menuWidth option value, width option value, or select width 
             if (o.style === 'dropdown') {
                 this.list.width((o.menuWidth) ? o.menuWidth : ((o.width) ? o.width : selectWidth));
@@ -223,83 +235,62 @@
             else {
                 this.list.width((o.menuWidth) ? o.menuWidth : ((o.width) ? o.width - o.handleWidth : selectWidth - o.handleWidth));
             }
-
             //set max height from option 
             if (o.maxHeight) {
                 this.list.css("max-height",o.maxHeight);
             }
-
             //save reference to actionable li's (not group label li's)
             this._optionLis = this.list.find('li:not(.' + widgetBaseClass + '-group)');
-
             //transfer menu click to menu button
             this.list.keydown(function (event) {
-                var ret = true;
                 switch (event.keyCode) {
                 case jQuery.ui.keyCode.UP:
                 case jQuery.ui.keyCode.LEFT:
-                    ret = false;
                     self._moveFocus(-1);
-                    break;
+                    return false;
                 case jQuery.ui.keyCode.DOWN:
                 case jQuery.ui.keyCode.RIGHT:
-                    ret = false;
                     self._moveFocus(1);
-                    break;
+                    return false;
                 case jQuery.ui.keyCode.HOME:
-                    ret = false;
                     self._moveFocus(':first');
-                    break;
+                    return false;
                 case jQuery.ui.keyCode.PAGE_UP:
-                    ret = false;
                     self._scrollPage('up');
-                    break;
+                    return false;
                 case jQuery.ui.keyCode.PAGE_DOWN:
-                    ret = false;
                     self._scrollPage('down');
-                    break;
+                    return false;
                 case jQuery.ui.keyCode.END:
-                    ret = false;
                     self._moveFocus(':last');
-                    break;
+                    return false;
                 case jQuery.ui.keyCode.ENTER:
                 case jQuery.ui.keyCode.SPACE:
-                    ret = false;
                     self.close(event, true);
                     jQuery(event.target).parents('li:eq(0)').trigger('mouseup');
-                    break;
+                    return false;
                 case jQuery.ui.keyCode.TAB:
-                    ret = true;
                     self.close(event);
-                    break;
+                    return true;
                 case jQuery.ui.keyCode.ESCAPE:
-                    ret = false;
                     self.close(event, true);
-                    break;
+                    return false;
                 default:
-                    ret = false;
                     self._typeAhead(event.keyCode, 'focus');
-                    break;
+                    return false;
                 }
-                return ret;
+                return true;
             });
-
             //hide original selectmenu element
-            e.hide();
-
+            e.css("display","none");
             //transfer disabled state
             if (e.attr('disabled') === true) {
                 this.disable();
             }
-
             //update value
             this.value(this._selectedIndex());
-
             // Add the new selectmenu to the body.
-            this.list.appendTo('body');
-
-            // Return the select, for any further post-creation modifications that may be desired.
-            return this.ids[1];
+            jQuery('body').append(this.list);
         },
         destroy: function () {
             var e = this.element;
@@ -312,22 +303,27 @@
             e.show();
         },
         _typeAhead: function (code, eventType) {
-            var self = this;
-            //define self._prevChar if needed
-            if (!self._prevChar) {
-                self._prevChar = ['', 0];
-            }
-            var C = String.fromCharCode(code),
+            var self = this,
+                C = String.fromCharCode(code),
                 focusFound = false,
+                c,
                 focusOpt = function (elem, ind) {
                     focusFound = true;
                     jQuery(elem).trigger(eventType);
                     self._prevChar[1] = ind;
                 };
+
+            //define self._prevChar if needed
+            if (!self._prevChar) {
+                self._prevChar = ['', 0];
+            }
             c = C.toLowerCase();
             this.list.find('li a').each(function (i) {
+                var self = self, // Move a reused outer variable into a faster local scope.
+                    C = C, // Move a reused outer variable into a faster local scope.
+                    thisText;
                 if (!focusFound) {
-                    var thisText = jQuery(this).text();
+                    thisText = jQuery(this).text();
                     if (thisText.indexOf(C) === 0 || thisText.indexOf(c) === 0) {
                         if (self._prevChar[0] == C) {
                             if (self._prevChar[1] < i) {
@@ -348,12 +344,15 @@
             };
         },
         open: function (event) {
-            var self = this;
             this._refreshPosition();
             this._closeOthers(event);
             this.newelement.attr('aria-expanded', true).addClass('ui-state-active');
 
-            this.list.appendTo('body').addClass(widgetBaseClass + '-open').attr('aria-hidden', false).find('li:not(.' + widgetBaseClass + '-group):eq(' + this._selectedIndex() + ') a').focus();
+            this.list.appendTo('body')
+                     .addClass(this.widgetBaseClass + '-open')
+                     .attr('aria-hidden', false)
+                     .find('li:not(.' + this.widgetBaseClass + '-group):eq(' + this._selectedIndex() + ') a')
+                     .focus();
             if (this.options.style == "dropdown") {
                 this.newelement.removeClass('ui-corner-all').addClass('ui-corner-top');
             }
@@ -383,9 +382,10 @@
             this._trigger("select", event, this._uiHash());
         },
         _closeOthers: function (event) {
-            jQuery('.' + this.widgetBaseClass + '.ui-state-active').not(this.newelement).each(function () {
+            var closeMenu = function () {
                 jQuery(this).data('selectelement').selectmenu('close', event);
-            });
+            };
+            jQuery('.' + this.widgetBaseClass + '.ui-state-active').not(this.newelement).each(closeMenu);
             jQuery('.' + this.widgetBaseClass + '.ui-state-hover').trigger('mouseout');
         },
         _toggle: function (event, retainFocus) {
@@ -458,8 +458,10 @@
             //toggle any class brought in from option
             var currentOptionClasses = this.newelement.data('optionClasses') ? this.newelement.data('optionClasses') : "";
             var newOptionClasses = this._selectedOptionLi().data('optionClasses') ? this._selectedOptionLi().data('optionClasses') : "";
-            this.newelement.removeClass(currentOptionClasses).data('optionClasses', newOptionClasses).addClass(newOptionClasses).find('.' + this.widgetBaseClass + '-status').html(
-            this._selectedOptionLi().find('a:eq(0)').html());
+            this.newelement.removeClass(currentOptionClasses).data('optionClasses', newOptionClasses)
+                           .addClass(newOptionClasses)
+                           .find('.' + this.widgetBaseClass + '-status')
+                           .html(this._selectedOptionLi().find('a:eq(0)').html());
         },
         _refreshPosition: function () {
             //set left value
@@ -500,7 +502,8 @@
             maxHeight: null,
             icons: null,
             format: null,
-            openLeft: false
+            openLeft: false,
+            usesOptGroups: false
         }
     });
 
