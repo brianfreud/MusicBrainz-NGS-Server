@@ -45,6 +45,8 @@ sub enter_votes
     my $sql = Sql->new($self->c->raw_dbh);
     my $query;
     Sql::RunInTransaction(sub {
+        $sql->Do('LOCK vote IN SHARE ROW EXCLUSIVE MODE');
+
         # Filter votes on edits that are open and were not created by the voter
         my $edits = $self->c->model('Edit')->get_by_ids(map { $_->{edit_id} } @votes);
         @votes = grep {
