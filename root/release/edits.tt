@@ -1,4 +1,4 @@
 [% WRAPPER 'layout.tt' full_width=1 %]
-    <h1>[% l('Open edits for {release}', { release = release.name }) %]</h1>
+    <h1>[% l('Edits for {release}', {release=html_escape(release.name)}) %]</h1>
     [% INCLUDE 'edit/list.tt' %]
 [% END %]

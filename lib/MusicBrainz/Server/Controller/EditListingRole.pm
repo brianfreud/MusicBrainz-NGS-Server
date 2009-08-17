@@ -5,7 +5,7 @@ use MusicBrainz::Server::Types qw( :edit_status );
 
 requires '_load_paged';
 
-sub open_edits : Chained('load') PathPart('edits')
+sub edits : Chained('load') PathPart
 {
     my ($self, $c) = @_;
     
