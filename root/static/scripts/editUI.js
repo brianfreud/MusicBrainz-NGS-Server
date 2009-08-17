@@ -1,9 +1,10 @@
 /*jslint undef: true, browser: true*/
 /*global jQuery, $, mb, text, window, convertToHTML, convertToMarkup, escape */
-
+var foo;
 if (window.console) {
 //    console.profile();
-    console.time("init");
+    console.time("initDOMr");
+    console.time("initDOMl");
     console.time("libraries");
 }
 
@@ -54,7 +55,7 @@ var artistEditor,
                                          id          : "artistEditBox",
                                          round       : false
                                          },
-                   edit_width_with_AC  : "51em",
+                   edit_width_with_AC  : "51",
                    editor_inputs       : 'input.artistName, input.artistCredit, input.joinPhrase',
                    html_button_add     : '<input type="button" value="' + text.AddArtistShort + '" id="NewArtistButton"/>',
                    html_button_done    : '<input type="button" value="' + text.Done + '" id="ArtistDoneButton"/>',
@@ -63,20 +64,20 @@ var artistEditor,
                    html_line_artist    : function () {
                                                      return '<div class="artistLine">' +
                                                                 MusicBrainz.artistEditor.html_button_remove +
-                                                                '<div></div>' +
+                                                                '<div class="artistResolvedName"></div>' +
                                                                 '<input type="text" class="artistName"/>' +
                                                                 MusicBrainz.artistEditor.html_input_joiner +
                                                                 '<input class="joinPhrase" style="visibility:hidden;"/>' +
                                                             '</div>';
                                                      },
                    html_line_header    : '<div class="artistLine labelLine">' +
-                                             '<div class="labelArtist">' +
+                                             '<div id="labelArtist">' +
                                                  text.ArtistName +
                                              '</div>' +
-                                             '<div class="labelCredit">' +
+                                             '<div id="labelCredit">' +
                                                  text.ArtistCredit +
                                              '</div>' +
-                                             '<div class="labelJoiner" style="width:8em;">' +
+                                             '<div id="labelJoiner" style="width:8em;">' +
                                                  text.ArtistJoiner +
                                              '</div>' +
                                          '</div>',
@@ -133,22 +134,25 @@ var artistEditor,
                    store_active_editor : "",
                    searchServer        : "/ajax/search",
                    queryBase           : "type=artist&limit=20&query=",
+                   widthNameAndAC      : false,
                    destroyGeneric      : function (element) {
 //(window.console) ? console.time("destroyGeneric") : '';
+                                                            $(element).unbind("outerClick");
                                                             $(element).removeShadow()
                                                                       .css("display","none")
                                                                       .remove();
 //(window.console) ? console.timeEnd("destroyGeneric") : '';
                                                             },
-                   destroySelf         : function () {
-//(window.console) ? console.time("destroySelf") : '';
-                                                     MusicBrainz.destroyGeneric("#artistEditBox");
-//(window.console) ? console.timeEnd("destroySelf") : '';
+                   destroyArtistEditor : function () {
+//(window.console) ? console.time("destroyArtistEditor") : '';
+                                                     artistEditor.widthNameAndAC = false;
+                                                     artistEditor.destroyGeneric("#artistEditBox");
+//(window.console) ? console.timeEnd("destroyArtistEditor") : '';
                                                      },
                    destroyLookup       : function () {
 //(window.console) ? console.time("destroyLookup") : '';
                                                      artistEditor.currentTrack = "";
-                                                     MusicBrainz.destroyGeneric("#artistLookup");
+                                                     artistEditor.destroyGeneric("#artistLookup");
 //(window.console) ? console.timeEnd("destroyLookup") : '';
                                                      },
                    flashEditorWindow   : function () {
@@ -336,7 +340,7 @@ var artistEditor,
                                                                                       .appendTo("#artistEditBox > div:first > div:first")
                                                                                       .wrap('<div class="artistLine"></div>')
                                                                                       .removeClass("oneArtist")
-                                                                                      .before(artistEditor.html_button_remove + '<div></div>')
+                                                                                      .before(artistEditor.html_button_remove + '<div class="artistResolvedName"></div>')
                                                                                       .after(artistEditor.html_input_joiner +
                                                                                              '<input class="joinPhrase" value="&"/>')
                                                                                       .addClass("artistName")
@@ -371,7 +375,7 @@ var artistEditor,
                                                                                for (var i = 0, loops = artistData.length; i < loops; i++) {
                                                                                    dataHTML += '<div class="artistLine">' +
                                                                                                    artistEditor.html_button_remove + 
-                                                                                                   '<div></div>' +
+                                                                                                   '<div class="artistResolvedName"></div>' +
                                                                                                    '<input type="text" class="artistName" value="' + artistData[i].name + '"/>' +
                                                                                                    '<input class="artistCredit" value="' + artistData[i].credit + '"/>' +
                                                                                                    '<input class="joinPhrase" value="' + artistData[i].join + '"/>' +
@@ -1219,21 +1223,10 @@ if (window.console) {
 }
     /* ==== Only functions that affect the initial DOM for the edit note or annotation should go here. ==== */
 
-    /* Populate the character and symbol arrays for the annotation editor. */
+    /* Populate the character and symbol arrays for the annotation and edit note editors. */
     MusicBrainz.populateCharArrays();
 
-    if (experimental) {
-        /* Add annotation markup switcher controls. */
-        MusicBrainz.addAnnotationSwitcher();
-
-        /* Activate the annotation markup switcher controls. */
-        MusicBrainz.activateAnnotationSwitcher();
-    }
-
-    /* Attach and activate the editor for the annotation and edit note.                   */
-    setTimeout(function () {
-                           $('#edit-releaseedit_note').markItUp(MusicBrainz.markup.wiki);
-                           } , 1000);
+    /* Attach and activate the button controls for the annotation shower.                   */
     MusicBrainz.addAnnotationButton();
 
     /* ==== End functions that initially manipulate the edit note or annotation DOM. ==== */
@@ -1424,60 +1417,155 @@ Artist text view:
 
 
 $("#btnArtistSearch").live("click", function () {
-    var artistInput  = $("#artistLookup").prev().find("input.artistName, input.oneArtist").val();
-    if (artistInput.length === 0) {
-        $("#btnArtistSearch").css("display","none");
-        $("#lookupNoArtist").css("display","block");
+    var $artistLookup = $("#artistLookup"),
+        $artistInput  = $("#artistLookup").prev()
+                                          .find("input.artistName, input.oneArtist")
+                                          .val();
+    if ($artistInput.length === 0) {
+        $("#btnArtistSearch").css("display", "none");
+        $("#lookupNoArtist").css("display", "block");
     } else {
-        $("#btnArtistSearch").css("display","none");
+        $("#btnArtistSearch").css("display", "none");
         $("#lookupControls").css({
                                  textAlign : "left",
                                  margin    : "0",
                                  padding   : "0 2em 0"
                                  });
         $("#lookupSearching").show();
-        setTimeout(function () { /* Load the effect now, but delay sending it, so that it happens while the ajax request is taking place. */
-                               $("#artistLookup >div:first").css("width","");
-                               $("#artistLookup").animate({width:"45em"},300);
-                               setTimeout(function () {
-                                                      $("#artistLookup").redrawShadow();
-                                                      }, 310);
-                               }, 1);
-        $.ajax({
-               async    : false,
-               cache    : true,
-               success  : artistEditor.processResults,
-               data     : artistEditor.queryBase + escape(artistInput),
-               dataType : "json",
-               type     : "GET",
-               url      : artistEditor.searchServer
-        });
+        $artistLookup.find("> div:first")
+                     .css("width", "")
+                     .end()
+                     .animate({
+                              width:"45em"
+                              },
+                              150,
+                              'swing',
+                              function () {
+                                          $artistLookup.redrawShadow();
+                                          $.ajax({
+                                                 async      : false,
+                                                 cache      : true,
+                                                 success    : artistEditor.processResults,
+                                                 data       : artistEditor.queryBase + escape($artistInput),
+                                                 dataType   : "json",
+                                                 type       : "GET",
+                                                 url        : artistEditor.searchServer
+                                                 });
+                              });
     }
 });
 
 /* Resolve artist when lookup result is clicked. */
+resolveArtist = function (element) {
 // TODO: Set the data array store for this artist.
-$("div.result").live("click", function () {
-    var artistInput = $($("#artistLookup").data("linkedText")),
-        displayText,
-        resultData = $(this).data("artistInfo");
-    artistEditor.destroyLookup(); // Get rid of the lookup.
-    if (artistInput.hasClass("artistName")) { // We're in an artist editor
-        displayText = artistInput.val(resultData.name) // Update the text in the input.
-                                 .css("display","none") // Hide the input.
-                                 .prev(); // The artist display text for the input.
-        artistEditor.synchNextInput(artistInput, true); // Update the AC, if applicable (which in turn will trigger updating the textarea display text).
-    } else { // We're in a simple tracklist artist
-        displayText = artistInput.val(resultData.name) // Update the text in the input.
-                                 .parent() // The input's parent div.
-                                 .parent() // The div's parent td (the artist editing cell).
-                                 .css("display","none") // Hide it.
-                                 .prev() // The previous td (the artist display text cell).
-                                 .show() // Show that td.
-                                 .find("div"); // The artist cell's display text is in this div.
+    var $artistInput = $($("#artistLookup").data("linkedText")),
+        $displayText,
+        resultData = $(element).data("artistInfo"),
+        showAC = false;
+    if ($("#hasAC:checked").length) { // If the AC checkbox is checked,
+        showAC = true; // store that setting (we're about to get rid of the lookup, which would otherwise lose this setting in the process).
     }
-    displayText.text(resultData.name); // Change the display text.
+    artistEditor.destroyLookup(); // Get rid of the lookup.
+    if ($artistInput.hasClass("artistName")) { // We're in an artist editor
+        $displayText = $artistInput.val(resultData.name) // Update the text in the input.
+                                   .css("display","none") // Hide the input.
+                                   .prev() // The artist display text for the input.
+                                   .css({ // Setting css here for $displayText, not $artistInput.
+                                        display       : "inline-block", // Show the resolved artist text's div inline with the rest of the artist line.
+                                        verticalAlign : 'middle',
+                                        visibility    : "visible",
+                                        width         : $artistInput.outerWidth() + 2 + "px" // 19em isn't 100% of the input's width - there's also the border width to deal with.
+                                        });
+        artistEditor.synchNextInput($artistInput, true); // Update the AC, if applicable (which in turn will trigger updating the textarea display text).
+        if (showAC) { // If the AC checkbox was checked,
+            var $thisEditor = $("#artistEditBox");
+            $("#labelCredit").css("display", "block"); // make sure that the AC label is visible,
+            $artistInput.next()
+                        .css("display", "inline") // show the AC field for this artist line,
+                        .before('<div class="removeAC"/>');
+            $thisEditor.css("width", artistEditor.edit_width_with_AC + "em") // Make sure the artist editor popup is expanded to fit the AC column,
+                       .redrawShadow() // reset the shadow for that popup window,
+                       .find("div:first") // Get the foreground edit window div,
+                       .css("width",parseInt($("#artistEditBox").width(), 10) - 16 + "px"); // Adjust the width of the inner div to match the new outer div's width.
+            if (!artistEditor.widthNameAndAC) { // If, in this artist editor, we've not yet done any artist with an AC,
+                /* then calculate the width required, for the artist name fields that don't have AC fields, to make them fill the AC space. */
+                var nextJP = $artistInput.find("~ input.joinPhrase");
+                artistEditor.widthNameAndAC = nextJP.offset().left - $displayText.offset().left - (2 * (nextJP.outerWidth() - nextJP.width()));
+            }
+            $thisEditor.find("div:first > div:first > div:not(:first)") // Find all artist entry lines,
+                       .filter(":has(input.artistCredit:visible)") // and for those lines with visible AC fields,
+                       .find("input.artistName, div.artistResolvedName") // get the artist name input and resolved text elements in each,
+                       .each(function () { // make sure the width of those fields is at the 'visible AC' width,
+                                         $(this).css("width", "19em");
+                                         }
+                       )                      
+                       .end() // then return to the pre-find,
+                       .end() // pre-filter 'all artist entry lines' collection,
+                       .filter(":has(input.artistCredit:hidden)") // get those without a visible AC field,
+                       .find("input.artistName") // get the artist name input and resolved text elements in each,
+                       .each(function () { // and stretch out the width for the ones without a visible AC field.
+                                         $(this).css("width", artistEditor.widthNameAndAC - parseFloat($(.5).toPx(), 10) - 2 + "px");
+                                         }
+                       )
+                       .end()
+                       .find("div.artistResolvedName").log()
+                       .each(function () {
+                                         $(this).css("width", artistEditor.widthNameAndAC + 2 + "px");
+                                         }
+                       )
+        }
+    } else { // We're in a simple tracklist artist
+        $displayText = $artistInput.val(resultData.name) // Update the text in the input.
+                                   .parent() // The input's parent div.
+                                   .parent() // The div's parent td (the artist editing cell).
+                                   .css("display","none") // Hide it.
+                                   .prev() // The previous td (the artist display text cell).
+                                   .show() // Show that td.
+                                   .find("div"); // The artist cell's display text is in this div.
+    }
+    $displayText.text(resultData.name); // Change the display text.
+}
+
+$("div.result").live("click", function () {
+    resolveArtist(this);
 });
+
+
+/* Remove an AC field when a remove AC icon is clicked. */
+$(".removeAC").live("click", function () {
+    var $thisACremover = $(this),
+        $thisEditor = $("#artistEditBox"),
+        $thisArtistName,
+        $artistLines;
+    $thisArtistName = $thisACremover.prev();
+    $artistLines = $thisEditor.find("> div:first > div:first");
+    $thisACremover.css("display","none") // Hide the AC toggle icon,
+                  .next() // get the associated AC input field,
+                  .css("display","none") // hide it,
+                  .val($thisArtistName.val()); // set the AC field value to the current artist name field's value,
+    $thisACremover.remove(); // and remove the AC toggle icon.
+    artistEditor.synchNextInput($thisArtistName, true); // Resync the textarea.
+    $thisArtistName.css("width", artistEditor.widthNameAndAC - parseFloat($(.5).toPx(), 10) - 2 + "px") // Resize the artist name input.
+                   .prev() // Get the resolved artist text div,
+                   .css("width", artistEditor.widthNameAndAC + 2 + "px") // and resize it as well.
+    if ($artistLines.find("input.artistCredit:visible").length === 0) { // If this was the last visible AC field,
+        $artistLines.find("input.artistName") // get all artist name input fields,
+                    .css("width", "19em") // resize them to the initial "no-AC" width,
+                    .end()
+                    .find("div.artistResolvedName") // and all artist resolved name divs,
+                    .css("width", $thisArtistName.outerWidth() + 2 + "px"); // and resize them to the initial "no-AC" width.
+        $("#labelCredit").css("display", "none"); // Hide the AC fields' column label.
+        $thisEditor.css("width", "31em") // Re-shrink the artist editor,
+                       .find("div:first") // get the inner div,
+                       .css("width", parseInt($(31).toPx(), 10) - 16) // re-shrink it,
+                       .end()
+                       .redrawShadow(); // and fix the editor window's shadow for the new width.
+    }
+});
+
+
+
+
 
 
 
@@ -1523,7 +1611,7 @@ artistEditor.events.init();
                            .parent()
                            .redrawShadow();
         $("div.removeArtist:first").css("height","16px"); // Show the remove artist icon on the first artist line, if it wasn't already showing.
-        $("div.labelJoiner").css("visibility","visible");
+        $("#labelJoiner").css("visibility","visible");
         artistEditor.updateTrackArtist();
 // TODO: Add a new entry to the data array store for the new artist.
     });
@@ -1536,7 +1624,7 @@ artistEditor.events.init();
                                   .find("div:first")
                                   .find("textarea");
         artistEditor.resetAppearance();
-        artistEditor.destroySelf();
+        artistEditor.destroyArtistEditor();
         $(thisTextarea).focus(); // Force focus to the textarea; this forces the textarea's position to be updated, and avoids the textarea ending
     });                          // up aligned to the absolute top of the td.  It's not perfectly centered, but about as good as css allows us to do.
 
@@ -1557,7 +1645,7 @@ artistEditor.events.init();
         var removeIcons = $("div.removeArtist");
         if (removeIcons.length == 1) {
             removeIcons.css("height","0");
-            $("div.labelJoiner").css("visibility","hidden");
+            $("#labelJoiner").css("visibility","hidden");
         }
         artistEditor.updateTrackArtist();
 //            MusicBrainz.updateJoinPhrases(thisSingleArtist.find(".addartist"));
@@ -1653,7 +1741,25 @@ artistEditor.events.init();
  MusicBrainz.showErrorForSidebar("release-date", "Test sidebar error");
 if (window.console) {
     console.timeEnd("Other");
-    console.timeEnd("init");
+    console.timeEnd("initDOMr");
+}
+});
+
+
+$().load(function ($) {
+    if (experimental) {
+        /* Add annotation markup switcher controls. */
+        MusicBrainz.addAnnotationSwitcher();
+
+        /* Activate the annotation markup switcher controls. */
+        MusicBrainz.activateAnnotationSwitcher();
+    }
+
+    /* Attach and activate the editor for annotations.                   */
+    $('#edit-releaseedit_note').markItUp(MusicBrainz.markup.wiki);
+
+if (window.console) {
+    console.timeEnd("initDOMl");
 //    console.profileEnd();
 }
 });

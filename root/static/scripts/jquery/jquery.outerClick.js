@@ -16,6 +16,8 @@
  * $(selector).unbind("outerClick");     // Unbind all outerClick events from each of the matched elements.
  */
 
+// Modified 2009-08-17 Brian Schweitzer (BrianFreud): Fixed the teardown to teardown properly, to unbind the object rather than triggering a jQuery lib error.
+
 /*global jQuery */
 (function ($, elements, OUTER_CLICK) {
         /**
@@ -48,7 +50,7 @@
             if (i >= 0) {
                 elements.splice(i, 1);
                 if (!elements.length) {
-                    $.event.remove(document, 'click', check);
+                    jQuery(this).unbind('click', check);
                 }
             }
         }

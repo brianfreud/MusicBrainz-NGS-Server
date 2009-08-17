@@ -83,7 +83,7 @@
                 temp = jQuery(this);
                 selectOptionData.push({
                     value: temp.attr('value'),
-                    text: o.format ? o.format(temp[0].firstChild.nodeValue) : temp[0].firstChild.nodeValue(),
+                    text: o.format ? o.format(temp[0].firstChild.nodeValue) : temp[0].firstChild.nodeValue,
                     selected: temp.attr('selected'),
                     classes: temp.attr('class'),
                     parentOptGroup: (o.usesOptGroups) ? temp.parent('optgroup').attr('label') : false

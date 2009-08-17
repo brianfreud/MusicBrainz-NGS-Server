@@ -20,9 +20,13 @@ dd input.notDate {
  border-top: 0 none #fff;
 }
 
-div.labelCredit,
+#labelCredit,
 input.artistCredit {
  display: none;
+}
+
+#artistLookup div.result {
+ cursor: pointer;
 }
 
 #artistLookup div.center {
@@ -507,11 +511,12 @@ table.tbl tr.ev td.trackdur {
  width: 100%;
 }
 
-#artistEditBox .labelArtist,
-#artistEditBox .labelCredit,
-#artistEditBox .labelJoiner,
+#labelArtist,
+#labelCredit,
+#labelJoiner,
 #artistEditBox .artistName,
 #artistEditBox .artistCredit,
+#artistEditBox .artistResolvedName,
 #artistEditBox .joinPhrase {
  padding: 2px;
  font-size: 100%;
@@ -523,20 +528,43 @@ table.tbl tr.ev td.trackdur {
  border-style: ridge;
 }
 
-#artistEditBox .labelArtist,
-#artistEditBox .labelJoiner,
+#labelArtist,
+#labelJoiner,
 #artistEditBox .artistName {
  display: inline;
 }
 
-#artistEditBox .labelArtist,
-#artistEditBox .labelCredit,
-#artistEditBox .labelJoiner {
+#labelArtist,
+#labelCredit,
+#labelJoiner {
  float: left;
  font-weight: bold;
  margin-left: 0.8em;
 }
 
+/* Remove artist */
+
+.removeArtist {
+ float: left;
+ display: inline;
+}
+
+/* Remove artist credit */
+
+.removeArtist,
+.removeAC {
+ padding-right: 3px;
+ margin-top: 4px;
+ cursor: pointer;
+ height: 16px;
+ width: 16px;
+}
+
+.removeAC {
+ display: inline-block;
+}
+
+/* #artistEditBox .artistResolvedName should *not* be here; it picks this up already when it checks .outerWidth(). */
 .removeArtist,
 #artistEditBox .artistName,
 #artistEditBox .artistCredit,
@@ -544,14 +572,23 @@ table.tbl tr.ev td.trackdur {
  margin-right: 0.5em;
 }
 
-#artistEditBox .labelArtist,
-#artistEditBox .labelCredit,
+#labelCredit {
+ padding-left: 10px;
+ width: 18em;
+}
+
+#labelArtist,
+#artistEditBox .artistResolvedName,
 #artistEditBox .artistName,
 #artistEditBox .artistCredit {
  width: 19em;
 }
 
-#artistEditBox .labelJoiner,
+#artistEditBox .artistResolvedName {
+ visability: hidden;
+}
+
+#labelJoiner,
 #artistEditBox .joinPhrase {
  width: 4em;
 }
@@ -607,17 +644,6 @@ div.result div.artist {
 
 div.result div.disambiguation {
  padding: 1px 0 0 1em;
-}
-
-/* Remove artist icon */
-
-.removeArtist {
- cursor: pointer;
- float: left;
- height: 16px;
- padding-right: 3px;
- margin-top: 4px;
- width: 16px;
 }
 
 /* Remove track */
@@ -705,6 +731,7 @@ div.result div.disambiguation {
 .closeButton,
 .copyArtist,
 .handleIcon,
+.removeAC,
 .removeArtist,
 .removeTrack {
  background: transparent url(/static/images/icon/editor.png) no-repeat;
@@ -721,12 +748,14 @@ div.result div.disambiguation {
 /* Icon: X (gray) */
 .closeButton,
 .removeArtist,
+.removeAC,
 .removeTrack { 
  background-position: 0 -198px;
 }
 
 /* Icon: X (red) */
 .closeButton:hover,
+.removeAC:hover,
 tr .removeArtist:hover,
 tr .removeTrack:hover {
  background-position: 0 -264px;
