@@ -28,19 +28,21 @@
     </table>
 
     [% IF c.user_exists %]
-        <form action="[% c.uri_for_action('/edit/enter_votes') %]" method="post">
-            <input type="hidden" value="[% c.req.uri %]" name="url" />
-            <table>
-                <tr>
-                    <th>[% l('Vote:') %]</th>
-                    <td>
-                        [% INCLUDE 'edit/vote.tt' %]
-                    </td>
-                </tr>
-            </table>
+        [% IF edit.editor_may_vote(c.user) %]
+            <form action="[% c.uri_for_action('/edit/enter_votes') %]" method="post">
+                <input type="hidden" value="[% c.req.uri %]" name="url" />
+                <table>
+                    <tr>
+                        <th>[% l('Vote:') %]</th>
+                        <td>
+                            [% INCLUDE 'edit/vote.tt' %]
+                        </td>
+                    </tr>
+                </table>
 
-            [% form_submit(l('Enter votes')) %]
-        </form>
+                [% form_submit(l('Enter votes')) %]
+            </form>
+        [% END %]
     [% ELSE %]
         <p>
             [% l('You must be logged in to vote on edits') %]
