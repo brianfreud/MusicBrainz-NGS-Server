@@ -454,20 +454,16 @@
             }
 
             //set top value
-            var menuTop = this.newelement.offset().top;
-            var scrolledAmt = this.list[0].scrollTop;
+            var menuTop = this.newelement.offset().top,
+                scrolledAmt = this.list[0].scrollTop;
             this.list.find('li:lt(' + this._selectedIndex() + ')').each(function () {
                 scrolledAmt -= jQuery(this).outerHeight();
             });
 
-            if (this.newelement.is('.' + this.widgetBaseClass + '-popup')) {
-                menuTop += scrolledAmt;
-                this.list.css('top', menuTop);
-            }
-            else {
+            if (!this.newelement.is('.' + this.widgetBaseClass + '-popup')) {
                 menuTop += this.newelement.height();
-                this.list.css('top', menuTop);
             }
+            this.list.css('top', menuTop);
         }
     });
 

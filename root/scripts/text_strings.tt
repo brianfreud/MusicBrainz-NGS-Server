@@ -17,6 +17,7 @@ var text                   = {
        ArtistJoiner          : "[% l("Join Phrase") %]",
        ArtistName            : "[% l("Artist Name") %]",
        ArtistEditorError     : "[% l("You can only have one artist editor open at a time. Please finish with the other artist editor first.") %]",
+       ArtistEditorIsOpen    : "[% l("An artist editor is still open. Please finish with the editor first.") %]",
        ArtistNameIsEmpty     : "[% l("Artist name cannot be empty.") %]",
        ArtistLookupNoResults : "[% l("No results found.") %]",
        ArtistLookupSearching : "[% l("Searching&hellip;") %]",
