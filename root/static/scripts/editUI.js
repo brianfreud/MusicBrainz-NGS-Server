@@ -50,12 +50,12 @@ var artistEditor,
                                          background  : "#F9F9F9",
                                          borderColor : "#666",
                                          css         : {
-                                                       width  : "31em"
+                                                       width  : "32em"
                                                        },
                                          id          : "artistEditBox",
                                          round       : false
                                          },
-                   edit_width_with_AC  : "51",
+                   edit_width_with_AC  : "52",
                    editor_inputs       : 'input.artistName, input.artistCredit, input.joinPhrase',
                    html_button_add     : '<input type="button" value="' + text.AddArtistShort + '" id="NewArtistButton"/>',
                    html_button_done    : '<input type="button" value="' + text.Done + '" id="ArtistDoneButton"/>',
@@ -1456,10 +1456,9 @@ $("#btnArtistSearch").live("click", function () {
 });
 
 /* Resolve artist when lookup result is clicked. */
-resolveArtist = function (element) {
+resolveArtist = function (element, $artistInput) {
 // TODO: Set the data array store for this artist.
-    var $artistInput = $($("#artistLookup").data("linkedText")),
-        $displayText,
+    var $displayText,
         resultData = $(element).data("artistInfo"),
         showAC = false;
     if ($("#hasAC:checked").length) { // If the AC checkbox is checked,
@@ -1484,9 +1483,10 @@ resolveArtist = function (element) {
                         .css("display", "inline") // show the AC field for this artist line,
                         .before('<div class="removeAC"/>');
             $thisEditor.css("width", artistEditor.edit_width_with_AC + "em") // Make sure the artist editor popup is expanded to fit the AC column,
-                       .redrawShadow() // reset the shadow for that popup window,
                        .find("div:first") // Get the foreground edit window div,
-                       .css("width",parseInt($("#artistEditBox").width(), 10) - 16 + "px"); // Adjust the width of the inner div to match the new outer div's width.
+                       .css("width",parseInt($("#artistEditBox").width(), 10) - 16 + "px") // Adjust the width of the inner div to match the new outer div's width.
+                       .end()
+                       .redrawShadow(); // reset the shadow for that popup window,
             if (!artistEditor.widthNameAndAC) { // If, in this artist editor, we've not yet done any artist with an AC,
                 /* then calculate the width required, for the artist name fields that don't have AC fields, to make them fill the AC space. */
                 var nextJP = $artistInput.find("~ input.joinPhrase");
@@ -1527,7 +1527,7 @@ resolveArtist = function (element) {
 }
 
 $("div.result").live("click", function () {
-    resolveArtist(this);
+    resolveArtist(this, $($("#artistLookup").data("linkedText")));
 });
 
 
@@ -1555,9 +1555,9 @@ $(".removeAC").live("click", function () {
                     .find("div.artistResolvedName") // and all artist resolved name divs,
                     .css("width", $thisArtistName.outerWidth() + 2 + "px"); // and resize them to the initial "no-AC" width.
         $("#labelCredit").css("display", "none"); // Hide the AC fields' column label.
-        $thisEditor.css("width", "31em") // Re-shrink the artist editor,
+        $thisEditor.css("width", "32em") // Re-shrink the artist editor,
                        .find("div:first") // get the inner div,
-                       .css("width", parseInt($(31).toPx(), 10) - 16) // re-shrink it,
+                       .css("width", parseInt($(32).toPx(), 10) - 16) // re-shrink it,
                        .end()
                        .redrawShadow(); // and fix the editor window's shadow for the new width.
     }
@@ -1653,6 +1653,20 @@ artistEditor.events.init();
 
 
 // MusicBrainz.events.addArtistCopiers();
+/*
+$().each(function () {
+                     var initialData = $(this).data("TAs");
+                     $(this).data("artistInfo", {
+                         comment : initialData.disambig,
+                         gid     : initialData.gid,
+                         name    : initialData.name,
+                         rowid   : initialData.rowID,
+                         join   : initialData.join
+                     });
+//dosomething
+});
+*/
+
 
 
 /*
@@ -1737,6 +1751,11 @@ artistEditor.events.init();
 // TODO: Add artist button is broken
 // TODO: Finish updatePositionFields
 // TODO: rewrite/rework artist copiers
+// TODO: AC for simple case
+// TODO: Add artist
+// TODO: Artist link icons
+// TODO: Auto-artist resolution
+
 
  MusicBrainz.showErrorForSidebar("release-date", "Test sidebar error");
 if (window.console) {

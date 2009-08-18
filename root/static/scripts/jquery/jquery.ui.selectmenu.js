@@ -36,36 +36,6 @@
                 thisUl,
                 widgetBaseClass = this.widgetBaseClass,
                 temp,
-                hoverThis = function () {
-                    self._selectedOptionLi().addClass(activeClass);
-                    self._focusedOptionLi().removeClass(widgetBaseClass + '-item-focus ui-state-hover');
-                    jQuery(this).removeClass('ui-state-active').addClass(widgetBaseClass + '-item-focus ui-state-hover');
-                },
-                returnFalse = function () {
-                    return false;
-                },
-                blurThis = function () {
-                    if (jQuery(this).is(self._selectedOptionLi())) {
-                        jQuery(this).addClass(activeClass);
-                    }
-                    jQuery(this).removeClass(widgetBaseClass + '-item-focus ui-state-hover');
-                },
-                mouseupThis = function (event) {
-                    if (self._safemouseup) {
-                        var changed,
-                            temp = jQuery(this),
-                            thisData;
-                            thisData = temp.data('index')
-                        changed = thisData !== self._selectedIndex();
-                        self.value(thisData);
-                        self.select(event);
-                        if (changed) {
-                            self.change(event);
-                        }
-                        self.close(event, true);
-                    }
-                    return false;
-                },
                 getIcon = function (i) {
                     iconGroup[this.find.slice(1)] = this.icon; // The key is named find; this isn't using find().
                 };
@@ -205,20 +175,36 @@
                     }
                 }
             }
-            this.list.find("li").mouseover(hoverThis)
-                                .focus(hoverThis)
-                                .mouseout(blurThis)
-                                .blur(blurThis)
-                                .mouseup(mouseupThis)
-                                .click(returnFalse)
-                     .end()
 
-            //this allows for using the scrollbar in an overflowed list
-                     .bind('mousedown mouseup', returnFalse);
+            this.list.bind('mouseover focus', function (e) {
+                var $ele = jQuery(e.target).closest('li');
+                self._selectedOptionLi().addClass(activeClass);
+                self._focusedOptionLi().removeClass(widgetBaseClass + '-item-focus ui-state-hover');
+                $ele.removeClass('ui-state-active').addClass(widgetBaseClass + '-item-focus ui-state-hover');
+            }).bind('mouseout blur', function (e) {
+                var $ele = jQuery(e.target).closest('li');
+                if ($ele.is(self._selectedOptionLi())) {
+                    $ele.addClass(activeClass);
+                }
+                $ele.removeClass(widgetBaseClass + '-item-focus ui-state-hover');
+            }).mouseup(function (e) {
+                if (self._safemouseup) {
+                    var thisData = jQuery(e.target).closest('li').data('index');
+                    self.value(thisData);
+                    self.select(e);
+                    if (thisData !== self._selectedIndex()) {
+                        self.change(e);
+                    }
+                    self.close(e, true);
+                }
+                return false;
+            }).bind('click mousedown', function () {
+                return false;
+            })
+
             //transfer classes to selectmenu and list
             if (o.transferClasses) {
-                var transferClasses = e.attr('class') || '';
-                thisNewElement.add(this.list).addClass(transferClasses);
+                thisNewElement.add(this.list).addClass(e.attr('class') || '');
             }
             //original selectmenu width
             selectWidth = e.width();
