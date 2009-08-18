@@ -181,14 +181,16 @@
                 self._selectedOptionLi().addClass(activeClass);
                 self._focusedOptionLi().removeClass(widgetBaseClass + '-item-focus ui-state-hover');
                 $ele.removeClass('ui-state-active').addClass(widgetBaseClass + '-item-focus ui-state-hover');
+                return false;
             }).bind('mouseout blur', function (e) {
                 var $ele = jQuery(e.target).closest('li');
                 if ($ele.is(self._selectedOptionLi())) {
                     $ele.addClass(activeClass);
                 }
                 $ele.removeClass(widgetBaseClass + '-item-focus ui-state-hover');
-            }).mouseup(function (e) {
-                if (self._safemouseup) {
+                return false;
+            }).bind('mouseup', function (e) {
+                if (self._safemouseup && e.target.nodeName !== 'UL') { // the latter condition allows mousing down the scrollbar of an overflowed list
                     var thisData = jQuery(e.target).closest('li').data('index');
                     self.value(thisData);
                     self.select(e);
@@ -198,7 +200,7 @@
                     self.close(e, true);
                 }
                 return false;
-            }).bind('click mousedown', function () {
+            }).bind('click mousedown', function (e) {
                 return false;
             })
 
