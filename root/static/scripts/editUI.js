@@ -1627,6 +1627,9 @@ resolveArtist = function (element, $artistInput, event) {
         }
     } else { // We're in a simple tracklist artist
         if (showAC) { // Case 2: 1 artist but artist name != artist credit
+            $artistInput.parent()
+                        .next()
+                        .remove(); // Get rid of the "add another artist" icon button.
             $artistInput.removeClass("oneArtist") // Get rid of the "simple case" triggering class.
                         .addClass("artistName") // Add the class for an artist name input inside of the artist editor.
                         .after('<textarea readonly="readonly" class="editTAs">' + resultData.name + '</textarea>') // Add the "complex artist" textarea.
@@ -1636,7 +1639,13 @@ resolveArtist = function (element, $artistInput, event) {
                         .replaceAll($("#artistEditBox").find("input.artistName")) // Move the simple case's artist name input into the artist editor,
                         .css("display","inline") // Show the artist name input.      getting rid of the useless complex artist name input that's there.
                         .prev()
-                        .css("display","none") // Hide the displayed text for the artist.
+                        .css("display","none"); // Hide the displayed text for the artist.
+
+
+
+
+
+
             /* Now that we've set things up to be a pseudo-complex artist, restart the function and go through again, as a complex artist. */
             resolveArtist($("<div>").data("artistInfo", resultData), $artistInput, event);
         } else { // Stay with the simple case (1 artist and artist name == artist credit).
