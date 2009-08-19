@@ -2,10 +2,7 @@
     [%- IF edit %]
         <td class="toolbox hidden"></td>
     [%- END -%]
-    <td[%- IF edit %] class="editable trackposition"[% END %]>[% track.position %]</td>
-    [%- IF edit %]
-        <td class="hidden trackposition"><input type="text" value="[% track.position %]"/></td>
-    [%- END -%]
+    <td[%- IF edit %] class="trackposition"[% END %]>[% track.position %]</td>
     <td[%- IF edit %] class="editable trackname"[%- END -%]>
     [%- IF !edit -%]
         [% link_recording(recording, 'show', track.name) %]

@@ -1,5 +1,8 @@
 /*jslint undef: true, browser: true*/
-/*global jQuery, $, mb, text, window, convertToHTML, convertToMarkup, escape */
+/*global jQuery, $, mb, text, window, convertToHTML, convertToMarkup, escape, parseFloat, parseInt, Math */
+
+"use strict";
+
 var foo;
 if (window.console) {
 //    console.profile();
@@ -10,14 +13,13 @@ if (window.console) {
 
 // Map IE functions to W3C DOM level 2 Style functions.
 if (document.styleSheets[0].rules) {
-    var sheet = document.styleSheets[0];
-    sheet.cssRules = sheet.rules;
-    sheet.deleteRule = function (ruleIndex) {
+    document.styleSheets[0].cssRules = document.styleSheets[0].rules;
+    document.styleSheets[0].deleteRule = function (ruleIndex) {
         this.removeRule(ruleIndex);
     };
-    sheet.insertRule = function (ruleText, ruleIndex) { 
+    document.styleSheets[0].insertRule = function (ruleText, ruleIndex) { 
         ruleText = ruleText.match(/(.*)\{(.*)\}/);
-        sheet.addRule(ruleText[0], ruleText[1], ruleIndex);
+        document.styleSheets[0].addRule(ruleText[0], ruleText[1], ruleIndex);
     };
 }
 
@@ -161,6 +163,7 @@ var artistEditor,
                    flashEditorWindow   : function () {
                                                      $("#artistEditBox").find("div:first")
                                                                         .effect("highlight", {}, 800)
+                                                                        .effect("highlight", {}, 800)
                                                                         .effect("highlight", {}, 800);
                                                      },
                    identifyUnresolved  : function (data) {
@@ -183,7 +186,7 @@ var artistEditor,
                                                                                            '<div class="artist">' +
                                                                                                result.name +
                                                                                            '</div>' +
-                                                                                           ((typeof(result.comment) != "undefined") ? '<div class="disambiguation">' + result.comment + '</div>' : '') +
+                                                                                           ((typeof(result.comment) !== "undefined") ? '<div class="disambiguation">' + result.comment + '</div>' : '') +
                                                                                        '</div>';
                                                                     return $(resultstring);
                                                              }), function (i) {
@@ -198,7 +201,7 @@ var artistEditor,
                                                              });
                                                              $("#lookupMatches").text(data.hits);
                                                              var alreadyLoaded = parseInt($("#lookupLoaded").text(),10);
-                                                             $("#lookupLoaded").text(((alreadyLoaded == "NaN") ? alreadyLoaded : 0) + data.results.length);
+                                                             $("#lookupLoaded").text(((isNaN(alreadyLoaded)) ? alreadyLoaded : 0) + data.results.length);
                                                              $("#lookupResults").css("padding-top",".5em")
                                                                                 .css("backgroundColor","#fff")
                                                                                 .find("div.result")
@@ -213,7 +216,7 @@ var artistEditor,
                                                                                 .show();
                                                              $("#resultsStart").text(1);
                                                              $("#resultsEnd").text((data.results.length > 9) ? 10 : data.results.length);
-                                                             if ($("#lookupResults").css("display") == "none") {
+                                                             if ($("#lookupResults").css("display") === "none") {
                                                                  $("#artistLookup").find("div:first")
                                                                                    .animate({ backgroundColor: "#fff"},{queue: false});
                                                                  $("#lookupResults").css("backgroundColor","#fff") // It should already be #fff, but rarely
@@ -222,9 +225,9 @@ var artistEditor,
                                                                                                 marginTop: "1em",
                                                                                                 display: "block"
                                                                                                 });
-                                                                 setTimeout(function () {
-                                                                                        $("#artistLookup").redrawShadow();
-                                                                                        }, 225);
+                                                                 window.setTimeout(function () {
+                                                                                               $("#artistLookup").redrawShadow();
+                                                                                               }, 225);
                                                              }
                                                          }
 //(window.console) ? console.timeEnd("processResults") : '';
@@ -240,14 +243,127 @@ var artistEditor,
                                                      }
 //(window.console) ? console.timeEnd("resetAppearance") : '';
                                                      },
+                   resolveArtist      : function (element, $artistInput, event) { /* Resolve artist when lookup result is clicked. */
+//(window.console) ? console.time("resolveArtist") : '';
+                                                                                var $displayText,
+                                                                                    resultData = $(element).data("artistInfo"),
+                                                                                    showAC = false,
+                                                                                    $tempHasAC,
+                                                                                    $thisEditor,
+                                                                                    nextJP;
+                                                                                if ($("#hasAC:checked").length) { // If the AC checkbox is checked,
+                                                                                    showAC = true; // store that setting (we're about to get rid of the lookup, which would otherwise lose this setting in the process).
+                                                                                }
+                                                                                artistEditor.destroyLookup(); // Get rid of any open artist lookup.
+                                                                                if ($artistInput.hasClass("artistName")) { // We're in an artist editor
+                                                                                    $displayText = $artistInput.val(resultData.name) // Update the text in the input.
+                                                                                                               .css("display","none") // Hide the input.
+                                                                                                               .prev() // The artist display text for the input.
+                                                                                                               .css({ // Setting css here for $displayText, not $artistInput.
+                                                                                                                    display       : "inline-block", // Show the resolved artist text's div inline with the rest of the artist line.
+                                                                                                                    verticalAlign : 'middle',
+                                                                                                                    visibility    : "visible",
+                                                                                                                    width         : $artistInput.outerWidth() + 2 + "px" // 19em isn't 100% of the input's width - there's also the border width to deal with.
+                                                                                                                    });
+                                                                                    artistEditor.synchNextInput($artistInput, true); // Update the AC, if applicable (which in turn will trigger updating the textarea display text).
+                                                                                    if (showAC || typeof(resultData.aCredit) !== "undefined") { // If the AC checkbox was checked, or if an artist object with an AC was passed,
+                                                                                        $thisEditor = $("#artistEditBox");
+                                                                                        $("#labelCredit").css("display", "block"); // make sure that the AC label is visible,
+                                                                                        $artistInput.next()
+                                                                                                    .css("display", "inline") // show the AC field for this artist line,
+                                                                                                    .before('<div class="removeAC"/>');
+                                                                                        if (typeof(resultData.aCredit) !== "undefined") { // If an artist object with an AC was passed, use that AC.
+                                                                                            $artistInput.nextAll()
+                                                                                                        .filter(".artistCredit")
+                                                                                                        .val(resultData.aCredit);
+                                                                                        }
+                                                                                        if (typeof(resultData.jPhrase) !== "undefined") { // If an artist object with a defined join phrase was passed, set that join phrase.
+                                                                                            $artistInput.nextAll()
+                                                                                                        .filter(".joinPhrase")
+                                                                                                        .val(resultData.jPhrase);
+                                                                                        }
+                                                                                        $thisEditor.css("width", artistEditor.edit_width_with_AC + "em") // Make sure the artist editor popup is expanded to fit the AC column,
+                                                                                                   .find("div:first") // Get the foreground edit window div,
+                                                                                                   .css("width",parseInt($("#artistEditBox").width(), 10) - 16 + "px") // Adjust the width of the inner div to match the new outer div's width.
+                                                                                                   .end()
+                                                                                                   .redrawShadow(); // reset the shadow for that popup window,
+                                                                                        if (!artistEditor.widthNameAndAC) { // If, in this artist editor, we've not yet done any artist with an AC,
+                                                                                            /* then calculate the width required, for the artist name fields that don't have AC fields, to make them fill the AC space. */
+                                                                                            nextJP = $artistInput.find("~ input.joinPhrase");
+                                                                                            artistEditor.widthNameAndAC = nextJP.offset().left - $displayText.offset().left - (2 * (nextJP.outerWidth() - nextJP.width()));
+                                                                                        }
+                                                                                        $thisEditor.find("div:first > div:first > div:not(:first)") // Find all artist entry lines,
+                                                                                                   .filter(":has(input.artistCredit:visible)") // and for those lines with visible AC fields,
+                                                                                                   .find("input.artistName, div.artistResolvedName") // get the artist name input and resolved text elements in each,
+                                                                                                   .each(function () { // make sure the width of those fields is at the 'visible AC' width,
+                                                                                                                     $(this).css("width", "19em");
+                                                                                                                     }
+                                                                                                   )                      
+                                                                                                   .end() // then return to the pre-find,
+                                                                                                   .end() // pre-filter 'all artist entry lines' collection,
+                                                                                                   .filter(":has(input.artistCredit:hidden)") // get those without a visible AC field,
+                                                                                                   .find("input.artistName") // get the artist name input and resolved text elements in each,
+                                                                                                   .each(function () { // and stretch out the width for the ones without a visible AC field.
+                                                                                                                     $(this).css("width", artistEditor.widthNameAndAC - parseFloat($(0.5).toPx(), 10) - 2 + "px");
+                                                                                                                     }
+                                                                                                   )
+                                                                                                   .end()
+                                                                                                   .find("div.artistResolvedName").log()
+                                                                                                   .each(function () {
+                                                                                                                     $(this).css("width", artistEditor.widthNameAndAC + 2 + "px");
+                                                                                                                     }
+                                                                                                   );
+                                                                                    }
+                                                                                } else { // We're in a simple tracklist artist
+                                                                                    if (showAC) { // Case 2: 1 artist but artist name != artist credit
+                                                                                        $artistInput.parent()
+                                                                                                    .next()
+                                                                                                    .remove(); // Get rid of the "add another artist" icon button.
+                                                                                        $artistInput.removeClass("oneArtist") // Get rid of the "simple case" triggering class.
+                                                                                                    .addClass("artistName") // Add the class for an artist name input inside of the artist editor.
+                                                                                                    .after('<textarea readonly="readonly" class="editTAs">' + resultData.name + '</textarea>') // Add the "complex artist" textarea.
+                                                                                                    .next() // Switch to the textarea.
+                                                                                                    .click() // Click on it to activate the artist editor (the event was auto-attached due to the live event).
+                                                                                                    .prev() // Switch back to the simple case artist name input.
+                                                                                                    .replaceAll($("#artistEditBox").find("input.artistName")) // Move the simple case's artist name input into the artist editor,
+                                                                                                    .css("display","inline") // Show the artist name input.      getting rid of the useless complex artist name input that's there.
+                                                                                                    .prev()
+                                                                                                    .css("display","none"); // Hide the displayed text for the artist.
+                                                                                        $("#labelJoiner").css("visibility","hidden"); // Hide the label for the join phrase column.  There's only 1 artist, so no join phrase fields are visible.
+                                                                                        $tempHasAC = $('<input type="checkbox" id="hasAC" checked="checked" class="hidden"/>');
+                                                                                        $("body").append($tempHasAC); // Force the complex editor to detect a hasAC id.
+                                                                                        window.setTimeout(function () {
+                                                                                                                      $tempHasAC.remove(); // And then get rid of it again a second later, after it will have been detected.
+                                                                                                                      }, 1000);
+                                                                                        /* Now that we've set things up to be a pseudo-complex artist, restart the function and go through again, as a complex artist. */
+                                                                                        artistEditor.resolveArtist($("<div>").data("artistInfo", resultData), $artistInput, event);
+                                                                                        return false;
+                                                                                    } else { // Stay with the simple case (1 artist and artist name == artist credit).
+                                                                                        $displayText = $artistInput.val(resultData.name) // Update the text in the input.
+                                                                                                                   .parent() // The input's parent div.
+                                                                                                                   .parent() // The div's parent td (the artist editing cell).
+                                                                                                                   .css("display","none") // Hide it.
+                                                                                                                   .prev() // The previous td (the artist display text cell).
+                                                                                                                   .show() // Show that td.
+                                                                                                                   .find("div"); // The artist cell's display text is in this div.
+                                                                                    }
+                                                                                }
+                                                                                $displayText.text(resultData.name) // Change the display text.
+                                                                                            .click(function () { // Attach the event to allow toggling back from resolved artist to artist edit input field.
+                                                                                                                   $(this).css("display","none");
+                                                                                                                   $artistInput.css("display","inline")
+                                                                                                                               .focus();
+                                                                                                               });
+//(window.console) ? console.timeEnd("resolveArtist") : '';
+                                                     },
                    synchNextInput      : function (thisElement, override) {
 //(window.console) ? console.time("synchNextInput") : '';
                                                      var artistbox = $($(thisElement).next());
-                                                     setTimeout(function () {
-                                                                            if (artistbox.val().length === 0 || override) {
-                                                                                artistbox.val($.trim($(thisElement).val()));
-                                                                                artistEditor.updateTrackArtist();
-                                                                            }
+                                                     window.setTimeout(function () {
+                                                                                   if (artistbox.val().length === 0 || override) {
+                                                                                       artistbox.val($.trim($(thisElement).val()));
+                                                                                       artistEditor.updateTrackArtist();
+                                                                                   }
                                                      }, 1);
 //(window.console) ? console.timeEnd("synchNextInput") : '';
                                                      },
@@ -358,9 +474,9 @@ var artistEditor,
                                                                                          .val($thisArtistName.val()); // set the AC field value to the current artist name field's value,
                                                                            $thisACremover.remove(); // and remove the AC toggle icon.
                                                                            artistEditor.synchNextInput($thisArtistName, true); // Resync the textarea.
-                                                                           $thisArtistName.css("width", artistEditor.widthNameAndAC - parseFloat($(.5).toPx(), 10) - 2 + "px") // Resize the artist name input.
+                                                                           $thisArtistName.css("width", artistEditor.widthNameAndAC - parseFloat($(0.5).toPx(), 10) - 2 + "px") // Resize the artist name input.
                                                                                           .prev() // Get the resolved artist text div,
-                                                                                          .css("width", artistEditor.widthNameAndAC + 2 + "px") // and resize it as well.
+                                                                                          .css("width", artistEditor.widthNameAndAC + 2 + "px"); // and resize it as well.
                                                                            if ($artistLines.find("input.artistCredit:visible").length === 0) { // If this was the last visible AC field,
                                                                                $artistLines.find("input.artistName") // get all artist name input fields,
                                                                                            .css("width", "19em") // resize them to the initial "no-AC" width,
@@ -447,7 +563,6 @@ var artistEditor,
                                          eventEditor_Many: function () { /* Open an artist editor for a track artist with more than 1 artist as constituant artists. */
 //(window.console) ? console.time("eventEditor_Many") : '';
                                                                        $("textarea.editTAs").live("click", function (event) {
-console.log(this)
                                                                            artistEditor.events.makeEditor_Many($(this), event);
                                                                        });
 //(window.console) ? console.timeEnd("eventEditor_Many") : '';
@@ -455,17 +570,21 @@ console.log(this)
                                          makeEditor_Many : function ($element, event) { /* Create an artist editor. */
 //(window.console) ? console.time("makeEditor_Many") : '';
                                                                            if ($("#artistEditBox").length > 0) { // If another artist editor is already active, don't open another one.
-                                                                               if (artistEditor.store_active_editor != event.target) { // The textarea the user clicked on was *not* the one already being edited.
+                                                                               if (artistEditor.store_active_editor !== event.target) { // The textarea the user clicked on was *not* the one already being edited.
                                                                                    event.stopPropagation();
                                                                                    artistEditor.thereCanBeOnlyOne();
                                                                                }
                                                                            } else {
                                                                                artistEditor.store_active_editor = event.target;
-                                                                               var artistData,
+                                                                               var artistData = $element.parent().data("TAs"),
                                                                                    dataHTML = "",
-                                                                                   $editorBox;
-                                                                                   artistData = $element.parent().data("TAs");
-                                                                               for (var i = 0, loops = artistData.length; i < loops; i++) {
+                                                                                   $editorBox,
+                                                                                   $artistCell,
+                                                                                   textareaHeight,
+                                                                                   cellHeight,
+                                                                                   i,
+                                                                                   loops; 
+                                                                               for (i = 0, loops = artistData.length; i < loops; i++) {
                                                                                    dataHTML += '<div class="artistLine">' +
                                                                                                    artistEditor.html_button_remove + 
                                                                                                    '<div class="artistResolvedName"></div>' +
@@ -495,12 +614,13 @@ console.log(this)
                                                                                                    .end();
                                                                                $(".artistName").data("oldVal",[]);
                                                                                artistEditor.updateTrackArtist();
+                                                                               $artistCell = $editorBox.parents("td:first");
                                                                                /* Resolve the individual track artist artists/ */
                                                                                $editorBox.find("> div:first > div:first > div:not(:first) > input")
                                                                                          .filter(".artistName")
                                                                                          .each(function (i) {
                                                                                                              var thisData = artistData[i];
-                                                                                                             resolveArtist($("<div>").data("artistInfo", {
+                                                                                                             artistEditor.resolveArtist($("<div>").data("artistInfo", {
                                                                                                                                                          comment : thisData.disambig,
                                                                                                                                                          gid     : thisData.gid,
                                                                                                                                                          name    : thisData.name,
@@ -514,8 +634,14 @@ console.log(this)
                                                                                          .filter(":first")
                                                                                          .focus()
                                                                                          .end()
-                                                                                         .end()
-                                                                                         .redrawShadow();
+                                                                                         .end();
+                                                                               window.setTimeout(function () { // Need a tiny delay to allow the autogrow on the textarea to kick in before reading that height.
+                                                                                                             textareaHeight = $artistCell.find("textarea").height();
+                                                                                                             cellHeight = $artistCell.height();
+                                                                                                             cellHeight = (cellHeight > textareaHeight) ? cellHeight : textareaHeight;
+                                                                                                             $editorBox.css("top", $artistCell.offset().top + cellHeight + "px")
+                                                                                                                       .redrawShadow();
+                                                                                                             }, 1);
                                                                                if ($("#toolsHead").hasClass("toolsHeadGrey")) { // If "show tools" is currently on,
                                                                                    MusicBrainz.toggleTools(); // hide the tools.
                                                                                    artistEditor.toolsWereActive = true;
@@ -543,7 +669,7 @@ console.log(this)
                                                                                e.stopPropagation();
                                                                                artistEditor.thereCanBeOnlyOne(text.ArtistEditorIsOpen);
                                                                            } else {
-                                                                               if (artistEditor.currentTrack != e.target) {
+                                                                               if (artistEditor.currentTrack !== e.target) {
                                                                                    artistEditor.currentTrack = e.target;
                                                                                    artistEditor.destroyLookup();
                                                                                    $(this).parent()
@@ -564,7 +690,7 @@ console.log(this)
                                          initLookupBoxMany: function () { /* Create the initial lookup float box, with the structure to fill in results later. */
                                                                        $('input.artistName').live("focusin", function (e) {
 //(window.console) ? console.time("initLookupBoxMany") : '';
-                                                                           if (artistEditor.currentTrack != e.target) { // have we changed input fields?
+                                                                           if (artistEditor.currentTrack !== e.target) { // have we changed input fields?
                                                                                artistEditor.currentTrack = e.target;
                                                                                artistEditor.resetAppearance();
                                                                                $(this).parent()
@@ -640,16 +766,16 @@ console.log(this)
                                      className:"preview",
                                      call:'preview',
                                      afterInsert: function () {
-                                                      setTimeout(function () {
-                                                          var previewWindow = $(".markItUpPreviewFrame")[0].contentWindow.document;
-                                                          previewWindow.open().close();
-                                                          /* The next replace() works around an open bug w/ "    a. " in convertToHTML. (There is the
-                                                             reverse bug in Text::Wikiformat, such that it *only* supports numeric lists, but only if
-                                                             they are defined using alphabetic markup syntax, so this workaround actually ends up
-                                                             generating the correct ol type, even though it initially seems backwards. */
-                                                          $("body", previewWindow).append(convertToHTML($("#annotation").val().replace(/^(\s{4,})a\.\s/gm,"$11. ").replace(/<ol>/g,'<ol type="1">')));
-                                                      }, 1);
-                                                  }
+                                                      window.setTimeout(function () {
+                                                                                    var previewWindow = $(".markItUpPreviewFrame")[0].contentWindow.document;
+                                                                                    previewWindow.open().close();
+                                                                                    /* The next replace() works around an open bug w/ "    a. " in convertToHTML. (There is the
+                                                                                       reverse bug in Text::Wikiformat, such that it *only* supports numeric lists, but only if
+                                                                                       they are defined using alphabetic markup syntax, so this workaround actually ends up
+                                                                                       generating the correct ol type, even though it initially seems backwards. */
+                                                                                    $("body", previewWindow).append(convertToHTML($("#annotation").val().replace(/^(\s{4,})a\.\s/gm,"$11. ").replace(/<ol>/g,'<ol type="1">')));
+                                                                                }, 1);
+                                                                            }
                                     }
                                     ]
                      },
@@ -810,11 +936,11 @@ console.log(this)
                               .slideDown();
                 /* TODO: START: Junk stub code to simulate downloading text. */
                 /* Get URL from helpArray[i][2]. */
-                setTimeout(function () {
-                    $("#wikiHelp").lorem({ type: 'words',amount:'500',ptags:true});
-                    $("#wikiHelpBox").slideDown(1000);
-                    MusicBrainz.setStatus("Documentation loaded.");
-                }, 1000);
+                window.setTimeout(function () {
+                                              $("#wikiHelp").lorem({ type: 'words',amount:'500',ptags:true});
+                                              $("#wikiHelpBox").slideDown(1000);
+                                              MusicBrainz.setStatus("Documentation loaded.");
+                                          }, 1000);
                 /* END */
             });
         });
@@ -955,7 +1081,7 @@ console.log(this)
                                                                      .find('input:visible:first, textarea:visible:first') // Find the first edit field,
                                                                      .focus() // and give it focus.
                                                                      .click(); // and click it (to trigger the initial artist editor, basic or complex).
-                    if (toggleclass[0] == "trackartist") {
+                    if (toggleclass[0] === "trackartist") {
                         artistEditor.identifyUnresolved(); // Check unresolved artist highlighting when toggling an artist.
                     }
                 });
@@ -996,15 +1122,19 @@ console.log(this)
                    "฿","₵","¢","₡","₢","$","₫","₯","€","₠","₣",
                    "ƒ","₴","₭","₤","₥","₦","№","₧","₰","£","៛",
                      "₨","₪","৳","₮","₩","¥","♠","♣","♥","♦","²","³",
-                   "®","©","™"];
-        for (var i = 0, charCount = chars.length; i < charCount; i++) {
+                   "®","©","™"],
+            i,
+            j,
+            charCount,
+            symCount;
+        for (i = 0, charCount = chars.length; i < charCount; i++) {
             charMap.characters.dropMenu[i] = {
                                              name      : chars[i][0],
                                              openWith  : chars[i][0],
                                              className : "skip" + chars[i][1]
                                              };
         }
-        for (var j = 0, symCount = symbols.length; j < symCount; j++) {
+        for (j = 0, symCount = symbols.length; j < symCount; j++) {
             charMap.symbols.dropMenu[j] = {
                                           name      : symbols[j],
                                           openWith  : symbols[j],
@@ -1055,7 +1185,7 @@ console.log(this)
             processItem = function () {
                 item = bigarray[--i];
                 if (!showFullList) {
-                    if ($.inArray(item[0], commonarray) > -1 || item[0] == selecteditem) { // If the current item is also in the common items array,
+                    if ($.inArray(item[0], commonarray) > -1 || item[0] === selecteditem) { // If the current item is also in the common items array,
                         optionArray.push('<option value="' + item[0] + '">' + item[1] + '</option>'); // add it to the string.
                     }
                 } else {
@@ -1144,8 +1274,10 @@ console.log(this)
         MusicBrainz.$releaseTable.find("> tbody")
                                  .each(function () {
                                                    var originalPositions = $($(this).find(".editable.trackposition")),
-                                                       newPositions = $($(this).find('.trackposition:not(".editable")'));
-                                                   for (var i = 0, mediumTrackCount = $(this).find(".editable.trackposition").length; i < mediumTrackCount; i++) {
+                                                       newPositions = $($(this).find('.trackposition:not(".editable")')),
+                                                       i,
+                                                       mediumTrackCount;
+                                                   for (i = 0, mediumTrackCount = $(this).find(".editable.trackposition").length; i < mediumTrackCount; i++) {
                                                        if ($(originalPositions[i]).text() !== i+1) { // If the original position != the current position,
                                                            $(originalPositions[i]).click(); // The track position field now has been edited (via a remove or reorder), so show the edit field,
                                                            $(newPositions[i]).find("input:first").val(i+1); // and populate the input with the new position.
@@ -1219,10 +1351,10 @@ $(function ($) { // Bring jQuery into the local scope, shaving about 50 ms off t
     /* ==== Start functions that initially manipulate the sidebar DOM. ==== */
 
     /* Create the style for left-opening selects. */
-    setTimeout(function () { // This has to be slightly time-delayed post-document ready, or it won't get the correct offset value.
-        var sidebarDD = $("#release-date-view");
-        MusicBrainz.addStyle('.leftOpenMenu{width:375px!important;z-index:20;left:' + (sidebarDD.offset().left + sidebarDD.outerWidth() + 12 - 375) + 'px;}');
-    }, 1);
+    window.setTimeout(function () { // This has to be slightly time-delayed post-document ready, or it won't get the correct offset value.
+                                  var sidebarDD = $("#release-date-view");
+                                  MusicBrainz.addStyle('.leftOpenMenu{width:375px!important;z-index:20;left:' + (sidebarDD.offset().left + sidebarDD.outerWidth() + 12 - 375) + 'px;}');
+                              }, 1);
 
     /* Populate basic select lists. */
     $("#select-edit-release-packaging").addOption(mb.packaging, false);
@@ -1279,26 +1411,26 @@ $(function ($) { // Bring jQuery into the local scope, shaving about 50 ms off t
                    .end()
                    .fadeIn("slow");
 
-    setTimeout(function () { // We need to delay slightly, to give the select time to finish populating and the DOM time to update calculated positions.
-                           var vDDwidth = $("#release-date-view").outerWidth() + 12;
-                           $('#select-edit-release-country').selectmenu({
-                                                                        icons: MusicBrainz.countrySelectArray,
-                                                                        handleWidth: 0,
-                                                                        maxHeight: 400,
-                                                                        width: vDDwidth,
-                                                                        openLeft: true
-                                                                        })
-                           $.each(['packaging','status','language','script'], function () {
-                               MusicBrainz.makeSelectSideBar($('#select-edit-release-' + this), vDDwidth, true);
-                           });
-    }, 1);
+    window.setTimeout(function () { // We need to delay slightly, to give the select time to finish populating and the DOM time to update calculated positions.
+                                  var vDDwidth = $("#release-date-view").outerWidth() + 12;
+                                  $('#select-edit-release-country').selectmenu({
+                                                                               icons: MusicBrainz.countrySelectArray,
+                                                                               handleWidth: 0,
+                                                                               maxHeight: 400,
+                                                                               width: vDDwidth,
+                                                                               openLeft: true
+                                                                               });
+                                  $.each(['packaging','status','language','script'], function () {
+                                      MusicBrainz.makeSelectSideBar($('#select-edit-release-' + this), vDDwidth, true);
+                                  });
+                                  }, 1);
 
     /* Add the show help button to the tool box, and round the corners on the docs display div. */
-    setTimeout(function () {
-        $("#wikiHelpBox").corner(MusicBrainz.roundness);
-        $("#wikiHelpInnerBox").corner(MusicBrainz.roundness);
-        MusicBrainz.addToolButton("Show Help Buttons", "btnHelp");
-    },1000);
+    window.setTimeout(function () {
+                                  $("#wikiHelpBox").corner(MusicBrainz.roundness);
+                                  $("#wikiHelpInnerBox").corner(MusicBrainz.roundness);
+                                  MusicBrainz.addToolButton("Show Help Buttons", "btnHelp");
+                                  },1000);
 
     /* ==== End functions that initially manipulate the sidebar DOM. ==== */
 
@@ -1383,7 +1515,6 @@ if (window.console) {
 
     /* Make each multiple-item entity editable. */
     MusicBrainz.makeTogglableEachInGroup([
-                                         ["trackposition"],
                                          ["trackname", true],
                                          ["trackartist", true],
                                          ["trackdur"],
@@ -1451,12 +1582,12 @@ if (window.console) {
                                           .autotab({format: 'numeric'});
 
     /* Attach functionality to the show/hide help button. */
-    setTimeout(function () {
-        $("#btnHelp").click(function () {
-            $(".helpIcon").toggle();
-            $("#btnHelp").val($("#btnHelp").val() === text.HelpShow ? text.HelpHide : text.HelpShow);
-        });
-    }, 1000);
+    window.setTimeout(function () {
+                                  $("#btnHelp").click(function () {
+                                      $(".helpIcon").toggle();
+                                      $("#btnHelp").val($("#btnHelp").val() === text.HelpShow ? text.HelpHide : text.HelpShow);
+                                  });
+                                  }, 1000);
 
     /* Attach click events to the help buttons. */
     MusicBrainz.attachHelpButtonEvents([
@@ -1502,7 +1633,7 @@ if (window.console) {
     $("#loader").remove();
 
     /* Clear the initial status text after 15 seconds. */
-    setTimeout(MusicBrainz.clearStatus, 15000);
+    window.setTimeout(MusicBrainz.clearStatus, 15000);
 
 
 /* Everything below is rough code in progress. */
@@ -1555,119 +1686,9 @@ Artist text view:
 
 
 
-/* Resolve artist when lookup result is clicked. */
-resolveArtist = function (element, $artistInput, event) {
-// TODO: Set the data array store for this artist.
-    var $displayText,
-        resultData = $(element).data("artistInfo"),
-        showAC = false;
-    if ($("#hasAC:checked").length) { // If the AC checkbox is checked,
-        showAC = true; // store that setting (we're about to get rid of the lookup, which would otherwise lose this setting in the process).
-    }
-    artistEditor.destroyLookup(); // Get rid of any open artist lookup.
-    if ($artistInput.hasClass("artistName")) { // We're in an artist editor
-        $displayText = $artistInput.val(resultData.name) // Update the text in the input.
-                                   .css("display","none") // Hide the input.
-                                   .prev() // The artist display text for the input.
-                                   .css({ // Setting css here for $displayText, not $artistInput.
-                                        display       : "inline-block", // Show the resolved artist text's div inline with the rest of the artist line.
-                                        verticalAlign : 'middle',
-                                        visibility    : "visible",
-                                        width         : $artistInput.outerWidth() + 2 + "px" // 19em isn't 100% of the input's width - there's also the border width to deal with.
-                                        });
-        artistEditor.synchNextInput($artistInput, true); // Update the AC, if applicable (which in turn will trigger updating the textarea display text).
-        if (showAC || typeof(resultData.aCredit) !== "undefined") { // If the AC checkbox was checked, or if an artist object with an AC was passed,
-            var $thisEditor = $("#artistEditBox");
-            $("#labelCredit").css("display", "block"); // make sure that the AC label is visible,
-            $artistInput.next()
-                        .css("display", "inline") // show the AC field for this artist line,
-                        .before('<div class="removeAC"/>');
-
-            if (typeof(resultData.aCredit) !== "undefined") { // If an artist object with an AC was passed, use that AC.
-                $artistInput.nextAll()
-                            .filter(".artistCredit")
-                            .val(resultData.aCredit);
-            }
-            if (typeof(resultData.jPhrase) !== "undefined") { // If an artist object with a defined join phrase was passed, set that join phrase.
-                $artistInput.nextAll()
-                            .filter(".joinPhrase")
-                            .val(resultData.jPhrase);
-            }
-            $thisEditor.css("width", artistEditor.edit_width_with_AC + "em") // Make sure the artist editor popup is expanded to fit the AC column,
-                       .find("div:first") // Get the foreground edit window div,
-                       .css("width",parseInt($("#artistEditBox").width(), 10) - 16 + "px") // Adjust the width of the inner div to match the new outer div's width.
-                       .end()
-                       .redrawShadow(); // reset the shadow for that popup window,
-            if (!artistEditor.widthNameAndAC) { // If, in this artist editor, we've not yet done any artist with an AC,
-                /* then calculate the width required, for the artist name fields that don't have AC fields, to make them fill the AC space. */
-                var nextJP = $artistInput.find("~ input.joinPhrase");
-                artistEditor.widthNameAndAC = nextJP.offset().left - $displayText.offset().left - (2 * (nextJP.outerWidth() - nextJP.width()));
-            }
-            $thisEditor.find("div:first > div:first > div:not(:first)") // Find all artist entry lines,
-                       .filter(":has(input.artistCredit:visible)") // and for those lines with visible AC fields,
-                       .find("input.artistName, div.artistResolvedName") // get the artist name input and resolved text elements in each,
-                       .each(function () { // make sure the width of those fields is at the 'visible AC' width,
-                                         $(this).css("width", "19em");
-                                         }
-                       )                      
-                       .end() // then return to the pre-find,
-                       .end() // pre-filter 'all artist entry lines' collection,
-                       .filter(":has(input.artistCredit:hidden)") // get those without a visible AC field,
-                       .find("input.artistName") // get the artist name input and resolved text elements in each,
-                       .each(function () { // and stretch out the width for the ones without a visible AC field.
-                                         $(this).css("width", artistEditor.widthNameAndAC - parseFloat($(.5).toPx(), 10) - 2 + "px");
-                                         }
-                       )
-                       .end()
-                       .find("div.artistResolvedName").log()
-                       .each(function () {
-                                         $(this).css("width", artistEditor.widthNameAndAC + 2 + "px");
-                                         }
-                       )
-        }
-    } else { // We're in a simple tracklist artist
-        if (showAC) { // Case 2: 1 artist but artist name != artist credit
-            $artistInput.parent()
-                        .next()
-                        .remove(); // Get rid of the "add another artist" icon button.
-            $artistInput.removeClass("oneArtist") // Get rid of the "simple case" triggering class.
-                        .addClass("artistName") // Add the class for an artist name input inside of the artist editor.
-                        .after('<textarea readonly="readonly" class="editTAs">' + resultData.name + '</textarea>') // Add the "complex artist" textarea.
-                        .next() // Switch to the textarea.
-                        .click() // Click on it to activate the artist editor (the event was auto-attached due to the live event).
-                        .prev() // Switch back to the simple case artist name input.
-                        .replaceAll($("#artistEditBox").find("input.artistName")) // Move the simple case's artist name input into the artist editor,
-                        .css("display","inline") // Show the artist name input.      getting rid of the useless complex artist name input that's there.
-                        .prev()
-                        .css("display","none"); // Hide the displayed text for the artist.
-
-
-
-
-
-
-            /* Now that we've set things up to be a pseudo-complex artist, restart the function and go through again, as a complex artist. */
-            resolveArtist($("<div>").data("artistInfo", resultData), $artistInput, event);
-        } else { // Stay with the simple case (1 artist and artist name == artist credit).
-            $displayText = $artistInput.val(resultData.name) // Update the text in the input.
-                                       .parent() // The input's parent div.
-                                       .parent() // The div's parent td (the artist editing cell).
-                                       .css("display","none") // Hide it.
-                                       .prev() // The previous td (the artist display text cell).
-                                       .show() // Show that td.
-                                       .find("div"); // The artist cell's display text is in this div.
-        }
-    }
-    $displayText.text(resultData.name) // Change the display text.
-                .click(function () { // Attach the event to allow toggling back from resolved artist to artist edit input field.
-                                       $(this).css("display","none");
-                                       $artistInput.css("display","inline")
-                                                   .focus();
-                                   });
-}
 
 $("div.result").live("click", function (event) {
-    resolveArtist(this, $($("#artistLookup").data("linkedText")), event);
+    artistEditor.resolveArtist(this, $($("#artistLookup").data("linkedText")), event);
 });
 
 
@@ -1733,7 +1754,7 @@ artistEditor.events.init();
                            .end()
                            .redrawShadow();
         var removeIcons = $("div.removeArtist");
-        if (removeIcons.length == 1) {
+        if (removeIcons.length === 1) {
             removeIcons.css("height","0");
             $("#labelJoiner").css("visibility","hidden");
         }
@@ -1831,6 +1852,8 @@ artistEditor.events.init();
 // TODO: Auto-artist resolution
 // TODO: Figure the cause of the rare comma-artist
 // TODO: Figure the cause of the occasional NaN:Nan durations
+// TODO: Set the data array store after resolution in the resolveArtist function.
+// TODO: Keep click to edit events bound to the correct tracks after a track reordering
 
  MusicBrainz.showErrorForSidebar("release-date", "Test sidebar error");
 if (window.console) {

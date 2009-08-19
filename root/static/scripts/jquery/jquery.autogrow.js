@@ -82,12 +82,13 @@
             });
             this.textarea.bind('focus', function () {
                 self.startExpand();
+                self.checkExpand(0, true);
             }).bind('blur', function () {
                 self.stopExpand();
             }).bind('update', function () {
                 self.checkExpand(0, true);
             });
-            this.checkExpand(0, true);
+            self.checkExpand(0, true);
         },
 
         startExpand: function () {
