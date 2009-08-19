@@ -574,9 +574,9 @@ table.tbl tr.ev td.trackdur {
 
 #labelCredit {
  padding-left: 10px;
- width: 18em;
 }
 
+#labelCredit,
 #labelArtist,
 #artistEditBox .artistResolvedName,
 #artistEditBox .artistName,
