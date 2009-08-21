@@ -1079,3 +1079,11 @@ mb.packaging             = {
                            "4" : "[%- l("Paper Sleeve") -%]",
                            "5" : "[%- l("Other") -%]"
                            };
+mb.artisttype            = {
+                           "1" : "[%- l("Person") -%]",
+                           "2" : "[%- l("Group") -%]"
+                           };
+mb.artistgenders         = {
+                           "1" : "[%- l("Male") -%]",
+                           "2" : "[%- l("Female") -%]"
+                           };

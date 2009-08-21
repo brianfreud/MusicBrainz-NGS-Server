@@ -1,5 +1,30 @@
 @charset "UTF-8";
 
+.labelAddNew {
+ font-weight: 600;
+ display: inline-block;
+ width: 17%;
+}
+
+#lookupAddNew div {
+ padding-top: 5px;
+ width: 100%;
+}
+
+#lookupAddNew fieldset {
+ border-width: 0;
+ margin-bottom: 0;
+ padding: 0;
+ display: inline-block;
+}
+
+#addNew-Name,
+#addNew-NameSort,
+#addNew-Comment {
+ width: 80%;
+}
+
+
 /* Other icons in editor.png
 .file  0 -396px;
 .trash  0 -1698px;
