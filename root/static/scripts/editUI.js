@@ -27,7 +27,6 @@ if (document.styleSheets[0].rules) {
 var artistEditor,
     $cache,
     experimental = false,
-
     charMap = {
         characters : {
             name: 'Characters',
@@ -46,6 +45,7 @@ var artistEditor,
      */
     html = {
            css : {
+                 displayIB   : 'display: inline-block;',
                  displayNone : 'display: none;',
                  floatLeft   : 'float: left;',
                  floatRight  : 'float: right;'
@@ -102,7 +102,7 @@ var artistEditor,
             * @example html.make('textarea')
             * @param {String} tag The element type to create.
             * @augments html.make
-            * @see close
+            * @see html.close
             */
            basic : function (tag) {
                                   return html.make({
@@ -112,13 +112,14 @@ var artistEditor,
            },
            /**
             * @description Creates a button-type input (which is removed from the tab index).
-            * @param {Object} args The attributes to be added to the <input> string being formed.
+            * @param {Object} args The attributes to be added to the &lt;input&gt; string being formed.
             * @param {String} [args.id] The "id" attribute.
             * @param {String} [args.cl] The "class" attribute.
             * @param {String} [args.css] The "style" attribute.
             * @param {String} [args.val] The "value" attribute.
             * @augments html.make
-            * @see close
+            * @see html.close
+            * @see html.input
             */
            button : function (args) {
                                     var checkDef = html.checkDef;
@@ -132,15 +133,28 @@ var artistEditor,
                                                       });
            },
            /**
-            * @description Used to create simple closing elements, such as </textarea>.
+            * @description Used to create simple closing elements, such as &lt;/textarea&gt;.
             * @example html.close('textarea')
             * @param {String} tag The element type to close.
             * @augments html.make
-            * @see basic
+            * @see html.basic
             */
            close : function (tag) {
                                   return html.basic('/' + tag);
            },
+           /**
+            * @description Used to create div elements.
+            * @example html.div({ cl: 'foo', id: 'bar' })
+            * @param {Object} args The attributes to be added to the &lt;div&gt; string being formed.
+            * @param {String} [args.alt] The "alt" attribute.
+            * @param {String} [args.cl] The "class" attribute.
+            * @param {String} [args.css] The "style" attribute.
+            * @param {String} [args.id] The "id" attribute.
+            * @param {String} [args.title] The "title" attribute.
+            * @augments html.make
+            * @see html.close
+            * @see html.divNoDisplay
+            */
            div : function (args) {
                                  var checkDef = html.checkDef;
                                  return html.make({
@@ -153,14 +167,34 @@ var artistEditor,
                                                   close : false
                                                   });
            },
+           /**
+            * @description Used to create simple hidden div elements; the "display" property is used to hide the element.
+            * @example html.divNoDisplay({ cl: 'foo', id: 'bar' })
+            * @param {Object} args The attributes to be added to the &lt;div&gt; string being formed.
+            * @param {String} [args.cl] The "class" attribute.
+            * @param {String} [args.id] The "id" attribute.
+            * @augments html.div
+            * @see html.close
+            * @see html.div
+            */
            divNoDisplay : function (args) {
                                           var checkDef = html.checkDef;
                                           return html.div({
                                                           cl  : checkDef(args.cl),
-                                                          id  : checkDef(args.id),
-                                                          css : html.css.displayNone
+                                                          css : html.css.displayNone,
+                                                          id  : checkDef(args.id)
                                                           });
            },
+           /**
+            * @description Used to create fieldset elements.
+            * @example html.fieldset({ cl: 'foo', id: 'bar' })
+            * @param {Object} args The attributes to be added to the &lt;fieldset&gt; string being formed.
+            * @param {String} [args.cl] The "class" attribute.
+            * @param {String} [args.css] The "style" attribute.
+            * @param {String} [args.id] The "id" attribute.
+            * @augments html.make
+            * @see html.close
+            */
            fieldset : function (args) {
                                       var checkDef = html.checkDef;
                                       return html.make({
@@ -171,6 +205,22 @@ var artistEditor,
                                                        close : false
                                                        });
            },
+           /**
+            * @description Used to create input elements.
+            * @example html.input({ cl: 'foo', id: 'bar', type: 'checkbox' })
+            * @param {Object} args The attributes to be added to the &lt;input&gt; string being formed.
+            * @param {String} [args.checked] The "checked" attribute.
+            * @param {String} [args.cl] The "class" attribute.
+            * @param {String} [args.css] The "style" attribute.
+            * @param {String} [args.id] The "id" attribute.
+            * @param {String} [args.size] The "size" attribute.
+            * @param {String} [args.ti] The "tabindex" attribute.
+            * @param {String} [args.type] The "type" attribute; by default, inputs of type text will be created if this is omitted.
+            * @param {String} [args.val] The "value" attribute.
+            * @augments html.make
+            * @see html.button
+            * @see html.close
+            */
            input : function (args) {
                                    var checkDef = html.checkDef;
                                    return html.make({
@@ -186,6 +236,18 @@ var artistEditor,
                                                     close : true
                                                     });
            },
+           /**
+            * @description Used to create label elements.
+            * @example html.label({ cl: 'foo', id: 'bar' })
+            * @param {Object} args The attributes to be added to the &lt;label&gt; string being formed.
+            * @param {String} [args.cl] The "class" attribute.
+            * @param {String} [args.css] The "style" attribute.
+            * @param {String} [args.for] The "for" attribute.
+            * @param {String} [args.id] The "id" attribute.
+            * @param {String} [args.val] The string to use for the label's text.
+            * @augments html.make
+            * @see html.close
+            */
            label : function (args) {
                                    var checkDef = html.checkDef;
                                    return html.make({
@@ -199,6 +261,16 @@ var artistEditor,
                                           (typeof(args.val) !== 'undefined' ? args.val : '') +
                                           html.close('label');
            },
+           /**
+            * @description Used to create unpopulated select elements with a default "[ Select One ]" option.
+            * @example html.select({ cl: 'foo', id: 'bar' })
+            * @param {Object} args The attributes to be added to the &lt;select&gt; string being formed.
+            * @param {String} [args.cl] The "class" attribute.
+            * @param {String} [args.css] The "style" attribute.
+            * @param {String} [args.id] The "id" attribute.
+            * @augments html.make
+            * @see html.close
+            */
            select : function (args) {
                                     var checkDef = html.checkDef,
                                         close = html.close,
@@ -219,6 +291,16 @@ var artistEditor,
                                            close('option') +
                                            close('select');
            },
+           /**
+            * @description Used to create span elements.
+            * @example html.span({ cl: 'foo', id: 'bar' })
+            * @param {Object} args The attributes to be added to the &lt;label&gt; string being formed.
+            * @param {String} [args.cl] The "class" attribute.
+            * @param {String} [args.css] The "style" attribute.
+            * @param {String} [args.id] The "id" attribute.
+            * @augments html.make
+            * @see html.close
+            */
            span : function (args) {
                                   var checkDef = html.checkDef;
                                   return html.make({
@@ -226,7 +308,6 @@ var artistEditor,
                                                    cl    : checkDef(args.cl),
                                                    id    : checkDef(args.id),
                                                    css   : checkDef(args.css),
-                                                   val   : checkDef(args.val),
                                                    close : false
                                                    });
            }
@@ -262,87 +343,107 @@ var artistEditor,
                                              },
                        edit_width_with_AC  : "52",
                        editor_inputs       : 'input.artistName, input.artistCredit, input.joinPhrase',
-                       html_button_add     : function () {
-                                                         return html.button({ id: 'NewArtistButton', val: text.AddArtistShort });
-                                                         },
-                       html_button_done    : function () {
-                                                         return html.button({ id: 'ArtistDoneButton', val: text.Done });
-                                                         },
-                       html_button_remove  : function () {
-                                                         return html.div({ cl: 'removeArtist' }) +
-                                                                html.close('div');
-                                                         },
-                       html_input_joiner   : function () {
-                                                         return html.input({ cl: 'artistCredit' });
-                                                         },
-                       html_line_artist    : function () {
-                                                         var close = html.close,
-                                                             div   = html.div,
-                                                             input = html.input;
-                                                         return div({ cl : 'artistLine' }) +
-                                                                    artistEditor.html_button_remove +
-                                                                    div({ cl: 'artistResolvedName' }) +
-                                                                    close('div') +
-                                                                    input({ cl: 'artistName' }) +
-                                                                    artistEditor.html_input_joiner +
-                                                                    input({ cl: 'joinPhrase', css: 'visibility:hidden;' }) +
-                                                                close('div');
-                                                         },
-                       html_line_header    : function () {
-                                                         var close = html.close,
-                                                             div   = html.div,
-                                                             makeDiv = function (args, thisText) {
-                                                                           return div(args) + thisText + close('div');
-                                                             };
-                                                         return div({ cl: 'artistLine labelLine' }) +
-                                                                    makeDiv({ id: 'labelArtist' }, text.ArtistName) +
-                                                                    makeDiv({ id: 'labelCredit' }, text.ArtistCredit) +
-                                                                    makeDiv({ id: 'labelJoiner', css: 'width:8em;' }, text.ArtistJoiner) +
-                                                                close('div');
-                                                         },
-                       html_lookup_box     : function () {
-                                                         var oneSpace = ' ',
-                                                             basic    = html.basic,
-                                                             button   = html.button,
-                                                             close    = html.close,
-                                                             css      = html.css,
-                                                             div      = html.div,
-                                                             input    = html.input,
-                                                             span     = html.span,
-                                                             makeDivND = function (thisID, thisHTML) {
-                                                                    return html.divNoDisplay({ id: thisID }) + thisHTML + close('div');
-                                                             },
-                                                             makeSpan = function (args, thisHTML) {
-                                                                    return span(args) + thisHTML + close('span');
-                                                             };
-                                                         return div({ cl: 'center', id: 'lookupControls'}) +
-                                                                    button({ id: 'btnArtistSearch', ti: -1, val: text.SearchArtist }) +
-                                                                    makeDivND('lookupNoArtist', text.ArtistNameIsEmpty) +
-                                                                    makeDivND('lookupNoResults', text.ArtistLookupNoResults) +
-                                                                    makeDivND('lookupSearching', '<img src="/static/images/loading-small.gif"/> ' + text.ArtistLookupSearching) +
-                                                                close('div') +
-                                                                makeDivND('lookupInfo', makeSpan({}, text.ArtistLookupResults) +
-                                                                                        oneSpace + text.ArtistLookupMatches + oneSpace +
-                                                                                        makeSpan({ id: 'lookupMatches' }, '') +
-                                                                                        ', ' + text.ArtistLookupLoaded + oneSpace +
-                                                                                        makeSpan({ id: 'lookupLoaded' }, '') +
-                                                                                        ', ' + text.Results + oneSpace +
-                                                                                        makeSpan({ id: 'resultsStart' }, '') +
-                                                                                        ' &ndash; ' +
-                                                                                        makeSpan({ id: 'resultsEnd' }, '')
-                                                                ) +
-                                                                makeDivND('lookupResults', ' ') +
-                                                                makeDivND('lookupBottomControls', div({ id: 'lookupHasAC', css: css.floatLeft }) +
-                                                                                                      input({ id: 'hasAC', ti: -1, type: 'checkbox' }) +
-                                                                                                      oneSpace +
-                                                                                                      html.label({ 'for': 'hasAC', val: text.HasDiffArtistCredit }) +
-                                                                                                  close('div') +
-                                                                                                  div({ css: css.floatRight }) +
-                                                                                                      button({ id: 'btnArtistAdd', ti: -1, val: text.AddArtistNew }) +
-                                                                                                  close('div')
-                                                                ) +
-                                                                makeDivND('lookupAddNew', ' ');
-                                                         },
+                       html : {
+                              button : {
+                                       add: function () {
+                                                return html.button({ id: 'NewArtistButton', val: text.AddArtistShort });
+                                       },
+                                       done: function () {
+                                                 return html.button({ id: 'ArtistDoneButton', val: text.Done });
+                                       },
+                                       remove: function () {
+                                                   return html.div({ cl: 'removeArtist' }) + html.close('div');
+                                       },
+                              },
+                              input : {
+                                      joiner: function () {
+                                                  return html.input({ cl: 'artistCredit' });
+                                      },
+                              },
+                              row : {
+                                    artist: function () {
+                                                var close = html.close,
+                                                    div   = html.div,
+                                                    input = html.input;
+                                                return div({ cl : 'artistLine' }) +
+                                                           aeHTML.button.remove +
+                                                           div({ cl: 'artistResolvedName' }) + close('div') +
+                                                           input({ cl: 'artistName' }) +
+                                                           aeHTML.input.joiner +
+                                                           input({ cl: 'joinPhrase', css: 'visibility:hidden;' }) +
+                                                       close('div');
+                                    },
+                                    header: function () {
+                                                var close = html.close,
+                                                    div   = html.div,
+                                                    makeDiv = function (args, thisText) {
+                                                                  return div(args) + thisText + close('div');
+                                                    };
+                                                return div({ cl: 'artistLine labelLine' }) +
+                                                           makeDiv({ id: 'labelArtist' }, text.ArtistName) +
+                                                           makeDiv({ id: 'labelCredit' }, text.ArtistCredit) +
+                                                           makeDiv({ id: 'labelJoiner', css: 'width:8em;' }, text.ArtistJoiner) +
+                                                       close('div');
+                                    },
+                              },
+                              box : {
+                                    lookup: function () {
+                                                var oneSpace = ' ',
+                                                    basic              = html.basic,
+                                                    button             = html.button,
+                                                    close              = html.close,
+                                                    css                = html.css,
+                                                    displayInlineBlock,
+                                                    div                = html.div,
+                                                    input              = html.input,
+                                                    span               = html.span,
+                                                    addStyle           = MusicBrainz.addStyle,
+                                                    lookup             = 'lookup',
+                                                    AddNew             = 'AddNew',
+                                                    idaddNew           = '#addNew-',
+                                                    Results            = 'Results',
+                                                    Name               = 'Name',
+                                                    Controls           = 'Controls',
+                                                    makeDivND          = function (thisID, thisHTML) {
+                                                                             return html.divNoDisplay({ id: thisID }) + thisHTML + close('div');
+                                                    },
+                                                    makeSpan           = function (args, thisHTML) {
+                                                                             return span(args) + thisHTML + close('span');
+                                                    };
+                                                displayInlineBlock = css.displayIB;
+                                                addStyle('.label' + AddNew + '{font-weight:600;width:17%;' + displayInlineBlock + '}');
+                                                addStyle('#' + lookup + AddNew + ' div{padding-top:5px;width:100%;}');
+                                                addStyle('#' + lookup + AddNew + ' fieldset{border-width:0;margin-bottom:0;padding:0;' + displayInlineBlock + '}');
+                                                addStyle('#' + lookup + AddNew + ' .ui-watermark-label{top:4px;}');
+                                                addStyle(idaddNew + Name + ',' + idaddNew + Name + 'Sort,' + idaddNew + 'Comment{width:80%;}');
+                                                return div({ cl: 'center', id: lookup + Controls}) +
+                                                           button({ id: 'btnArtistSearch', ti: -1, val: text.SearchArtist }) +
+                                                           makeDivND(lookup + 'NoArtist', text.ArtistNameIsEmpty) +
+                                                           makeDivND(lookup + 'No' + Results, text.ArtistLookupNoResults) +
+                                                           makeDivND(lookup + 'Searching', '<img src="/static/images/loading-small.gif"/> ' + text.ArtistLookupSearching) +
+                                                       close('div') +
+                                                       makeDivND(lookup + 'Info', makeSpan({}, text.ArtistLookupResults) +
+                                                                                  oneSpace + text.ArtistLookupMatches + oneSpace +
+                                                                                  makeSpan({ id: lookup + 'Matches' }, '') +
+                                                                                  ', ' + text.ArtistLookupLoaded + oneSpace +
+                                                                                  makeSpan({ id: lookup + 'Loaded' }, '') +
+                                                                                  ', ' + text.Results + oneSpace +
+                                                                                  makeSpan({ id: Results + 'Start' }, '') +
+                                                                                  ' &ndash; ' +
+                                                                                  makeSpan({ id: Results + 'End' }, '')) +
+                                                       makeDivND(lookup + Results, ' ') +
+                                                       makeDivND(lookup + 'Bottom' + Controls, div({ id: lookup + 'HasAC', css: css.floatLeft }) +
+                                                                                                   input({ id: 'hasAC', ti: -1, type: 'checkbox' }) +
+                                                                                                   oneSpace +
+                                                                                                   html.label({ 'for': 'hasAC', val: text.HasDiffArtistCredit }) +
+                                                                                               close('div') +
+                                                                                               div({ css: css.floatRight }) +
+                                                                                                   button({ id: 'btnArtistAdd', ti: -1, val: text.AddArtistNew }) +
+                                                                                               close('div')) +
+                                                       makeDivND(lookup + AddNew, ' ');
+                                                },
+                              },
+                       },
                        lookupBox           : {
                                              after       : true,
                                              background  : '#f0f0f0',
@@ -403,12 +504,12 @@ var artistEditor,
                                                                  $.each($.map(data.results, function (result) {
                                                                      var close = html.close,
                                                                          div = html.div;
-                                                                         return  $(html.divNoDisplay({ cl: 'result' }) +
+                                                                         return $(html.divNoDisplay({ cl: 'result' }) +
                                                                                        div({ cl: 'artist' }) +
                                                                                            result.name +
                                                                                        close('div') +
-                                                                                       ((typeof(result.comment) !== "undefined") ? div({ cl: 'disambiguation' }) + result.comment + close('div') : '') +
-                                                                                   close('div'));
+                                                                                      ((typeof(result.comment) !== "undefined") ? div({ cl: 'disambiguation' }) + result.comment + close('div') : '') +
+                                                                                  close('div'));
                                                                  }), function (i) {
                                                                                   var thisResult = data.results[i];
                                                                                   $(this).data("artistInfo", {
@@ -434,8 +535,8 @@ var artistEditor,
                                                                                     .end()
                                                                                     .slice(0,10)
                                                                                     .show();
-                                                                 $("#resultsStart").text(1);
-                                                                 $("#resultsEnd").text((data.results.length > 9) ? 10 : data.results.length);
+                                                                 $("#ResultsStart").text(1);
+                                                                 $("#ResultsEnd").text((data.results.length > 9) ? 10 : data.results.length);
                                                                  if ($("#lookupResults").css("display") === "none") {
                                                                      $("#artistLookup").find("div:first")
                                                                                        .animate({ backgroundColor: "#fff"},{queue: false});
@@ -633,6 +734,16 @@ var artistEditor,
                                              init            : function () {
 // (window.console) ? console.time("initEvents") : '';
                                                                            var aeEvents = artistEditor.events;
+                                                                           /* Lock the HTML strings. */
+                                                                           aeHTML.button.add    = aeHTML.button.add();
+                                                                           aeHTML.button.done   = aeHTML.button.done();
+                                                                           aeHTML.button.remove = aeHTML.button.remove();
+                                                                           aeHTML.input.joiner  = aeHTML.input.joiner();
+                                                                           aeHTML.row.artist    = aeHTML.row.artist();
+                                                                           aeHTML.row.header    = aeHTML.row.header();
+                                                                           aeHTML.box.lookup    = aeHTML.box.lookup();
+                                                                           aeHTML.box.addNew    = MusicBrainz.html_addNew_Generic('artist');
+                                                                           /* Set the artist-related events. */
                                                                            aeEvents.makeEditor_One();
                                                                            aeEvents.eventEditor_Many();
                                                                            aeEvents.synchArtistInputs();
@@ -641,85 +752,161 @@ var artistEditor,
                                                                            aeEvents.initLookupBoxMany();
                                                                            aeEvents.synchACJPcolors();
                                                                            aeEvents.initRemoveAC();
+                                                                           /* Artist Lookup */
                                                                            aeEvents.initArtistLookup();
+                                                                           /* Artist Lookup -> Add New Artist */
+                                                                           aeEvents.HandleAddNewArtist();
+                                                                           aeEvents.CancelAddNewArtist();
 // (window.console) ? console.timeEnd("initEvents") : '';
                                                                            },
-                                             initArtistLookup: function () { /* Create initial artist lookup. */
-// (window.console) ? console.time("initArtistLookup") : '';
-                                                                           $("#btnArtistSearch").live("click", function () {
-                                                                               var $artistLookup = $("#artistLookup"),
-                                                                                   $artistInput  = $("#artistLookup").prev()
-                                                                                                                     .find("input.artistName, input.oneArtist")
-                                                                                                                     .val();
-                                                                               if ($artistInput.length === 0) {
-                                                                                   $("#btnArtistSearch").css("display", "none");
-                                                                                   $("#lookupNoArtist").css("display", "block");
-                                                                               } else {
-                                                                                   $("#btnArtistSearch").css("display", "none");
-                                                                                   $("#lookupControls").css({
-                                                                                                            textAlign : "left",
-                                                                                                            margin    : "0",
-                                                                                                            padding   : "0 2em 0"
-                                                                                                            });
-                                                                                   $("#lookupSearching").show();
-                                                                                   $artistLookup.find("> div:first")
-                                                                                                .css("width", "")
-                                                                                                .end()
-                                                                                                .animate({
-                                                                                                         width:"45em"
-                                                                                                         },
-                                                                                                         150,
-                                                                                                         'swing',
-                                                                                                         function () {
-                                                                                                                     $artistLookup.redrawShadow();
-                                                                                                                     $.ajax({
-                                                                                                                            async      : false,
-                                                                                                                            cache      : true,
-                                                                                                                            success    : artistEditor.processResults,
-                                                                                                                            data       : artistEditor.queryBase + escape($artistInput),
-                                                                                                                            dataType   : "json",
-                                                                                                                            type       : "GET",
-                                                                                                                            url        : artistEditor.searchServer
-                                                                                                                            });
-                                                                                                         });
+                                             /** Attaches a click event to the "add a new artist" button for artist lookup windows. **/
+                                             HandleAddNewArtist: function () {
+                                                 $("#btnArtistAdd").live("click", function (event) {
+// TODO: Expand this to cover labels.
+                                                     var $lookupAddNew = $("#lookupAddNew"),
+                                                         $artistLookup = $("#artistLookup"),
+                                                         $genderLabel,
+                                                         $addNewType,
+                                                         makeAutotabDate = MusicBrainz.makeAutotabDate,
+                                                         dateFieldsPrefix = 'addNew-Date-',
+                                                         dateFieldsPrefixS,
+                                                         dateFieldsPrefixE,
+                                                         hideGender = function () {
+                                                             $genderLabel.css("display", "none")
+                                                                         .prev()
+                                                                         .css("display", "none");
+                                                         };
+                                                     dateFieldsPrefixS = dateFieldsPrefix + 'Start-';
+                                                     dateFieldsPrefixE = dateFieldsPrefix + 'End-';
+                                                     $lookupAddNew.append(aeHTML.box.addNew);
+                                                     $("#addNew-Country").html($("#select-edit-release-country").html());
+                                                     $genderLabel = $("#addNew-Gender").addOption(mb.artistgenders, false);
+                                                     $addNewType = $("#addNew-Type").addOption(mb.artisttype, false);
+                                                     /* Hide the current results and the "add a new artist" button. */
+                                                     $("#btnArtistAdd, #lookupControls, #lookupInfo, #lookupResults").slideUp();
+                                                     $artistLookup.find("div:first").css("background-color", "#F9F9F9")
+                                                     hideGender();
+                                                     $lookupAddNew.slideDown();
+                                                     $("#lookupBottomControls").css("margin-top","");
+                                                     $artistLookup.redrawShadow();
+                                                     makeAutotabDate(dateFieldsPrefixS + 'Y', dateFieldsPrefixS + 'M', dateFieldsPrefixS + 'D');
+                                                     makeAutotabDate(dateFieldsPrefixE + 'Y', dateFieldsPrefixE + 'M', dateFieldsPrefixE + 'D');
+                                                     /* Based on the artist type, show or hide the gender field and set the date field label texts. */
+                                                     $("#addNew-Type").bind("change", function () {
+                                                         var $labelStart = $(dateFieldsPrefixS + 'label'),
+                                                             $labelEnd = $(dateFieldsPrefixE + 'label');
+                                                         switch ($addNewType.val()) {
+                                                             case "1":
+                                                                 $genderLabel.show()
+                                                                             .prev()
+                                                                             .show();
+                                                                 $labelStart.text(text.DateOfBirth);
+                                                                 $labelEnd.text(text.DateOfDeath);
+                                                                 break;
+                                                             case "2":
+                                                                 hideGender();
+                                                                 $labelStart.text(text.DateFounded);
+                                                                 $labelEnd.text(text.DateDissolved);
+                                                                 break;
+                                                             default:
+                                                                 hideGender();
+                                                                 $labelStart.text(text.DateStart);
+                                                                 $labelEnd.text(text.DateEnd);
+                                                         }
+                                                     });
+                                                 });
+                                             },
+                                             /** Handle a click on the 'cancel' button in an add artist window. **/
+                                             CancelAddNewArtist: function () {
+                                                 $("#CancelAdd").live("click", function (event) {
+                                                 // TODO: Expand this to cover labels.
+                                                     var $lookupAddNew = $("#lookupAddNew"),
+                                                         $artistLookup = $("#artistLookup");
+                                                     $lookupAddNew.slideUp()
+                                                     $artistLookup.find("div:first").css("background-color", "#FFF")
+                                                     $("#lookupBottomControls").css("margin-top","1em");
+                                                     $("#btnArtistAdd, #lookupControls, #lookupInfo, #lookupResults").slideDown();
+                                                     setTimeout(function () {
+                                                         $lookupAddNew.html(""); // Delayed until after the lookup is revealed, to avoid the slight lag effect this would otherwise cause.
+                                                         $artistLookup.redrawShadow(); // Delayed so the height of the lookup window can settle before we calculate using it.
+                                                     }, 250);
+                                                 });
+                                             },
+                                             /** Create initial artist lookup. **/
+                                             initArtistLookup: function () {
+                                                 $("#btnArtistSearch").live("click", function () {
+                                                     var $artistLookup = $("#artistLookup"),
+                                                         $artistInput;
+                                                     $artistInput  = $artistLookup.prev()
+                                                                                  .find('input.artistName, input.oneArtist')
+                                                                                  .val();
+                                                     $("#btnArtistSearch").css('display', "none");
+                                                     if ($artistInput.length === 0) {
+                                                         $('#lookupNoArtist').css('display', "block");
+                                                     } else {
+                                                         $('#lookupControls').css({
+                                                                                  textAlign : "left",
+                                                                                  margin    : "0",
+                                                                                  padding   : "0 2em 0"
+                                                                                  });
+                                                         $('#lookupSearching').show();
+                                                         $artistLookup.find("> div:first")
+                                                                      .css("width", '')
+                                                                      .end()
+                                                                      .animate({
+                                                                               width:"45em"
+                                                                               },
+                                                                               150,
+                                                                               'swing',
+                                                                               function () {
+                                                                                   $artistLookup.redrawShadow();
+                                                                                   $.ajax({
+                                                                                          async    : false,
+                                                                                          cache    : true,
+                                                                                          success  : artistEditor.processResults,
+                                                                                          data     : artistEditor.queryBase + escape($artistInput),
+                                                                                          dataType : "json",
+                                                                                          type     : "GET",
+                                                                                          url      : artistEditor.searchServer
+                                                                                          }
+                                                                                   );
                                                                                }
-                                                                           });
-// (window.console) ? console.timeEnd("initArtistLookup") : '';
-                                                                           },
-                                             initRemoveAC    : function () { /* Remove an AC field when a remove AC icon is clicked. */
-// (window.console) ? console.time("initRemoveAC") : '';
-                                                                           $(".removeAC").live("click", function (e) {
-                                                                               var $thisACremover = $(this),
-                                                                                   $thisEditor = $("#artistEditBox"),
-                                                                                   $thisArtistName,
-                                                                                   $artistLines;
-                                                                               $thisArtistName = $thisACremover.prev();
-                                                                               $artistLines = $thisEditor.find("> div:first > div:first");
-                                                                               $thisACremover.css("display","none") // Hide the AC toggle icon,
-                                                                                             .next() // get the associated AC input field,
-                                                                                             .css("display","none") // hide it,
-                                                                                             .val($thisArtistName.val()); // set the AC field value to the current artist name field's value,
-                                                                               $thisACremover.remove(); // and remove the AC toggle icon.
-                                                                               artistEditor.synchNextInput($thisArtistName, true); // Resync the textarea.
-                                                                               $thisArtistName.css("width", artistEditor.widthNameAndAC - parseFloat($(0.5).toPx(), 10) - 2 + "px") // Resize the artist name input.
-                                                                                              .prev() // Get the resolved artist text div,
-                                                                                              .css("width", artistEditor.widthNameAndAC + 2 + "px"); // and resize it as well.
-                                                                               if ($artistLines.find("input.artistCredit:visible").length === 0) { // If this was the last visible AC field,
-                                                                                   $artistLines.find("input.artistName") // get all artist name input fields,
-                                                                                               .css("width", "19em") // resize them to the initial "no-AC" width,
-                                                                                               .end()
-                                                                                               .find("div.artistResolvedName") // and all artist resolved name divs,
-                                                                                               .css("width", $thisArtistName.outerWidth() + 2 + "px"); // and resize them to the initial "no-AC" width.
-                                                                                   $("#labelCredit").css("display", "none"); // Hide the AC fields' column label.
-                                                                                   $thisEditor.css("width", "32em") // Re-shrink the artist editor,
-                                                                                                  .find("div:first") // get the inner div,
-                                                                                                  .css("width", parseInt($(32).toPx(), 10) - 16) // re-shrink it,
-                                                                                                  .end()
-                                                                                                  .redrawShadow(); // and fix the editor window's shadow for the new width.
-                                                                               }
-                                                                           });
-// (window.console) ? console.timeEnd("initRemoveAC") : '';
-                                                                           },
+                                                                      );
+                                                     }
+                                                 });
+                                             },
+                                             initRemoveAC: function () { /* Remove an AC field when a remove AC icon is clicked. */
+                                                 $(".removeAC").live("click", function (e) {
+                                                     var $thisACremover = $(this),
+                                                         $thisEditor = $("#artistEditBox"),
+                                                         $thisArtistName,
+                                                         $artistLines;
+                                                     $thisArtistName = $thisACremover.prev();
+                                                     $artistLines = $thisEditor.find("> div:first > div:first");
+                                                     $thisACremover.css("display","none") // Hide the AC toggle icon,
+                                                                   .next() // get the associated AC input field,
+                                                                   .css("display","none") // hide it,
+                                                                   .val($thisArtistName.val()); // set the AC field value to the current artist name field's value,
+                                                     $thisACremover.remove(); // and remove the AC toggle icon.
+                                                     artistEditor.synchNextInput($thisArtistName, true); // Resync the textarea.
+                                                     $thisArtistName.css("width", artistEditor.widthNameAndAC - parseFloat($(0.5).toPx(), 10) - 2 + "px") // Resize the artist name input.
+                                                                    .prev() // Get the resolved artist text div,
+                                                                    .css("width", artistEditor.widthNameAndAC + 2 + "px"); // and resize it as well.
+                                                     if ($artistLines.find("input.artistCredit:visible").length === 0) { // If this was the last visible AC field,
+                                                         $artistLines.find("input.artistName") // get all artist name input fields,
+                                                                     .css("width", "19em") // resize them to the initial "no-AC" width,
+                                                                     .end()
+                                                                     .find("div.artistResolvedName") // and all artist resolved name divs,
+                                                                     .css("width", $thisArtistName.outerWidth() + 2 + "px"); // and resize them to the initial "no-AC" width.
+                                                         $("#labelCredit").css("display", "none"); // Hide the AC fields' column label.
+                                                         $thisEditor.css("width", "32em") // Re-shrink the artist editor,
+                                                                        .find("div:first") // get the inner div,
+                                                                        .css("width", parseInt($(32).toPx(), 10) - 16) // re-shrink it,
+                                                                        .end()
+                                                                        .redrawShadow(); // and fix the editor window's shadow for the new width.
+                                                     }
+                                                 });
+                                             },
                                              synchArtistInputs  : function () { /* Keep the AC synched to the artist name, but only if the AC hasn't been modified independently. */
 // (window.console) ? console.time("synchArtistInputs") : '';
                                                                            $("input.artistName").live("keydown", function () {
@@ -750,11 +937,11 @@ var artistEditor,
                                                                                           .makeFloatingDiv(artistEditor.editor_window)
                                                                                           .find("div:first")
                                                                                           .append(div({}) + 
-                                                                                                      artistEditor.html_line_header +
+                                                                                                      aeHTML.row.header +
                                                                                                   html.close('div') +
                                                                                                   div({}) +
-                                                                                                      artistEditor.html_button_done +
-                                                                                                      artistEditor.html_button_add + 
+                                                                                                      aeHTML.button.done +
+                                                                                                      aeHTML.button.add + 
                                                                                                   html.close('div'))
                                                                                           .parent()
                                                                                           .parent()
@@ -766,11 +953,11 @@ var artistEditor,
                                                                                           .appendTo("#artistEditBox > div:first > div:first")
                                                                                           .wrap(html.div({ cl: 'artistLine' }))
                                                                                           .removeClass("oneArtist")
-                                                                                          .before(artistEditor.html_button_remove + html.div({ cl: 'artistResolvedName' }) + html.close('div'))
-                                                                                          .after(artistEditor.html_input_joiner + html.input({ cl: 'joinPhrase', val: '&' }))
+                                                                                          .before(aeHTML.button.remove + html.div({ cl: 'artistResolvedName' }) + html.close('div'))
+                                                                                          .after(aeHTML.input.joiner + html.input({ cl: 'joinPhrase', val: '&' }))
                                                                                           .addClass("artistName")
                                                                                           .parent()
-                                                                                          .after(artistEditor.html_line_artist)
+                                                                                          .after(aeHTML.row.artist)
                                                                                           .parents("td.trackartist")
                                                                                           .find("div:first")
                                                                                           .find("textarea")
@@ -813,7 +1000,7 @@ var artistEditor,
                                                                                        loops; 
                                                                                    for (i = 0, loops = artistData.length; i < loops; i++) {
                                                                                        dataHTML += html.div({ cl: 'artistLine' }) +
-                                                                                                       artistEditor.html_button_remove + 
+                                                                                                       aeHTML.button.remove + 
                                                                                                        html.div({ cl: 'artistResolvedName' }) + html.close('div') +
                                                                                                        html.input({ cl: 'artistName', val: artistData[i].name }) +
                                                                                                        html.input({ cl: 'artistCredit', val: artistData[i].credit }) +
@@ -825,11 +1012,11 @@ var artistEditor,
                                                                                                        .makeFloatingDiv(artistEditor.editor_window)
                                                                                                        .find("div:first")
                                                                                                        .append(html.div({}) + 
-                                                                                                                   artistEditor.html_line_header +
+                                                                                                                   aeHTML.row.header +
                                                                                                                html.close('div') +
                                                                                                                html.div({}) +
-                                                                                                                   artistEditor.html_button_done +
-                                                                                                                   artistEditor.html_button_add + 
+                                                                                                                   aeHTML.button.done +
+                                                                                                                   aeHTML.button.add + 
                                                                                                                html.close('div'))
     
                                                                                                        .find("div:first")
@@ -905,7 +1092,7 @@ var artistEditor,
                                                                                               .hide()
                                                                                               .find("div:first")
                                                                                               .attr("id","lookup")
-                                                                                              .append(artistEditor.html_lookup_box)
+                                                                                              .append(aeHTML.box.lookup)
                                                                                               .end()
                                                                                               .show();
                                                                                        $("#artistLookup").redrawShadow()
@@ -929,7 +1116,7 @@ var artistEditor,
                                                                                           .makeFloatingDiv(artistEditor.lookupBox)
                                                                                           .find("div:first")
                                                                                           .attr("id","lookup")
-                                                                                          .append(artistEditor.html_lookup_box);
+                                                                                          .append(aeHTML.box.lookup);
                                                                                    $("#artistLookup").redrawShadow()
                                                                                                      .data("linkedText", e.target);
                                                                                }
@@ -1150,7 +1337,7 @@ var artistEditor,
                                                              (!noDiv ? closeDiv : '');
                                                   },
                                                   date = function (whichDate) {
-                                                      var thisID = idBase + 'D-' + whichDate,
+                                                      var thisID = idBase + 'Date-' + whichDate,
                                                           makeInput = function (str, thisSize) {
                                                               return input({ id: thisID + '-' + str, size: thisSize });
                                                           };
@@ -1235,6 +1422,17 @@ var artistEditor,
             $("#" + element + "-dt").btOff();
 // (window.console) ? console.timeEnd("hideErrorForSidebar") : '';
         },
+
+        makeAutotabDate : function (fieldY, fieldM, fieldD) {
+            $('#' + fieldY).autotab({ target: fieldM, format: 'numeric',                   maxlength: '4' });
+            $('#' + fieldM).autotab({ target: fieldD, format: 'numeric', previous: fieldY, maxlength: '2' });
+            $('#' + fieldD).autotab({                 format: 'numeric', previous: fieldM, maxlength: '2' });
+            setTimeout(function () {
+                $('#' + fieldY).watermark({ placeholder: 'YYYY' });
+                $('#' + fieldM).watermark({ placeholder: 'MM' });
+                $('#' + fieldD).watermark({ placeholder: 'DD' });
+            }, 350);
+        },
     
         makeCountryList : function () {
 // (window.console) ? console.time("makeCountryList") : '';
@@ -1268,7 +1466,7 @@ var artistEditor,
                 processItem();
                 processItem();
             } while (--n); // n must be greater than 0 here
-            document.getElementById("select-edit-release-country").innerHTML = '<option value="">[ ' + text.Select + ' ]</option>' + optionArray.reverse().join(""); // Populate the select.
+            document.getElementById("select-edit-release-country").innerHTML = '<option value="">[ ' + text.SelectOne + ' ]</option>' + optionArray.reverse().join(""); // Populate the select.
             MusicBrainz.countrySelectArray = selectArray; // Store the country array for this select's later conversion.
 // (window.console) ? console.timeEnd("makeCountryList") : '';
         },
@@ -1511,7 +1709,7 @@ var artistEditor,
                 processItem();
                 processItem();
             } while (--n); // n must be greater than 0 here
-            select.html('<option value="">[ ' + text.Select + ' ]</option>' + optionArray.reverse().join("")) // Populate the select.
+            select.html('<option value="">[ ' + text.SelectOne + ' ]</option>' + optionArray.reverse().join("")) // Populate the select.
                   .val(selecteditem); // Re-select the selected item.
             if (typeof(initial) === "undefined") { // Don't initialize the select twice.  (We init this separately at page load, else the width would be wrong).
                 select.selectmenu('destroy');
@@ -1652,17 +1850,10 @@ var artistEditor,
                  }
     },
     artistEditor = MusicBrainz.artistEditor,
+    aeHTML = MusicBrainz.artistEditor.html,
     $cache = MusicBrainz.$cache;
 
 /* Lock the HTML strings. */
-artistEditor.html_button_add    = artistEditor.html_button_add();
-artistEditor.html_button_done   = artistEditor.html_button_done();
-artistEditor.html_button_remove = artistEditor.html_button_remove();
-artistEditor.html_input_joiner  = artistEditor.html_input_joiner();
-artistEditor.html_line_artist   = artistEditor.html_line_artist();
-artistEditor.html_line_header   = artistEditor.html_line_header();
-artistEditor.html_lookup_box    = artistEditor.html_lookup_box();
-artistEditor.html_addNew        = MusicBrainz.html_addNew_Generic('artist');
 MusicBrainz.html_addNew_Label   = MusicBrainz.html_addNew_Generic('label');
 
 // (window.console) ? console.timeEnd("Main: libraries") : '';
@@ -1887,9 +2078,7 @@ if (window.console) {
     });
 
     /* Set up autotabbing and limit input to \d only for date and barcode fields. */
-    $('#edit-release-date-y').autotab({ target: 'edit-release-date-m', format: 'numeric',                                  maxlength: '4' });
-    $('#edit-release-date-m').autotab({ target: 'edit-release-date-d', format: 'numeric', previous: 'edit-release-date-y', maxlength: '2' });
-    $('#edit-release-date-d').autotab({                                format: 'numeric', previous: 'edit-release-date-m', maxlength: '2' });
+    MusicBrainz.makeAutotabDate('edit-release-date-y', 'edit-release-date-m', 'edit-release-date-d');
     $("input[id$='edit-release-barcode']").attr("maxlength", 15) // EAN13 + EAN2, 15 digit maximum length
                                           .autotab({format: 'numeric'});
 
@@ -2012,7 +2201,7 @@ artistEditor.events.init();
                            .css("visibility","visible")
                            .parent()
                            .parent()
-                           .append(artistEditor.html_line_artist) // Add the new artist line
+                           .append(aeHTML.row.artist) // Add the new artist line
                            .parent()
                            .parent()
                            .redrawShadow();
@@ -2163,70 +2352,7 @@ if (window.console) {
     console.timeEnd("Main: initDOMr");
 }
 
-/**
- * Attaches a click event to the "add a new artist" button for artist lookup windows.
- */
-$("#btnArtistAdd").live("click", function (event) {
-// TODO: Expand this to cover labels.
-    var $lookupAddNew = $("#lookupAddNew"),
-        $artistLookup = $("#artistLookup"),
-        $genderLabel,
-        $addNewType,
-        hideGender = function () {
-                                 $genderLabel.css("display", "none")
-                                             .prev()
-                                             .css("display", "none");
-                                 };
-    $lookupAddNew.append(artistEditor.html_addNew);
-    $("#addNew-Country").html($("#select-edit-release-country").html());
-    $genderLabel = $("#addNew-Gender").addOption(mb.artistgenders, false);
-    $addNewType = $("#addNew-Type").addOption(mb.artisttype, false);
-    $("#btnArtistAdd, #lookupControls, #lookupInfo, #lookupResults").slideUp(); // Hide the current results and the "add a new artist" button.
-    $artistLookup.find("div:first").css("background-color", "#F9F9F9")
-    hideGender();
-    $lookupAddNew.slideDown();
-    $("#lookupBottomControls").css("margin-top","");
-    $artistLookup.redrawShadow();
-    $("#addNew-Type").bind("change", function () {
-                                                     var $labelStart = $("#addNew-D-Start-label"),
-                                                         $labelEnd = $("#addNew-D-End-label");
-                                                     switch ($addNewType.val()) {
-                                                         case "1":
-                                                                 $genderLabel.show()
-                                                                             .prev()
-                                                                             .show();
-                                                                 $labelStart.text(text.DateOfBirth);
-                                                                 $labelEnd.text(text.DateOfDeath);
-                                                             break;
-                                                         case "2":
-                                                                 hideGender();
-                                                                 $labelStart.text(text.DateFounded);
-                                                                 $labelEnd.text(text.DateDissolved);
-                                                             break;
-                                                         default:
-                                                                 hideGender();
-                                                                 $labelStart.text(text.DateStart);
-                                                                 $labelEnd.text(text.DateEnd);
-                                                     }
-                                                 }
-                     );
-});
 
-/**
- * Handle a click on the 'cancel' button in an add artist window.
- */
-$("#CancelAdd").live("click", function (event) {
-// TODO: Expand this to cover labels.
-    var $lookupAddNew = $("#lookupAddNew");
-    $lookupAddNew.slideUp()
-    $("#artistLookup").find("div:first").css("background-color", "#FFF")
-    $("#lookupBottomControls").css("margin-top","1em");
-    $("#btnArtistAdd, #lookupControls, #lookupInfo, #lookupResults").slideDown();
-    setTimeout(function () {
-                           $lookupAddNew.html(""); // Delayed until after the lookup is revealed, to avoid the slight lag effect this would otherwise cause.
-                           $("#artistLookup").redrawShadow(); // Delayed so the height of the lookup window can settle before we calculate using it.
-                           }, 250);
-});
 
 });
 
