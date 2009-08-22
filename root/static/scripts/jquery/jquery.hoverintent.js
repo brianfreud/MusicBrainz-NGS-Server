@@ -89,6 +89,8 @@
             var p = (e.type == "mouseover" ? e.fromElement : e.toElement) || e.relatedTarget;
             while (p && p != this) {
                 try {
+console.log(p)
+console.log(p.parentNode)
                     p = p.parentNode;
                 } catch(e) {
                     p = this;

@@ -1381,6 +1381,7 @@ jQuery.bt = {
    * for each selected item
    */
     jQuery.fn.btOn = function () {
+console.log(this);
         return this.each(function (index) {
             if (jQuery.isFunction(this.btOn)) {
                 this.btOn();
