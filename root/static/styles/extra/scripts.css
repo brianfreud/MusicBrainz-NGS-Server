@@ -646,14 +646,37 @@ div.result div.disambiguation {
  padding: 1px 0 0 1em;
 }
 
-/* Remove track */
+/* Remove medium and remove track */
 
-.removeTrack {
+.removeTrack,
+.removeMedium {
  cursor:pointer;
  height: 16px;
  width: 16px;
  float: left;
  top: 2px;
+}
+
+/* Removed medium storage table */
+
+#removedMediums {
+ margin-top: 0;
+}
+
+#removedMediums th {
+ opacity: 0.6;
+ filter: Alpha(Opacity=60);
+ -moz-opacity:0.6;
+ -khtml-opacity: 0.6;
+}
+
+#removedMediums td.toolbox {
+ padding: 0 0 0 1em;
+}
+
+#mediumStorage td,
+#removedMediums th {
+ padding: 0;
 }
 
 /* Track position mover */
@@ -662,7 +685,7 @@ div.result div.disambiguation {
  background-color: #FFBA58!important;
 }
 
-#removedTracks tr {
+#removedEntities tr {
  background-color: #E9A!important;
 }
 
@@ -733,7 +756,8 @@ div.result div.disambiguation {
 .handleIcon,
 .removeAC,
 .removeArtist,
-.removeTrack {
+.removeTrack,
+.removeMedium {
  background: transparent url(/static/images/icon/editor.png) no-repeat;
 }
 
@@ -749,7 +773,8 @@ div.result div.disambiguation {
 .closeButton,
 .removeArtist,
 .removeAC,
-.removeTrack { 
+.removeTrack,
+.removeMedium { 
  background-position: 0 -198px;
 }
 
@@ -757,7 +782,8 @@ div.result div.disambiguation {
 .closeButton:hover,
 .removeAC:hover,
 tr .removeArtist:hover,
-tr .removeTrack:hover {
+tr .removeTrack:hover,
+tr .removeMedium:hover {
  background-position: 0 -264px;
 }
 

@@ -154,11 +154,10 @@ var artistEditor,
 	    * @description Used to create div elements.
 	    * @example html.div({ cl: 'foo', id: 'bar' })
 	    * @param {Object} args The attributes to be added to the &lt;div&gt; string being formed.
-	    * @param {String} [args.alt] The "alt" attribute.
+	    * @param {String} [args.alt] The "alt" and "title" attributes.
 	    * @param {String} [args.cl] The "class" attribute.
 	    * @param {String} [args.css] The "style" attribute.
 	    * @param {String} [args.id] The "id" attribute.
-	    * @param {String} [args.title] The "title" attribute.
 	    * @augments html.make
 	    * @see html.close
 	    * @see html.divNoDisplay
@@ -171,7 +170,7 @@ var artistEditor,
 	                                          cl    : checkDef(args.cl),
 	                                          css   : checkDef(args.css),
 	                                          id    : checkDef(args.id),
-	                                          title : checkDef(args.title),
+	                                          title : checkDef(args.alt),
 	                                          close : false
 	                                          });
 	   },
@@ -1561,7 +1560,7 @@ var artistEditor,
 // (window.console) ? console.time("addArtistEditorButton") : '';
 	    context.find(".oneArtist")
 	           .parent()
-	           .after(html.div({ alt: text.AddArtist, cl: 'addArtist', title: text.AddArtist }) + html.close('div'));
+	           .after(html.div({ alt: text.AddArtist, cl: 'addArtist' }) + html.close('div'));
 // (window.console) ? console.timeEnd("addArtistEditorButton") : '';
 	    return context;
 	},
@@ -1640,8 +1639,16 @@ var artistEditor,
     
 	addTrackTools : function (context) {
 // (window.console) ? console.time("addTrackTools") : '';
-	    context.find("td.toolbox").append(html.div({ alt: text.RemoveTrack, cl: 'removeTrack', title: text.RemoveTrack }) + html.close('div') +
-	                                      html.div({ alt: text.DragTrack, cl: 'handleIcon', title: text.DragTrack }) + html.close('div'));
+	    context.find("td.toolbox").append(html.div({ alt: text.RemoveTrack, cl: 'removeTrack' }) + html.close('div') +
+	                                      html.div({ alt: text.DragTrack, cl: 'handleIcon' }) + html.close('div'));
+// (window.console) ? console.timeEnd("addTrackTools") : '';
+	    return context;
+	},
+
+	addMediumTools : function (context) {
+// (window.console) ? console.time("addTrackTools") : '';
+	    context.find("tbody > tr > th.toolbox").append(html.div({ alt: text.RemoveMedium, cl: 'removeMedium' }) + html.close('div') +
+	                                                   html.div({ alt: text.DragMedium, cl: 'handleIcon' }) + html.close('div'));
 // (window.console) ? console.timeEnd("addTrackTools") : '';
 	    return context;
 	},
@@ -2316,6 +2323,9 @@ if (window.console) {
     /* Add the track movement and removal icons. */
     MusicBrainz.addTrackTools($cache.$releaseTable);
 
+    /* Add the medium movement, removal, and track addition icons. */
+    MusicBrainz.addMediumTools($cache.$releaseTable);
+
     /* Add functionality to the show/hide controls for the toolbox column */
     $("#toolsHead").click(function () {
 	MusicBrainz.clearStatus();
@@ -2398,12 +2408,12 @@ if (window.console) {
 	                               onDrop: function (table, movedRow) {
 	                                                                   MusicBrainz.stripeTracks();
 //                                            MusicBrainz.updatePositionFields();
-	                                                                   if (!$(movedRow).parents("#removedTracks").length) { // If the track was not dropped within Removed Tracks,
+	                                                                   if (!$(movedRow).parents("#removedEntities").length) { // If the track was not dropped within Removed Tracks,
 	                                                                       $(movedRow).children("td:first")
 	                                                                                  .children(".removeTrack")
 	                                                                                 .show(); // then re-show the remove track icon.
-	                                                                       if ($("#removedTracks > tr").length <= 1) { // If Removed Tracks now has no tracks in it,
-	                                                                           $("#removedTracks").css("visibility","collapse"); // re-hide Remove Tracks.
+	                                                                       if ($("#removedEntities > tr").length <= 1) { // If Removed Tracks now has no tracks in it,
+	                                                                           $("#removedEntities").css("visibility","collapse"); // re-hide Remove Tracks.
 	                                                                       }
 	                                                                   }
 	                                                                   MusicBrainz.updateMediumTotalDuration();
@@ -2412,14 +2422,26 @@ if (window.console) {
 
     /* Attach functionality to the the track removal icons. */
     $(".removeTrack").live("click", function () {  // If the remove track icon is clicked, move the track to the Removed Tracks tfoot.
-	$("#removedTracks").append($(this).parents("tr:first")
-	                                  .removeClass("ev") // Unstripe the track.
+	$("#removedEntities").append($(this).parents("tr:first")
+	                                    .removeClass("ev") // Unstripe the track.
 	                   );
-	$("#removedTracks").css("visibility","visible"); // Make sure that Removed Tracks is visible.
-	$("#removedTracks tr .removeTrack").css("display","none"); // Hide the removed track's remove track icon.
+	$("#removedEntities").css("visibility","visible"); // Make sure that the removed entity storage area is visible.
+        $("#mediumStorage").next()
+                           .show(); // Show the row label for the removed track storage area.
+	$(this).parents("tr:first").find(".removeTrack").css("display","none"); // Hide the removed track's remove track icon.
 	MusicBrainz.stripeTracks();
 //        MusicBrainz.updatePositionFields();
 	MusicBrainz.updateMediumTotalDuration();
+    });
+
+    /* Attach functionality to the the medium removal icons. */
+    $(".removeMedium").live("click", function () {  // If the remove track icon is clicked, move the track to the Removed Tracks tfoot.
+	$("#removedMediums").append($(this).parents("tbody:first"));
+	$("#removedEntities").css("visibility","visible"); // Make sure that the removed entity storage area is visible.
+        $("#mediumStorage").show() // Show the removed medium storage area.
+                           .prev()
+                           .show(); // Show the row label for the removed medium storage area.
+	$("#removedEntities tr .removeMedium").css("display","none"); // Hide the removed medium's remove medium icon.
     });
 
     /* Set up autotabbing and limit input to \d only for date and barcode fields. */

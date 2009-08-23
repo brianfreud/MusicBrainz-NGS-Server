@@ -56,9 +56,20 @@
             </tr>
         </thead>
         [%- IF edit -%]
-            <tfoot id="removedTracks" style="visibility:collapse">
-            [%#- We have to use visibility, due to a Firefox table order rendering bug when changing the css display setting on a tfoot. -%]
-                <tr class="subh[%- IF edit -%] nodrop nodrag[%- END -%]">
+            <tfoot id="removedEntities" style="visibility:collapse">
+            [%#- We have to use visibility, not display, due to a Firefox table order rendering bug when changing the css display setting on a tfoot. -%]
+                <tr class="subh nodrop nodrag hidden">
+                    <td class="hidden">&nbsp;</td><td colspan="5">
+                            [%- l("Removed Mediums") -%]
+                    </td>
+                </tr>
+                <tr id="mediumStorage" class="nodrop nodrag hidden">
+                    <td colspan="5">
+                        <table id="removedMediums">
+                        </table>
+                    </td>
+                </tr>
+                <tr class="subh nodrop nodrag hidden">
                     <td class="hidden">&nbsp;</td><td colspan="5">
                             [%- l("Removed Tracks") -%]
                     </td>
@@ -66,6 +77,8 @@
             </tfoot>
         [%- END -%]
         [%- FOR medium=release.mediums -%]
+            [%- mediumString = PROCESS 'medium/medium.tt' mediumNumber=loop.count; trim_extra_space(mediumString) -%]
+            [%- mediumString = PROCESS 'medium/medium.tt' mediumNumber=loop.count; trim_extra_space(mediumString) -%]
             [%- mediumString = PROCESS 'medium/medium.tt' mediumNumber=loop.count; trim_extra_space(mediumString) -%]
         [%- END -%]
     </table>
