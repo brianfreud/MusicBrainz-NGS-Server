@@ -11,6 +11,13 @@ if (window.console) {
 }
 
 /**
+ * @description A simple addition to the Date object, to return the number of days in a given month for a given year.
+ */
+Date.prototype.daysInMonth = function () {
+   return new Date(this.getFullYear(), this.getMonth()+1, 0).getDate();
+}
+
+/**
  * @description Map IE functions to W3C DOM level 2 Style functions.
  */
 if (document.styleSheets[0].rules) {
@@ -329,6 +336,7 @@ var artistEditor,
 
 	artistEditor : {
 	               currentTrack        : "",
+                       lookupResults       : [],
 	               add_window          : {
 	                                     background  : "#F9F9F9",
 	                                     borderColor : "#666",
@@ -479,6 +487,7 @@ var artistEditor,
 	                                                 },
 	               destroyLookup       : function () {
 // (window.console) ? console.time("destroyLookup") : '';
+                                                         artistEditor.lookupResults.length = 0;
 	                                                 artistEditor.currentTrack = "";
 	                                                 artistEditor.destroyGeneric("#artistLookup");
 // (window.console) ? console.timeEnd("destroyLookup") : '';
@@ -497,6 +506,7 @@ var artistEditor,
 	                                                 },
 	               processResults      : function (data) {
 // (window.console) ? console.time("processResults") : '';
+                                                             var lookupResults = artistEditor.lookupResults;
 	                                                     artistEditor.currentTrack = ""; // Clear the current track store, so a new lookup can be done
 	                                                     $("#lookupSearching").css("display","none"); // (for new text, etc) on that same artist field.
 	                                                     $("#artistLookup").bind("outerClick", artistEditor.destroyLookup);
@@ -507,6 +517,7 @@ var artistEditor,
 	                                                         $.each($.map(data.results, function (result) {
 	                                                             var close = html.close,
 	                                                                 div = html.div;
+                                                                         lookupResults.push(result.name);
 	                                                                 return $(html.divNoDisplay({ cl: 'result' }) +
 	                                                                               div({ cl: 'artist' }) +
 	                                                                                   result.name +
@@ -783,6 +794,8 @@ var artistEditor,
 	                                             dateFieldsPrefixE = dateFieldsPrefix + 'End-';
 	                                             $lookupAddNew.append(aeHTML.box.addNew);
 	                                             $("#addNew-Country").html($("#select-edit-release-country").html());
+                                                     $('#addNew-Name').val($("#artistLookup").data("searchName"));
+                                                     $('#addNew-NameSort').val($("#artistLookup").data("searchName"));
 	                                             $genderLabel = $("#addNew-Gender").addOption(mb.artistgenders, false);
 	                                             $addNewType = $("#addNew-Type").addOption(mb.artisttype, false);
 	                                             /* Hide the current results and the "add a new artist" button. */
@@ -810,11 +823,13 @@ var artistEditor,
 	                                                         $labelEnd.text(text.DateOfDeath);
 	                                                         break;
 	                                                     case "2":
+                                                                 $("#addNew-Gender").val("");
 	                                                         hideGender();
 	                                                         $labelStart.text(text.DateFounded);
 	                                                         $labelEnd.text(text.DateDissolved);
 	                                                         break;
 	                                                     default:
+                                                                 $("#addNew-Gender").val("");
 	                                                         hideGender();
 	                                                         $labelStart.text(text.DateStart);
 	                                                         $labelEnd.text(text.DateEnd);
@@ -863,6 +878,7 @@ var artistEditor,
 	                                                 $artistLookup.find("> div:first")
 	                                                              .css("width", '')
 	                                                              .end()
+                                                                      .data("searchName", $artistInput)
 	                                                              .animate({
 	                                                                       width:"45em"
 	                                                                       },
@@ -1799,7 +1815,89 @@ var artistEditor,
 	                                           });
 // (window.console) ? console.timeEnd("updatePositionFields") : '';
 	},
-    
+
+        validation : {
+            getToday : function () {
+                var today = new Date();
+                return {
+                       day   : today.getDate(),
+                       month : today.getMonth() + 1,
+                       year  : today.getYear() + 1900
+                       };
+            },
+            isValidDate : function (what) {
+                var test = function (varA, varB) {
+                        return (varA.value === "" && varB.value !== "" ? false : true);
+                    }
+                    colonSpace = ': ';
+                if (what === "day") {
+                    return function (what) {
+                        if (what === "year") {
+                            return function (year, day) {
+                                return (test(year, day) ? true : day.label + colonSpace + text.NoYear);
+                            }
+                        } else if (what === "month") {
+                            return function (month, day) {
+                                return (test(month, day) ? true : day.label + colonSpace + text.NoMonth);
+                            }
+                        }
+                    };
+                } else if (what === "month") {
+                    return function (year, month) {
+                        return (test(year, month) ? true : month.label + colonSpace + text.NoYear);
+                    };
+                }
+                return true;
+            },
+            isLaterDate : function (dateA, dateB) {
+                var colonSpace = ': ',
+                    test = function (varA, varB) {
+                        if (varA !== "" && varB !== "") { // Make sure we have two valid strings to use.
+                            return (parseInt(varA, 10) <= parseInt(varB, 10));
+                        } else {
+                            return true; // Either one or both are empty, so no comparison is possible.
+                        }
+                    };
+                if (dateA.year !== "" && dateB.year !== "") { // Do we have two valid dates to work with?
+                    return function (what) {
+                        switch (what) {
+                            case "year":
+                                return test(dateA.year, dateB.year); // Catch start: 2001 vs end: 2000
+                            case "month":
+                                if (dateA.year < dateB.year) {
+                                    return true; // Catch case that would false negative on start: 2000-03 end: 2001-02
+                                }
+                                return test(dateA.month, dateB.month); // Catch start: 2000-02 vs end: 2000-01
+                            case "day":
+                                if (dateA.year < dateB.year) {
+                                    return true; // Catch month case that would false negative on start: 2000-03-01 end: 2001-02-01
+                                }
+                                if (dateA.month < dateB.month) { // All years now are true for dateA.year >= dateB.year
+                                    return true; // Catch day case that would false negative on start: 2000-01-01 end: 2001-02-02
+                                }
+                                return test(dateA.day, dateB.day);
+                            default:
+                                return true; // Should never happen.
+                        }
+                    }
+                } else {
+                    return function () {
+                        return true; // Either both dates are empty, or only one date was provided, so no comparison can be done.
+                    }
+                }
+            },
+            isValidDay : function (year, month, day) {
+                var getDaysInMonth = function () {
+                    var date = new Date(year, (month - 1), day);
+                    return date.daysInMonth();
+                };
+                return (day > 0 && day < getDaysInMonth() || day === "") ? true : false;
+            },
+            isValidMonth : function (month) {
+                return ((month > 0 && month < 13) || month === ""); // Month is empty, or is a number between 1 and 12.
+            }
+        },
+
 	events : {
 	         addArtistCopiers : function () {
 // (window.console) ? console.time("addArtistCopiers") : '';
@@ -2384,12 +2482,20 @@ if (window.console) {
         datePrefix = 'Date-',
         sDate,
         eDate,
+        sDateObj,
+        eDateObj,
+        tDateObj,
         colonSpace = ": ",
         reused,
         YearText,
         MonthText,
         DayText,
         i,
+        validation = MusicBrainz.validation,
+        isLaterDate,
+        isValidDate,
+        isValidDay,
+        isValidMonth,
         ChronologicalDates = text.ChronologicalDates,
         CannotBeFuture = text.CannotBeFuture,
         validated = 0,
@@ -2398,40 +2504,42 @@ if (window.console) {
                       return element.val();
         },
         validate = function ($elementToFlag, passesRule, message, i) {
-                      if (passesRule) {
+                      if (passesRule === true) {
                           return true;
                       } else {
                           $elementToFlag.css("background-color","#FFB")
-                                        .click(function () {
-                                                           $("#errorList li").css({
-                                                                                  fontWeight : 500,
-                                                                                  color      : '#000'
-                                                                                  });
-                                                           $("#error" + i).css({
-                                                                               fontWeight : 900,
-                                                                               color      : 'red'
-                                                                               });
-                                                           });
-                          $('#errorList').append('<li id="error' + i + '">' + message + '</li>');
+                                        .bind("click", function () {
+                                                                   $(".error" + i).css({
+                                                                                       fontWeight : 900,
+                                                                                       color      : 'red'
+                                                                                       });
+                                                                   })
+                                        .bind("blur", function () {
+                                                                  $("#errorList li").css({
+                                                                                         fontWeight : 500,
+                                                                                         color      : '#000'
+                                                                                         })
+                                                                   });
+                          $('#errorList').append('<li class="error' + i + '">' +
+                                                     (passesRule === false ? message : passesRule) +  // Allow the rule's test to define the message.
+                                                 '</li>');
                           return false;
                       }
         },
-        getToday = function (returnWhat) {
-            var today = new Date();
-            switch (returnWhat) {
-                case "year":
-                    return today.getYear() + 1900;
-                case "month":
-                    return today.getMonth() + 1;
-                case "day":
-                    return today.getDate();
-                default:
-            }
+        commentRequiredButMissing = function () {
+            var commentRequired = function () {
+                return ($.inArray(artistEditor.lookupResults, reused.name.value) > -1);
+            };
+            return (commentRequired() && artist.comment.value === "");
         };
         $("#addErrors").css("display", "none");
         $("#errorList").html(""); // Clear any errors that may be left over from an earlier creation attempt.
         $("#addNewFields input[type=text]").css("background-color", "#FFF")
                                            .unbind("click");
+        isLaterDate = validation.isLaterDate;
+        isValidDate = validation.isValidDate;
+        isValidDay = validation.isValidDay;
+        isValidMonth = validation.isValidMonth;
         YearText = colonSpace + text.DateYear;
         MonthText = colonSpace + text.DateMonth;
         DayText = colonSpace + text.DateDay;
@@ -2528,81 +2636,47 @@ if (window.console) {
     /* */    artist.type.value = getVal(artist.type.element);
         /* Define the validation rules for a new artist. */
         reused = artist.name;
+        /* Create basic date objects to avoid creating them over and over. */
+        sDateObj = {
+                   day   : sDate.day.value,
+                   month : sDate.month.value,
+                   year  : sDate.year.value
+                   };
+        eDateObj = {
+                   day   : eDate.day.value,
+                   month : eDate.month.value,
+                   year  : eDate.year.value
+                   };
+        tDateObj = MusicBrainz.validation.getToday();
         /* Artist name and sort name. */
         rules = [
                 [reused.name.element, reused.name.value !== "", reused.name.label + colonSpace + text.CannotBeEmpty], // Artist name cannot be empty.
-                [reused.sort.element, reused.sort.value !== "", reused.sort.label + colonSpace + text.CannotBeEmpty] // Sort name cannot be empty.
+                [reused.sort.element, reused.sort.value !== "", reused.sort.label + colonSpace + text.CannotBeEmpty], // Sort name cannot be empty.
+                [sDate.month.element, isValidMonth(sDate.month.value), sDate.month.label + colonSpace + text.NoSuchMonth], // Start month is valid
+                [sDate.day.element, isValidDay(sDate.year.value, sDate.month.value, sDate.day.value), sDate.day.label + colonSpace + text.NoSuchDay], // Start day is valid
+                [eDate.month.element, isValidMonth(eDate.month.value), eDate.month.label + colonSpace + text.NoSuchMonth], // End month is valid
+                [eDate.day.element, isValidDay(eDate.year.value, eDate.month.value, eDate.day.value), eDate.day.label + colonSpace + text.NoSuchDay], // End day is valid
+                [sDate.month.element, isValidDate("month")(sDate.year, sDate.month)], // Valid start date.
+                [sDate.day.element, isValidDate("day")("month")(sDate.month, sDate.day)], // Valid start date.
+                [sDate.day.element, isValidDate("day")("year")(sDate.year, sDate.day)], // Valid start date.
+                [eDate.month.element, isValidDate("month")(eDate.year, eDate.month)], // Valid end date.
+                [eDate.day.element, isValidDate("day")("month")(eDate.month, eDate.day)], // Valid end date.
+                [eDate.day.element, isValidDate("day")("year")(eDate.year, eDate.day)], // Valid end date.
+                [eDate.year.element, isLaterDate(sDateObj, eDateObj)("year"), eDate.year.label + colonSpace + ChronologicalDates], // End date comes after the start date.
+                [eDate.month.element, isLaterDate(sDateObj, eDateObj)("month"), eDate.month.label + colonSpace + ChronologicalDates], // End date comes after the start date.
+                [eDate.day.element, isLaterDate(sDateObj, eDateObj)("day"), eDate.day.label + colonSpace + ChronologicalDates], // End date comes after the start date.
+                [sDate.year.element, isLaterDate(sDateObj, tDateObj)("year"), sDate.year.label + colonSpace + CannotBeFuture], // Start date comes after today.
+                [sDate.month.element, isLaterDate(sDateObj, tDateObj)("month"), sDate.month.label + colonSpace + CannotBeFuture], // Start date comes after today.
+                [sDate.day.element, isLaterDate(sDateObj, tDateObj)("day"), sDate.day.label + colonSpace + CannotBeFuture], // Start date comes after today.
+                [eDate.year.element, isLaterDate(eDateObj, tDateObj)("year"), eDate.year.label + colonSpace + CannotBeFuture], // End date comes after today.
+                [eDate.month.element, isLaterDate(eDateObj, tDateObj)("month"), eDate.month.label + colonSpace + CannotBeFuture], // End date comes after today.
+                [eDate.day.element, isLaterDate(eDateObj, tDateObj)("day"), eDate.day.label + colonSpace + CannotBeFuture], // End date comes after today.
+                [artist.comment.element, commentRequiredButMissing(), text.CommentIsRequired]
                 ];
-        /* Valid start date. */
-        if (sDate.year.value === "") {
-            if (sDate.month.value !== "") { // Start date: ????-xx-?? and ????-xx-xx
-                rules.push([sDate.month.element, false, "1" + sDate.month.label + colonSpace + text.NoYear]);
-            }
-            if (sDate.day.value !== "") { // Start date: ????-??-xx, xxxx-??-xx, and ????-xx-xx
-                rules.push([sDate.day.element, false, "2" + sDate.day.label + colonSpace + text.NoYear]);
-            }
-        } else {
-            if (sDate.month.value === "") { // Start date: xxxx-??-xx or xxxx-??-??
-                rules.push([sDate.day.element, sDate.day.value === "", "3" + sDate.day.label + colonSpace + text.NoMonth]);
-            }
-        }
-        /* Valid end date. */
-        if (eDate.year.value === "") {
-            if (eDate.month.value !== "") { // Start date: ????-xx-?? and ????-xx-xx
-                rules.push([eDate.month.element, false, "4" + eDate.month.label + colonSpace + text.NoYear]);
-            }
-            if (eDate.day.value !== "") { // Start date: ????-??-xx, xxxx-??-xx, and ????-xx-xx
-                rules.push([eDate.day.element, false, "5" + eDate.day.label + colonSpace + text.NoYear]);
-            }
-        } else {
-            if (eDate.month.value === "") { // Start date: xxxx-??-xx or xxxx-??-??
-                rules.push([eDate.day.element, eDate.day.value === "", "6" + eDate.day.label + colonSpace + text.NoMonth]);
-            }
-        }
-        /* End date comes after the start date. */
-        if (eDate.year.value !== "") { // There is an end date to test against.
-            if (parseInt(eDate.year.value, 10) < parseInt(sDate.year.value, 10)) { // Start: 2000-xx-xx !< End: 1999-xx-xx
-                rules.push([eDate.year.element, false, eDate.year.label + colonSpace + ChronologicalDates]);
-            } else if (parseInt(eDate.year.value, 10) === parseInt(sDate.year.value, 10)) { // Start and end dates are the same year.
-                if (parseInt(eDate.month.value, 10) < parseInt(sDate.month.value, 10)) { // 2000-02-xx !< 2000-01-xx
-                    rules.push([eDate.month.element, false, eDate.month.label + colonSpace + ChronologicalDates]);
-                } else if (parseInt(eDate.month.value, 10) === parseInt(sDate.month.value, 10)) { // Start and end dates are the same month.
-                    if (parseInt(eDate.day.value, 10) < parseInt(sDate.day.value, 10)) { // 2000-01-02 !< 2000-01-01
-                        rules.push([eDate.day.element, false, eDate.day.label + colonSpace + ChronologicalDates]);
-                    }
-                }
-            } else {
-                /* End date comes after today. */
-                if (parseInt(eDate.year.value, 10) > getToday("year")) {
-                    rules.push([eDate.year.element, false, eDate.year.label + colonSpace + CannotBeFuture]);
-                } else if (parseInt(eDate.year.value, 10) === getToday("year")) {
-                    if (parseInt(eDate.month.value, 10) > getToday("month")) {
-                        rules.push([eDate.month.element, false, eDate.month.label + colonSpace + CannotBeFuture]);
-                    } else if (parseInt(eDate.month.value, 10) === getToday("month")) {
-                        if (parseInt(eDate.day.value, 10) > getToday("day")) {
-                            rules.push([eDate.day.element, false, eDate.day.label + colonSpace + CannotBeFuture]);
-                        }
-                    }
-                }
-            }
-        }
-        /* Start date comes after today. */
-        if (sDate.year.value !== "") { // There is a start date to test against.
-            if (parseInt(sDate.year.value, 10) > getToday("year")) {
-                rules.push([sDate.year.element, false, sDate.year.label + colonSpace + CannotBeFuture]);
-            } else if (parseInt(sDate.year.value, 10) === getToday("year")) {
-                if (parseInt(sDate.month.value, 10) > getToday("month")) {
-                    rules.push([sDate.month.element, false, sDate.month.label + colonSpace + CannotBeFuture]);
-                } else if (parseInt(sDate.month.value, 10) === getToday("month")) {
-                    if (parseInt(sDate.day.value, 10) > getToday("day")) {
-                        rules.push([sDate.day.element, false, sDate.day.label + colonSpace + CannotBeFuture]);
-                    }
-                }
-            }
-        }
+  
 
 
-        /* Test each rule.  Note that error messages are created by the test itself; the loop's body only serves to increment the validation count. */
+      /* Test each rule.  Note that error messages are created by the test itself; the loop's body only serves to increment the validation count. */
         for (i = 0; i < rules.length; i++) {
             if (validate(rules[i][0], rules[i][1], rules[i][2], i)) {
                 validated++;

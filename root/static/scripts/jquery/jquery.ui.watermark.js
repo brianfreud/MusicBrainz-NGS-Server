@@ -31,10 +31,10 @@ $.widget("ui.watermark", {
 		}
 		input.bind("focus." + this.widgetName, function() {
 			if (!o.disabled && !this.value)
-				o.animate ? label.fadeOut("fast") : label.hide();
+				o.animate ? label.fadeOut(20) : label.hide(); // "fast" changed to 20
 		}).bind("blur." + this.widgetName, function() {
 			if (!o.disabled && !this.value)
-				o.animate ? label.fadeIn("fast") : label.show();
+				o.animate ? label.fadeIn(20) : label.show(); // "fast" changed to 20
 		});
 	},
 	
