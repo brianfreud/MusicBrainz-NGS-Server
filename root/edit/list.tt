@@ -22,7 +22,7 @@
                             [% edit.no_votes %] 
                             [% l('no') %]
                             
-                            [% INCLUDE 'edit/vote.tt' n=loop.index IF c.user_exists %]
+                            [% INCLUDE 'edit/vote.tt' n=loop.index %]
                         </td>
                     </tr>
                     [% IF edit.notes.size %]
@@ -34,7 +34,7 @@
                     [% END %]
                 [%- END -%]
             </table>
-            [% form_submit(l('Enter Edits')) %]
+            [% form_submit(l('Vote')) %]
         </form>
     [% END %]
 [% ELSE %]

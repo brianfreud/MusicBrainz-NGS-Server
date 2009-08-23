@@ -33,7 +33,7 @@ has 'superseded' => (
 );
 
 has 'vote' => (
-    isa => 'Vote',
+    isa => 'VoteOption',
     is => 'rw',
 );
 

@@ -115,7 +115,9 @@ sub is_open
 sub editor_may_vote
 {
     my ($self, $editor) = @_;
-    return defined $editor && $editor->id != $self->editor_id;
+    return defined $editor && $editor->id != $self->editor_id &&
+                   $editor->email_confirmation_date &&
+                   $editor->accepted_edits > 10;
 }
 
 sub edit_type { die 'Not implemented' }

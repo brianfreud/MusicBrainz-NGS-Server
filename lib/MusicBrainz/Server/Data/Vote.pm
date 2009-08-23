@@ -39,7 +39,7 @@ sub enter_votes
     return unless @votes;
 
     # Filter any invalid votes
-    my $vote_tc = find_type_constraint('Vote');
+    my $vote_tc = find_type_constraint('VoteOption');
     @votes = grep { $vote_tc->check($_->{vote}) } @votes;
 
     my $sql = Sql->new($self->c->raw_dbh);
@@ -98,7 +98,7 @@ sub load_for_edits
                  FROM " . $self->_table . "
                  WHERE edit IN (" . placeholders(@ids) . ")
                  ORDER BY votetime";
-    my @mediums = query_to_list($self->c->raw_dbh, sub {
+    my @votes = query_to_list($self->c->raw_dbh, sub {
             my $vote = $self->_new_from_row(@_);
             my $edit = $id_to_edit{$vote->edit_id};
             $edit->add_vote($vote);
