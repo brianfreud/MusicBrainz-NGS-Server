@@ -64,7 +64,7 @@
                     </td>
                 </tr>
                 <tr id="mediumStorage" class="nodrop nodrag hidden">
-                    <td colspan="5">
+                    <td colspan="5" style="padding:0;">
                         <table id="removedMediums">
                         </table>
                     </td>

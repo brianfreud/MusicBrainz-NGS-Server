@@ -303,6 +303,11 @@ div.tabs {
     color: #000;
 }
 
+.page table th.mediumInfo {
+ width:88%;
+ background: url(/static/images/table-header-2.gif) repeat-x 0 50%!important;
+}
+
 #removedMediums,
 .page table.tbl {
     margin-top: 1em;

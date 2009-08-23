@@ -5,6 +5,12 @@
 .trash  0 -1698px;
 */
 
+.durInfo,
+.posInfo,
+.toolsInfo {
+ background: url(/static/images/table-header-2.gif) repeat-x 0 50%!important;
+}
+
 input.addLabel {
  float: right;
  margin-top: 0.5em;
@@ -670,13 +676,17 @@ div.result div.disambiguation {
  -khtml-opacity: 0.6;
 }
 
-#removedMediums td.toolbox {
- padding: 0 0 0 1em;
+#removedEntities th.toolbox {
+ padding: 0 1.2em;
 }
 
-#mediumStorage td,
-#removedMediums th {
- padding: 0;
+#removedEntities th.toolbox div.handleIcon {
+ /* The normal grey drag icon is nearly invisible here; this makes the blue version persistent even without hover. */
+ background-position: 0 -1764px!important;
+}
+
+.posInfo {
+ width: 6%;
 }
 
 /* Track position mover */

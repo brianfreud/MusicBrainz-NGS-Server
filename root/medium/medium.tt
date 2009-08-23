@@ -1,16 +1,16 @@
 <tbody>
     <tr class="subh[%- IF edit -%] nodrop nodrag[%- END -%]">
         [%- IF edit -%]
-            <th style="background: url(/static/images/table-header-2.gif) repeat-x 0 50%!important;" class="toolbox hidden"> </th>
+            <th class="toolsInfo toolbox hidden"> </th>
         [%- END -%]
-        <th style="background: url(/static/images/table-header-2.gif) repeat-x 0 50%!important;">
+        <th class="posInfo">
             [%- IF edit -%]
                 <div class="mediumToggle"></div>
             [%- ELSE -%]
                 &nbsp;
             [%- END -%]
         </th>
-        <th colspan="[%- IF edit -%]2[%- ELSE -%][% IF show_artists %]4[% ELSE %]3[% END %][%- END -%]" style="background: url(/static/images/table-header-2.gif) repeat-x 0 50%!important;">
+        <th colspan="[%- IF edit -%]2[%- ELSE -%][% IF show_artists %]4[% ELSE %]3[% END %][%- END -%]" class="mediumInfo">
             [%- IF !edit -%]<a href="[% c.uri_for_action('/tracklist/show', [medium.tracklist.id]) %]">
             [%- ELSE -%]<span class="medium format editable">
             [%- END -%]
@@ -41,7 +41,7 @@
             [%- END -%]
         </th>
         [%- IF edit -%]
-            <th style="background: url(/static/images/table-header-2.gif) repeat-x 0 50%!important;" class="medium trackdur"><span></span></th>
+            <th class="durInfo medium trackdur"><span></span></th>
         [%- END -%]
     </tr>
     [%- FOR track=medium.tracklist.tracks;
