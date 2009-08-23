@@ -53,6 +53,7 @@ Readonly our $EDIT_RELEASE_EDIT => 32;
 Readonly our $EDIT_RELEASE_ADD_ANNOTATION => 35;
 
 Readonly our $EDIT_WORK_EDIT => 42;
+Readonly our $EDIT_WORK_ADD_ANNOTATION => 45;
 
 Readonly our $EDIT_MEDIUM_CREATE => 51;
 Readonly our $EDIT_MEDIUM_EDIT => 52;
