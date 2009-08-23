@@ -358,7 +358,6 @@ sub create : Local RequireAuth
     if ($c->form_posted && $form->submitted_and_valid($c->req->params))
     {
         my %edit = map { $_ => $form->field($_)->value }
-            grep { $form->field($_)->value }
             qw( name sort_name gender_id type_id country_id begin_date end_date comment);
 
         my $edit = $c->model('Edit')->create(
@@ -420,7 +419,6 @@ sub edit : Chained('load') RequireAuth
     if ($c->form_posted && $form->submitted_and_valid($c->req->params))
     {
         my %edit = map { $_ => $form->field($_)->value }
-            grep { $form->field($_)->value }
             qw( name sort_name gender_id type_id country_id begin_date end_date comment);
 
         my $edit = $c->model('Edit')->create(
