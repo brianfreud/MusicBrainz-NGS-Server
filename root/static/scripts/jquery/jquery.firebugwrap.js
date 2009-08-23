@@ -27,7 +27,7 @@ $.extend(jQuery.fn, {
     },
     time: function (argA, argB) {
         if (console) {
-            if (argB == true || argB == false) {
+            if (argB === true || argB === false) {
                 console ? (argB ? console.timeEnd(argA) : console.time(argA)) : "";
             } else {
                 console.timeEnd(argA).time(argB);
