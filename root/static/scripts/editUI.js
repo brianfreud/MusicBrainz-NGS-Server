@@ -506,6 +506,7 @@ var artistEditor,
 	                                                 },
 	               processResults      : function (data) {
 // (window.console) ? console.time("processResults") : '';
+// TODO: Add support for locally created artists.
                                                              var lookupResults = artistEditor.lookupResults;
 	                                                     artistEditor.currentTrack = ""; // Clear the current track store, so a new lookup can be done
 	                                                     $("#lookupSearching").css("display","none"); // (for new text, etc) on that same artist field.
@@ -771,8 +772,227 @@ var artistEditor,
 	                                                                   /* Artist Lookup -> Add New Artist */
 	                                                                   aeEvents.HandleAddNewArtist();
 	                                                                   aeEvents.CancelAddNewArtist();
+	                                                                   aeEvents.CreateNewArtistClicked();
 // (window.console) ? console.timeEnd("initEvents") : '';
 	                                                                   },
+	                                     /** Handle a click on the 'add artist' button: validate, and if the data is good,
+                                               * store the artist to be created, then resolve the artist. **/
+	                                     CreateNewArtistClicked: function () {
+                                                 $("#CreateAdd").live("click", function () {
+                                                     var artist,
+                                                     formPrefix = '#addNew-',
+                                                     datePrefix = 'Date-',
+                                                     sDate,
+                                                     eDate,
+                                                     sDateObj,
+                                                     eDateObj,
+                                                     tDateObj,
+                                                     colonSpace = ": ",
+                                                     reused,
+                                                     YearText,
+                                                     MonthText,
+                                                     DayText,
+                                                     i,
+                                                     validation = MusicBrainz.validation,
+                                                     isLaterDate,
+                                                     isValidDate,
+                                                     isValidDay,
+                                                     isValidMonth,
+                                                     ChronologicalDates = text.ChronologicalDates,
+                                                     CannotBeFuture = text.CannotBeFuture,
+                                                     validated = 0,
+                                                     rules = [],
+                                                     getVal  = function (element) {
+                                                                   return element.val();
+                                                     },
+                                                     validate = function ($elementToFlag, passesRule, message, i) {
+                                                                   if (passesRule === true) {
+                                                                       return true;
+                                                                   } else {
+                                                                       $elementToFlag.css("background-color","#FFB")
+                                                                                     .bind("click", function () {
+                                                                                                                $(".error" + i).css({
+                                                                                                                                    fontWeight : 900,
+                                                                                                                                    color      : 'red'
+                                                                                                                                    });
+                                                                                                                })
+                                                                                     .bind("blur", function () {
+                                                                                                               $("#errorList li").css({
+                                                                                                                                      fontWeight : 500,
+                                                                                                                                      color      : '#000'
+                                                                                                                                      })
+                                                                                                                });
+                                                                       $('#errorList').append('<li class="error' + i + '">' +
+                                                                                                  (passesRule === false ? message : passesRule) +  // Allow the rule's test to define the message.
+                                                                                              '</li>');
+                                                                       return false;
+                                                                   }
+                                                     },
+                                                     commentRequiredButMissing = function () {
+                                                         var commentRequired = function () {
+                                                             return ($.inArray(artistEditor.lookupResults, reused.name.value) > -1);
+                                                         };
+                                                         return (commentRequired() && artist.comment.value === "");
+                                                     };
+                                                     $("#addErrors").css("display", "none");
+                                                     $("#errorList").html(""); // Clear any errors that may be left over from an earlier creation attempt.
+                                                     $("#addNewFields input[type=text]").css("background-color", "#FFF")
+                                                                                        .unbind("click");
+                                                     isLaterDate = validation.isLaterDate;
+                                                     isValidDate = validation.isValidDate;
+                                                     isValidDay = validation.isValidDay;
+                                                     isValidMonth = validation.isValidMonth;
+                                                     YearText = colonSpace + text.DateYear;
+                                                     MonthText = colonSpace + text.DateMonth;
+                                                     DayText = colonSpace + text.DateDay;
+                                                     sDate = datePrefix + 'Start-';
+                                                     eDate = datePrefix + 'End-';
+                                                     /* Create the artist object. */
+                                                     artist = {
+                                                         comment: {
+                                                             element : $(formPrefix + 'Comment'),
+                                                             label   : text.Disambiguation,
+                                                             value   : ""
+                                                         },
+                                                         country: {
+                                                             element : $(formPrefix + 'Country'),
+                                                             label   : text.Country,
+                                                             value   : ""
+                                                         },
+                                                         date: {
+                                                             start: {
+                                                                 year: {
+                                                                     element : $(formPrefix + sDate + 'Y'),
+                                                                     label   : text.DateStart + YearText,
+                                                                     value   : ""
+                                                                 },
+                                                                 month: {
+                                                                     element : $(formPrefix + sDate + 'M'),
+                                                                     label   : text.DateStart + MonthText,
+                                                                     value   : ""
+                                                                 },
+                                                                 day: {
+                                                                     element : $(formPrefix + sDate + 'D'),
+                                                                     label   : text.DateStart + DayText,
+                                                                     value   : ""
+                                                                 }
+                                                             },
+                                                             end: {
+                                                                 year: {
+                                                                     element : $(formPrefix + eDate + 'Y'),
+                                                                     label   : text.DateEnd + YearText,
+                                                                     value   : ""
+                                                                 },
+                                                                 month: {
+                                                                     element : $(formPrefix + eDate + 'M'),
+                                                                     label   : text.DateEnd + MonthText,
+                                                                     value   : ""
+                                                                 },
+                                                                 day: {
+                                                                     element : $(formPrefix + eDate + 'D'),
+                                                                     label   : text.DateEnd + DayText,
+                                                                     value   : ""
+                                                                 }
+                                                             }
+                                                         },
+                                                         name: {
+                                                             name: {
+                                                                 element : $(formPrefix + 'Name'),
+                                                                 label   : text.ArtistName,
+                                                                 value   : ""
+                                                             },
+                                                             sort: {
+                                                                 element : $(formPrefix + 'NameSort'),
+                                                                 label   : text.NameSort,
+                                                                 value   : ""
+                                                             }
+                                                         },
+                                                         gender: {
+                                                             element : $(formPrefix + 'Gender'),
+                                                             label   : text.Gender,
+                                                             value   : ""
+                                                         },
+                                                         type: {
+                                                             element : $(formPrefix + 'Type'),
+                                                             label   : text.Type,
+                                                             value   : ""
+                                                         }
+                                                     };
+                                                     reused = artist.date;
+                                                     sDate = reused.start;
+                                                     eDate = reused.end;
+                                                     /* Store the value of each input field. */
+                                                     $.each([artist.comment,
+                                                             sDate.year,
+                                                             sDate.month,
+                                                             sDate.day,
+                                                             eDate.year,
+                                                             eDate.month,
+                                                             eDate.day,
+                                                             artist.name.name,
+                                                             artist.name.sort], function () {
+                                                         this.value = getVal(this.element);
+                                                     });
+                                                     artist.country.value = getVal(artist.country.element);
+                                                     artist.gender.value = getVal(artist.gender.element);
+                                                     artist.type.value = getVal(artist.type.element);
+                                                     /* Define the validation rules for a new artist. */
+                                                     reused = artist.name;
+                                                     /* Create basic date objects to avoid creating them over and over. */
+                                                     sDateObj = {
+                                                                day   : sDate.day.value,
+                                                                month : sDate.month.value,
+                                                                year  : sDate.year.value
+                                                                };
+                                                     eDateObj = {
+                                                                day   : eDate.day.value,
+                                                                month : eDate.month.value,
+                                                                year  : eDate.year.value
+                                                                };
+                                                     tDateObj = MusicBrainz.validation.getToday();
+                                                     /* Artist name and sort name. */
+                                                     rules = [
+                                                             [reused.name.element, reused.name.value !== "", reused.name.label + colonSpace + text.CannotBeEmpty], // Artist name cannot be empty.
+                                                             [reused.sort.element, reused.sort.value !== "", reused.sort.label + colonSpace + text.CannotBeEmpty], // Sort name cannot be empty.
+                                                             [sDate.month.element, isValidMonth(sDate.month.value), sDate.month.label + colonSpace + text.NoSuchMonth], // Start month is valid
+                                                             [sDate.day.element, isValidDay(sDate.year.value, sDate.month.value, sDate.day.value), sDate.day.label + colonSpace + text.NoSuchDay], // Start day is valid
+                                                             [eDate.month.element, isValidMonth(eDate.month.value), eDate.month.label + colonSpace + text.NoSuchMonth], // End month is valid
+                                                             [eDate.day.element, isValidDay(eDate.year.value, eDate.month.value, eDate.day.value), eDate.day.label + colonSpace + text.NoSuchDay], // End day is valid
+                                                             [sDate.month.element, isValidDate("month")(sDate.year, sDate.month)], // Valid start date.
+                                                             [sDate.day.element, isValidDate("day")("month")(sDate.month, sDate.day)], // Valid start date.
+                                                             [sDate.day.element, isValidDate("day")("year")(sDate.year, sDate.day)], // Valid start date.
+                                                             [eDate.month.element, isValidDate("month")(eDate.year, eDate.month)], // Valid end date.
+                                                             [eDate.day.element, isValidDate("day")("month")(eDate.month, eDate.day)], // Valid end date.
+                                                             [eDate.day.element, isValidDate("day")("year")(eDate.year, eDate.day)], // Valid end date.
+                                                             [eDate.year.element, isLaterDate(sDateObj, eDateObj)("year"), eDate.year.label + colonSpace + ChronologicalDates], // End date comes after the start date.
+                                                             [eDate.month.element, isLaterDate(sDateObj, eDateObj)("month"), eDate.month.label + colonSpace + ChronologicalDates], // End date comes after the start date.
+                                                             [eDate.day.element, isLaterDate(sDateObj, eDateObj)("day"), eDate.day.label + colonSpace + ChronologicalDates], // End date comes after the start date.
+                                                             [sDate.year.element, isLaterDate(sDateObj, tDateObj)("year"), sDate.year.label + colonSpace + CannotBeFuture], // Start date comes after today.
+                                                             [sDate.month.element, isLaterDate(sDateObj, tDateObj)("month"), sDate.month.label + colonSpace + CannotBeFuture], // Start date comes after today.
+                                                             [sDate.day.element, isLaterDate(sDateObj, tDateObj)("day"), sDate.day.label + colonSpace + CannotBeFuture], // Start date comes after today.
+                                                             [eDate.year.element, isLaterDate(eDateObj, tDateObj)("year"), eDate.year.label + colonSpace + CannotBeFuture], // End date comes after today.
+                                                             [eDate.month.element, isLaterDate(eDateObj, tDateObj)("month"), eDate.month.label + colonSpace + CannotBeFuture], // End date comes after today.
+                                                             [eDate.day.element, isLaterDate(eDateObj, tDateObj)("day"), eDate.day.label + colonSpace + CannotBeFuture], // End date comes after today.
+                                                             [artist.comment.element, commentRequiredButMissing(), text.CommentIsRequired]
+                                                             ];
+                                                     /* Test each rule.  Note that error messages are created by the test itself; the loop's body only serves to increment the validation count. */
+                                                     for (i = 0; i < rules.length; i++) {
+                                                         if (validate(rules[i][0], rules[i][1], rules[i][2], i)) {
+                                                             validated++;
+                                                         }
+                                                     }
+                                                     /* If all rules validated, add and resolve the artist. */
+                                                     if (validated === rules.length) {
+                                                         artistEditor.storeNewArtist(artist);
+// TODO: Resolve the artist
+                                                     } else {
+                                                         $("#addErrors").show();
+                                                         window.setTimeout(function () {
+                                                                                       $("#artistLookup").redrawShadow();
+                                             	                                  }, 400);
+                                                     }
+                                                 });
+	                                     },
 	                                     /** Attaches a click event to the "add a new artist" button for artist lookup windows. **/
 	                                     HandleAddNewArtist: function () {
 	                                         $("#btnArtistAdd").live("click", function (event) {
@@ -2477,225 +2697,7 @@ if (window.console) {
 }
 
 
-    $("#CreateAdd").live("click", function () {
-        var artist,
-        formPrefix = '#addNew-',
-        datePrefix = 'Date-',
-        sDate,
-        eDate,
-        sDateObj,
-        eDateObj,
-        tDateObj,
-        colonSpace = ": ",
-        reused,
-        YearText,
-        MonthText,
-        DayText,
-        i,
-        validation = MusicBrainz.validation,
-        isLaterDate,
-        isValidDate,
-        isValidDay,
-        isValidMonth,
-        ChronologicalDates = text.ChronologicalDates,
-        CannotBeFuture = text.CannotBeFuture,
-        validated = 0,
-        rules = [],
-        getVal  = function (element) {
-                      return element.val();
-        },
-        validate = function ($elementToFlag, passesRule, message, i) {
-                      if (passesRule === true) {
-                          return true;
-                      } else {
-                          $elementToFlag.css("background-color","#FFB")
-                                        .bind("click", function () {
-                                                                   $(".error" + i).css({
-                                                                                       fontWeight : 900,
-                                                                                       color      : 'red'
-                                                                                       });
-                                                                   })
-                                        .bind("blur", function () {
-                                                                  $("#errorList li").css({
-                                                                                         fontWeight : 500,
-                                                                                         color      : '#000'
-                                                                                         })
-                                                                   });
-                          $('#errorList').append('<li class="error' + i + '">' +
-                                                     (passesRule === false ? message : passesRule) +  // Allow the rule's test to define the message.
-                                                 '</li>');
-                          return false;
-                      }
-        },
-        commentRequiredButMissing = function () {
-            var commentRequired = function () {
-                return ($.inArray(artistEditor.lookupResults, reused.name.value) > -1);
-            };
-            return (commentRequired() && artist.comment.value === "");
-        };
-        $("#addErrors").css("display", "none");
-        $("#errorList").html(""); // Clear any errors that may be left over from an earlier creation attempt.
-        $("#addNewFields input[type=text]").css("background-color", "#FFF")
-                                           .unbind("click");
-        isLaterDate = validation.isLaterDate;
-        isValidDate = validation.isValidDate;
-        isValidDay = validation.isValidDay;
-        isValidMonth = validation.isValidMonth;
-        YearText = colonSpace + text.DateYear;
-        MonthText = colonSpace + text.DateMonth;
-        DayText = colonSpace + text.DateDay;
-        sDate = datePrefix + 'Start-';
-        eDate = datePrefix + 'End-';
-        /* Create the artist object. */
-        artist = {
-            comment: {
-                element : $(formPrefix + 'Comment'),
-                label   : text.Disambiguation,
-                value   : ""
-            },
-            country: {
-                element : $(formPrefix + 'Country'),
-                label   : text.Country,
-                value   : ""
-            },
-            date: {
-                start: {
-                    year: {
-                        element : $(formPrefix + sDate + 'Y'),
-                        label   : text.DateStart + YearText,
-                        value   : ""
-                    },
-                    month: {
-                        element : $(formPrefix + sDate + 'M'),
-                        label   : text.DateStart + MonthText,
-                        value   : ""
-                    },
-                    day: {
-                        element : $(formPrefix + sDate + 'D'),
-                        label   : text.DateStart + DayText,
-                        value   : ""
-                    }
-                },
-                end: {
-                    year: {
-                        element : $(formPrefix + eDate + 'Y'),
-                        label   : text.DateEnd + YearText,
-                        value   : ""
-                    },
-                    month: {
-                        element : $(formPrefix + eDate + 'M'),
-                        label   : text.DateEnd + MonthText,
-                        value   : ""
-                    },
-                    day: {
-                        element : $(formPrefix + eDate + 'D'),
-                        label   : text.DateEnd + DayText,
-                        value   : ""
-                    }
-                }
-            },
-            name: {
-                name: {
-                    element : $(formPrefix + 'Name'),
-                    label   : text.ArtistName,
-                    value   : ""
-                },
-                sort: {
-                    element : $(formPrefix + 'NameSort'),
-                    label   : text.NameSort,
-                    value   : ""
-                }
-            },
-            gender: {
-                element : $(formPrefix + 'Gender'),
-                label   : text.Gender,
-                value   : ""
-            },
-            type: {
-                element : $(formPrefix + 'Type'),
-                label   : text.Type,
-                value   : ""
-            }
-        };
-        reused = artist.date;
-        sDate = reused.start;
-        eDate = reused.end;
-        /* Store the value of each input field. */
-        $.each([artist.comment,
-                sDate.year,
-                sDate.month,
-                sDate.day,
-                eDate.year,
-                eDate.month,
-                eDate.day,
-                artist.name.name,
-                artist.name.sort], function () {
-            this.value = getVal(this.element);
-        });
-    /* */    artist.country.value = getVal(artist.country.element);
-    /* */    artist.gender.value = getVal(artist.gender.element);
-    /* */    artist.type.value = getVal(artist.type.element);
-        /* Define the validation rules for a new artist. */
-        reused = artist.name;
-        /* Create basic date objects to avoid creating them over and over. */
-        sDateObj = {
-                   day   : sDate.day.value,
-                   month : sDate.month.value,
-                   year  : sDate.year.value
-                   };
-        eDateObj = {
-                   day   : eDate.day.value,
-                   month : eDate.month.value,
-                   year  : eDate.year.value
-                   };
-        tDateObj = MusicBrainz.validation.getToday();
-        /* Artist name and sort name. */
-        rules = [
-                [reused.name.element, reused.name.value !== "", reused.name.label + colonSpace + text.CannotBeEmpty], // Artist name cannot be empty.
-                [reused.sort.element, reused.sort.value !== "", reused.sort.label + colonSpace + text.CannotBeEmpty], // Sort name cannot be empty.
-                [sDate.month.element, isValidMonth(sDate.month.value), sDate.month.label + colonSpace + text.NoSuchMonth], // Start month is valid
-                [sDate.day.element, isValidDay(sDate.year.value, sDate.month.value, sDate.day.value), sDate.day.label + colonSpace + text.NoSuchDay], // Start day is valid
-                [eDate.month.element, isValidMonth(eDate.month.value), eDate.month.label + colonSpace + text.NoSuchMonth], // End month is valid
-                [eDate.day.element, isValidDay(eDate.year.value, eDate.month.value, eDate.day.value), eDate.day.label + colonSpace + text.NoSuchDay], // End day is valid
-                [sDate.month.element, isValidDate("month")(sDate.year, sDate.month)], // Valid start date.
-                [sDate.day.element, isValidDate("day")("month")(sDate.month, sDate.day)], // Valid start date.
-                [sDate.day.element, isValidDate("day")("year")(sDate.year, sDate.day)], // Valid start date.
-                [eDate.month.element, isValidDate("month")(eDate.year, eDate.month)], // Valid end date.
-                [eDate.day.element, isValidDate("day")("month")(eDate.month, eDate.day)], // Valid end date.
-                [eDate.day.element, isValidDate("day")("year")(eDate.year, eDate.day)], // Valid end date.
-                [eDate.year.element, isLaterDate(sDateObj, eDateObj)("year"), eDate.year.label + colonSpace + ChronologicalDates], // End date comes after the start date.
-                [eDate.month.element, isLaterDate(sDateObj, eDateObj)("month"), eDate.month.label + colonSpace + ChronologicalDates], // End date comes after the start date.
-                [eDate.day.element, isLaterDate(sDateObj, eDateObj)("day"), eDate.day.label + colonSpace + ChronologicalDates], // End date comes after the start date.
-                [sDate.year.element, isLaterDate(sDateObj, tDateObj)("year"), sDate.year.label + colonSpace + CannotBeFuture], // Start date comes after today.
-                [sDate.month.element, isLaterDate(sDateObj, tDateObj)("month"), sDate.month.label + colonSpace + CannotBeFuture], // Start date comes after today.
-                [sDate.day.element, isLaterDate(sDateObj, tDateObj)("day"), sDate.day.label + colonSpace + CannotBeFuture], // Start date comes after today.
-                [eDate.year.element, isLaterDate(eDateObj, tDateObj)("year"), eDate.year.label + colonSpace + CannotBeFuture], // End date comes after today.
-                [eDate.month.element, isLaterDate(eDateObj, tDateObj)("month"), eDate.month.label + colonSpace + CannotBeFuture], // End date comes after today.
-                [eDate.day.element, isLaterDate(eDateObj, tDateObj)("day"), eDate.day.label + colonSpace + CannotBeFuture], // End date comes after today.
-                [artist.comment.element, commentRequiredButMissing(), text.CommentIsRequired]
-                ];
-  
-
-
-      /* Test each rule.  Note that error messages are created by the test itself; the loop's body only serves to increment the validation count. */
-        for (i = 0; i < rules.length; i++) {
-            if (validate(rules[i][0], rules[i][1], rules[i][2], i)) {
-                validated++;
-            }
-        }
-        /* If all rules validated, add and resolve the artist. */
-        if (validated === rules.length) {
-            artistEditor.storeNewArtist(artist);
-            // TODO: Resolve the artist
-        } else {
-            $("#addErrors").show();
-            window.setTimeout(function () {
-                                          $("#artistLookup").redrawShadow();
-	                                  }, 400);
-        }
-    });
 });
-
 
 
 $().load(function ($) {
