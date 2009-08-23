@@ -11,8 +11,7 @@ sub edit_type { $EDIT_ARTIST_ADD_ANNOTATION }
 sub related_entities { { artist => [ shift->artist_id ] } }
 sub models { [qw( Artist )] }
 
-sub _model { 'Artist' }
-sub _type { 'artist' }
+sub _annotation_model { shift->c->model('Artist')->annotation }
 
 has 'artist_id' => (
     isa => 'Int',
@@ -25,16 +24,6 @@ has 'artist' => (
     isa => 'Artist',
     is => 'rw',
 );
-
-sub initialize
-{
-    my ($self, %opts) = @_;
-    $opts{entity_id} = delete $opts{artist_id};
-    $self->data({
-        %opts,
-        editor_id => $self->editor_id,
-    });
-}
 
 __PACKAGE__->register_type;
 __PACKAGE__->meta->make_immutable;
