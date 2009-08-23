@@ -57,6 +57,8 @@ Readonly our $EDIT_MEDIUM_EDIT => 52;
 
 Readonly our $EDIT_TRACK_EDIT => 62;
 
+Readonly our $EDIT_RECORDING_ADD_ANNOTATION => 75;
+
 =head1 NAME
 
 MusicBrainz::Server::Constant - constants used in the database that
