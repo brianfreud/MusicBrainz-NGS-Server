@@ -96,6 +96,8 @@ var text                   = {
        DragArtist            : "[% l("Drag this icon onto another track to copy this artist to that track.") %]",
        DragTrack             : "[% l("Drag this icon up or down to move a track within this medium.") %]",
        DragMedium            : "[% l("Drag this icon up or down to move this medium up or down within this release.") %]",
+       AddTrack              : "[% l("Click here to add a track to this medium.") %]",
+       AddMedium             : "[% l("Click here to add a medium to this release.") %]",
        EditAllTrackArtists   : "[% l("Edit all Track Artists") %]",
        EditAll               : "[% l("Edit Everything") %]",
        EditArtists           : "[% l("Edit all Artists") %]",

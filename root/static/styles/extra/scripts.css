@@ -356,7 +356,7 @@ table.tbl .hidden textarea,
 /* Track fields. */
 
 table.tbl th.first {
- padding-right: 16px;
+ padding-right: 33px;
  text-align: center!important;
  width: 6%!important;
 }
@@ -652,17 +652,6 @@ div.result div.disambiguation {
  padding: 1px 0 0 1em;
 }
 
-/* Remove medium and remove track */
-
-.removeTrack,
-.removeMedium {
- cursor:pointer;
- height: 16px;
- width: 16px;
- float: left;
- top: 2px;
-}
-
 /* Removed medium storage table */
 
 #removedMediums {
@@ -674,15 +663,6 @@ div.result div.disambiguation {
  filter: Alpha(Opacity=60);
  -moz-opacity:0.6;
  -khtml-opacity: 0.6;
-}
-
-#removedEntities th.toolbox {
- padding: 0 1.2em;
-}
-
-#removedEntities th.toolbox div.handleIcon {
- /* The normal grey drag icon is nearly invisible here; this makes the blue version persistent even without hover. */
- background-position: 0 -1764px!important;
 }
 
 .posInfo {
@@ -701,15 +681,36 @@ div.result div.disambiguation {
 
 /* Tools column */
 
-.toolbox {
- cursor: n-resize;
+#toolsHead {
+ height: 24px;
+ width: 50px; /* For each icon added to the toolbar, add 16px to this value. */
 }
 
-.handleIcon {
- height: 14px;
- width: 12px;
+.toolbox {
+ cursor: n-resize;
+ padding: 0 0 0 2px!important;
+}
+
+#removedEntities th.toolbox {
+ width: 8%;
+}
+
+#removedEntities th.toolbox div.handleIcon {
+ /* The normal grey drag icon is nearly invisible here; this makes the blue version persistent even without hover. */
+ background-position: 0 -1764px!important;
+}
+
+.addMedium,
+.addTrack,
+.handleIcon,
+.removeTrack,
+.removeMedium {
+ cursor:pointer;
+ height: 16px;
  float: left;
+ padding-right: 3px;
  top: 2px;
+ width: 16px;
 }
 
 /* Artist copier */
@@ -771,10 +772,14 @@ div.result div.disambiguation {
  background: transparent url(/static/images/icon/editor.png) no-repeat;
 }
 
+.addMedium,
+.addTrack,
 .addArtist {
  background: transparent url(/static/images/icon/plus.grey.png) no-repeat;
 }
 
+.addMedium:hover,
+.addTrack:hover,
 .addArtist:hover {
  background-image: url(/static/images/icon/plus.green.png)!important;
 }
@@ -830,8 +835,6 @@ tr:hover .copyArtist {
 /* Icon: tools 24x24 */
 #toolsHead {
  background: transparent url(/static/images/icon/tools24.png) no-repeat;
- height: 24px;
- width: 30px; /* For each icon added to the toolbar, add 15px to this value. */
 }
 
 .toolsHeadGrey {

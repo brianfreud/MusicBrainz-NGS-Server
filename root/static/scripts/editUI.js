@@ -1648,7 +1648,8 @@ var artistEditor,
 	addMediumTools : function (context) {
 // (window.console) ? console.time("addTrackTools") : '';
 	    context.find("tbody > tr > th.toolbox").append(html.div({ alt: text.RemoveMedium, cl: 'removeMedium' }) + html.close('div') +
-	                                                   html.div({ alt: text.DragMedium, cl: 'handleIcon' }) + html.close('div'));
+	                                                   html.div({ alt: text.DragMedium, cl: 'handleIcon' }) + html.close('div') +
+	                                                   html.div({ alt: text.AddTrack, cl: 'addTrack' }) + html.close('div'));
 // (window.console) ? console.timeEnd("addTrackTools") : '';
 	    return context;
 	},
@@ -2650,6 +2651,19 @@ artistEditor.events.init();
     }
 
 */
+
+/* Handle a click on an add track button for a medium. */
+$(".addTrack").live("click", function () {
+                                         var $thisMedium = $(this).parents("tbody:first"),
+                                             $trackRows;
+                                         $thisMedium.append(mb.HTMLsnippets.newTrack);
+                                         $trackRows = $thisMedium.find("tr");
+                                         if ($trackRows.length % 2 === 1) { // If we just added an odd numbered track,
+                                             $trackRows.filter(":last") // get the track row we just added,
+                                                       .addClass("ev");
+                                         }
+                                         $cache.$releaseTable.tableDnDUpdate(); // Update the track reordering functionality to include the new track.
+                                         });
 
 
 
