@@ -15,7 +15,7 @@ if (window.console) {
  */
 Date.prototype.daysInMonth = function () {
    return new Date(this.getFullYear(), this.getMonth()+1, 0).getDate();
-}
+};
 
 /**
  * @description Map IE functions to W3C DOM level 2 Style functions.
@@ -1826,9 +1826,10 @@ var artistEditor,
                        };
             },
             isValidDate : function (what) {
-                var test = function (varA, varB) {
+                var colonSpace,
+                    test = function (varA, varB) {
                         return (varA.value === "" && varB.value !== "" ? false : true);
-                    }
+                    };
                     colonSpace = ': ';
                 if (what === "day") {
                     return function (what) {
