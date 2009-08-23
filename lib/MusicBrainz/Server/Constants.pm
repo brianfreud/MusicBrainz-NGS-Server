@@ -49,6 +49,7 @@ Readonly our $EDIT_RELEASEGROUP_MERGE => 24;
 Readonly our $EDIT_RELEASEGROUP_EDIT => 21;
 
 Readonly our $EDIT_RELEASE_EDIT => 32;
+Readonly our $EDIT_RELEASE_ADD_ANNOTATION => 35;
 
 Readonly our $EDIT_WORK_EDIT => 42;
 
