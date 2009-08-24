@@ -1654,6 +1654,13 @@ console.timeEnd("g")
 // (window.console) ? console.timeEnd("addTrackTools") : '';
         return context;
     },
+
+    addReleaseTools : function (context) {
+// (window.console) ? console.time("addReleaseTools") : '';
+        context.find("thead > tr > th.toolbox").append(html.div({ alt: text.AddMedium, cl: 'addMedium' }) + html.close('div'));
+// (window.console) ? console.timeEnd("addReleaseTools") : '';
+        return context;
+    },
     
     attachHelpButtonEvents : function (helpArray) {
 // (window.console) ? console.time("attachHelpButtonEvents") : '';
@@ -2131,6 +2138,13 @@ console.timeEnd("g")
         },
 
     events : {
+             init: function () {
+                 var events = MusicBrainz.events;
+                 events.addNewTrackToMedium(); // Enable 'add track to medium' buttons.
+                 events.addNewMediumToRelease(); // Enable 'add medium to release' button.
+                 events.removeTrackFromMedium(); // Enable 'remove track from medium' buttons.
+                 events.removeMediumFromRelease(); // Enable 'remove medium from release' buttons.
+             },
              addArtistCopiers : function () {
 // (window.console) ? console.time("addArtistCopiers") : '';
                                             /* Attach functionality to the the artist duplication icons. */
@@ -2177,6 +2191,55 @@ console.timeEnd("g")
     */
 // (window.console) ? console.timeEnd("addArtistCopiers") : '';
                                             },
+             /** Handle a click on an add track button for a medium. **/
+             addNewTrackToMedium  : function () {
+                 $(".addTrack").live("click", function () { 
+                                                          var $thisMedium = $(this).parents("tbody:first"),
+                                                              $trackRows;
+                                                          $thisMedium.append(mb.HTMLsnippets.newTrack);
+                                                          $trackRows = $thisMedium.find("tr");
+                                                          if ($trackRows.length % 2 === 1) { // If we just added an odd numbered track,
+                                                              $trackRows.filter(":last") // get the track row we just added,
+                                                                        .addClass("ev");
+                                                          }
+                                                          $cache.$releaseTable.tableDnDUpdate(); // Update the track reordering functionality to include the new track.
+// TODO: Update track numbers
+                                                          });
+             },
+             /** Handle a click on an add medium button for a release. **/
+             addNewMediumToRelease  : function () {
+                 $(".addMedium").live("click", function () { 
+                                                           var $thisRelease = $(this).parents("table:first");
+                                                           $thisRelease.append(mb.HTMLsnippets.newMedium);
+// TODO: Update medium numbers
+                                                           });
+             },
+             /** Handle a click on a 'remove track from medium' button. **/
+             removeTrackFromMedium  : function () {
+                 $(".removeTrack").live("click", function () {  // If the remove track icon is clicked, move the track to the Removed Tracks tfoot.
+                     $("#removedEntities").append($(this).parents("tr:first")
+                                                         .removeClass("ev") // Unstripe the track.
+                                        );
+                     $("#removedEntities").css("visibility","visible"); // Make sure that the removed entity storage area is visible.
+                         $("#mediumStorage").next()
+                                            .show(); // Show the row label for the removed track storage area.
+                     $(this).parents("tr:first").find(".removeTrack").css("display","none"); // Hide the removed track's remove track icon.
+                     MusicBrainz.stripeTracks();
+                     MusicBrainz.updateMediumTotalDuration();
+// TODO: Update track numbers
+                 });
+             },
+             /** Handle a click on a 'remove medium from release' button. **/
+             removeMediumFromRelease  : function () {
+                 $(".removeMedium").live("click", function () {  // If the remove track icon is clicked, move the track to the Removed Tracks tfoot.
+                     $("#removedMediums").append($(this).parents("tbody:first"));
+                     $("#removedEntities").css("visibility","visible"); // Make sure that the removed entity storage area is visible.
+                     $("#mediumStorage").show() // Show the removed medium storage area.
+                                        .prev()
+                                        .show(); // Show the row label for the removed medium storage area.
+                     $("#removedEntities tr .removeMedium").css("display","none"); // Hide the removed medium's remove medium icon.
+                 });
+             },
              showHideMediums  : function () { /* Per-medium show/hide */
 // (window.console) ? console.time("showHideMediums") : '';
                                             $("div.mediumToggle").live("click", function (e) {
@@ -2330,6 +2393,9 @@ if (window.console) {
     /* Add the medium movement, removal, and track addition icons. */
     MusicBrainz.addMediumTools($cache.$releaseTable);
 
+    /* Add the release medium addition icon. */
+    MusicBrainz.addReleaseTools($cache.$releaseTable);
+
     /* Add functionality to the show/hide controls for the toolbox column */
     $("#toolsHead").click(function () {
     MusicBrainz.clearStatus();
@@ -2418,29 +2484,7 @@ if (window.console) {
                                                                        }
                                    });
 
-    /* Attach functionality to the the track removal icons. */
-    $(".removeTrack").live("click", function () {  // If the remove track icon is clicked, move the track to the Removed Tracks tfoot.
-    $("#removedEntities").append($(this).parents("tr:first")
-                                        .removeClass("ev") // Unstripe the track.
-                       );
-    $("#removedEntities").css("visibility","visible"); // Make sure that the removed entity storage area is visible.
-        $("#mediumStorage").next()
-                           .show(); // Show the row label for the removed track storage area.
-    $(this).parents("tr:first").find(".removeTrack").css("display","none"); // Hide the removed track's remove track icon.
-    MusicBrainz.stripeTracks();
-//        MusicBrainz.updatePositionFields();
-    MusicBrainz.updateMediumTotalDuration();
-    });
-
-    /* Attach functionality to the the medium removal icons. */
-    $(".removeMedium").live("click", function () {  // If the remove track icon is clicked, move the track to the Removed Tracks tfoot.
-    $("#removedMediums").append($(this).parents("tbody:first"));
-    $("#removedEntities").css("visibility","visible"); // Make sure that the removed entity storage area is visible.
-        $("#mediumStorage").show() // Show the removed medium storage area.
-                           .prev()
-                           .show(); // Show the row label for the removed medium storage area.
-    $("#removedEntities tr .removeMedium").css("display","none"); // Hide the removed medium's remove medium icon.
-    });
+    MusicBrainz.events.init();
 
     /* Set up autotabbing and limit input to \d only for date and barcode fields. */
     MusicBrainz.makeAutotabDate('edit-release-date-y', 'edit-release-date-m', 'edit-release-date-d');
@@ -2493,6 +2537,9 @@ if (window.console) {
 
     /* Add the track movement and removal icons and the add artist button to the blank track template. */
     mb.HTMLsnippets.newTrack = MusicBrainz.addArtistEditorButton(MusicBrainz.addTrackTools($(mb.HTMLsnippets.newTrack))).outerHTML();
+
+    /* Add the medium movement, medium removal, and add track icons to the blank medium template. */
+    mb.HTMLsnippets.newMedium = MusicBrainz.addMediumTools($(mb.HTMLsnippets.newMedium)).outerHTML()
 
     /* Clean out the "Loading..." div.  .remove() is slow, so we do this last, not at the instant we're initially done with that div. */
     $("#loader").remove();
@@ -2649,18 +2696,6 @@ artistEditor.events.init();
 
 */
 
-/* Handle a click on an add track button for a medium. */
-$(".addTrack").live("click", function () {
-                                         var $thisMedium = $(this).parents("tbody:first"),
-                                             $trackRows;
-                                         $thisMedium.append(mb.HTMLsnippets.newTrack);
-                                         $trackRows = $thisMedium.find("tr");
-                                         if ($trackRows.length % 2 === 1) { // If we just added an odd numbered track,
-                                             $trackRows.filter(":last") // get the track row we just added,
-                                                       .addClass("ev");
-                                         }
-                                         $cache.$releaseTable.tableDnDUpdate(); // Update the track reordering functionality to include the new track.
-                                         });
 
 
 
@@ -2681,10 +2716,8 @@ $(".addTrack").live("click", function () {
 
 // TODO: There can be more than one country dropdown.
 // TODO: Track renumbering on remove or delete.
-// TODO: Track addition.
 // TODO: Medium reordering.
 // TODO: Fix everything to support multiple mediums. (artist; note that the onclick is off by one for medium 2, likely off by n+1 for medium n)
-// TODO: Medium addition.
 // TODO: Missing medium support
 // TODO: Release artist editing.
 // TODO: Release title editing.
@@ -2702,26 +2735,17 @@ $(".addTrack").live("click", function () {
 // TODO: Block /n's in field textareas.
 // TODO: Fix up HTML -> Wiki parser to handle HTML not generated by Text::Wikiformat
 // TODO: label lookup
-// TODO: Type editing is a RG concept, not a release one
-// TODO: Format is a medium concept, not a release one.
 // TODO: RG selection / addition
 // TODO: Replace "tag this" with inlined functionality
-// TODO: Tracks dragged into deleted tracks shouldn't show the X
-// TODO: Add offset support to artist lookup
-// TODO: Take out manual position editing
 // TODO: hide join phrase label on initial window opening for artist converted from 1 to Artist editor (many)
 // TODO: Add artist button is broken
 // TODO: Finish updatePositionFields
-// TODO: Remove position edit inputs
 // TODO: rewrite/rework artist copiers
-// TODO: AC for simple case
-// TODO: Add artist
 // TODO: Artist link icons
 // TODO: Auto-artist resolution
 // TODO: Figure the cause of the rare comma-artist
 // TODO: Figure the cause of the occasional NaN:Nan durations
 // TODO: Set the data array store after resolution in the resolveArtist function.
-// TODO: Keep click to edit events bound to the correct tracks after a track reordering
 // TODO: Updating join phrases
 
 if (window.console) {

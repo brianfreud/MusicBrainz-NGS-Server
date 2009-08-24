@@ -695,6 +695,10 @@ div.result div.disambiguation {
  width: 8%;
 }
 
+#removedEntities .handleIcon {
+ border-left: 19px solid transparent; /* padding and margin aren't valid here, but a transparent border creates the same effect. */
+}
+
 #removedEntities th.toolbox div.handleIcon {
  /* The normal grey drag icon is nearly invisible here; this makes the blue version persistent even without hover. */
  background-position: 0 -1764px!important;
