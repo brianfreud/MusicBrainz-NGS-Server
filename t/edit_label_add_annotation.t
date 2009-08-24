@@ -21,7 +21,7 @@ my $edit = $c->model('Edit')->create(
 );
 isa_ok($edit, 'MusicBrainz::Server::Edit::Label::AddAnnotation');
 
-my ($edits) = $c->model('Edit')->find({ label => 1 }, 0, 10);
+my ($edits) = $c->model('Edit')->find({ label => 1 }, 10, 0);
 is($edits->[0]->id, $edit->id);
 
 $c->model('Edit')->load_all($edit);
