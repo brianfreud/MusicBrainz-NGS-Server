@@ -78,8 +78,6 @@
         [%- END -%]
         [%- FOR medium=release.mediums -%]
             [%- mediumString = PROCESS 'medium/medium.tt' mediumNumber=loop.count; trim_extra_space(mediumString) -%]
-            [%- mediumString = PROCESS 'medium/medium.tt' mediumNumber=loop.count; trim_extra_space(mediumString) -%]
-            [%- mediumString = PROCESS 'medium/medium.tt' mediumNumber=loop.count; trim_extra_space(mediumString) -%]
         [%- END -%]
     </table>
     [%- IF edit -%]
