@@ -594,3 +594,19 @@ table.details th {
     text-align: right;
     padding-left: 10pt;
 }
+
+dl.properties {
+    margin-bottom: 12pt;
+}
+
+dl.properties dt {
+    clear: left;
+    float: left;
+    font-weight: bold;
+    padding-right: 2pt;
+}
+
+dl.properties dd,
+dl.properties dt {
+    line-height: 200%;
+}
