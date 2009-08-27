@@ -1,4 +1,4 @@
-[% extra_js = 'MBarrays.js jquery/jquery-ui/ui.core.js jquery/jquery.ui.selectmenu.js jquery/jquery-ui/ui.position.js jquery/jquery-ui/ui.stackfix.js jquery/jquery-ui/ui.droppable.js jquery/jquery-ui/ui.draggable.js jquery/jquery-ui/ui.dialog.js jquery/jquery-ui/effects.core.js jquery/jquery-ui/effects.highlight.js jquery/jquery.selectboxes.js editor.js' %]
+[% extra_js = 'MBarrays.js jquery/jquery.selectboxes.js editor.js' %]
 
 [%- WRAPPER 'layout.tt' -%]
     <form action="[% c.req.uri %]" method="post">

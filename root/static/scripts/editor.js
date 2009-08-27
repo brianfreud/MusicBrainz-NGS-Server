@@ -69,7 +69,7 @@ html = {
     },
     /**
     * @description Used to create simple elements, with no attributes, such as &lt;textarea&gt;.
-    * @example html.make('textarea')
+    * @example html.basic('textarea')
     * @param {String} tag The element type to create.
     * @augments html.make
     * @see html.close
@@ -325,7 +325,7 @@ MusicBrainz = {
         init: ($(function ($) {
             var $sidebar = MusicBrainz.$cache.$sidebar;
             /* Sidebar initiation */
-            $sidebar.$DDs = $('#sidebar dd')
+            $sidebar.$DDs = $('#sidebar dd');
             $sidebar.$DateDDs = $sidebar.$DDs.filter('.date');
             $sidebar.$InputDDs = $sidebar.$DDs.filter(':has(input):not(.date)');
             $sidebar.$SelectDDs = $sidebar.$DDs.filter(':has(select)');
@@ -340,8 +340,7 @@ MusicBrainz = {
          * @description Initializes sidebar functionality.
          **/
         init: ($(function ($) {
-            var $sidebar = MusicBrainz.$cache.$sidebar,
-                sidebarDD = MusicBrainz.$cache.$sidebar.$DDs.get(0);
+            var $sidebar = MusicBrainz.$cache.$sidebar;
             $sidebar.$SelectDDs.find('select').each(function () {
                 MusicBrainz.utility.addOverlay($(this));
             });
@@ -364,7 +363,7 @@ MusicBrainz = {
                                .prev()
                                .show();
                 });
-            })),
+            }))
         }
     },
     /**

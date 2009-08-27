@@ -43,9 +43,10 @@
             release_properties = [
                 {
                     label => l('Date:'),
-                    date => release.date.format,
+                    text => release.date.format,
                     field => r.date('date'),
                     field_name => 'date',
+                    date => 1,
                 },
                 {
                     label => l('Country:'),
