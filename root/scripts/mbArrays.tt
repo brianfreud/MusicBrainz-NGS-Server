@@ -1,0 +1,3 @@
+var mb                   = [];
+
+[%- INCLUDE 'scripts/text_strings.tt' -%]

@@ -1,8 +1,6 @@
-[% extra_js = 'jquery.lookup.js jquery.artistcredits.js jquery.glow.js jquery.toggle.js jquery.undo.js' %]
+[% extra_js = 'MBarrays.js jquery/jquery-ui/ui.core.js jquery/jquery.ui.selectmenu.js jquery/jquery-ui/ui.position.js jquery/jquery-ui/ui.stackfix.js jquery/jquery-ui/ui.droppable.js jquery/jquery-ui/ui.draggable.js jquery/jquery-ui/ui.dialog.js jquery/jquery-ui/effects.core.js jquery/jquery-ui/effects.highlight.js jquery/jquery.selectboxes.js editor.js' %]
 
 [%- WRAPPER 'layout.tt' -%]
-    <h2>[% l('Edit Release') %]</h2>
-
     <form action="[% c.req.uri %]" method="post">
         [% USE r = FormRenderer(form) %]
         [% INCLUDE 'release/sidebar.tt' editing=1 %]

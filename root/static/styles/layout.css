@@ -166,17 +166,17 @@ a:hover { color:#FC6714; text-decoration: underline; }
     margin-right: 0px;
 }
 
-.sidebar {
+#sidebar {
     float: right;
     width: 218px;
     font-size: 95%;
 }
 
-.sidebar p {
+#sidebar p {
     margin-top: 0;
 }
 
-.sidebar ul.links {
+#sidebar ul.links {
     margin-left: 0em;
     padding-left: 2em;
 }
