@@ -324,7 +324,7 @@ MusicBrainz = {
          **/
         init: ($(function ($) {
             var $sidebar = MusicBrainz.$cache.$sidebar;
-            /** Sidebar initiation */
+            /* Sidebar initiation */
             $sidebar.$DDs = $('#sidebar dd')
             $sidebar.$DateDDs = $sidebar.$DDs.filter('.date');
             $sidebar.$InputDDs = $sidebar.$DDs.filter(':has(input):not(.date)');
