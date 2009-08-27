@@ -358,10 +358,11 @@ MusicBrainz = {
          */
         events: {
             toggleOnClick: ($(function ($) {
-                $('#sidebar .editable').live('click', function () {
-                    $(this).css("display", "none")
-                           .prev()
-                           .show();
+                $('#sidebar').bind('click', function (e) {
+                    $(e.target).closest('.editable')
+                               .css("display", "none")
+                               .prev()
+                               .show();
                 });
             })),
         }
