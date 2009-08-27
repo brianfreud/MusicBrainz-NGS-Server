@@ -8,20 +8,6 @@
 
 "use strict";
 
-/**
- * @description Map IE functions to W3C DOM level 2 Style functions.
- */
-if (document.styleSheets[0].rules) {
-    document.styleSheets[0].cssRules = document.styleSheets[0].rules;
-    document.styleSheets[0].deleteRule = function (ruleIndex) {
-        this.removeRule(ruleIndex);
-    };
-    document.styleSheets[0].insertRule = function (ruleText, ruleIndex) {
-        ruleText = ruleText.match(/(.*)\{(.*)\}/);
-        document.styleSheets[0].addRule(ruleText[0], ruleText[1], ruleIndex);
-    };
-}
-
 var
 /**
  * HTML element factory, used to build standardized html strings.
