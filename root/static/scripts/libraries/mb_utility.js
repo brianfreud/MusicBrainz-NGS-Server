@@ -27,7 +27,8 @@ MusicBrainz.utility = {
             elementValue,
             mb = MusicBrainz,
             html = mb.html,
-            span = 'span';
+            span = 'span',
+            argLen = arguments.length;
         if ($element.is('input, select')) {
             elementValue = mb.utility.getValue($element);
             elementValue = elementValue !== '' ? elementValue : '[ ' + mb.text.Unknown + ' ]';
@@ -36,7 +37,13 @@ MusicBrainz.utility = {
             elementValue = typeof stringFormatter === 'function' ? stringFormatter($element) : "";
         }
         /* Support passing a wrapperElementType without also requiring stringFormatter to be passed. */
-        wrapperElementType = arguments.length === 2 ? typeof arguments[1] === 'string' ? stringFormatter : $elementToOverlay[0].tagName.toLowerCase() : wrapperElementType;
+        if (argLen <= 2) { // If argLen == 3, wrapperElementType is already defined. (argLen == 4+ is invalid.)
+            if (typeof arguments[1] === 'string') { // $element and wrapperElementType were passed, stringFormatter was omitted,
+                wrapperElementType = stringFormatter; // so shift the value of stringFormatter into wrapperElementType.
+            } else { // wrapperElementType was not passed at all, so use the tagName of the current enclosing element
+                wrapperElementType = $elementToOverlay[0].tagName.toLowerCase(); // as our wrapping element type.
+            }
+        }
         $elementToOverlay.after($(html.basic(wrapperElementType) +
                                   html.basic(span) +
                                   elementValue +
