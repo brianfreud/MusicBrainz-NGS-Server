@@ -1,5 +1,6 @@
-[% extra_js = 'MBarrays.js jquery/jquery.selectboxes.js editor.js' %]
-
+[% extra_js = 'jquery/jquery.selectboxes.js libraries/html_factory.js libraries/mb_utility.js editor.js' %]
+[% extra_css = 'scripts.css' %]
+[% edit=1 %]
 [%- WRAPPER 'layout.tt' -%]
     <form action="[% c.req.uri %]" method="post">
         [% USE r = FormRenderer(form) %]
