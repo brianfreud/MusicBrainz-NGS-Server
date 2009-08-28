@@ -31,7 +31,9 @@ MusicBrainz.editor = {
          **/
         init: ($(function ($) {
             var $sidebar = MusicBrainz.editor.$cache.$sidebar,
-                $sidebarDDs = $sidebar.$DDs = $('#sidebar dd');
+                $sidebarDDs;
+            /* Sidebar initiation */
+            $sidebarDDs = $sidebar.$DDs = $('#sidebar dd');
             $sidebar.$DateDDs = $sidebarDDs.filter('.date');
             $sidebar.$InputDDs = $sidebarDDs.filter(':has(input):not(.date)');
             $sidebar.$SelectDDs = $sidebarDDs.filter(':has(select)');
@@ -46,10 +48,13 @@ MusicBrainz.editor = {
          * @description Initializes sidebar functionality, onReady.
          **/
         init: ($(function ($) {
-            var mb = MusicBrainz,
-                $sidebar = mb.editor.$cache.$sidebar,
-                utility = mb.utility,
-                addOverlay = utility.addOverlay;
+            var addOverlay,
+                mb = MusicBrainz,
+                $sidebar,
+                utility;
+            $sidebar = mb.editor.$cache.$sidebar;
+            utility = mb.utility;
+            addOverlay = utility.addOverlay;
             $sidebar.$DateDDs.each(function () {
                 addOverlay($(this), utility.getStringChildValues);
             });

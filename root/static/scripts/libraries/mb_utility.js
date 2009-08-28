@@ -19,28 +19,30 @@ MusicBrainz.utility = {
      * @param {Object} $element A single jQuery-wrapped element over which to place an overlay.
      * @param {Function} [stringFormatter] A callback to create custom plaintext strings for use as the overlay text; if $element is not 
      *        an &lt;input&gt; or a &lt;select&gt; and stringFormatter is omitted, an empty string will be returned.
+     * @param {String} [wrapperElementType] Type of element to use to enclose the overlay; by default, $element's enclosing element type will be used.
      **/
-    addOverlay: function ($element, stringFormatter) {
+    addOverlay: function ($element, stringFormatter, wrapperElementType) {
         $element = typeof $element === 'number' ? $(this) : $element; // Allow use by .each() as a callback without requiring an intermediate wrapper function.
         var $elementToOverlay = $element,
             elementValue,
             mb = MusicBrainz,
             html = mb.html,
-            span = 'span';
+            span = 'span',
+            argLen = arguments.length;
         if ($element.is('input, select')) {
             elementValue = mb.utility.getValue($element);
             elementValue = elementValue !== '' ? elementValue : '[ ' + mb.text.Unknown + ' ]';
-            $elementToOverlay = $element.parent();
+            $elementToOverlay = $($element.parent());
         } else {
             elementValue = typeof stringFormatter === 'function' ? stringFormatter($element) : "";
         }
-        $elementToOverlay.after(html.dd({
-                                        cl: 'editable'
-                                        }) +
-                                html.basic(span) +
-                                elementValue +
-                                html.close(span) +
-                                html.close('dd'));
+        /* Support passing a wrapperElementType without also requiring stringFormatter to be passed. */
+        wrapperElementType = argLen === 2 ? typeof arguments[argLen - 1] === 'string' ? stringFormatter : $elementToOverlay[0].tagName.toLowerCase() : wrapperElementType;
+        $elementToOverlay.after($(html.basic(wrapperElementType) +
+                                  html.basic(span) +
+                                  elementValue +
+                                  html.close(span) +
+                                  html.close(wrapperElementType)).addClass('editable'));
         return $element;
     },
     /**
