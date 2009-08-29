@@ -28,15 +28,15 @@ MusicBrainz.utility = {
             mb = MusicBrainz,
             html = mb.html,
             span = 'span',
-            has = options.hasOwnProperty;
+            hasOP = 'hasOwnProperty';
         if ($element.is('input, select')) {
             elementValue = mb.utility.getValue($element);
             elementValue = elementValue !== '' ? elementValue : '[ ' + mb.text.Unknown + ' ]';
             $elementToOverlay = $($element.parent());
         } else {
-            elementValue = has('callback') ? options.callback($element) : "";
+            elementValue = options[hasOP]('callback') ? options.callback($element) : "";
         }
-        options.wrapper = options.hasOwnProperty('wrapper') ? options.wrapper : $elementToOverlay[0].tagName.toLowerCase();
+        options.wrapper = options[hasOP]('wrapper') ? options.wrapper : $elementToOverlay[0].tagName.toLowerCase();
         $elementToOverlay.after($(html.basic(options.wrapper) +
                                   html.basic(span) +
                                   elementValue +

@@ -15,12 +15,13 @@
  */
 var HTML_Factory = function () {
     var alt = 'alt',
+        argFor = 'for',
         basic = 'basic',
         button = 'button',
         checked = 'checked',
         close = 'close',
         css = 'css',
-        display = 'display:',
+        display = 'display',
         div = 'div',
         fieldset = 'fieldset',
         input = 'input',
@@ -33,10 +34,14 @@ var HTML_Factory = function () {
      * @description Stores css rule parameter strings.
      */ 
     this[css] = {
-         displayIB   : display + 'inline-block;',
-         displayNone : display + 'none;',
-         floatLeft   : 'float:left;',
-         floatRight  : 'float:right;'
+        'float' : {
+            left   : 'float:left;',
+            right  : 'float:right;'
+        }
+    };
+    this[css][display] = {
+        IB   : display + ':inline-block;',
+        none : display + ':none;'
     };
     /**
      * @description Used by the various HTML shortcut functions to test the undefined state of an object key so it can be used in a manner 
@@ -69,7 +74,6 @@ var HTML_Factory = function () {
      * @see <a href="#close">close</a>
      * @see <a href="#dd">dd</a>
      * @see <a href="#div">div</a>
-     * @see <a href="#divNoDisplay">divNoDisplay</a>
      * @see <a href="#fieldset">fieldset</a>
      * @see <a href="#input">input</a>
      * @see <a href="#label">label</a>
@@ -91,7 +95,7 @@ var HTML_Factory = function () {
                isDef(args[alt], alt) +
                ((typeof args[checked] !== undef) ? isDef(checked, checked) : '') +
                isDef(args.cl, 'class') +
-               isDef(args['for'], 'for') +
+               isDef(args[argFor], argFor) +
                isDef(args.id, 'id') +
                isDef(args[css], 'style') +
                isDef(args.size, 'size') +
@@ -183,7 +187,7 @@ var HTML_Factory = function () {
                          tag   : div,
                          alt   : checkDef(args[alt]),
                          cl    : checkDef(args.cl),
-                         css   : (typeof args[css] !== undef ? args[css] : '') + hide ? this[css].displayNone : '',
+                         css   : (typeof args[css] !== undef ? args[css] : '') + hide ? this[css][display].none : '',
                          id    : checkDef(args.id),
                          title : checkDef(args[alt]),
                          close : 0
@@ -255,7 +259,7 @@ var HTML_Factory = function () {
                          tag   : label,
                          cl    : checkDef(args.cl),
                          css   : checkDef(args[css]),
-                         'for' : checkDef(args['for']),
+                         'for' : checkDef(args[argFor]),
                          id    : checkDef(args.id),
                          close : 0
                          }) +
