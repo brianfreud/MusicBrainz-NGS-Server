@@ -104,7 +104,7 @@
 [%- BLOCK release_label_properties;
         WRAPPER 'layout/sidebar/properties.tt';
             USE r = FormRenderer(form);
-            editable_property(l('Barcode:'), release.barcode, r.text('barcode'), 'barcode');
+            editable_property(l('Barcode:'), release.barcode, r.text('barcode'), 'barcode', '', 1);
         END;
     END %]
 
