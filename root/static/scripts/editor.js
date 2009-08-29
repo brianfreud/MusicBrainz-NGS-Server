@@ -56,7 +56,7 @@ MusicBrainz.editor = {
             utility = mb.utility;
             addOverlay = utility.addOverlay;
             $sidebar.$DateDDs.each(function () {
-                addOverlay($(this), utility.getStringChildValues);
+                addOverlay($(this), { callback: utility.getStringChildValues });
             });
             $sidebar.$InputDDs.find('input')
                               .add($sidebar.$SelectDDs.find('select'))

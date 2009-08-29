@@ -17,32 +17,26 @@ MusicBrainz.utility = {
     /**
      * @description Creates a text overlay over an element, using the plaintext value of the original element as the text source. 
      * @param {Object} $element A single jQuery-wrapped element over which to place an overlay.
-     * @param {Function} [stringFormatter] A callback to create custom plaintext strings for use as the overlay text; if $element is not 
+     * @param {Function} [options.callback] A callback to create custom plaintext strings for use as the overlay text; if $element is not 
      *        an &lt;input&gt; or a &lt;select&gt; and stringFormatter is omitted, an empty string will be returned.
-     * @param {String} [wrapperElementType] Type of element to use to enclose the overlay; by default, $element's enclosing element type will be used.
+     * @param {String} [options.wrapper] Type of element to use to enclose the overlay; by default, $element's enclosing element type will be used.
      **/
-    addOverlay: function ($element, stringFormatter, wrapperElementType) {
+    addOverlay: function ($element, options) {
         $element = typeof $element === 'number' ? $(this) : $element; // Allow use by .each() as a callback without requiring an intermediate wrapper function.
         var $elementToOverlay = $element,
             elementValue,
             mb = MusicBrainz,
             html = mb.html,
-            span = 'span';
+            span = 'span',
+            has = options.hasOwnProperty;
         if ($element.is('input, select')) {
             elementValue = mb.utility.getValue($element);
             elementValue = elementValue !== '' ? elementValue : '[ ' + mb.text.Unknown + ' ]';
             $elementToOverlay = $($element.parent());
         } else {
-            elementValue = typeof stringFormatter === 'function' ? stringFormatter($element) : "";
+            elementValue = has('callback') ? options.callback($element) : "";
         }
-        /* Support passing a wrapperElementType without also requiring stringFormatter to be passed. */
-        if (arguments.length <= 2) { // If length == 3, wrapperElementType is already defined. (length == 4+ is invalid.)
-            if (typeof arguments[1] === 'string') { // $element and wrapperElementType were passed, stringFormatter was omitted,
-                wrapperElementType = stringFormatter; // so shift the value of stringFormatter into wrapperElementType.
-            } else { // wrapperElementType was not passed at all, so use the tagName of the current enclosing element
-                wrapperElementType = $elementToOverlay[0].tagName.toLowerCase(); // as our wrapping element type.
-            }
-        }
+        wrapperElementType = has('wrapper') ? options.wrapper : $elementToOverlay[0].tagName.toLowerCase();
         $elementToOverlay.after($(html.basic(wrapperElementType) +
                                   html.basic(span) +
                                   elementValue +

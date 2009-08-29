@@ -14,14 +14,28 @@
  * @exports HTML_Factory as MusicBrainz.html
  */
 var HTML_Factory = function () {
+    var alt = 'alt',
+        basic = 'basic',
+        button = 'button',
+        close = 'close',
+        css = 'css',
+        display = 'display:',
+        div = 'div',
+        fieldset = 'fieldset',
+        input = 'input',
+        label = 'label',
+        make = 'make',
+        select = 'select',
+        span = 'span',
+        undef = 'undefined';
     /**
      * @description Stores css rule parameter strings.
      */ 
-    this.css = {
-         displayIB   : 'display: inline-block;',
-         displayNone : 'display: none;',
-         floatLeft   : 'float: left;',
-         floatRight  : 'float: right;'
+    this[css] = {
+         displayIB   : display + 'inline-block;',
+         displayNone : display + 'none;',
+         floatLeft   : 'float:left;',
+         floatRight  : 'float:right;'
     };
     /**
      * @description Used by the various HTML shortcut functions to test the undefined state of an object key so it can be used in a manner 
@@ -31,7 +45,7 @@ var HTML_Factory = function () {
      * @inner
      */
     function checkDef (arg) {
-        return (typeof arg !== 'undefined') ? arg : undefined;
+        return (typeof arg !== undef) ? arg : undef;
     }
     /**
      * @description The central HTML string factory; it creates the actual HTML string using standardized format and attribute order.
@@ -61,7 +75,7 @@ var HTML_Factory = function () {
      * @see <a href="#select">select</a>
      * @see <a href="#span">span</a>
      */
-    this.make = function (args) {
+    this[make] = function (args) {
         /**
          * @description isDef is used internally to create the standardized string for a single attribute of an element.
          * @example isDef('foo', 'id')
@@ -70,16 +84,16 @@ var HTML_Factory = function () {
          * @inner
          */
         var isDef = function (arg, attr) {
-            return (typeof arg === 'undefined') ? '' : [' ',attr,'="',arg,'"'].join("");
+            return (typeof arg === undef) ? '' : [' ',attr,'="',arg,'"'].join("");
             },
             checked = 'checked';
         return '<' + args.tag +
-               isDef(args.alt, 'alt') +
-               ((typeof args[checked] !== "undefined") ? isDef(checked, checked) : '') +
+               isDef(args[alt], alt) +
+               ((typeof args[checked] !== undef) ? isDef(checked, checked) : '') +
                isDef(args.cl, 'class') +
                isDef(args['for'], 'for') +
                isDef(args.id, 'id') +
-               isDef(args.css, 'style') +
+               isDef(args[css], 'style') +
                isDef(args.size, 'size') +
                isDef(args.ti, 'tabindex') +
                isDef(args.title, 'title') +
@@ -94,8 +108,8 @@ var HTML_Factory = function () {
     * @see <a href="#close">close</a>
     * @see <a href="#make">make</a>
     */
-    this.basic = function (tag) {
-        return this.make({
+    this[basic] = function (tag) {
+        return this[make]({
                          tag: tag,
                          close: 0
                          });
@@ -112,13 +126,13 @@ var HTML_Factory = function () {
      * @see <a href="#input">input</a>
      * @see <a href="#make">make</a>
      */
-    this.button = function (args) {
-        return this.input({
+    this[button] = function (args) {
+        return this[input]({
                           id   : checkDef(args.id),
                           cl   : checkDef(args.cl),
-                          css  : checkDef(args.css),
+                          css  : checkDef(args[css]),
                           ti   : '-1',
-                          type : 'button',
+                          'type' : button,
                           val  : checkDef(args.val)
                           });
     };
@@ -129,8 +143,8 @@ var HTML_Factory = function () {
      * @see <a href="#basic">basic</a>
      * @see <a href="#make">make</a>
      */
-    this.close = function (tag) {
-        return this.basic('/' + tag);
+    this[close] = function (tag) {
+        return this[basic]('/' + tag);
     };
     /**
      * @description Used to create dd elements.
@@ -143,11 +157,11 @@ var HTML_Factory = function () {
      * @see <a href="#make">make</a>
      */
     this.dd = function (args) {
-        return this.make({
+        return this[make]({
                          tag   : 'dd',
                          cl    : checkDef(args.cl),
                          id    : checkDef(args.id),
-                         css   : checkDef(args.css),
+                         css   : checkDef(args[css]),
                          close : 0
                          });
     };
@@ -163,14 +177,14 @@ var HTML_Factory = function () {
      * @see <a href="#divNoDisplay">divNoDisplay</a>
      * @see <a href="#make">make</a>
      */
-    this.div = function (args) {
-        return this.make({
-                         tag   : 'div',
-                         alt   : checkDef(args.alt),
+    this[div] = function (args) {
+        return this[make]({
+                         tag   : div,
+                         alt   : checkDef(args[alt]),
                          cl    : checkDef(args.cl),
-                         css   : checkDef(args.css),
+                         css   : checkDef(args[css]),
                          id    : checkDef(args.id),
-                         title : checkDef(args.alt),
+                         title : checkDef(args[alt]),
                          close : 0
                          });
     };
@@ -185,7 +199,7 @@ var HTML_Factory = function () {
      * @see <a href="#make">make</a>
      */
     this.divNoDisplay = function (args) {
-        return this.div({
+        return this[div]({
                         cl  : checkDef(args.cl),
                         css : this.css.displayNone,
                         id  : checkDef(args.id)
@@ -201,11 +215,11 @@ var HTML_Factory = function () {
      * @see <a href="#close">close</a>
      * @see <a href="#make">make</a>
      */
-    this.fieldset = function (args) {
-        return this.make({
-                         tag   : 'fieldset',
+    this[fieldset] = function (args) {
+        return this[make]({
+                         tag   : fieldset,
                          cl    : checkDef(args.cl),
-                         css   : checkDef(args.css),
+                         css   : checkDef(args[css]),
                          id    : checkDef(args.id),
                          close : 0
                          });
@@ -226,16 +240,16 @@ var HTML_Factory = function () {
      * @see <a href="#close">close</a>
      * @see <a href="#make">make</a>
      */
-    this.input = function (args) {
-        return this.make({
-                         tag   : 'input',
+    this[input] = function (args) {
+        return this[make]({
+                         tag   : input,
                          cl    : checkDef(args.cl),
                          check : checkDef(args.check),
-                         css   : checkDef(args.css),
+                         css   : checkDef(args[css]),
                          id    : checkDef(args.id),
                          size  : checkDef(args.size),
                          ti    : checkDef(args.ti),
-                         type  : typeof args.type !== 'undefined' ? args.type : 'text',
+                         'type' : typeof args.type !== undef ? args.type : 'text',
                          val   : checkDef(args.val),
                          close : 1
                          });
@@ -252,17 +266,16 @@ var HTML_Factory = function () {
      * @see <a href="#close">close</a>
      * @see <a href="#make">make</a>
      */
-    this.label = function (args) {
-        var label = 'label';
-        return this.make({
+    this[label] = function (args) {
+        return this[make]({
                          tag   : label,
                          cl    : checkDef(args.cl),
-                         css   : checkDef(args.css),
+                         css   : checkDef(args[css]),
                          'for' : checkDef(args['for']),
                          id    : checkDef(args.id),
                          close : 0
                          }) +
-               (typeof args.val !== 'undefined' ? args.val : '') +
+               (typeof args.val !== undef ? args.val : '') +
                this.close(label);
     };
     /**
@@ -275,16 +288,15 @@ var HTML_Factory = function () {
      * @see <a href="#close">close</a>
      * @see <a href="#make">make</a>
      */
-    this.select = function (args) {
-        var close = this.close,
-            make = this.make,
-            option = 'option',
-            select = 'select';
+    this[select] = function (args) {
+        var close = this[close],
+            make = this[make],
+            option = 'option';
         return make({
                     tag   : select,
                     cl    : checkDef(args.cl),
                     id    : checkDef(args.id),
-                    css   : checkDef(args.css),
+                    css   : checkDef(args[css]),
                     close : 0
                     }) +
                make({
@@ -306,12 +318,12 @@ var HTML_Factory = function () {
      * @see <a href="#close">close</a>
      * @see <a href="#make">make</a>
      */
-    this.span = function (args) {
-        return this.make({
-                         tag   : 'span',
+    this[span] = function (args) {
+        return this[make]({
+                         tag   : span,
                          cl    : checkDef(args.cl),
                          id    : checkDef(args.id),
-                         css   : checkDef(args.css),
+                         css   : checkDef(args[css]),
                          close : 0
                          });
    };

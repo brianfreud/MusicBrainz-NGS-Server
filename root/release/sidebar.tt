@@ -28,10 +28,12 @@
     </p>
 [% END %]
 
-[%- MACRO editable_property(label, text, field, field_name, class)
+[%- MACRO editable_property(label, text, field, field_name, class, editable)
         IF field && editing;
-            INCLUDE 'layout/sidebar/property.tt' content=field class=class
-                label=r.label(field_name, label);
+            IF editable;
+                INCLUDE 'layout/sidebar/property.tt' content=field class=class
+                    label=r.label(field_name, label);
+            END;
         ELSE;
             INCLUDE 'layout/sidebar/property.tt' content=text IF text;
         END %]
@@ -47,48 +49,54 @@
                     field => r.date('date'),
                     field_name => 'date',
                     class => 'date',
-                },
-                {
-                    label => l('Country:'),
-                    text => release.country.name,
-                    field => r.select('country_id'),
-                    field_name => 'country_id',
-                },
-                {
-                    label => l('Language:'),
-                    text => release.language.name,
-                    field => r.select('language_id'),
-                    field_name => 'country_id',
-                },
-                {
-                    label => l('Script:'),
-                    text => release.script.name,
-                    field => r.select('script_id'),
-                    field_name => 'country_id',
-                },
-                {
-                    label => l('Format:'),
-                    text => release.combined_format_name,
+                    editable => 1,
                 },
                 {
                     label => l('Packaging:'),
                     text => release.packaging.name,
                     field => r.select('packaging_id'),
                     field_name => 'packaging_id',
-                },
-                {
-                    label => l('Type:'),
-                    text => release.release_group.type.name,
+                    editable => 1,
                 },
                 {
                     label => l('Status:'),
                     text => release.status.name,
                     field => r.select('status_id'),
                     field_name => 'status_id',
+                    editable => 1,
+                },
+                {
+                    label => l('Language:'),
+                    text => release.language.name,
+                    field => r.select('language_id'),
+                    field_name => 'country_id',
+                    editable => 1,
+                },
+                {
+                    label => l('Script:'),
+                    text => release.script.name,
+                    field => r.select('script_id'),
+                    field_name => 'country_id',
+                    editable => 1,
+                },
+                {
+                    label => l('Country:'),
+                    text => release.country.name,
+                    field => r.select('country_id'),
+                    field_name => 'country_id',
+                    editable => 1,
+                },
+                {
+                    label => l('Format:'),
+                    text => release.combined_format_name,
+                },
+                {
+                    label => l('Type:'),
+                    text => release.release_group.type.name,
                 },
             ];
 
-            editable_property(prop.label, prop.text, prop.field, prop.field_name, prop.class)
+            editable_property(prop.label, prop.text, prop.field, prop.field_name, prop.class, prop.editable)
                 FOR prop=release_properties;
         END;
     END %]
