@@ -28,7 +28,8 @@ MusicBrainz.utility = {
             mb = MusicBrainz,
             html = mb.html,
             span = 'span',
-            hasOP = 'hasOwnProperty';
+            hasOP = 'hasOwnProperty',
+            wrapper = 'wrapper';
         if ($element.is('input, select')) {
             elementValue = mb.utility.getValue($element);
             elementValue = elementValue !== '' ? elementValue : '[ ' + mb.text.Unknown + ' ]';
@@ -36,12 +37,12 @@ MusicBrainz.utility = {
         } else {
             elementValue = options[hasOP]('callback') ? options.callback($element) : "";
         }
-        options.wrapper = options[hasOP]('wrapper') ? options.wrapper : $elementToOverlay[0].tagName.toLowerCase();
-        $elementToOverlay.after($(html.basic(options.wrapper) +
+        options[wrapper] = options[hasOP](wrapper) ? options[wrapper] : $elementToOverlay[0].tagName.toLowerCase();
+        $elementToOverlay.after($(html.basic(options[wrapper]) +
                                   html.basic(span) +
                                   elementValue +
                                   html.close(span) +
-                                  html.close(options.wrapper)).addClass('editable'));
+                                  html.close(options[wrapper])).addClass('editable'));
         return $element;
     },
     /**
@@ -49,7 +50,7 @@ MusicBrainz.utility = {
      * @param {Object} $inputs A single jQuery-wrapped parent element containing child inputs of type text.
      * @param {String} [joinSeparator] The separator to use between the values of each input; default is '&nbsp;&ndash;&nbsp;'.
      **/
-    getStringChildValues: function ($inputs, joinSeparator) { 
+    getChildValues: function ($inputs, joinSeparator) { 
         return $('input[type=text][value!=""]', $inputs).map(function () {
                                                                  return this.value;
                                                         })
