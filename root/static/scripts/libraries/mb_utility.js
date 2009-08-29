@@ -36,12 +36,12 @@ MusicBrainz.utility = {
         } else {
             elementValue = has('callback') ? options.callback($element) : "";
         }
-        wrapperElementType = has('wrapper') ? options.wrapper : $elementToOverlay[0].tagName.toLowerCase();
-        $elementToOverlay.after($(html.basic(wrapperElementType) +
+        options.wrapper = options.hasOwnProperty('wrapper') ? options.wrapper : $elementToOverlay[0].tagName.toLowerCase();
+        $elementToOverlay.after($(html.basic(options.wrapper) +
                                   html.basic(span) +
                                   elementValue +
                                   html.close(span) +
-                                  html.close(wrapperElementType)).addClass('editable'));
+                                  html.close(options.wrapper)).addClass('editable'));
         return $element;
     },
     /**

@@ -17,6 +17,7 @@ var HTML_Factory = function () {
     var alt = 'alt',
         basic = 'basic',
         button = 'button',
+        checked = 'checked',
         close = 'close',
         css = 'css',
         display = 'display:',
@@ -85,8 +86,7 @@ var HTML_Factory = function () {
          */
         var isDef = function (arg, attr) {
             return (typeof arg === undef) ? '' : [' ',attr,'="',arg,'"'].join("");
-            },
-            checked = 'checked';
+        };
         return '<' + args.tag +
                isDef(args[alt], alt) +
                ((typeof args[checked] !== undef) ? isDef(checked, checked) : '') +
@@ -183,7 +183,7 @@ var HTML_Factory = function () {
                          tag   : div,
                          alt   : checkDef(args[alt]),
                          cl    : checkDef(args.cl),
-                         css   : checkDef(args[css]) + hide ? this.css.displayNone : '',
+                         css   : (typeof arg !== undef) ? arg : '') + hide ? this[css].displayNone : '',
                          id    : checkDef(args.id),
                          title : checkDef(args[alt]),
                          close : 0
