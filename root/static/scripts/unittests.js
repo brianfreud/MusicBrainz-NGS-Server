@@ -79,6 +79,40 @@ $(document).ready(function () {
                                   css: 'color:black;',
                                   id: 'idText' }, true), '<div alt="altText" class="classText" id="idText" style="color:black;display:none;" title="altText">', 'Complex hidden div element');
         });
+        test("fieldset", function () {
+            equals(htmlFactory.fieldset({}), '<fieldset>', 'Basic fieldset element');
+            equals(htmlFactory.fieldset({
+                                  cl: 'classText',
+                                  css: 'styleText',
+                                  id: 'idText' }), '<fieldset class="classText" id="idText" style="styleText">', 'Complex fieldset element');
+        });
+        test("input", function () {
+            ok(false, "missing test - untested code is broken code.");
+        });
+        test("label", function () {
+            ok(false, "missing test - untested code is broken code.");
+        });
+        test("select", function () {
+            ok(false, "missing test - untested code is broken code.");
+        });
+        test("span", function () {
+            equals(htmlFactory.span({}), '<span>', 'Basic span element');
+            equals(htmlFactory.span({
+                                  cl: 'classText',
+                                  css: 'styleText',
+                                  id: 'idText' }), '<span class="classText" id="idText" style="styleText">', 'Complex span element');
+        });
+
+    module("mb_utility");
+        test("addOverlay", function () {
+            ok(false, "missing test - untested code is broken code.");
+        });
+        test("getChildValues", function () {
+            ok(false, "missing test - untested code is broken code.");
+        });
+        test("getValue", function () {
+            ok(false, "missing test - untested code is broken code.");
+        });
 });
 
 
