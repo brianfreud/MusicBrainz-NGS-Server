@@ -50,13 +50,47 @@ $(document).ready(function () {
             equals(htmlFactory.button({}), '<input tabindex="-1" type="button"/>', 'Basic button element');
             equals(htmlFactory.button({
                                       cl: 'classText',
-                                      css: 'classText',
+                                      css: 'styleText',
                                       id: 'idText',
-                                      val: 'valueText' }), '<input class="classText" id="idText" style="classText" tabindex="-1" type="button" value="valueText"/>', 'Complex button element');
+                                      val: 'valueText' }), '<input class="classText" id="idText" style="styleText" tabindex="-1" type="button" value="valueText"/>', 'Complex button element');
         });
         test("close", function () {
             equals(htmlFactory.close("div"), '</div>');
         });
-
-
+        test("dd", function () {
+            equals(htmlFactory.dd({}), '<dd>', 'Basic dd element');
+            equals(htmlFactory.dd({
+                                  cl: 'classText',
+                                  css: 'styleText',
+                                  id: 'idText' }), '<dd class="classText" id="idText" style="styleText">', 'Complex dd element');
+        });
+        test("div", function () {
+            equals(htmlFactory.div({}), '<div>', 'Basic div element, implicitly non-hidden');
+            equals(htmlFactory.div({}, false), '<div>', 'Basic div element, expressly non-hidden');
+            equals(htmlFactory.div({
+                                  alt: 'altText',
+                                  cl: 'classText',
+                                  css: 'color:black;',
+                                  id: 'idText' }), '<div alt="altText" class="classText" id="idText" style="color:black;" title="altText">', 'Complex div element');
+            equals(htmlFactory.div({}, true), '<div style="display:none;">', 'Basic hidden div element');
+            equals(htmlFactory.div({
+                                  alt: 'altText',
+                                  cl: 'classText',
+                                  css: 'color:black;',
+                                  id: 'idText' }, true), '<div alt="altText" class="classText" id="idText" style="color:black;display:none;" title="altText">', 'Complex hidden div element');
+        });
 });
+
+
+
+
+
+
+
+
+
+
+
+
+
+

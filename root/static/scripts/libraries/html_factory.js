@@ -89,7 +89,7 @@ var HTML_Factory = function () {
          * @inner
          */
         var isDef = function (arg, attr) {
-            return (typeof arg === undef) ? '' : [' ',attr,'="',arg,'"'].join("");
+            return (typeof arg === undef) ? '' : (arg.length > 0 ? [' ',attr,'="',arg,'"'].join("") : '');
         };
         return '<' + args.tag +
                isDef(args[alt], alt) +
@@ -164,8 +164,8 @@ var HTML_Factory = function () {
         return this[make]({
                          tag   : 'dd',
                          cl    : checkDef(args.cl),
-                         id    : checkDef(args.id),
                          css   : checkDef(args[css]),
+                         id    : checkDef(args.id),
                          close : 0
                          });
     };
@@ -182,12 +182,12 @@ var HTML_Factory = function () {
      * @see <a href="#make">make</a>
      */
     this[div] = function (args, hide) {
-        hide = typeof hide === undef ? 0 : hide;
+        hide = typeof hide === undef ? false : hide;
         return this[make]({
                          tag   : div,
                          alt   : checkDef(args[alt]),
                          cl    : checkDef(args.cl),
-                         css   : (typeof args[css] !== undef ? args[css] : '') + hide ? this[css][display].none : '',
+                         css   : (typeof args[css] !== undef ? args[css] : '') + (hide ? this[css][display].none : ''),
                          id    : checkDef(args.id),
                          title : checkDef(args[alt]),
                          close : 0
