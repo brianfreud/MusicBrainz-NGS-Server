@@ -63,7 +63,6 @@ MusicBrainz.editor = {
             $sidebar.$InputDDs.find('input')
                               .add($sidebar.$SelectDDs.find('select'))
                               .each(addOverlay);
-            $sidebar.$DDs.hide();
         })),
         /** 
          * @description Stores sidebar-specific event bindings.
