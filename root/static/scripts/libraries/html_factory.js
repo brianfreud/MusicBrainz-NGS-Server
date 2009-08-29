@@ -51,7 +51,7 @@ var HTML_Factory = function () {
      * @inner
      */
     function checkDef (arg) {
-        return (typeof arg !== undef) ? arg : undef;
+        return (typeof arg !== undef) ? arg : undefined;
     }
     /**
      * @description The central HTML string factory; it creates the actual HTML string using standardized format and attribute order.
@@ -132,9 +132,9 @@ var HTML_Factory = function () {
      */
     this[button] = function (args) {
         return this[input]({
-                          id   : checkDef(args.id),
                           cl   : checkDef(args.cl),
                           css  : checkDef(args[css]),
+                          id   : checkDef(args.id),
                           ti   : '-1',
                           type : button,
                           val  : checkDef(args.val)
