@@ -183,7 +183,7 @@ var HTML_Factory = function () {
                          tag   : div,
                          alt   : checkDef(args[alt]),
                          cl    : checkDef(args.cl),
-                         css   : (typeof arg !== undef) ? arg : '') + hide ? this[css].displayNone : '',
+                         css   : (typeof args[css] !== undef ? args[css] : '') + hide ? this[css].displayNone : '',
                          id    : checkDef(args.id),
                          title : checkDef(args[alt]),
                          close : 0
