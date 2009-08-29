@@ -87,7 +87,30 @@ $(document).ready(function () {
                                   id: 'idText' }), '<fieldset class="classText" id="idText" style="styleText">', 'Complex fieldset element');
         });
         test("input", function () {
-            ok(false, "missing test - untested code is broken code.");
+            equals(htmlFactory.input({}), '<input type="text"/>', 'Basic input element, implied type text');
+            equals(htmlFactory.input({
+                                  cl: 'classText',
+                                  css: 'styleText',
+                                  size: '10',
+                                  ti: '4',
+                                  val: 'Test string',
+                                  id: 'idText' }), '<input class="classText" id="idText" size="10" style="styleText" tabindex="4" type="text" value="Test string"/>', 'Complex input element, type text (implied)');
+            equals(htmlFactory.input({
+                                  cl: 'classText',
+                                  css: 'styleText',
+                                  size: '10',
+                                  ti: '4',
+                                  type: 'text',
+                                  val: 'Test string',
+                                  id: 'idText' }), '<input class="classText" id="idText" size="10" style="styleText" tabindex="4" type="text" value="Test string"/>', 'Complex input element, type text (explicit)');
+            equals(htmlFactory.input({
+                                  checked: 'yes',
+                                  cl: 'classText',
+                                  css: 'styleText',
+                                  ti: '4',
+                                  type: 'checkbox',
+                                  val: 'Test',
+                                  id: 'idText' }), '<input checked="checked" class="classText" id="idText" style="styleText" tabindex="4" type="checkbox" value="Test"/>', 'Complex input element, type checkbox (explicit)');
         });
         test("label", function () {
             ok(false, "missing test - untested code is broken code.");

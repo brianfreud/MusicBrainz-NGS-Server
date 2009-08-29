@@ -97,8 +97,8 @@ var HTML_Factory = function () {
                isDef(args.cl, 'class') +
                isDef(args[argFor], argFor) +
                isDef(args.id, 'id') +
-               isDef(args[css], 'style') +
                isDef(args.size, 'size') +
+               isDef(args[css], 'style') +
                isDef(args.ti, 'tabindex') +
                isDef(args.title, 'title') +
                isDef(args.type, 'type') +
