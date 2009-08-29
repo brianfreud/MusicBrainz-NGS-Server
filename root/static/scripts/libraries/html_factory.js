@@ -99,7 +99,7 @@ var HTML_Factory = function () {
                isDef(args.title, 'title') +
                isDef(args.type, 'type') +
                isDef(args.val, 'value') +
-               (args.close ? '/>' : '>');
+               (args[close] ? '/>' : '>');
     };
     /**
     * @description Used to create simple elements, with no attributes, such as &lt;textarea&gt;.
@@ -132,7 +132,7 @@ var HTML_Factory = function () {
                           cl   : checkDef(args.cl),
                           css  : checkDef(args[css]),
                           ti   : '-1',
-                          'type' : button,
+                          type : button,
                           val  : checkDef(args.val)
                           });
     };
@@ -173,37 +173,21 @@ var HTML_Factory = function () {
      * @param {String} [args.cl] The "class" attribute.
      * @param {String} [args.css] The "style" attribute.
      * @param {String} [args.id] The "id" attribute.
+     * @param {Boolean} [hide] Create this element with "display: none" set.
      * @see <a href="#close">close</a>
-     * @see <a href="#divNoDisplay">divNoDisplay</a>
      * @see <a href="#make">make</a>
      */
-    this[div] = function (args) {
+    this[div] = function (args, hide) {
+        hide = typeof hide === undef ? 0 : hide;
         return this[make]({
                          tag   : div,
                          alt   : checkDef(args[alt]),
                          cl    : checkDef(args.cl),
-                         css   : checkDef(args[css]),
+                         css   : checkDef(args[css]) + hide ? this.css.displayNone : '',
                          id    : checkDef(args.id),
                          title : checkDef(args[alt]),
                          close : 0
                          });
-    };
-    /**
-     * @description Used to create simple hidden div elements; the "display" property is used to hide the element.
-     * @example MusicBrainz.html.divNoDisplay({ cl: 'foo', id: 'bar' })
-     * @param {Object} args The attributes to be added to the &lt;div&gt; string being formed.
-     * @param {String} [args.cl] The "class" attribute.
-     * @param {String} [args.id] The "id" attribute.
-     * @see <a href="#close">close</a>
-     * @see <a href="#div">div</a>
-     * @see <a href="#make">make</a>
-     */
-    this.divNoDisplay = function (args) {
-        return this[div]({
-                        cl  : checkDef(args.cl),
-                        css : this.css.displayNone,
-                        id  : checkDef(args.id)
-                        });
     };
     /**
      * @description Used to create fieldset elements.
@@ -242,16 +226,16 @@ var HTML_Factory = function () {
      */
     this[input] = function (args) {
         return this[make]({
-                         tag   : input,
-                         cl    : checkDef(args.cl),
-                         check : checkDef(args.check),
-                         css   : checkDef(args[css]),
-                         id    : checkDef(args.id),
-                         size  : checkDef(args.size),
-                         ti    : checkDef(args.ti),
-                         'type' : typeof args.type !== undef ? args.type : 'text',
-                         val   : checkDef(args.val),
-                         close : 1
+                         tag     : input,
+                         cl      : checkDef(args.cl),
+                         checked : checkDef(args[checked]),
+                         css     : checkDef(args[css]),
+                         id      : checkDef(args.id),
+                         size    : checkDef(args.size),
+                         ti      : checkDef(args.ti),
+                         type    : typeof args.type !== undef ? args.type : 'text',
+                         val     : checkDef(args.val),
+                         close   : 1
                          });
     };
     /**
@@ -276,7 +260,7 @@ var HTML_Factory = function () {
                          close : 0
                          }) +
                (typeof args.val !== undef ? args.val : '') +
-               this.close(label);
+               this[close](label);
     };
     /**
      * @description Used to create unpopulated select elements with a default "[ Select One ]" option.
