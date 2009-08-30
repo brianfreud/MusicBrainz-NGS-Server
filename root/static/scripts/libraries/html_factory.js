@@ -273,13 +273,15 @@ var HTML_Factory = function () {
      * @param {String} [args.cl] The "class" attribute.
      * @param {String} [args.css] The "style" attribute.
      * @param {String} [args.id] The "id" attribute.
+     * @param {String} [args.text.SelectOne] The text to use for the "nothing selected" option; default text is stored in MusicBrainz.text.SelectOne.
      * @see <a href="#close">close</a>
      * @see <a href="#make">make</a>
      */
     this[select] = function (args) {
         var close = this[close],
             make = this[make],
-            option = 'option';
+            option = 'option',
+            textSelectOne = 'text.SelectOne';
         return make({
                     tag   : select,
                     cl    : checkDef(args.cl),
@@ -292,7 +294,7 @@ var HTML_Factory = function () {
                     val   : '',
                     close : 0
                     }) +
-               '[ ' + MusicBrainz.text.SelectOne + ' ]' +
+               '[ ' + (options.hasOwnProperty(textSelectOne) ? options[textSelectOne] : MusicBrainz[textSelectOne]) + ' ]' +
                close(option) +
                close(select);
     };

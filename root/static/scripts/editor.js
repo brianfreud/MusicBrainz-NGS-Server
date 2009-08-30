@@ -57,12 +57,12 @@ MusicBrainz.editor = {
             addOverlay = utility.addOverlay;
             $sidebar.$DateDDs.each(function () {
                 addOverlay($(this), {
-                                    callback: utility.getChildValues
+                                    createOverlayText: utility.getChildValues
                                     });
             });
             $sidebar.$InputDDs.find('input')
                               .add($sidebar.$SelectDDs.find('select'))
-                              .each(addOverlay);
+                              .each(addOverlayThis);
         })),
         /** 
          * @description Stores sidebar-specific event bindings.
