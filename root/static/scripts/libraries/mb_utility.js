@@ -5,6 +5,7 @@
  * @fileOverview This file contains all utility functions used in MusicBrainz javascript code.
  * @author Brian Schweitzer (BrianFreud) brian.brianschweitzer@gmail.com
  * @requires html_factory.js
+ * @requires jquery.selectboxes.js
  */
 
 "use strict";
@@ -33,6 +34,7 @@ MusicBrainz.utility = {
             wrapper = 'wrapper',
             createOverlayText = 'createOverlayText',
             textForUnknown = 'textForUnknown';
+        options = typeof options !== 'undefined' ? options : {};
         if ($element.is('input, select')) {
             elementValue = mb.utility.getValue($element);
             elementValue = elementValue !== '' ? elementValue : '[ ' + (options[hasOwnProp](textForUnknown) ? options[textForUnknown] : mb.text.Unknown) + ' ]';

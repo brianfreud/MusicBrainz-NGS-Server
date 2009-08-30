@@ -321,5 +321,3 @@ var HTML_Factory = function () {
    };
 };
 MusicBrainz.html = new HTML_Factory();
-console.log(MusicBrainz.html);
-console.dir(MusicBrainz);

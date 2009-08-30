@@ -158,11 +158,16 @@ $(document).ready(function () {
         });
 
     module("mb_utility");
+        var $thisTestSet = $("#testElements").clone();
         test("Basic requirements", function () {
             ok( MusicBrainz.html, "MusicBrainz.html" );
             ok( MusicBrainz.text, "MusicBrainz.text" );
+            ok( $thisTestSet, 'Test form elements');
         });
         test("addOverlay", function () {
+        $thisTestSet.children().each(function () {
+            MusicBrainz.utility.addOverlay($(this));
+        });
             ok(false, "missing test - untested code is broken code.");
         });
         test("addOverlayThis", function () {
