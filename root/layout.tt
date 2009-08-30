@@ -75,10 +75,6 @@
                 $(function ($) {
                     [%#- Hide the edit tab from any browser that doesn't have javascript enabled (or which is broken for jQuery). -%]
                     $("#editToggle").show();
-                    [%- IF browserIsIE -%]
-                        [%#- IE ignores quote tags.  This fixes that. -%]
-                        $("q").prepend("&#8220;").append("&#8221;");
-                        [%- END -%]
                 });
             </script>
             [%- IF edit -%]
