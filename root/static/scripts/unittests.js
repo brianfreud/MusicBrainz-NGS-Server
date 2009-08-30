@@ -158,7 +158,7 @@ $(document).ready(function () {
         });
 
     module("mb_utility");
-        var $thisTestSet = $("#testElements").clone();
+        var $thisTestSet = $("#testElements, div");
         test("Basic requirements", function () {
             ok( MusicBrainz.html, "MusicBrainz.html" );
             ok( MusicBrainz.text, "MusicBrainz.text" );

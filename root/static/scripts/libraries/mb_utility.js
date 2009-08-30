@@ -6,6 +6,7 @@
  * @author Brian Schweitzer (BrianFreud) brian.brianschweitzer@gmail.com
  * @requires html_factory.js
  * @requires jquery.selectboxes.js
+ * @requires jquery.unwrap.js
  */
 
 "use strict";
@@ -33,7 +34,8 @@ MusicBrainz.utility = {
             hasOwnProp = 'hasOwnProperty',
             wrapper = 'wrapper',
             createOverlayText = 'createOverlayText',
-            textForUnknown = 'textForUnknown';
+            textForUnknown = 'textForUnknown',
+            wrappedElement = false;
         options = typeof options !== 'undefined' ? options : {};
         if ($element.is('input, select')) {
             elementValue = mb.utility.getValue($element);
@@ -43,11 +45,18 @@ MusicBrainz.utility = {
             elementValue = options[hasOwnProp](createOverlayText) ? options[createOverlayText]($element) : "";
         }
         options[wrapper] = options[hasOwnProp](wrapper) ? options[wrapper] : $elementToOverlay[0].tagName.toLowerCase();
+        if ($element.parent().parentNode == null || $element.parent().tagName.match(/body/i)) {
+            $element.wrap(html.basic(options[wrapper]) + html.close(options[wrapper])); // Add a temporary div wrapper, such that $element.parent() now has a .parentNode.
+            wrappedElement = true;
+        }
         $elementToOverlay.after($(html.basic(options[wrapper]) +
                                   html.basic(span) +
                                   elementValue +
                                   html.close(span) +
                                   html.close(options[wrapper])).addClass('editable'));
+        if (wrappedElement) {
+            $element.unwrap(); // Remove the temporary div wrapper.
+        }
         return $element;
     },
     /**
