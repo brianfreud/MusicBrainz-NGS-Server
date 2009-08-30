@@ -8,15 +8,29 @@ $(document).ready(function () {
             equals(true, true, "Shallow comparison assertion");
             same(actual, { a: 1 }, "Deep comparison assertion");
         });
-
-    module("jQuery");
         test("Basic requirements", function () {
             ok( jQuery, "jQuery" );
             ok( $, "$" );
+            ok( MusicBrainz, "MusicBrainz" );
         });
 
     module("HTML Factory");
         var htmlFactory = new HTML_Factory();
+        test("Basic requirements", function () {
+            ok( htmlFactory.basic, "basic" );
+            ok( htmlFactory.button, "button" );
+            ok( htmlFactory.close, "close" );
+            ok( htmlFactory.css, "css" );
+            ok( htmlFactory.dd, "dd" );
+            ok( htmlFactory.div, "div" );
+            ok( htmlFactory.fieldset, "fieldset" );
+            ok( htmlFactory.input, "input" );
+            ok( htmlFactory.label, "label" );
+            ok( htmlFactory.make, "make" );
+            ok( htmlFactory.select, "select" );
+            ok( htmlFactory.span, "span" );
+            ok( MusicBrainz.text, "MusicBrainz.text" );
+        });
         test("Instantation", function () {
             equals(typeof htmlFactory, 'object', 'constructor instantation');
         });
@@ -113,10 +127,24 @@ $(document).ready(function () {
                                   id: 'idText' }), '<input checked="checked" class="classText" id="idText" style="styleText" tabindex="4" type="checkbox" value="Test"/>', 'Complex input element, type checkbox (explicit)');
         });
         test("label", function () {
-            ok(false, "missing test - untested code is broken code.");
+            equals(htmlFactory.label({}), '<label></label>', 'Basic label element');
+            equals(htmlFactory.label({
+                                     cl: 'classText',
+                                     css: 'styleText',
+                                     for: 'forText',
+                                     id: 'idText' }), '<label class="classText" for="forText" id="idText" style="styleText"></label>', 'Complex label element');
         });
         test("select", function () {
-            ok(false, "missing test - untested code is broken code.");
+            equals(htmlFactory.select({}), '<select><option val="">[ Select One ]</option></select>', 'Basic select element');
+            equals(htmlFactory.select({
+                                      cl: 'classText',
+                                      css: 'styleText',
+                                      id: 'idText' }), '<select class="classText" for="forText" id="idText" style="styleText"><option val="">[ Select One ]</option></select>', 'Complex select element with default default option text');
+            equals(htmlFactory.select({
+                                      cl: 'classText',
+                                      css: 'styleText',
+                                      textSelectOne: 'Custom Text!',
+                                      id: 'idText' }), '<select class="classText" for="forText" id="idText" style="styleText"><option val="">[ Custom Text! ]</option></select>', 'Complex select element with custom default option text');
         });
         test("span", function () {
             equals(htmlFactory.span({}), '<span>', 'Basic span element');
@@ -127,7 +155,14 @@ $(document).ready(function () {
         });
 
     module("mb_utility");
+        test("Basic requirements", function () {
+            ok( MusicBrainz.html, "MusicBrainz.html" );
+            ok( MusicBrainz.text, "MusicBrainz.text" );
+        });
         test("addOverlay", function () {
+            ok(false, "missing test - untested code is broken code.");
+        });
+        test("addOverlayThis", function () {
             ok(false, "missing test - untested code is broken code.");
         });
         test("getChildValues", function () {

@@ -1,5 +1,5 @@
 [% extra_css = "QUnit.css" %]
-[% WRAPPER "layout.tt" title=l("JavaScript Unit Tests") full_width=1 nojquery=1 %]
+[% WRAPPER "layout.tt" title=l("JavaScript Unit Tests") full_width=1 nojavascript=1 %]
 <div>
     <h1>
         Guess Case Unit Tests
@@ -13,11 +13,12 @@
 </div>
 <div id="main">
 </div>
-<script type="text/javascript" src="/static/scripts/jquery/jquery-1.3.2.min.js"></script>
-<script type="text/javascript" src="/static/scripts/libraries/QUnit.js"></script>
 <script type="text/javascript">
     var MusicBrainz = {};
 </script>
+<script type="text/javascript" src="/static/scripts/jquery/jquery-1.3.2.min.js"></script>
+<script type="text/javascript" src="/text_strings.js"></script>
 <script type="text/javascript" src="/static/scripts/libraries/html_factory.js"></script>
+<script type="text/javascript" src="/static/scripts/libraries/QUnit.js"></script>
 <script type="text/javascript" src="/static/scripts/unittests.js"></script>
 [% END %]

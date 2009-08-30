@@ -1,7 +1,7 @@
 /*jslint undef: true, browser: true*/
 /*global jQuery, $, MusicBrainz */
 
-/** 
+/**
  * @fileOverview This file contains all utility functions used in MusicBrainz javascript code.
  * @author Brian Schweitzer (BrianFreud) brian.brianschweitzer@gmail.com
  * @requires html_factory.js
@@ -15,9 +15,9 @@
  */
 MusicBrainz.utility = {
     /**
-     * @description Creates a text overlay over an element, using the plaintext value of the original element as the text source. 
+     * @description Creates a text overlay over an element, using the plaintext value of the original element as the text source.
      * @param {Object} $element A single jQuery-wrapped element over which to place an overlay.
-     * @param {Function} [options.createOverlayText] A callback to create custom plaintext strings for use as the overlay text; if $element is not 
+     * @param {Function} [options.createOverlayText] A callback to create custom plaintext strings for use as the overlay text; if $element is not
      *        an &lt;input&gt; or a &lt;select&gt; and stringFormatter is omitted, an empty string will be returned.
      * @param {String} [options.textForUnknown] The text to use for overlaying fields which currently have no defined value; default text is stored in MusicBrainz.text.Unknown.
      * @param {String} [options.wrapper] Type of element to use to enclose the overlay; by default, $element's enclosing element type will be used.
@@ -62,7 +62,7 @@ MusicBrainz.utility = {
      * @param {Object} $inputs A single jQuery-wrapped parent element containing child inputs of type text.
      * @param {String} [joinSeparator] The separator to use between the values of each input; default is '&nbsp;&ndash;&nbsp;'.
      **/
-    getChildValues: function ($inputs, joinSeparator) { 
+    getChildValues: function ($inputs, joinSeparator) {
         return $('input[type=text][value!=""]', $inputs).map(function () {
                                                                  return this.value;
                                                         })

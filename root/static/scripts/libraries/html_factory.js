@@ -1,7 +1,7 @@
 /*jslint undef: true, browser: true*/
 /*global jQuery, $, MusicBrainz */
 
-/** 
+/**
  * @fileOverview An HTML string factory.
  * @author Brian Schweitzer (BrianFreud) brian.brianschweitzer@gmail.com
  */
@@ -32,7 +32,7 @@ var HTML_Factory = function () {
         undef = 'undefined';
     /**
      * @description Stores css rule parameter strings.
-     */ 
+     */
     this[css] = {
         'float' : {
             left   : 'float:left;',
@@ -44,7 +44,7 @@ var HTML_Factory = function () {
         none : display + ':none;'
     };
     /**
-     * @description Used by the various HTML shortcut functions to test the undefined state of an object key so it can be used in a manner 
+     * @description Used by the various HTML shortcut functions to test the undefined state of an object key so it can be used in a manner
      *              that won't lead to our attempting to access the value of an undefined key.
      * @example checkDef('foo')
      * @param {Variable} arg The variable being tested.
@@ -278,25 +278,25 @@ var HTML_Factory = function () {
      * @see <a href="#make">make</a>
      */
     this[select] = function (args) {
-        var close = this[close],
-            make = this[make],
+        var close = 'close',
+            make = 'make',
             option = 'option',
-            textSelectOne = 'text.SelectOne';
-        return make({
-                    tag   : select,
-                    cl    : checkDef(args.cl),
-                    id    : checkDef(args.id),
-                    css   : checkDef(args[css]),
-                    close : 0
-                    }) +
-               make({
-                    tag   : option,
-                    val   : '',
-                    close : 0
-                    }) +
-               '[ ' + (args.hasOwnProperty(textSelectOne) ? args[textSelectOne] : MusicBrainz[textSelectOne]) + ' ]' +
-               close(option) +
-               close(select);
+            textSelectOne = 'textSelectOne';
+        return this[make]({
+                          tag   : select,
+                          cl    : checkDef(args.cl),
+                          id    : checkDef(args.id),
+                          css   : checkDef(args[css]),
+                          close : 0
+                          }) +
+               this[make]({
+                          tag   : option,
+                          val   : '',
+                          close : 0
+                          }) +
+               '[ ' + (args.hasOwnProperty(textSelectOne) ? args[textSelectOne] : MusicBrainz.text.SelectOne) + ' ]' +
+               this[close](option) +
+               this[close](select);
     };
     /**
      * @description Used to create span elements.
@@ -319,3 +319,5 @@ var HTML_Factory = function () {
    };
 };
 MusicBrainz.html = new HTML_Factory();
+console.log(MusicBrainz.html);
+console.dir(MusicBrainz);
