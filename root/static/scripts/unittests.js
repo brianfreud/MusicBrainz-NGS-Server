@@ -105,26 +105,29 @@ $(document).ready(function () {
             equals(htmlFactory.input({
                                   cl: 'classText',
                                   css: 'styleText',
+                                  'name': "nameText",
                                   size: '10',
                                   ti: '4',
                                   val: 'Test string',
-                                  id: 'idText' }), '<input class="classText" id="idText" size="10" style="styleText" tabindex="4" type="text" value="Test string"/>', 'Complex input element, type text (implied)');
+                                  id: 'idText' }), '<input class="classText" id="idText" name="nameText" size="10" style="styleText" tabindex="4" type="text" value="Test string"/>', 'Complex input element, type text (implied)');
             equals(htmlFactory.input({
                                   cl: 'classText',
                                   css: 'styleText',
+                                  'name': "nameText",
                                   size: '10',
                                   ti: '4',
                                   type: 'text',
                                   val: 'Test string',
-                                  id: 'idText' }), '<input class="classText" id="idText" size="10" style="styleText" tabindex="4" type="text" value="Test string"/>', 'Complex input element, type text (explicit)');
+                                  id: 'idText' }), '<input class="classText" id="idText" name="nameText" size="10" style="styleText" tabindex="4" type="text" value="Test string"/>', 'Complex input element, type text (explicit)');
             equals(htmlFactory.input({
                                   checked: 'yes',
                                   cl: 'classText',
                                   css: 'styleText',
+                                  'name': "nameText",
                                   ti: '4',
                                   type: 'checkbox',
                                   val: 'Test',
-                                  id: 'idText' }), '<input checked="checked" class="classText" id="idText" style="styleText" tabindex="4" type="checkbox" value="Test"/>', 'Complex input element, type checkbox (explicit)');
+                                  id: 'idText' }), '<input checked="checked" class="classText" id="idText" name="nameText" style="styleText" tabindex="4" type="checkbox" value="Test"/>', 'Complex input element, type checkbox (explicit)');
         });
         test("label", function () {
             equals(htmlFactory.label({}), '<label></label>', 'Basic label element');

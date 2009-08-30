@@ -97,6 +97,7 @@ var HTML_Factory = function () {
                isDef(args.cl, 'class') +
                isDef(args[argFor], argFor) +
                isDef(args.id, 'id') +
+               isDef(args['name'], 'name') +
                isDef(args.size, 'size') +
                isDef(args[css], 'style') +
                isDef(args.ti, 'tabindex') +
@@ -235,6 +236,7 @@ var HTML_Factory = function () {
                          checked : checkDef(args[checked]),
                          css     : checkDef(args[css]),
                          id      : checkDef(args.id),
+                         'name'  : checkDef(args.name),
                          size    : checkDef(args.size),
                          ti      : checkDef(args.ti),
                          type    : typeof args.type !== undef ? args.type : 'text',

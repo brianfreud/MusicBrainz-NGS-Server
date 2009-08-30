@@ -11,6 +11,27 @@
     <ol id="tests">
     </ol>
 </div>
+<div class="hidden" id="testElements">
+<select id="select_element">
+    <option id="option_element_1" value="1">One</option>
+    <option id="option_element_2" value="2">One</option>
+    <option id="option_element_3" value="3">One</option>
+</select>
+<input type="text" id="text_input_element" value="Test Text"/>
+<input type="button" id="button_input_element" value="Test Text"/>
+<input type="checkbox" id="checkbox_input_element_1" value="Test Text" checked="checked"/>
+<input type="checkbox" id="checkbox_input_element_2" value="Test Text"/>
+<input type="file" id="file_input_element" value="Test Text"/>
+<input type="hidden" id="hidden_input_element" value="Test Text"/>
+<input type="image" id="image_input_element" value="Test Text"/>
+<input type="password" id="password_input_element" value="Test Text"/>
+<input type="radio" id="radio_input_element_1" name="Test" value="Test Text">1</input>
+<input type="radio" id="radio_input_element_2" name="Test" value="More Text">2</input>
+<input type="reset" id="reset_input_element" value="Test Text"/>
+<input type="submit" id="submit_input_element" value="Test Text"/>
+<button id="button_element" value="Test Text">Test Text</button>
+<textarea id="textarea_element">Test Textarea Contents</textarea>
+</div>
 <div id="main">
 </div>
 <script type="text/javascript">
