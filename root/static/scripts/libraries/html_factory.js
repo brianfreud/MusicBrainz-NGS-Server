@@ -294,7 +294,7 @@ var HTML_Factory = function () {
                     val   : '',
                     close : 0
                     }) +
-               '[ ' + (options.hasOwnProperty(textSelectOne) ? options[textSelectOne] : MusicBrainz[textSelectOne]) + ' ]' +
+               '[ ' + (args.hasOwnProperty(textSelectOne) ? args[textSelectOne] : MusicBrainz[textSelectOne]) + ' ]' +
                close(option) +
                close(select);
     };
