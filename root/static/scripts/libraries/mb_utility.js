@@ -29,18 +29,18 @@ MusicBrainz.utility = {
             mb = MusicBrainz,
             html = mb.html,
             span = 'span',
-            hasOwnProperty = 'hasOwnProperty',
+            hasOwnProp = 'hasOwnProperty',
             wrapper = 'wrapper',
             createOverlayText = 'createOverlayText',
             textForUnknown = 'textForUnknown';
         if ($element.is('input, select')) {
             elementValue = mb.utility.getValue($element);
-            elementValue = elementValue !== '' ? elementValue : '[ ' + (options[hasOwnProperty](textForUnknown) ? options[textForUnknown] : mb.text.Unknown) + ' ]';
+            elementValue = elementValue !== '' ? elementValue : '[ ' + (options[hasOwnProp](textForUnknown) ? options[textForUnknown] : mb.text.Unknown) + ' ]';
             $elementToOverlay = $($element.parent());
         } else {
-            elementValue = options[hasOwnProperty](createOverlayText) ? options[createOverlayText]($element) : "";
+            elementValue = options[hasOwnProp](createOverlayText) ? options[createOverlayText]($element) : "";
         }
-        options[wrapper] = options[hasOwnProperty](wrapper) ? options[wrapper] : $elementToOverlay[0].tagName.toLowerCase();
+        options[wrapper] = options[hasOwnProp](wrapper) ? options[wrapper] : $elementToOverlay[0].tagName.toLowerCase();
         $elementToOverlay.after($(html.basic(options[wrapper]) +
                                   html.basic(span) +
                                   elementValue +
