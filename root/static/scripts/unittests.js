@@ -135,16 +135,16 @@ $(document).ready(function () {
                                      id: 'idText' }), '<label class="classText" for="forText" id="idText" style="styleText"></label>', 'Complex label element');
         });
         test("select", function () {
-            equals(htmlFactory.select({}), '<select><option val="">[ Select One ]</option></select>', 'Basic select element');
+            equals(htmlFactory.select({}), '<select><option>[ Select One ]</option></select>', 'Basic select element');
             equals(htmlFactory.select({
                                       cl: 'classText',
                                       css: 'styleText',
-                                      id: 'idText' }), '<select class="classText" for="forText" id="idText" style="styleText"><option val="">[ Select One ]</option></select>', 'Complex select element with default default option text');
+                                      id: 'idText' }), '<select class="classText" id="idText" style="styleText"><option>[ Select One ]</option></select>', 'Complex select element with default default option text');
             equals(htmlFactory.select({
                                       cl: 'classText',
                                       css: 'styleText',
                                       textSelectOne: 'Custom Text!',
-                                      id: 'idText' }), '<select class="classText" for="forText" id="idText" style="styleText"><option val="">[ Custom Text! ]</option></select>', 'Complex select element with custom default option text');
+                                      id: 'idText' }), '<select class="classText" id="idText" style="styleText"><option>[ Custom Text! ]</option></select>', 'Complex select element with custom default option text');
         });
         test("span", function () {
             equals(htmlFactory.span({}), '<span>', 'Basic span element');
