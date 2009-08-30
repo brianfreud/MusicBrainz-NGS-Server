@@ -1,7 +1,6 @@
 [% extra_js = 'jquery/jquery.selectboxes.js libraries/html_factory.js libraries/mb_utility.js editor.js' %]
 [% extra_css = 'scripts.css' %]
-[% edit=1 %]
-[%- WRAPPER 'layout.tt' -%]
+[%- WRAPPER 'layout.tt' edit=1 -%]
     <form action="[% c.req.uri %]" method="post">
         [% USE r = FormRenderer(form) %]
         [% INCLUDE 'release/sidebar.tt' editing=1 %]
