@@ -48,21 +48,17 @@ MusicBrainz.editor = {
          * @description Initializes sidebar functionality, onReady.
          **/
         init: ($(function ($) {
-            var addOverlay,
-                mb = MusicBrainz,
-                $sidebar,
-                utility;
-            $sidebar = mb.editor.$cache.$sidebar;
-            utility = mb.utility;
-            addOverlay = utility.addOverlay;
-            $sidebar.$DateDDs.each(function () {
-                addOverlay($(this), {
-                                    createOverlayText: utility.getChildValues
-                                    });
+            var mb = MusicBrainz,
+                $sidebar = mb.editor.$cache.$sidebar,
+                utility = mb.utility;
+            $sidebar.$DateDDs.each(function (i) {
+                utility.addOverlay($(this), {
+                                            createOverlayText: utility.getChildValues
+                                            });
             });
             $sidebar.$InputDDs.find('input')
                               .add($sidebar.$SelectDDs.find('select'))
-                              .each(addOverlayThis);
+                              .each(utility.addOverlayThis);
         })),
         /** 
          * @description Stores sidebar-specific event bindings.
