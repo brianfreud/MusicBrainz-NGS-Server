@@ -18,6 +18,7 @@
 MusicBrainz.utility = {
     /**
      * @description Creates a text overlay over an element, using the plaintext value of the original element as the text source.
+     * @description This can be used on cloned elements, but $element must be nested at least one element layer deep.
      * @param {Object} $element A single jQuery-wrapped element over which to place an overlay.
      * @param {Function} [options.createOverlayText] A callback to create custom plaintext strings for use as the overlay text; if $element is not
      *        an &lt;input&gt; or a &lt;select&gt; and stringFormatter is omitted, an empty string will be returned.
@@ -34,29 +35,23 @@ MusicBrainz.utility = {
             hasOwnProp = 'hasOwnProperty',
             wrapper = 'wrapper',
             createOverlayText = 'createOverlayText',
-            textForUnknown = 'textForUnknown',
-            wrappedElement = false;
+            textForUnknown = 'textForUnknown';
         options = typeof options !== 'undefined' ? options : {};
-        if ($element.is('input, select')) {
+        if ($element.is('button, input, select, textarea')) {
             elementValue = mb.utility.getValue($element);
             elementValue = elementValue !== '' ? elementValue : '[ ' + (options[hasOwnProp](textForUnknown) ? options[textForUnknown] : mb.text.Unknown) + ' ]';
-            $elementToOverlay = $($element.parent());
+            $elementToOverlay = $($element.parent(""));
         } else {
             elementValue = options[hasOwnProp](createOverlayText) ? options[createOverlayText]($element) : "";
         }
         options[wrapper] = options[hasOwnProp](wrapper) ? options[wrapper] : $elementToOverlay[0].tagName.toLowerCase();
-        if ($element.parent().parentNode == null || $element.parent().tagName.match(/body/i)) {
-            $element.wrap(html.basic(options[wrapper]) + html.close(options[wrapper])); // Add a temporary div wrapper, such that $element.parent() now has a .parentNode.
-            wrappedElement = true;
-        }
+        $element.parent().wrap('<div id="temp_wrapper"></div>'); // Wrap the parent to ensure that $element.parent() has a valid parentNode.
         $elementToOverlay.after($(html.basic(options[wrapper]) +
                                   html.basic(span) +
                                   elementValue +
                                   html.close(span) +
                                   html.close(options[wrapper])).addClass('editable'));
-        if (wrappedElement) {
-            $element.unwrap(); // Remove the temporary div wrapper.
-        }
+        $("#temp_wrapper > *:first").unwrap(); // Remove the protective wrapper.
         return $element;
     },
     /**

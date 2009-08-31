@@ -11,35 +11,30 @@
     <ol id="tests">
     </ol>
 </div>
-<div  id="testElements">
-<select id="select_element">
-    <option id="option_element_1" value="1">One</option>
-    <option id="option_element_2" value="2">One</option>
-    <option id="option_element_3" value="3">One</option>
-</select>
-<input type="text" id="text_input_element" value="Test Text"/>
-<input type="button" id="button_input_element" value="Test Text"/>
-<input type="checkbox" id="checkbox_input_element_1" value="Test Text" checked="checked"/>
-<input type="checkbox" id="checkbox_input_element_2" value="Test Text"/>
-<input type="file" id="file_input_element" value="Test Text"/>
-<input type="hidden" id="hidden_input_element" value="Test Text"/>
-<input type="image" id="image_input_element" value="Test Text"/>
-<input type="password" id="password_input_element" value="Test Text"/>
-<input type="radio" id="radio_input_element_1" name="Test" value="Test Text">1</input>
-<input type="radio" id="radio_input_element_2" name="Test" value="More Text">2</input>
-<input type="reset" id="reset_input_element" value="Test Text"/>
-<input type="submit" id="submit_input_element" value="Test Text"/>
-<button id="button_element" value="Test Text">Test Text</button>
-<textarea id="textarea_element">Test Textarea Contents</textarea>
-</div>
 <div id="main">
 </div>
+<div id="form_field_1" class="testElement"><select id="select_element" type="select-one"><option id="option_element_1" value="1" selected="selected">One</option><option id="option_element_2" value="2">Two</option><option id="option_element_3" value="3">Three</option></select></div>
+<div id="form_field_2" class="testElement"><input type="text" id="text_input_element" value="Test Text"/></div>
+<div id="form_field_3" class="testElement"><input type="button" id="button_input_element" value="Test Text"/></div>
+<div id="form_field_4" class="testElement"><input type="checkbox" id="checkbox_input_element_1" value="Test Text" checked="checked"/></div>
+<div id="form_field_5" class="testElement"><input type="checkbox" id="checkbox_input_element_2" value="Test Text"/></div>
+<div id="form_field_6" class="testElement"><input type="file" id="file_input_element" value="Test Text"/></div>
+<div id="form_field_7" class="testElement"><input type="hidden" id="hidden_input_element" value="Test Text"/></div>
+<div id="form_field_8" class="testElement"><input type="image" id="image_input_element" value="Test Text"/></div>
+<div id="form_field_9" class="testElement"><input type="password" id="password_input_element" value="Test Text"/></div>
+<div id="form_field_10" class="testElement"><input type="radio" id="radio_input_element_1" name="Test" value="Test Text" checked="checked">1</input></div>
+<div id="form_field_11" class="testElement"><input type="radio" id="radio_input_element_2" name="Test" value="More Text">2</input></div>
+<div id="form_field_12" class="testElement"><input type="reset" id="reset_input_element" value="Test Text"/></div>
+<div id="form_field_13" class="testElement"><input type="submit" id="submit_input_element" value="Test Text"></input></div>
+<div id="form_field_14" class="testElement"><button id="button_element" value="Test Text">Test Text</button></div>
+<div id="form_field_15" class="testElement"><textarea id="textarea_element">Test Textarea Contents</textarea></div>
 <script type="text/javascript">
     var MusicBrainz = {};
 </script>
 <script type="text/javascript" src="/static/scripts/jquery/jquery-1.3.2.min.js"></script>
 <script type="text/javascript" src="/text_strings.js"></script>
 <script type="text/javascript" src="/static/scripts/libraries/html_factory.js"></script>
+<script type="text/javascript" src="/static/scripts/jquery/jquery.outerHTML.js"></script>
 <script type="text/javascript" src="/static/scripts/jquery/jquery.selectboxes.js"></script>
 <script type="text/javascript" src="/static/scripts/jquery/jquery.unwrap.js"></script>
 <script type="text/javascript" src="/static/scripts/libraries/mb_utility.js"></script>

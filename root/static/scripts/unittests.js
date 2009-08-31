@@ -138,16 +138,16 @@ $(document).ready(function () {
                                      id: 'idText' }), '<label class="classText" for="forText" id="idText" style="styleText"></label>', 'Complex label element');
         });
         test("select", function () {
-            equals(htmlFactory.select({}), '<select><option>[ Select One ]</option></select>', 'Basic select element');
+            equals(htmlFactory.select({}), '<select type="select-one"><option>[ Select One ]</option></select>', 'Basic select element');
             equals(htmlFactory.select({
                                       cl: 'classText',
                                       css: 'styleText',
-                                      id: 'idText' }), '<select class="classText" id="idText" style="styleText"><option>[ Select One ]</option></select>', 'Complex select element with default default option text');
+                                      id: 'idText' }), '<select class="classText" id="idText" style="styleText" type="select-one"><option>[ Select One ]</option></select>', 'Complex select element with default default option text');
             equals(htmlFactory.select({
                                       cl: 'classText',
                                       css: 'styleText',
                                       textSelectOne: 'Custom Text!',
-                                      id: 'idText' }), '<select class="classText" id="idText" style="styleText"><option>[ Custom Text! ]</option></select>', 'Complex select element with custom default option text');
+                                      id: 'idText' }), '<select class="classText" id="idText" style="styleText" type="select-one"><option>[ Custom Text! ]</option></select>', 'Complex select element with custom default option text');
         });
         test("span", function () {
             equals(htmlFactory.span({}), '<span>', 'Basic span element');
@@ -158,17 +158,38 @@ $(document).ready(function () {
         });
 
     module("mb_utility");
-        var $thisTestSet = $("#testElements, div");
         test("Basic requirements", function () {
             ok( MusicBrainz.html, "MusicBrainz.html" );
             ok( MusicBrainz.text, "MusicBrainz.text" );
-            ok( $thisTestSet, 'Test form elements');
         });
         test("addOverlay", function () {
-        $thisTestSet.children().each(function () {
-            MusicBrainz.utility.addOverlay($(this));
-        });
-            ok(false, "missing test - untested code is broken code.");
+            var $thisTestSet = $(".testElement");
+                doTestAndGetNewHTML = function (element) {
+                return MusicBrainz.utility.addOverlay($(element))
+                                          .parent()
+                                          .next()
+                                          .outerHTML();
+            };
+            ok( $thisTestSet, 'Test form elements');
+            $thisTestSet.children().each(function (i) {
+                switch (i) {
+                    case 0: equals(doTestAndGetNewHTML(this), '<div class="editable"><span>One</span></div>', 'Overlay on <select>'); break;
+                    case 1: equals(doTestAndGetNewHTML(this), '<div class="editable"><span>Test Text</span></div>', 'Overlay on <input>, type text'); break;
+                    case 2: equals(doTestAndGetNewHTML(this), '<div class="editable"><span>[ Unknown ]</span></div>', 'Overlay on <input>, type button'); break;
+                    case 3: equals(doTestAndGetNewHTML(this), '<div class="editable"><span>[ Unknown ]</span></div>', 'Overlay on <input>, type checkbox, checked'); break;
+                    case 4: equals(doTestAndGetNewHTML(this), '<div class="editable"><span>[ Unknown ]</span></div>', 'Overlay on <input>, type checkbox, unchecked'); break;
+                    case 5: equals(doTestAndGetNewHTML(this), '<div class="editable"><span>[ Unknown ]</span></div>', 'Overlay on <input>, type file'); break;
+                    case 6: equals(doTestAndGetNewHTML(this), '<div class="editable"><span>[ Unknown ]</span></div>', 'Overlay on <input>, type hidden'); break;
+                    case 7: equals(doTestAndGetNewHTML(this), '<div class="editable"><span>[ Unknown ]</span></div>', 'Overlay on <input>, type image'); break;
+                    case 8: equals(doTestAndGetNewHTML(this), '<div class="editable"><span>[ Unknown ]</span></div>', 'Overlay on <input>, type password'); break;
+                    case 9: equals(doTestAndGetNewHTML(this), '<div class="editable"><span>[ Unknown ]</span></div>', 'Overlay on <input>, type radio, selected'); break;
+                    case 10: equals(doTestAndGetNewHTML(this), '<div class="editable"><span>[ Unknown ]</span></div>', 'Overlay on <input>, type radio, unselected'); break;
+                    case 11: equals(doTestAndGetNewHTML(this), '<div class="editable"><span>[ Unknown ]</span></div>', 'Overlay on <input>, type reset'); break;
+                    case 12: equals(doTestAndGetNewHTML(this), '<div class="editable"><span>[ Unknown ]</span></div>', 'Overlay on <input>, type submit'); break;
+                    case 13: equals(doTestAndGetNewHTML(this), '<div class="editable"><span>[ Unknown ]</span></div>', 'Overlay on <button>'); break;
+                    case 14: equals(doTestAndGetNewHTML(this), '<div class="editable"><span>[ Unknown ]</span></div>', 'Overlay on <textarea>'); break;
+                }
+            });
         });
         test("addOverlayThis", function () {
             ok(false, "missing test - untested code is broken code.");

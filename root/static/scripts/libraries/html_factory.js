@@ -289,6 +289,7 @@ var HTML_Factory = function () {
                           cl    : checkDef(args.cl),
                           id    : checkDef(args.id),
                           css   : checkDef(args[css]),
+                          type  : 'select-one',
                           close : 0
                           }) +
                this[make]({
