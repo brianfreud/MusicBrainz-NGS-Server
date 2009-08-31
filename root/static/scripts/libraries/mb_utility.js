@@ -40,7 +40,7 @@ MusicBrainz.utility = {
         if ($element.is('button, input, select, textarea')) {
             elementValue = mb.utility.getValue($element);
             elementValue = elementValue !== '' ? elementValue : '[ ' + (options[hasOwnProp](textForUnknown) ? options[textForUnknown] : mb.text.Unknown) + ' ]';
-            $elementToOverlay = $($element.parent(""));
+            $elementToOverlay = $($element.parent());
         } else {
             elementValue = options[hasOwnProp](createOverlayText) ? options[createOverlayText]($element) : "";
         }
@@ -61,7 +61,7 @@ MusicBrainz.utility = {
      * @see <a href="#addOverlay"/>
      **/
     addOverlayThis: function ($eleInt, options) {
-        MusicBrainz.utility.addOverlay($(this), typeof options === 'undefined' ? {} : options);
+        return MusicBrainz.utility.addOverlay($(this), typeof options === 'undefined' ? {} : options);
     },
     /**
      * @description Returns a plaintext string based on the deliniated value(s) of text input(s) within a parent element.

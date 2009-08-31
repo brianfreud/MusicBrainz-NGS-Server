@@ -29,7 +29,7 @@ MusicBrainz.editor = {
         /**
          * @description Initializes cache data for derived variables, onReady.
          **/
-        init: ($(function ($) {
+        init: function ($) {
             var $sidebar = MusicBrainz.editor.$cache.$sidebar,
                 $sidebarDDs;
             /* Sidebar initiation */
@@ -37,7 +37,7 @@ MusicBrainz.editor = {
             $sidebar.$DateDDs = $sidebarDDs.filter('.date');
             $sidebar.$InputDDs = $sidebarDDs.filter(':has(input):not(.date)');
             $sidebar.$SelectDDs = $sidebarDDs.filter(':has(select)');
-        }))
+        }
     },
     /**
      * @description Stores sidebar-specific functionality.
@@ -47,24 +47,27 @@ MusicBrainz.editor = {
         /**
          * @description Initializes sidebar functionality, onReady.
          **/
-        init: ($(function ($) {
+        init: function ($) {
             var mb = MusicBrainz,
                 $sidebar = mb.editor.$cache.$sidebar,
-                utility = mb.utility;
+                utility = mb.utility,
+                addOverlay = utility.addOverlay,
+                addOverlayThis = utility.addOverlayThis,
+                getChildValues = utility.getChildValues;
             $sidebar.$DateDDs.each(function (i) {
-                utility.addOverlay($(this), {
-                                            createOverlayText: utility.getChildValues
-                                            });
+                addOverlay($(this), {
+                                    createOverlayText: getChildValues
+                                    });
             });
             $sidebar.$InputDDs.find('input')
                               .add($sidebar.$SelectDDs.find('select'))
-                              .each(utility.addOverlayThis);
-        })),
+                              .each(addOverlayThis);
+        },
         /** 
          * @description Stores sidebar-specific event bindings.
          */
         events: {
-            toggleOnClick: ($(function ($) {
+            showEditFieldsOnClick: function ($) {
                 $('#sidebar').bind('click', function (e) {
                     if ($(e.target).parents("dl")) { // Don't toggle if the click wasn't within a dl.
                         $(e.target).closest('.editable')
@@ -73,7 +76,19 @@ MusicBrainz.editor = {
                                    .show();
                     }
                 });
-            }))
+            }
         }
     }
 };
+/**
+ * @description Initialize initial page-load functionality.
+ */
+($(function ($) {
+    if (typeof notLive === 'undefined') { // Block self-initiation when loaded for unit-tests.
+        var mbEditor = MusicBrainz.editor,
+            sidebar = mbEditor.sidebar;
+        mbEditor.$cache.init($);
+        sidebar.init($);
+        sidebar.events.showEditFieldsOnClick($);
+    }
+}));

@@ -34,7 +34,7 @@ var HTML_Factory = function () {
      * @description Stores css rule parameter strings.
      */
     this[css] = {
-        'float' : {
+        float : {
             left   : 'float:left;',
             right  : 'float:right;'
         }
@@ -97,7 +97,7 @@ var HTML_Factory = function () {
                isDef(args.cl, 'class') +
                isDef(args[argFor], argFor) +
                isDef(args.id, 'id') +
-               isDef(args['name'], 'name') +
+               isDef(args.name, 'name') +
                isDef(args.size, 'size') +
                isDef(args[css], 'style') +
                isDef(args.ti, 'tabindex') +
