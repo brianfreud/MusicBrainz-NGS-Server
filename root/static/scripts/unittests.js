@@ -210,8 +210,6 @@ $(document).ready(function () {
                     case 14: same(doTestAndGetNewHTML(this), '<div class="editable"><span>[ Unknown ]</span></div>', 'Overlay on <textarea>'); break;
                 }
             });
-            delete $thisTestSet;
-            delete doTestAndGetNewHTML;
         });
         test("addOverlayThis", function () {
             var $thisTestSet = $("#testElements .testElement").clone(),
@@ -242,8 +240,6 @@ $(document).ready(function () {
                     case 14: same(doTestAndGetNewHTML(this), '<div class="editable"><span>[ Unknown ]</span></div>', '<textarea>'); break;
                 }
             });
-            delete $thisTestSet;
-            delete doTestAndGetNewHTML;
         });
         test("getChildValues", function () {
             same(MusicBrainz.utility.getChildValues($("#testElements")), "Test Text");
