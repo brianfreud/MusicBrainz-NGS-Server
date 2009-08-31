@@ -2,7 +2,7 @@
 [% WRAPPER "layout.tt" title=l("JavaScript Unit Tests") full_width=1 nojavascript=1 %]
 <div>
     <h1>
-        Guess Case Unit Tests
+        MusicBrainz JavaScript Unit Tests
     </h1>
     <h2 id="banner">
     </h2>
@@ -13,6 +13,7 @@
 </div>
 <div id="main">
 </div>
+<div class="testElements hidden">
 <div id="form_field_1" class="testElement"><select id="select_element" type="select-one"><option id="option_element_1" value="1" selected="selected">One</option><option id="option_element_2" value="2">Two</option><option id="option_element_3" value="3">Three</option></select></div>
 <div id="form_field_2" class="testElement"><input type="text" id="text_input_element" value="Test Text"/></div>
 <div id="form_field_3" class="testElement"><input type="button" id="button_input_element" value="Test Text"/></div>
@@ -28,6 +29,7 @@
 <div id="form_field_13" class="testElement"><input type="submit" id="submit_input_element" value="Test Text"></input></div>
 <div id="form_field_14" class="testElement"><button id="button_element" value="Test Text">Test Text</button></div>
 <div id="form_field_15" class="testElement"><textarea id="textarea_element">Test Textarea Contents</textarea></div>
+</div>
 <script type="text/javascript">
     var MusicBrainz = {};
 </script>

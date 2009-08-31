@@ -163,7 +163,7 @@ $(document).ready(function () {
             ok( MusicBrainz.text, "MusicBrainz.text" );
         });
         test("addOverlay", function () {
-            var $thisTestSet = $(".testElement");
+            var $thisTestSet = $(".testElement").clone();
                 doTestAndGetNewHTML = function (element) {
                 return MusicBrainz.utility.addOverlay($(element))
                                           .parent()
@@ -192,7 +192,33 @@ $(document).ready(function () {
             });
         });
         test("addOverlayThis", function () {
-            ok(false, "missing test - untested code is broken code.");
+            var $thisTestSet = $(".testElement");
+                doTestAndGetNewHTML = function (element) {
+                return $(element).parent()
+                                 .next()
+                                 .outerHTML();
+            };
+            ok( $thisTestSet, 'Test form elements');
+            $thisTestSet.children().each(MusicBrainz.utility.addOverlayThis);
+            $thisTestSet.children("select, input, button, textarea").each(function (i) {
+                switch (i) {
+                    case 0: equals(doTestAndGetNewHTML(this), '<div class="editable"><span>One</span></div>', 'Overlay on <select>'); break;
+                    case 1: equals(doTestAndGetNewHTML(this), '<div class="editable"><span>Test Text</span></div>', 'Overlay on <input>, type text'); break;
+                    case 2: equals(doTestAndGetNewHTML(this), '<div class="editable"><span>[ Unknown ]</span></div>', 'Overlay on <input>, type button'); break;
+                    case 3: equals(doTestAndGetNewHTML(this), '<div class="editable"><span>[ Unknown ]</span></div>', 'Overlay on <input>, type checkbox, checked'); break;
+                    case 4: equals(doTestAndGetNewHTML(this), '<div class="editable"><span>[ Unknown ]</span></div>', 'Overlay on <input>, type checkbox, unchecked'); break;
+                    case 5: equals(doTestAndGetNewHTML(this), '<div class="editable"><span>[ Unknown ]</span></div>', 'Overlay on <input>, type file'); break;
+                    case 6: equals(doTestAndGetNewHTML(this), '<div class="editable"><span>[ Unknown ]</span></div>', 'Overlay on <input>, type hidden'); break;
+                    case 7: equals(doTestAndGetNewHTML(this), '<div class="editable"><span>[ Unknown ]</span></div>', 'Overlay on <input>, type image'); break;
+                    case 8: equals(doTestAndGetNewHTML(this), '<div class="editable"><span>[ Unknown ]</span></div>', 'Overlay on <input>, type password'); break;
+                    case 9: equals(doTestAndGetNewHTML(this), '<div class="editable"><span>[ Unknown ]</span></div>', 'Overlay on <input>, type radio, selected'); break;
+                    case 10: equals(doTestAndGetNewHTML(this), '<div class="editable"><span>[ Unknown ]</span></div>', 'Overlay on <input>, type radio, unselected'); break;
+                    case 11: equals(doTestAndGetNewHTML(this), '<div class="editable"><span>[ Unknown ]</span></div>', 'Overlay on <input>, type reset'); break;
+                    case 12: equals(doTestAndGetNewHTML(this), '<div class="editable"><span>[ Unknown ]</span></div>', 'Overlay on <input>, type submit'); break;
+                    case 13: equals(doTestAndGetNewHTML(this), '<div class="editable"><span>[ Unknown ]</span></div>', 'Overlay on <button>'); break;
+                    case 14: equals(doTestAndGetNewHTML(this), '<div class="editable"><span>[ Unknown ]</span></div>', 'Overlay on <textarea>'); break;
+                }
+            });
         });
         test("getChildValues", function () {
             ok(false, "missing test - untested code is broken code.");
