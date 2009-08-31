@@ -1,9 +1,10 @@
 /*jslint undef: true, browser: true*/
-/*global jQuery, $, MusicBrainz */
+/*global MusicBrainz */
 
 /**
  * @fileOverview An HTML string factory.
  * @author Brian Schweitzer (BrianFreud) brian.brianschweitzer@gmail.com
+ * @requires text_strings.js
  */
 
 "use strict";

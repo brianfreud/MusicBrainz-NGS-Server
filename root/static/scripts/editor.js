@@ -5,9 +5,10 @@
  * @fileOverview This file contains all functions to initialize and run the MusicBrainz inline editor. 
  * @author Brian Schweitzer (BrianFreud) brian.brianschweitzer@gmail.com
  * @requires html_factory.js
- * @requires mb_utilities.js
+ * @requires jquery.js
  * @requires jquery.selectboxes.js
  * @requires jquery.jquery.js
+ * @requires mb_utilities.js
  */
 
 "use strict";
@@ -84,7 +85,7 @@ MusicBrainz.editor = {
  * @description Initialize initial page-load functionality.
  */
 ($(function ($) {
-    if (typeof notLive === 'undefined') { // Block self-initiation when loaded for unit-tests.
+    if (typeof notLive === 'undefined') { // Prevent self-initiation when loaded for unit-tests.
         var mbEditor = MusicBrainz.editor,
             sidebar = mbEditor.sidebar;
         mbEditor.$cache.init($);

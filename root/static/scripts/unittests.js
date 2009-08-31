@@ -1,6 +1,20 @@
 /*jslint undef: true, browser: true*/
 /*global jQuery, $, MusicBrainz, module, test, expect, equals, ok, same, HTML_Factory */
 
+/**
+ * @fileOverview This file contains all unit tests for MusicBrainz javascript code.
+ * @author Brian Schweitzer (BrianFreud) brian.brianschweitzer@gmail.com
+ * @requires editor.js
+ * @requires html_factory.js
+ * @requires jquery.js
+ * @requires jquery.outerHTML.js
+ * @requires jquery.selectboxes.js
+ * @requires jquery.unwrap.js
+ * @requires mb_utility.js
+ * @requires QUnit.js
+ * @requires text_strings.js
+ */
+
 "use strict";
 
 $(document).ready(function () {

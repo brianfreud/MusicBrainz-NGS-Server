@@ -5,8 +5,10 @@
  * @fileOverview This file contains all utility functions used in MusicBrainz javascript code.
  * @author Brian Schweitzer (BrianFreud) brian.brianschweitzer@gmail.com
  * @requires html_factory.js
+ * @requires jquery.js
  * @requires jquery.selectboxes.js
  * @requires jquery.unwrap.js
+ * @requires text_strings.js
  */
 
 "use strict";
@@ -45,7 +47,7 @@ MusicBrainz.utility = {
             elementValue = options[hasOwnProp](createOverlayText) ? options[createOverlayText]($element) : "";
         }
         options[wrapper] = options[hasOwnProp](wrapper) ? options[wrapper] : $elementToOverlay[0].tagName.toLowerCase();
-        $element.parent().wrap('<div id="temp_wrapper"></div>'); // Wrap the parent to ensure that $element.parent() has a valid parentNode.
+        $element.parent().wrap('<div id="temp_wrapper"></div>'); // Wrap the parent to ensure that $element.parent() has a valid parentNode. (Prevents an error using .after() in a document fragment.)
         $elementToOverlay.after($(html.basic(options[wrapper]) +
                                   html.basic(span) +
                                   elementValue +
