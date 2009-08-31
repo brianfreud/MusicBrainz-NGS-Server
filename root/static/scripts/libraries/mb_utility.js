@@ -37,23 +37,31 @@ MusicBrainz.utility = {
             hasOwnProp = 'hasOwnProperty',
             wrapper = 'wrapper',
             createOverlayText = 'createOverlayText',
-            textForUnknown = 'textForUnknown';
+            textForUnknown = 'textForUnknown',
+            parentWrapped = false,
+            $thisParent = $element.parents(':first');
         options = typeof options !== 'undefined' ? options : {};
         if ($element.is('button, input, select, textarea')) {
             elementValue = mb.utility.getValue($element);
             elementValue = elementValue !== '' ? elementValue : '[ ' + (options[hasOwnProp](textForUnknown) ? options[textForUnknown] : mb.text.Unknown) + ' ]';
-            $elementToOverlay = $($element.parent());
+            $elementToOverlay = $thisParent;
         } else {
             elementValue = options[hasOwnProp](createOverlayText) ? options[createOverlayText]($element) : "";
         }
         options[wrapper] = options[hasOwnProp](wrapper) ? options[wrapper] : $elementToOverlay[0].tagName.toLowerCase();
-        $element.parent().wrap('<div id="temp_wrapper"></div>'); // Wrap the parent to ensure that $element.parent() has a valid parentNode. (Prevents an error using .after() in a document fragment.)
+        if (typeof $elementToOverlay.parentNode === 'undefined') { // .after() works using .parentNode.  This breaks if we're working in a shallow document fragment, so
+            $thisParent.wrap('<div id="temp_wrapper"></div>'); // wrap the parent to ensure that $element.parent() has a valid parentNode.
+            parentWrapped = true;
+        }
         $elementToOverlay.after($(html.basic(options[wrapper]) +
                                   html.basic(span) +
                                   elementValue +
                                   html.close(span) +
                                   html.close(options[wrapper])).addClass('editable'));
-        $("#temp_wrapper > *:first").unwrap(); // Remove the protective wrapper.
+
+        if (parentWrapped) {
+            $("#temp_wrapper > *:first").unwrap(); // Remove the protective wrapper.
+        }
         return $element;
     },
     /**

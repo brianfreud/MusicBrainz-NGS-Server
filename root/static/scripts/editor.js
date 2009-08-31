@@ -1,5 +1,5 @@
 /*jslint undef: true, browser: true*/
-/*global jQuery, $, MusicBrainz */
+/*global jQuery, $, MusicBrainz, notLive */
 
 /** 
  * @fileOverview This file contains all functions to initialize and run the MusicBrainz inline editor. 
