@@ -66,10 +66,12 @@ MusicBrainz.editor = {
         events: {
             toggleOnClick: ($(function ($) {
                 $('#sidebar').bind('click', function (e) {
-                    $(e.target).closest('.editable')
-                               .addClass('hidden')
-                               .prev()
-                               .show();
+                    if ($(e.target).parents("dl")) {
+                        $(e.target).closest('.editable')
+                                   .addClass('hidden')
+                                   .prev()
+                                   .show();
+                    }
                 });
             }))
         }
