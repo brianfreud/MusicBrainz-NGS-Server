@@ -66,7 +66,7 @@ MusicBrainz.editor = {
         events: {
             toggleOnClick: ($(function ($) {
                 $('#sidebar').bind('click', function (e) {
-                    if ($(e.target).parents("dl")) {
+                    if ($(e.target).parents("dl")) { // Don't toggle if the click wasn't within a dl.
                         $(e.target).closest('.editable')
                                    .addClass('hidden')
                                    .prev()
