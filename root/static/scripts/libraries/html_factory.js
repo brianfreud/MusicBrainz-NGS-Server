@@ -16,10 +16,8 @@
  */
 var HTML_Factory = function () {
     var alt = 'alt',
-        argFor = 'for',
         basic = 'basic',
         button = 'button',
-        checked = 'checked',
         close = 'close',
         css = 'css',
         display = 'display',
@@ -45,14 +43,13 @@ var HTML_Factory = function () {
         none : display + ':none;'
     };
     /**
-     * @description Used by the various HTML shortcut functions to test the undefined state of an object key so it can be used in a manner
-     *              that won't lead to our attempting to access the value of an undefined key.
-     * @example checkDef('foo')
-     * @param {Variable} arg The variable being tested.
-     * @inner
+     * @description isDef is used internally to create the standardized string for a single attribute of an element.
+     * @example isDef('foo', 'id')
+     * @param {String} arg The value of the attribute key being tested.
+     * @param {String} attr The attribute text to use in the generated HTML string.
      */
-    function checkDef (arg) {
-        return (typeof arg !== undef) ? arg : undefined;
+    function isDef (arg, attr) {
+        return (typeof arg === undef) ? '' : (arg.length > 0 ? [' ',attr,'="',arg,'"'].join("") : '');
     }
     /**
      * @description The central HTML string factory; it creates the actual HTML string using standardized format and attribute order.
@@ -82,29 +79,21 @@ var HTML_Factory = function () {
      * @see <a href="#span">span</a>
      */
     this[make] = function (args) {
-        /**
-         * @description isDef is used internally to create the standardized string for a single attribute of an element.
-         * @example isDef('foo', 'id')
-         * @param {String} arg The value of the attribute key being tested.
-         * @param {String} attr The attribute text to use in the generated HTML string.
-         * @inner
-         */
-        var isDef = function (arg, attr) {
-            return (typeof arg === undef) ? '' : (arg.length > 0 ? [' ',attr,'="',arg,'"'].join("") : '');
-        };
+        var localIsDef = isDef,
+            checked = 'checked';
         return '<' + args.tag +
-               isDef(args[alt], alt) +
-               ((typeof args[checked] !== undef) ? isDef(checked, checked) : '') +
-               isDef(args.cl, 'class') +
-               isDef(args[argFor], argFor) +
-               isDef(args.id, 'id') +
-               isDef(args.name, 'name') +
-               isDef(args.size, 'size') +
-               isDef(args[css], 'style') +
-               isDef(args.ti, 'tabindex') +
-               isDef(args.title, 'title') +
-               isDef(args.type, 'type') +
-               isDef(args.val, 'value') +
+               localIsDef(args.alt, 'alt') +
+               ((typeof args[checked] !== undef) ? localIsDef(checked, checked) : '') +
+               localIsDef(args.cl, 'class') +
+               localIsDef(args['for'], 'for') +
+               localIsDef(args.id, 'id') +
+               localIsDef(args.name, 'name') +
+               localIsDef(args.size, 'size') +
+               localIsDef(args[css], 'style') +
+               localIsDef(args.ti, 'tabindex') +
+               localIsDef(args.title, 'title') +
+               localIsDef(args.type, 'type') +
+               localIsDef(args.val, 'value') +
                (args[close] ? '/>' : '>');
     };
     /**
@@ -134,12 +123,12 @@ var HTML_Factory = function () {
      */
     this[button] = function (args) {
         return this[input]({
-                          cl   : checkDef(args.cl),
-                          css  : checkDef(args[css]),
-                          id   : checkDef(args.id),
+                          cl   : args.cl,
+                          css  : args[css],
+                          id   : args.id,
                           ti   : '-1',
                           type : button,
-                          val  : checkDef(args.val)
+                          val  : args.val
                           });
     };
     /**
@@ -165,9 +154,9 @@ var HTML_Factory = function () {
     this.dd = function (args) {
         return this[make]({
                          tag   : 'dd',
-                         cl    : checkDef(args.cl),
-                         css   : checkDef(args[css]),
-                         id    : checkDef(args.id),
+                         cl    : args.cl,
+                         css   : args[css],
+                         id    : args.id,
                          close : 0
                          });
     };
@@ -187,11 +176,11 @@ var HTML_Factory = function () {
         hide = typeof hide === undef ? false : hide;
         return this[make]({
                          tag   : div,
-                         alt   : checkDef(args[alt]),
-                         cl    : checkDef(args.cl),
+                         alt   : args[alt],
+                         cl    : args.cl,
                          css   : (typeof args[css] !== undef ? args[css] : '') + (hide ? this[css][display].none : ''),
-                         id    : checkDef(args.id),
-                         title : checkDef(args[alt]),
+                         id    : args.id,
+                         title : args[alt],
                          close : 0
                          });
     };
@@ -208,9 +197,9 @@ var HTML_Factory = function () {
     this[fieldset] = function (args) {
         return this[make]({
                          tag   : fieldset,
-                         cl    : checkDef(args.cl),
-                         css   : checkDef(args[css]),
-                         id    : checkDef(args.id),
+                         cl    : args.cl,
+                         css   : args[css],
+                         id    : args.id,
                          close : 0
                          });
     };
@@ -233,15 +222,15 @@ var HTML_Factory = function () {
     this[input] = function (args) {
         return this[make]({
                          tag     : input,
-                         cl      : checkDef(args.cl),
-                         checked : checkDef(args[checked]),
-                         css     : checkDef(args[css]),
-                         id      : checkDef(args.id),
-                         'name'  : checkDef(args.name),
-                         size    : checkDef(args.size),
-                         ti      : checkDef(args.ti),
+                         cl      : args.cl,
+                         checked : args.checked,
+                         css     : args[css],
+                         id      : args.id,
+                         'name'  : args.name,
+                         size    : args.size,
+                         ti      : args.ti,
                          type    : typeof args.type !== undef ? args.type : 'text',
-                         val     : checkDef(args.val),
+                         val     : args.val,
                          close   : 1
                          });
     };
@@ -260,10 +249,10 @@ var HTML_Factory = function () {
     this[label] = function (args) {
         return this[make]({
                          tag   : label,
-                         cl    : checkDef(args.cl),
-                         css   : checkDef(args[css]),
-                         'for' : checkDef(args[argFor]),
-                         id    : checkDef(args.id),
+                         cl    : args.cl,
+                         css   : args[css],
+                         'for' : args['for'],
+                         id    : args.id,
                          close : 0
                          }) +
                (typeof args.val !== undef ? args.val : '') +
@@ -287,9 +276,9 @@ var HTML_Factory = function () {
             textSelectOne = 'textSelectOne';
         return this[make]({
                           tag   : select,
-                          cl    : checkDef(args.cl),
-                          id    : checkDef(args.id),
-                          css   : checkDef(args[css]),
+                          cl    : args.cl,
+                          id    : args.id,
+                          css   : args[css],
                           type  : 'select-one',
                           close : 0
                           }) +
@@ -315,9 +304,9 @@ var HTML_Factory = function () {
     this[span] = function (args) {
         return this[make]({
                          tag   : span,
-                         cl    : checkDef(args.cl),
-                         id    : checkDef(args.id),
-                         css   : checkDef(args[css]),
+                         cl    : args.cl,
+                         id    : args.id,
+                         css   : args[css],
                          close : 0
                          });
    };

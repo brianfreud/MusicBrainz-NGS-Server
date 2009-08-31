@@ -33,7 +33,6 @@ MusicBrainz.utility = {
             elementValue,
             mb = MusicBrainz,
             html = mb.html,
-            span = 'span',
             hasOwnProp = 'hasOwnProperty',
             wrapper = 'wrapper',
             createOverlayText = 'createOverlayText',
@@ -49,16 +48,17 @@ MusicBrainz.utility = {
             elementValue = options[hasOwnProp](createOverlayText) ? options[createOverlayText]($element) : "";
         }
         options[wrapper] = options[hasOwnProp](wrapper) ? options[wrapper] : $elementToOverlay[0].tagName.toLowerCase();
-        if (typeof $elementToOverlay.parentNode === 'undefined') { // .after() works using .parentNode.  This breaks if we're working in a shallow document fragment, so
+        if ($elementToOverlay.parent().length === 0) { // .after() works using .parentNode.  This breaks if we're working in a shallow document fragment, so
             $thisParent.wrap('<div id="temp_wrapper"></div>'); // wrap the parent to ensure that $element.parent() has a valid parentNode.
             parentWrapped = true;
         }
-        $elementToOverlay.after($(html.basic(options[wrapper]) +
-                                  html.basic(span) +
-                                  elementValue +
-                                  html.close(span) +
-                                  html.close(options[wrapper])).addClass('editable'));
-
+        $elementToOverlay.after(html[options[wrapper]]({
+                                                       cl: 'editable'
+                                                       }) +
+                                '<span>' +
+                                elementValue +
+                                '</span>' +
+                                html.close(options[wrapper]));
         if (parentWrapped) {
             $("#temp_wrapper > *:first").unwrap(); // Remove the protective wrapper.
         }
