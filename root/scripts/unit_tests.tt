@@ -23,7 +23,7 @@
 <div id="1form-field-7" class="testElement"><input type="hidden" id="1hidden-input-element" value="Test Text"/></div>
 <div id="1form-field-8" class="testElement"><input type="image" id="1image-input-element" value="Test Text"/></div>
 <div id="1form-field-9" class="testElement"><input type="password" id="1password-input-element" value="Test Text"/></div>
-<div id="1form-field-10" class="testElement "><input type="radio" id="1radio-input-element-1" name="Test1" value="Test Text" checked="checked">1</input></div>
+<div id="1form-field-10" class="testElement"><input type="radio" id="1radio-input-element-1" name="Test1" value="Test Text" checked="checked">1</input></div>
 <div id="1form-field-11" class="testElement"><input type="radio" id="1radio-input-element-2" name="Test1" value="More Text">2</input></div>
 <div id="1form-field-12" class="testElement"><input type="reset" id="1reset-input-element" value="Test Text"/></div>
 <div id="1form-field-13" class="testElement"><input type="submit" id="1submit-input-element" value="Test Text"></input></div>

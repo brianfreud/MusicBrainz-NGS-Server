@@ -89,10 +89,10 @@ MusicBrainz.utility = {
             } else {
                 return $element.val();
             }
-        } else if ($element.is('button')) {
-            return $element.val();
         } else if ($element.is('textarea')) {
             return $element.html();
+        } else if ($element.is('button')) {
+            return $element.val();
         }
         return '';
     }
