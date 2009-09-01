@@ -58,7 +58,7 @@ MusicBrainz.utility = {
      * @description Interface wrapper for addOverlay; "this" is implicitly used as the target element, rather than (as in addOverlay) explicitly defined in $element.
      * @param {Object} [$eleInt] This variable is ignored.
      * @param {Object} [options] See <a href="#addOverlay"/>
-     * @see <a href="#addOverlay"/>
+     * @see <a href="#addOverlay">addOverlay</a>
      **/
     addOverlayThis: function ($eleInt, options) {
         return MusicBrainz.utility.addOverlay($(this), options || {});
