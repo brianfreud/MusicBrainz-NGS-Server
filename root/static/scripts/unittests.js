@@ -17,7 +17,17 @@
 
 "use strict";
 
-$(document).ready(function () {
+$(document).ready(function ($) {
+
+// This works around the fact that some browsers do not return XHTML elements lowercased (ie, they ignore the standard).
+// Required any time .outerHTML() is used and element names are contained within the expectation string.
+function fixCase(expectString) {
+    if ($.browser.opera || $.browser.ie) {
+        return expectString.replace(/<\/?((abbr)|(address)|(area)|(b)|(base)|(bdo)|(blockquote)|(body)|(br)|(button)|(caption)|(cite)|(col)|(colgroup)|(dd)|(del)|(div)|(dfn)|(dl)|(dt)|(em)|(fieldset)|(form)|(h1)|(h2)|(h3)|(h4)|(h5)|(h6)|(head)|(hr)|(html)|(i)|(iframe)|(img)|(input)|(ins)|(kbd)|(label)|(legend)|(li)|(link)|(map)|(menu)|(meta)|(noscript)|(object)|(ol)|(optgroup)|(option)|(p)|(param)|(pre)|(q)|(samp)|(script)|(select)|(small)|(span)|(string)|(style)|(sub)|(sup)|(table)|(tbody)|(td)|(textarea)|(tfoot)|(th)|(thead)|(title)|(tr)|(ul)|(var)|(section)|(article)|(aside)|(hgroup)|(header)|(footer)|(nav)|(dialog)|(figure)|(video)|(audio)|(source)|(embed)|(mark)|(progress)|(meter)|(time)|(ruby)|(rt)|(rp)|(canvas)|(command)|(details)|(datalist)|(keygen)|(output))/g, function (a) { return a.toUpperCase(); });
+    } else {
+        return expectString;
+    }
+}
     module("QUnit");
         test("Self-test", function () {
             var actual = { a: 1 };
@@ -178,7 +188,8 @@ $(document).ready(function () {
         test("Basic requirements", function () {
             ok( MusicBrainz.html, "MusicBrainz.html" );
             ok( MusicBrainz.text, "MusicBrainz.text" );
-            ok( $(".testElement"), 'Test form elements');
+            ok( $("#testElements"), 'Test form elements');
+            ok( $("#sidebar"), 'Test form elements');
         });
         test("addOverlay", function () {
             var $thisTestSet = $("#testElements .testElement").clone(),
@@ -189,24 +200,35 @@ $(document).ready(function () {
                                           .outerHTML();
             };
             ok( $thisTestSet, 'Test form elements');
-            expect(16);
             $thisTestSet.children().each(function (i) {
                 switch (i) {
-                    case 0: same(doTestAndGetNewHTML(this), '<div class="editable">One</div>', 'Overlay on <select>'); break;
-                    case 1: same(doTestAndGetNewHTML(this), '<div class="editable">Test Text</div>', 'Overlay on <input>, type text'); break;
-                    case 2: same(doTestAndGetNewHTML(this), '<div class="editable">Test Text</div>', 'Overlay on <input>, type button'); break;
-                    case 3: same(doTestAndGetNewHTML(this), '<div class="editable">true</div>', 'Overlay on <input>, type checkbox, checked'); break;
-                    case 4: same(doTestAndGetNewHTML(this), '<div class="editable">false</div>', 'Overlay on <input>, type checkbox, unchecked'); break;
-                    case 5: same(doTestAndGetNewHTML(this), '<div class="editable">Filename.Test</div>', 'Overlay on <input>, type file'); break;
-                    case 6: same(doTestAndGetNewHTML(this), '<div class="editable">Test Text</div>', 'Overlay on <input>, type hidden'); break;
-                    case 7: same(doTestAndGetNewHTML(this), '<div class="editable">Test Text</div>', 'Overlay on <input>, type image'); break;
-                    case 8: same(doTestAndGetNewHTML(this), '<div class="editable">Test Text</div>', 'Overlay on <input>, type password'); break;
-                    case 9: same(doTestAndGetNewHTML(this), '<div class="editable">true</div>', 'Overlay on <input>, type radio, selected'); break;
-                    case 10: same(doTestAndGetNewHTML(this), '<div class="editable">false</div>', 'Overlay on <input>, type radio, unselected'); break;
-                    case 11: same(doTestAndGetNewHTML(this), '<div class="editable">Test Text</div>', 'Overlay on <input>, type reset'); break;
-                    case 12: same(doTestAndGetNewHTML(this), '<div class="editable">Test Text</div>', 'Overlay on <input>, type submit'); break;
-                    case 13: same(doTestAndGetNewHTML(this), '<div class="editable">Test Text</div>', 'Overlay on <button>'); break;
-                    case 14: same(doTestAndGetNewHTML(this), '<div class="editable">Test Textarea Contents</div>', 'Overlay on <textarea>'); break;
+                    case 0: same(doTestAndGetNewHTML(this), fixCase('<div class="editable">One</div>'), 'Overlay on <select>'); break;
+                    case 1: same(doTestAndGetNewHTML(this), fixCase('<div class="editable">Test Text</div>'), 'Overlay on <input>, type text'); break;
+                    case 2: same(doTestAndGetNewHTML(this), fixCase('<div class="editable">Test Text</div>'), 'Overlay on <input>, type button'); break;
+                    case 3: same(doTestAndGetNewHTML(this), fixCase('<div class="editable">true</div>'), 'Overlay on <input>, type checkbox, checked'); break;
+                    case 4: same(doTestAndGetNewHTML(this), fixCase('<div class="editable">false</div>'), 'Overlay on <input>, type checkbox, unchecked'); break;
+                    // Older versions of Opera treat the input type file security a little differently; while other browsers don't support a default 
+                    // value from the HTML, some versions of Opera do, placing the security check at form submission time instead (a forced "are you 
+                    // sure" prompt when submitting, if the input type file's default value has not been changed).
+                    case 5:
+                            var message = '<input>, type file';
+                            if ($.browser.opera) {
+                                message = message + '*Note: This test will fail on some versions of Opera.  This is not a bug.  If this test passes on Opera, the next must fail.';
+                            }
+                            same(doTestAndGetNewHTML(this), fixCase('<div class="editable">[ Unknown ]</div>'), message);
+                            if ($.browser.opera) {
+                                same(doTestAndGetNewHTML(this), fixCase('<div class="editable">Filename.Test</div>'), '<input>, type file, version of test for older versions of Opera - if the above test failed, this one must pass.');
+                            }
+                            break;
+                    case 6: same(doTestAndGetNewHTML(this), fixCase('<div class="editable">Test Text</div>'), 'Overlay on <input>, type hidden'); break;
+                    case 7: same(doTestAndGetNewHTML(this), fixCase('<div class="editable">Test Text</div>'), 'Overlay on <input>, type image'); break;
+                    case 8: same(doTestAndGetNewHTML(this), fixCase('<div class="editable">Test Text</div>'), 'Overlay on <input>, type password'); break;
+                    case 9: same(doTestAndGetNewHTML(this), fixCase('<div class="editable">true</div>'), 'Overlay on <input>, type radio, selected'); break;
+                    case 10: same(doTestAndGetNewHTML(this), fixCase('<div class="editable">false</div>'), 'Overlay on <input>, type radio, unselected'); break;
+                    case 11: same(doTestAndGetNewHTML(this), fixCase('<div class="editable">Test Text</div>'), 'Overlay on <input>, type reset'); break;
+                    case 12: same(doTestAndGetNewHTML(this), fixCase('<div class="editable">Test Text</div>'), 'Overlay on <input>, type submit'); break;
+                    case 13: same(doTestAndGetNewHTML(this), fixCase('<div class="editable">Test Text</div>'), 'Overlay on <button>'); break;
+                    case 14: same(doTestAndGetNewHTML(this), fixCase('<div class="editable">Test Textarea Contents</div>'), 'Overlay on <textarea>'); break;
                 }
             });
         });
@@ -217,26 +239,34 @@ $(document).ready(function () {
                                  .next()
                                  .outerHTML();
             };
-            expect(16);
             ok( $thisTestSet, 'Test form elements');
             $thisTestSet.children().each(MusicBrainz.utility.addOverlayThis);
             $thisTestSet.children(":not(.editable)").each(function (i) {
                 switch (i) {
-                    case 0: same(doTestAndGetNewHTML(this), '<div class="editable">One</div>', '<select>'); break;
-                    case 1: same(doTestAndGetNewHTML(this), '<div class="editable">Test Text</div>', '<input>, type text'); break;
-                    case 2: same(doTestAndGetNewHTML(this), '<div class="editable">Test Text</div>', '<input>, type button'); break;
-                    case 3: same(doTestAndGetNewHTML(this), '<div class="editable">true</div>', '<input>, type checkbox, checked'); break;
-                    case 4: same(doTestAndGetNewHTML(this), '<div class="editable">false</div>', '<input>, type checkbox, unchecked'); break;
-                    case 5: same(doTestAndGetNewHTML(this), '<div class="editable">Filename.Test</div>', '<input>, type file'); break;
-                    case 6: same(doTestAndGetNewHTML(this), '<div class="editable">Test Text</div>', '<input>, type hidden'); break;
-                    case 7: same(doTestAndGetNewHTML(this), '<div class="editable">Test Text</div>', '<input>, type image'); break;
-                    case 8: same(doTestAndGetNewHTML(this), '<div class="editable">Test Text</div>', '<input>, type password'); break;
-                    case 9: same(doTestAndGetNewHTML(this), '<div class="editable">true</div>', '<input>, type radio, selected'); break;
-                    case 10: same(doTestAndGetNewHTML(this), '<div class="editable">false</div>', '<input>, type radio, unselected'); break;
-                    case 11: same(doTestAndGetNewHTML(this), '<div class="editable">Test Text</div>', '<input>, type reset'); break;
-                    case 12: same(doTestAndGetNewHTML(this), '<div class="editable">Test Text</div>', '<input>, type submit'); break;
-                    case 13: same(doTestAndGetNewHTML(this), '<div class="editable">Test Text</div>', '<button>'); break;
-                    case 14: same(doTestAndGetNewHTML(this), '<div class="editable">Test Textarea Contents</div>', '<textarea>'); break;
+                    case 0: same(doTestAndGetNewHTML(this), fixCase('<div class="editable">One</div>'), '<select>'); break;
+                    case 1: same(doTestAndGetNewHTML(this), fixCase('<div class="editable">Test Text</div>'), '<input>, type text'); break;
+                    case 2: same(doTestAndGetNewHTML(this), fixCase('<div class="editable">Test Text</div>'), '<input>, type button'); break;
+                    case 3: same(doTestAndGetNewHTML(this), fixCase('<div class="editable">true</div>'), '<input>, type checkbox, checked'); break;
+                    case 4: same(doTestAndGetNewHTML(this), fixCase('<div class="editable">false</div>'), '<input>, type checkbox, unchecked'); break;
+                    case 5:
+                            var message = '<input>, type file';
+                            if ($.browser.opera) {
+                                message = message + '*Note: This test will fail on some versions of Opera.  This is not a bug.  If this test passes on Opera, the next must fail.';
+                            }
+                            same(doTestAndGetNewHTML(this), fixCase('<div class="editable">[ Unknown ]</div>'), message);
+                            if ($.browser.opera) {
+                                same(doTestAndGetNewHTML(this), fixCase('<div class="editable">Filename.Test</div>'), '<input>, type file, version of test for older versions of Opera - if the above test failed, this one must pass.');
+                            }
+                            break;
+                    case 6: same(doTestAndGetNewHTML(this), fixCase('<div class="editable">Test Text</div>'), '<input>, type hidden'); break;
+                    case 7: same(doTestAndGetNewHTML(this), fixCase('<div class="editable">Test Text</div>'), '<input>, type image'); break;
+                    case 8: same(doTestAndGetNewHTML(this), fixCase('<div class="editable">Test Text</div>'), '<input>, type password'); break;
+                    case 9: same(doTestAndGetNewHTML(this), fixCase('<div class="editable">true</div>'), '<input>, type radio, selected'); break;
+                    case 10: same(doTestAndGetNewHTML(this), fixCase('<div class="editable">false</div>'), '<input>, type radio, unselected'); break;
+                    case 11: same(doTestAndGetNewHTML(this), fixCase('<div class="editable">Test Text</div>'), '<input>, type reset'); break;
+                    case 12: same(doTestAndGetNewHTML(this), fixCase('<div class="editable">Test Text</div>'), '<input>, type submit'); break;
+                    case 13: same(doTestAndGetNewHTML(this), fixCase('<div class="editable">Test Text</div>'), '<button>'); break;
+                    case 14: same(doTestAndGetNewHTML(this), fixCase('<div class="editable">Test Textarea Contents</div>'), '<textarea>'); break;
                 }
             });
         });
@@ -244,15 +274,22 @@ $(document).ready(function () {
             same(MusicBrainz.utility.getChildValues($("#testElements")), "Test Text");
         });
         test("getValue", function () {
-            expect(16);
-            $(".testElement").children().each(function (i) {
+            $("#testElements .testElement").children().each(function (i) {
                 switch (i) {
                     case 0: same(MusicBrainz.utility.getValue($(this)), 'One', '<select>'); break;
                     case 1: same(MusicBrainz.utility.getValue($(this)), 'Test Text', '<input>, type text'); break;
                     case 2: same(MusicBrainz.utility.getValue($(this)), 'Test Text', '<input>, type button'); break;
                     case 3: same(MusicBrainz.utility.getValue($(this)), true, '<input>, type checkbox, checked'); break;
                     case 4: same(MusicBrainz.utility.getValue($(this)), false, '<input>, type checkbox, unchecked'); break;
-                    case 5: same(MusicBrainz.utility.getValue($(this)), 'Filename.Test', '<input>, type file'); break;
+                            var message = '<input>, type file';
+                            if ($.browser.opera) {
+                                message = message + '*Note: This test will fail on some versions of Opera.  This is not a bug.  If this test passes on Opera, the next must fail.';
+                            }
+                            same(MusicBrainz.utility.getValue($(this)), '[ Unknown ]', message);
+                            if ($.browser.opera) {
+                                same(MusicBrainz.utility.getValue($(this)), 'Filename.Test', '<input>, type file, version of test for older versions of Opera - if the above test failed, this one must pass.');
+                            }
+                            break;
                     case 6: same(MusicBrainz.utility.getValue($(this)), 'Test Text', '<input>, type hidden'); break;
                     case 7: same(MusicBrainz.utility.getValue($(this)), 'Test Text', '<input>, type image'); break;
                     case 8: same(MusicBrainz.utility.getValue($(this)), 'Test Text', '<input>, type password'); break;
