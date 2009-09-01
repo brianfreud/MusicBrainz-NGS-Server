@@ -19,7 +19,7 @@
 <div id="form_field_3" class="testElement"><input type="button" id="button_input_element" value="Test Text"/></div>
 <div id="form_field_4" class="testElement"><input type="checkbox" id="checkbox_input_element_1" value="Test Text" checked="checked"/></div>
 <div id="form_field_5" class="testElement"><input type="checkbox" id="checkbox_input_element_2" value="Test Text"/></div>
-<div id="form_field_6" class="testElement"><input type="file" id="file_input_element" value="Test Text"/></div>
+<div id="form_field_6" class="testElement"><input type="file" id="file_input_element" value="Filename.Test"/></div>
 <div id="form_field_7" class="testElement"><input type="hidden" id="hidden_input_element" value="Test Text"/></div>
 <div id="form_field_8" class="testElement"><input type="image" id="image_input_element" value="Test Text"/></div>
 <div id="form_field_9" class="testElement"><input type="password" id="password_input_element" value="Test Text"/></div>
@@ -36,7 +36,7 @@
 <dt>dt</dt><dd id="form_field_3" class="hidden testElement"><input type="button" id="button_input_element" value="Test Text"/></dd>
 <dt>dt</dt><dd id="form_field_4" class="hidden testElement"><input type="checkbox" id="checkbox_input_element_1" value="Test Text" checked="checked"/></dd>
 <dt>dt</dt><dd id="form_field_5" class="hidden testElement"><input type="checkbox" id="checkbox_input_element_2" value="Test Text"/></dd>
-<dt>dt</dt><dd id="form_field_6" class="hidden testElement"><input type="file" id="file_input_element" value="Test Text"/></dd>
+<dt>dt</dt><dd id="form_field_6" class="hidden testElement"><input type="file" id="file_input_element" value="Filename.Test"/></dd>
 <dt>dt</dt><dd id="form_field_7" class="hidden testElement"><input type="hidden" id="hidden_input_element" value="Test Text"/></dd>
 <dt>dt</dt><dd id="form_field_8" class="hidden testElement"><input type="image" id="image_input_element" value="Test Text"/></dd>
 <dt>dt</dt><dd id="form_field_9" class="hidden testElement"><input type="password" id="password_input_element" value="Test Text"/></dd>

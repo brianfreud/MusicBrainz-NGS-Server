@@ -174,7 +174,6 @@ $(document).ready(function () {
                                   css: 'styleText',
                                   id: 'idText' }), '<span class="classText" id="idText" style="styleText">', 'Complex span element');
         });
-
     module("mb_utility");
         test("Basic requirements", function () {
             ok( MusicBrainz.html, "MusicBrainz.html" );
@@ -193,21 +192,21 @@ $(document).ready(function () {
             expect(16);
             $thisTestSet.children().each(function (i) {
                 switch (i) {
-                    case 0: same(doTestAndGetNewHTML(this), '<div class="editable"><span>One</span></div>', 'Overlay on <select>'); break;
-                    case 1: same(doTestAndGetNewHTML(this), '<div class="editable"><span>Test Text</span></div>', 'Overlay on <input>, type text'); break;
-                    case 2: same(doTestAndGetNewHTML(this), '<div class="editable"><span>[ Unknown ]</span></div>', 'Overlay on <input>, type button'); break;
-                    case 3: same(doTestAndGetNewHTML(this), '<div class="editable"><span>[ Unknown ]</span></div>', 'Overlay on <input>, type checkbox, checked'); break;
-                    case 4: same(doTestAndGetNewHTML(this), '<div class="editable"><span>[ Unknown ]</span></div>', 'Overlay on <input>, type checkbox, unchecked'); break;
-                    case 5: same(doTestAndGetNewHTML(this), '<div class="editable"><span>[ Unknown ]</span></div>', 'Overlay on <input>, type file'); break;
-                    case 6: same(doTestAndGetNewHTML(this), '<div class="editable"><span>[ Unknown ]</span></div>', 'Overlay on <input>, type hidden'); break;
-                    case 7: same(doTestAndGetNewHTML(this), '<div class="editable"><span>[ Unknown ]</span></div>', 'Overlay on <input>, type image'); break;
-                    case 8: same(doTestAndGetNewHTML(this), '<div class="editable"><span>[ Unknown ]</span></div>', 'Overlay on <input>, type password'); break;
-                    case 9: same(doTestAndGetNewHTML(this), '<div class="editable"><span>[ Unknown ]</span></div>', 'Overlay on <input>, type radio, selected'); break;
-                    case 10: same(doTestAndGetNewHTML(this), '<div class="editable"><span>[ Unknown ]</span></div>', 'Overlay on <input>, type radio, unselected'); break;
-                    case 11: same(doTestAndGetNewHTML(this), '<div class="editable"><span>[ Unknown ]</span></div>', 'Overlay on <input>, type reset'); break;
-                    case 12: same(doTestAndGetNewHTML(this), '<div class="editable"><span>[ Unknown ]</span></div>', 'Overlay on <input>, type submit'); break;
-                    case 13: same(doTestAndGetNewHTML(this), '<div class="editable"><span>[ Unknown ]</span></div>', 'Overlay on <button>'); break;
-                    case 14: same(doTestAndGetNewHTML(this), '<div class="editable"><span>[ Unknown ]</span></div>', 'Overlay on <textarea>'); break;
+                    case 0: same(doTestAndGetNewHTML(this), '<div class="editable">One</div>', 'Overlay on <select>'); break;
+                    case 1: same(doTestAndGetNewHTML(this), '<div class="editable">Test Text</div>', 'Overlay on <input>, type text'); break;
+                    case 2: same(doTestAndGetNewHTML(this), '<div class="editable">Test Text</div>', 'Overlay on <input>, type button'); break;
+                    case 3: same(doTestAndGetNewHTML(this), '<div class="editable">true</div>', 'Overlay on <input>, type checkbox, checked'); break;
+                    case 4: same(doTestAndGetNewHTML(this), '<div class="editable">false</div>', 'Overlay on <input>, type checkbox, unchecked'); break;
+                    case 5: same(doTestAndGetNewHTML(this), '<div class="editable">Filename.Test</div>', 'Overlay on <input>, type file'); break;
+                    case 6: same(doTestAndGetNewHTML(this), '<div class="editable">Test Text</div>', 'Overlay on <input>, type hidden'); break;
+                    case 7: same(doTestAndGetNewHTML(this), '<div class="editable">Test Text</div>', 'Overlay on <input>, type image'); break;
+                    case 8: same(doTestAndGetNewHTML(this), '<div class="editable">Test Text</div>', 'Overlay on <input>, type password'); break;
+                    case 9: same(doTestAndGetNewHTML(this), '<div class="editable">true</div>', 'Overlay on <input>, type radio, selected'); break;
+                    case 10: same(doTestAndGetNewHTML(this), '<div class="editable">false</div>', 'Overlay on <input>, type radio, unselected'); break;
+                    case 11: same(doTestAndGetNewHTML(this), '<div class="editable">Test Text</div>', 'Overlay on <input>, type reset'); break;
+                    case 12: same(doTestAndGetNewHTML(this), '<div class="editable">Test Text</div>', 'Overlay on <input>, type submit'); break;
+                    case 13: same(doTestAndGetNewHTML(this), '<div class="editable">Test Text</div>', 'Overlay on <button>'); break;
+                    case 14: same(doTestAndGetNewHTML(this), '<div class="editable">Test Textarea Contents</div>', 'Overlay on <textarea>'); break;
                 }
             });
         });
@@ -223,21 +222,21 @@ $(document).ready(function () {
             $thisTestSet.children().each(MusicBrainz.utility.addOverlayThis);
             $thisTestSet.children(":not(.editable)").each(function (i) {
                 switch (i) {
-                    case 0: same(doTestAndGetNewHTML(this), '<div class="editable"><span>One</span></div>', '<select>'); break;
-                    case 1: same(doTestAndGetNewHTML(this), '<div class="editable"><span>Test Text</span></div>', '<input>, type text'); break;
-                    case 2: same(doTestAndGetNewHTML(this), '<div class="editable"><span>[ Unknown ]</span></div>', '<input>, type button'); break;
-                    case 3: same(doTestAndGetNewHTML(this), '<div class="editable"><span>[ Unknown ]</span></div>', '<input>, type checkbox, checked'); break;
-                    case 4: same(doTestAndGetNewHTML(this), '<div class="editable"><span>[ Unknown ]</span></div>', '<input>, type checkbox, unchecked'); break;
-                    case 5: same(doTestAndGetNewHTML(this), '<div class="editable"><span>[ Unknown ]</span></div>', '<input>, type file'); break;
-                    case 6: same(doTestAndGetNewHTML(this), '<div class="editable"><span>[ Unknown ]</span></div>', '<input>, type hidden'); break;
-                    case 7: same(doTestAndGetNewHTML(this), '<div class="editable"><span>[ Unknown ]</span></div>', '<input>, type image'); break;
-                    case 8: same(doTestAndGetNewHTML(this), '<div class="editable"><span>[ Unknown ]</span></div>', '<input>, type password'); break;
-                    case 9: same(doTestAndGetNewHTML(this), '<div class="editable"><span>[ Unknown ]</span></div>', '<input>, type radio, selected'); break;
-                    case 10: same(doTestAndGetNewHTML(this), '<div class="editable"><span>[ Unknown ]</span></div>', '<input>, type radio, unselected'); break;
-                    case 11: same(doTestAndGetNewHTML(this), '<div class="editable"><span>[ Unknown ]</span></div>', '<input>, type reset'); break;
-                    case 12: same(doTestAndGetNewHTML(this), '<div class="editable"><span>[ Unknown ]</span></div>', '<input>, type submit'); break;
-                    case 13: same(doTestAndGetNewHTML(this), '<div class="editable"><span>[ Unknown ]</span></div>', '<button>'); break;
-                    case 14: same(doTestAndGetNewHTML(this), '<div class="editable"><span>[ Unknown ]</span></div>', '<textarea>'); break;
+                    case 0: same(doTestAndGetNewHTML(this), '<div class="editable">One</div>', '<select>'); break;
+                    case 1: same(doTestAndGetNewHTML(this), '<div class="editable">Test Text</div>', '<input>, type text'); break;
+                    case 2: same(doTestAndGetNewHTML(this), '<div class="editable">Test Text</div>', '<input>, type button'); break;
+                    case 3: same(doTestAndGetNewHTML(this), '<div class="editable">true</div>', '<input>, type checkbox, checked'); break;
+                    case 4: same(doTestAndGetNewHTML(this), '<div class="editable">false</div>', '<input>, type checkbox, unchecked'); break;
+                    case 5: same(doTestAndGetNewHTML(this), '<div class="editable">Filename.Test</div>', '<input>, type file'); break;
+                    case 6: same(doTestAndGetNewHTML(this), '<div class="editable">Test Text</div>', '<input>, type hidden'); break;
+                    case 7: same(doTestAndGetNewHTML(this), '<div class="editable">Test Text</div>', '<input>, type image'); break;
+                    case 8: same(doTestAndGetNewHTML(this), '<div class="editable">Test Text</div>', '<input>, type password'); break;
+                    case 9: same(doTestAndGetNewHTML(this), '<div class="editable">true</div>', '<input>, type radio, selected'); break;
+                    case 10: same(doTestAndGetNewHTML(this), '<div class="editable">false</div>', '<input>, type radio, unselected'); break;
+                    case 11: same(doTestAndGetNewHTML(this), '<div class="editable">Test Text</div>', '<input>, type reset'); break;
+                    case 12: same(doTestAndGetNewHTML(this), '<div class="editable">Test Text</div>', '<input>, type submit'); break;
+                    case 13: same(doTestAndGetNewHTML(this), '<div class="editable">Test Text</div>', '<button>'); break;
+                    case 14: same(doTestAndGetNewHTML(this), '<div class="editable">Test Textarea Contents</div>', '<textarea>'); break;
                 }
             });
         });
@@ -250,19 +249,19 @@ $(document).ready(function () {
                 switch (i) {
                     case 0: same(MusicBrainz.utility.getValue($(this)), 'One', '<select>'); break;
                     case 1: same(MusicBrainz.utility.getValue($(this)), 'Test Text', '<input>, type text'); break;
-                    case 2: same(MusicBrainz.utility.getValue($(this)), '', '<input>, type button'); break;
-                    case 3: same(MusicBrainz.utility.getValue($(this)), '', '<input>, type checkbox, checked'); break;
-                    case 4: same(MusicBrainz.utility.getValue($(this)), '', '<input>, type checkbox, unchecked'); break;
-                    case 5: same(MusicBrainz.utility.getValue($(this)), '', '<input>, type file'); break;
-                    case 6: same(MusicBrainz.utility.getValue($(this)), '', '<input>, type hidden'); break;
-                    case 7: same(MusicBrainz.utility.getValue($(this)), '', '<input>, type image'); break;
-                    case 8: same(MusicBrainz.utility.getValue($(this)), '', '<input>, type password'); break;
-                    case 9: same(MusicBrainz.utility.getValue($(this)), '', '<input>, type radio, selected'); break;
-                    case 10: same(MusicBrainz.utility.getValue($(this)), '', '<input>, type radio, unselected'); break;
-                    case 11: same(MusicBrainz.utility.getValue($(this)), '', '<input>, type reset'); break;
-                    case 12: same(MusicBrainz.utility.getValue($(this)), '', '<input>, type submit'); break;
-                    case 13: same(MusicBrainz.utility.getValue($(this)), '', '<button>'); break;
-                    case 14: same(MusicBrainz.utility.getValue($(this)), '', '<textarea>'); break;
+                    case 2: same(MusicBrainz.utility.getValue($(this)), 'Test Text', '<input>, type button'); break;
+                    case 3: same(MusicBrainz.utility.getValue($(this)), true, '<input>, type checkbox, checked'); break;
+                    case 4: same(MusicBrainz.utility.getValue($(this)), false, '<input>, type checkbox, unchecked'); break;
+                    case 5: same(MusicBrainz.utility.getValue($(this)), 'Filename.Test', '<input>, type file'); break;
+                    case 6: same(MusicBrainz.utility.getValue($(this)), 'Test Text', '<input>, type hidden'); break;
+                    case 7: same(MusicBrainz.utility.getValue($(this)), 'Test Text', '<input>, type image'); break;
+                    case 8: same(MusicBrainz.utility.getValue($(this)), 'Test Text', '<input>, type password'); break;
+                    case 9: same(MusicBrainz.utility.getValue($(this)), true, '<input>, type radio, selected'); break;
+                    case 10: same(MusicBrainz.utility.getValue($(this)), false, '<input>, type radio, unselected'); break;
+                    case 11: same(MusicBrainz.utility.getValue($(this)), 'Test Text', '<input>, type reset'); break;
+                    case 12: same(MusicBrainz.utility.getValue($(this)), 'Test Text', '<input>, type submit'); break;
+                    case 13: same(MusicBrainz.utility.getValue($(this)), 'Test Text', '<button>'); break;
+                    case 14: same(MusicBrainz.utility.getValue($(this)), 'Test Textarea Contents', '<textarea>'); break;
                 }
             });
             same(MusicBrainz.utility.getValue($(".testElement")), '');

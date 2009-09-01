@@ -1,3 +1,4 @@
+console.time("a")
 /*jslint undef: true, browser: true*/
 /*global jQuery, $, MusicBrainz, notLive */
 
@@ -92,4 +93,5 @@ MusicBrainz.editor = {
         sidebar.init($);
         sidebar.events.showEditFieldsOnClick($);
     }
+console.timeEnd("a")
 }));

@@ -3,6 +3,7 @@
  ===========================================================================================*/
 MusicBrainz.text           = {
        Unknown               : "[% l("Unknown") %]",
+       UnknownPlaceholder    : "[% l("[ Unknown ]") %]",
        SelectOne             : "[% l("Select One") %]",
        Type                  : "[% l("Type") %]",
        Name                  : "[% l("Name") %]",

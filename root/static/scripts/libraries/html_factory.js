@@ -49,7 +49,7 @@ var HTML_Factory = function () {
      * @param {String} attr The attribute text to use in the generated HTML string.
      */
     function isDef (arg, attr) {
-        return (typeof arg === undef) ? '' : (arg.length > 0 ? [' ',attr,'="',arg,'"'].join("") : '');
+        return (typeof arg === undef) ? '' : (arg ? [' ',attr,'="',arg,'"'].join("") : '');
     }
     /**
      * @description The central HTML string factory; it creates the actual HTML string using standardized format and attribute order.
@@ -83,7 +83,7 @@ var HTML_Factory = function () {
             checked = 'checked';
         return '<' + args.tag +
                localIsDef(args.alt, 'alt') +
-               ((typeof args[checked] !== undef) ? localIsDef(checked, checked) : '') +
+               (args[checked] ? localIsDef(checked, checked) : '') +
                localIsDef(args.cl, 'class') +
                localIsDef(args['for'], 'for') +
                localIsDef(args.id, 'id') +

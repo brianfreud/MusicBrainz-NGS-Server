@@ -20,7 +20,6 @@
 MusicBrainz.utility = {
     /**
      * @description Creates a text overlay over an element, using the plaintext value of the original element as the text source.
-     * @description This can be used on cloned elements, but $element must be nested at least one element layer deep.
      * @param {Object} $element A single jQuery-wrapped element over which to place an overlay.
      * @param {Function} [options.createOverlayText] A callback to create custom plaintext strings for use as the overlay text; if $element is not
      *        an &lt;input&gt; or a &lt;select&gt; and stringFormatter is omitted, an empty string will be returned.
@@ -29,36 +28,27 @@ MusicBrainz.utility = {
      * @see <a href="#addOverlayThis"/>
      **/
     addOverlay: function ($element, options) {
+        options = options ? options : {};
         var $elementToOverlay = $element,
             elementValue,
-            mb = MusicBrainz,
-            html = mb.html,
-            hasOwnProp = 'hasOwnProperty',
-            wrapper = 'wrapper',
-            createOverlayText = 'createOverlayText',
-            textForUnknown = 'textForUnknown',
+            html = MusicBrainz.html,
+            textForUnknown = options.textForUnknown ? '[ ' + options.textForUnknown + ' ]' : MusicBrainz.text.UnknownPlaceholder,
             parentWrapped = false,
-            $thisParent = $element.parents(':first');
-        options = typeof options !== 'undefined' ? options : {};
+            $thisParent = $element.parent() || $element,
+            wrapper;
         if ($element.is('button, input, select, textarea')) {
-            elementValue = mb.utility.getValue($element);
-            elementValue = elementValue !== '' ? elementValue : '[ ' + (options[hasOwnProp](textForUnknown) ? options[textForUnknown] : mb.text.Unknown) + ' ]';
+            elementValue = MusicBrainz.utility.getValue($element);
+            elementValue = elementValue !== '' ? elementValue : textForUnknown;
             $elementToOverlay = $thisParent;
         } else {
-            elementValue = options[hasOwnProp](createOverlayText) ? options[createOverlayText]($element) : "";
+            elementValue = options.createOverlayText ? options.createOverlayText($element) || textForUnknown : "";
         }
-        options[wrapper] = options[hasOwnProp](wrapper) ? options[wrapper] : $elementToOverlay[0].tagName.toLowerCase();
-        if ($elementToOverlay.parent().length === 0) { // .after() works using .parentNode.  This breaks if we're working in a shallow document fragment, so
-            $thisParent.wrap('<div id="temp_wrapper"></div>'); // wrap the parent to ensure that $element.parent() has a valid parentNode.
+        wrapper = options.wrapper || $elementToOverlay[0].tagName.toLowerCase();
+        if ($elementToOverlay.parent().length === 0) { // .after() uses .parentNode.  This breaks in a shallow document fragment, so
+            $thisParent.wrap('<div id="temp_wrapper"></div>'); // wrap $thisParent to ensure that it has a valid parentNode.
             parentWrapped = true;
         }
-        $elementToOverlay.after(html[options[wrapper]]({
-                                                       cl: 'editable'
-                                                       }) +
-                                '<span>' +
-                                elementValue +
-                                '</span>' +
-                                html.close(options[wrapper]));
+        $elementToOverlay.after(html[wrapper]({ cl: 'editable' }) + elementValue + html.close(wrapper));
         if (parentWrapped) {
             $("#temp_wrapper > *:first").unwrap(); // Remove the protective wrapper.
         }
@@ -71,7 +61,7 @@ MusicBrainz.utility = {
      * @see <a href="#addOverlay"/>
      **/
     addOverlayThis: function ($eleInt, options) {
-        return MusicBrainz.utility.addOverlay($(this), typeof options === 'undefined' ? {} : options);
+        return MusicBrainz.utility.addOverlay($(this), options || {});
     },
     /**
      * @description Returns a plaintext string based on the deliniated value(s) of text input(s) within a parent element.
@@ -93,8 +83,16 @@ MusicBrainz.utility = {
     getValue: function ($element) {
         if ($element.is('select')) {
             return $element.selectedTexts()[0];
-        } else if ($element.is('input[type=text]')) {
+        } else if ($element.is('input')) {
+            if ($element.is('[type=radio],[type=checkbox]')) {
+                return $element.attr("checked");
+            } else {
+                return $element.val();
+            }
+        } else if ($element.is('button')) {
             return $element.val();
+        } else if ($element.is('textarea')) {
+            return $element.html();
         }
         return '';
     }
