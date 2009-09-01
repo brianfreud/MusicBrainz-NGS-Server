@@ -78,7 +78,8 @@ var HTML_Factory = function () {
      * @see <a href="#select">select</a>
      * @see <a href="#span">span</a>
      */
-    this[make] = function (args) {
+    this.make = function (args) {
+        /** @function */
         var localIsDef = isDef,
             checked = 'checked';
         return '<' + args.tag +
@@ -103,7 +104,7 @@ var HTML_Factory = function () {
     * @see <a href="#close">close</a>
     * @see <a href="#make">make</a>
     */
-    this[basic] = function (tag) {
+    this.basic = function (tag) {
         return this[make]({
                          tag: tag,
                          close: 0
@@ -121,7 +122,7 @@ var HTML_Factory = function () {
      * @see <a href="#input">input</a>
      * @see <a href="#make">make</a>
      */
-    this[button] = function (args) {
+    this.button = function (args) {
         return this[input]({
                           cl   : args.cl,
                           css  : args[css],
@@ -138,7 +139,7 @@ var HTML_Factory = function () {
      * @see <a href="#basic">basic</a>
      * @see <a href="#make">make</a>
      */
-    this[close] = function (tag) {
+    this.close = function (tag) {
         return this[basic]('/' + tag);
     };
     /**
@@ -172,7 +173,7 @@ var HTML_Factory = function () {
      * @see <a href="#close">close</a>
      * @see <a href="#make">make</a>
      */
-    this[div] = function (args, hide) {
+    this.div = function (args, hide) {
         hide = typeof hide === undef ? false : hide;
         return this[make]({
                          tag   : div,
@@ -194,7 +195,7 @@ var HTML_Factory = function () {
      * @see <a href="#close">close</a>
      * @see <a href="#make">make</a>
      */
-    this[fieldset] = function (args) {
+    this.fieldset = function (args) {
         return this[make]({
                          tag   : fieldset,
                          cl    : args.cl,
@@ -219,7 +220,7 @@ var HTML_Factory = function () {
      * @see <a href="#close">close</a>
      * @see <a href="#make">make</a>
      */
-    this[input] = function (args) {
+    this.input = function (args) {
         return this[make]({
                          tag     : input,
                          cl      : args.cl,
@@ -246,7 +247,7 @@ var HTML_Factory = function () {
      * @see <a href="#close">close</a>
      * @see <a href="#make">make</a>
      */
-    this[label] = function (args) {
+    this.label = function (args) {
         return this[make]({
                          tag   : label,
                          cl    : args.cl,
@@ -269,7 +270,7 @@ var HTML_Factory = function () {
      * @see <a href="#close">close</a>
      * @see <a href="#make">make</a>
      */
-    this[select] = function (args) {
+    this.select = function (args) {
         var close = 'close',
             make = 'make',
             option = 'option',
@@ -301,7 +302,7 @@ var HTML_Factory = function () {
      * @see <a href="#close">close</a>
      * @see <a href="#make">make</a>
      */
-    this[span] = function (args) {
+    this.span = function (args) {
         return this[make]({
                          tag   : span,
                          cl    : args.cl,
