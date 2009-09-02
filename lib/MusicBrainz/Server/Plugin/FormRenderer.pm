@@ -160,8 +160,8 @@ sub date
     my ($self, $field_name) = @_;
     my $field = $self->_lookup_field($field_name) or return;
     return $self->h->span({ class => 'partial-date' }, [
-        $self->text($field->field('year'), { size => 4 }), ' - ',
-        $self->text($field->field('month'), { size => 2 }), ' - ',
+        $self->text($field->field('year'), { size => 4 }), ' – ',
+        $self->text($field->field('month'), { size => 2 }), ' – ',
         $self->text($field->field('day'), { size => 2 }),
     ]);
 }

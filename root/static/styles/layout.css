@@ -151,7 +151,7 @@ a:hover { color:#FC6714; text-decoration: underline; }
 }
 .page .br {
     background: url(../images/page-bottom-right.gif) no-repeat bottom right;
-    padding: 16px;
+    padding: 16px 0 16px 16px;
     overflow: hidden;
 }
 .page .bl {
@@ -168,7 +168,7 @@ a:hover { color:#FC6714; text-decoration: underline; }
 
 #sidebar {
     float: right;
-    width: 218px;
+    width: 234px;
     font-size: 95%;
 }
 
@@ -593,18 +593,26 @@ table.details th {
     padding-left: 10pt;
 }
 
+/* Sidebar */
+
+dl.properties,
+dl.properties dt,
+dl.properties dd {
+    float: left;
+    line-height: 220%;
+}
+
 dl.properties {
     margin-bottom: 12pt;
+    height: 100%;
+    width: 100%;
 }
 
 dl.properties dt {
-    clear: left;
-    float: left;
-    font-weight: bold;
-    padding-right: 2pt;
+    font-weight: 600;
+    width: 17%;
 }
 
-dl.properties dd,
-dl.properties dt {
-    line-height: 200%;
+dl.properties dd {
+    width: 65%;
 }

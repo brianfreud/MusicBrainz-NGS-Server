@@ -166,11 +166,11 @@ sub date
     {
         my ($y, $m, $d) = @_;
 
-        $self->{'releasedate'} = sprintf "%04d-%02d-%02d",
+        $self->{'releasedate'} = sprintf "%04d–%02d–%02d",
             $y || 0, $m || 0, $d || 0;
     }
     
-    map { 0 + $_ } split('-', $self->{releasedate});
+    map { 0 + $_ } split('–', $self->{releasedate});
 }
 
 sub year  { ($_[0]->date)[0]; }

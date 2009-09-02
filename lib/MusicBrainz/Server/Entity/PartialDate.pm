@@ -32,10 +32,10 @@ sub format
         $fmt .= "%04d";
         push @args, $self->year;
         if ($self->month) {
-            $fmt .= "-%02d";
+            $fmt .= "–%02d";
             push @args, $self->month;
             if ($self->day) {
-                $fmt .= "-%02d";
+                $fmt .= "–%02d";
                 push @args, $self->day;
             }
         }

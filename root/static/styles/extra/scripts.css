@@ -1,3 +1,28 @@
+/* Generic classes */
+
+.editable {
+    cursor: text;
+}
+
 .hidden {
- display: none;
+    display: none;
+}
+
+/* Sidebar form controls */
+
+dl.properties dd select {
+    width: 100%;
+}
+
+dl.properties dd > input { /* Direct child input fields, excluding multi-field inputs such as dates. */
+    width: 95%;
+}
+
+span.partial-date input { /* year, month, day fields */
+    text-align: center;
+    width: 2.1em;
+}
+
+span.partial-date input:first-child { /* override above definition for the year field */
+    width: 3.6em!important;
 }
