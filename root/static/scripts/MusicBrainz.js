@@ -18,7 +18,7 @@ var MusicBrainz = {};
 
 // The following stubs out Sizzle, QUnit, jQuery, and the jQuery plugin structure such that jsdoc can figure out the correct structure, as
 // those files don't have proper jsdoc symbols.  As the anonymous functions confuse jsdoc, InternalOnly is used to store (and then hide) internal
-// private functions that would otherwise be exposed as if they were globally available.  The following will cause jsdoc to throw 68 warnings, 
+// private functions that would otherwise be exposed as if they were globally available.  The following will cause jsdoc to throw 59 warnings, 
 // but they can all be safely ignored.  (They're all due to intentional symbol redefinitions or the use of @private for InternalOnly items).
 
 /**
