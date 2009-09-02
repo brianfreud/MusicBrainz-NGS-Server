@@ -17,8 +17,7 @@
  */
 
 (function ($) {
-
-    /**
+/**
  * Adds (single/multiple) options to a select box (or series of select boxes)
  *
  * @name     addOption
@@ -29,6 +28,7 @@
  * @example  $("#myselect").addOption({"foo":"bar","bar":"baz"}, false); // add multiple values, but don't select
  *
  * @example (beta) Use $("#myselect").addOption("Value", "Text Edit", false) to edit an existing entry with the value Value
+ * @methodOf jQuery.fn
  *
  */
     $.fn.addOption = function () {
@@ -115,7 +115,7 @@
         });
         return this;
     };
-    /**
+/**
  * Add options via ajax
  *
  * @name     ajaxAddOption
@@ -129,6 +129,7 @@
  * @example  $("#myselect").ajaxAddOption("myoptions.php");
  * @example  $("#myselect").ajaxAddOption("myoptions.php", {"code" : "007"});
  * @example  $("#myselect").ajaxAddOption("myoptions.php", {"code" : "007"}, false, sortoptions, [{"dir": "desc"}]);
+ * @methodOf jQuery.fn
  *
  */
     $.fn.ajaxAddOption = function (url, params, select, fn, args) {
@@ -159,7 +160,7 @@
         return this;
     };
 
-    /**
+/**
  * Removes an option (by value or index) from a select box (or series of select boxes)
  *
  * @name     removeOption
@@ -173,6 +174,7 @@
  * @example  $("#myselect").removeOption(/./, true); // remove all options that have been selected
  * @example  $("#myselect").removeOption(0); // remove by index
  * @example  $("#myselect").removeOption(["myselect_1","myselect_2"]); // values contained in passed array
+ * @methodOf jQuery.fn
  *
  */
     $.fn.removeOption = function () {
@@ -252,7 +254,7 @@
         return this;
     };
 
-    /**
+/**
  * Sort options (ascending or descending) in a select box (or series of select boxes)
  *
  * @name     sortOptions
@@ -263,6 +265,7 @@
  * $("#myselect").sortOptions(); // or $("#myselect").sortOptions(true);
  * @example  // descending
  * $("#myselect").sortOptions(false);
+ * @methodOf jQuery.fn
  *
  */
     $.fn.sortOptions = function (ascending) {
@@ -312,7 +315,7 @@
         }).selectOptions(sel, true); // select values, clearing existing ones
         return this;
     };
-    /**
+/**
  * Selects an option by value
  *
  * @name     selectOptions
@@ -325,6 +328,7 @@
  * @example  $("#myselect").selectOptions("val1"); // with the value 'val1'
  * @example  $("#myselect").selectOptions(["val1","val2","val3"]); // with the values 'val1' 'val2' 'val3'
  * @example  $("#myselect").selectOptions(/^val/i); // with the value starting with 'val', case insensitive
+ * @methodOf jQuery.fn
  *
  */
     $.fn.selectOptions = function (value, clear) {
@@ -372,7 +376,7 @@
         return this;
     };
 
-    /**
+/**
  * Copy options to another select
  *
  * @name     copyOptions
@@ -383,6 +387,7 @@
  * @example  $("#myselect").copyOptions("#myselect2"); // copy selected options from 'myselect' to 'myselect2'
  * @example  $("#myselect").copyOptions("#myselect2","selected"); // same as above
  * @example  $("#myselect").copyOptions("#myselect2","all"); // copy all options from 'myselect' to 'myselect2'
+ * @methodOf jQuery.fn
  *
  */
     $.fn.copyOptions = function (to, which) {
@@ -408,7 +413,7 @@
         return this;
     };
 
-    /**
+/**
  * Checks if a select box has an option with the supplied value
  *
  * @name     containsOption
@@ -420,6 +425,7 @@
  * @example  if($("#myselect").containsOption("val1")) alert("Has an option with the value 'val1'");
  * @example  if($("#myselect").containsOption(/^val/i)) alert("Has an option with the value starting with 'val'");
  * @example  $("#myselect").containsOption("val1", copyoption).doSomethingElseWithSelect(); // calls copyoption (user defined function) for any options found, chain is continued
+ * @methodOf jQuery.fn
  *
  */
     $.fn.containsOption = function (value, fn) {
@@ -465,13 +471,14 @@
         return fT == "function" ? this : found;
     };
 
-    /**
+/**
  * Returns values which have been selected
  *
  * @name     selectedValues
  * @author   Sam Collett (http://www.texotela.co.uk)
  * @type     Array
  * @example  $("#myselect").selectedValues();
+ * @methodOf jQuery.fn
  *
  */
     $.fn.selectedValues = function () {
@@ -483,13 +490,14 @@
         return v;
     };
 
-    /**
+/**
  * Returns text which has been selected
  *
  * @name     selectedTexts
  * @author   Sam Collett (http://www.texotela.co.uk)
  * @type     Array
  * @example  $("#myselect").selectedTexts();
+ * @methodOf jQuery.fn
  *
  */
     $.fn.selectedTexts = function () {
@@ -501,13 +509,14 @@
         return t;
     };
 
-    /**
+/**
  * Returns options which have been selected
  *
  * @name     selectedOptions
  * @author   Sam Collett (http://www.texotela.co.uk)
  * @type     jQuery
  * @example  $("#myselect").selectedOptions();
+ * @methodOf jQuery.fn
  *
  */
     $.fn.selectedOptions = function () {

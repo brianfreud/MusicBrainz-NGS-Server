@@ -9,6 +9,7 @@
  * @requires jquery.selectboxes.js
  * @requires jquery.jquery.js
  * @requires mb_utilities.js
+ * @requires either MusicBrainz.js or root/layout.tt
  */
 
 "use strict";
@@ -19,7 +20,7 @@
  */
 MusicBrainz.editor = {
     /**
-     * @description Stores static selectors.
+     * @description Stores cached selector results.
      * @namespace
      */
     $cache: {
@@ -28,7 +29,7 @@ MusicBrainz.editor = {
          */
         $sidebar: {},
         /**
-         * @description Initializes cache data for derived variables, onReady.
+         * @description Initializes cache data for derived variables.
          **/
         init: function ($) {
             var $sidebar = MusicBrainz.editor.$cache.$sidebar,
@@ -46,7 +47,7 @@ MusicBrainz.editor = {
      */
     sidebar: {
         /**
-         * @description Initializes sidebar functionality, onReady.
+         * @description Initializes sidebar-specific functionality.
          **/
         init: function ($) {
             var mb = MusicBrainz,
@@ -83,6 +84,7 @@ MusicBrainz.editor = {
 };
 /**
  * @description Initialize initial page-load functionality.
+ * @ignore
  */
 ($(function ($) {
     if (typeof notLive === 'undefined') { // Prevent self-initiation when loaded for unit-tests.

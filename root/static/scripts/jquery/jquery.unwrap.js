@@ -1,7 +1,8 @@
-/* Plugin by Ben Alman
- * http://benalman.com/projects/jquery-unwrap-plugin/ */
+/** @author Ben Alman
+ * http://benalman.com/projects/jquery-unwrap-plugin/
+ */
 
-$.fn.unwrap = function () {
+jQuery.fn.unwrap = function () {
     this.parent(':not(body)')
         .each(function () {
             $(this).replaceWith(this.childNodes);
