@@ -1,3 +1,42 @@
+@charset "UTF-8";
+
+/* ----------------------------------
+    Generic classes
+---------------------------------- */
+
+.editable {
+    cursor: text;
+}
+
 .hidden {
- display: none;
+    display: none;
+}
+
+/* ----------------------------------
+    Sidebar
+---------------------------------- */
+
+/* layout */
+
+dl.properties dt { /* Avoid labels without visible dd's overlaying each other. */
+    clear: left;
+}
+
+/* form fields */
+
+dl.properties dd select { /* Set selects to the width of their containing block, rather than the default 'full width to contain longest option text'. */
+    width: 100%;
+}
+
+dl.properties dd > input { /* First-nested-level child input fields only, to exclude multi-field inputs such as dates. */
+    width: 95%;
+}
+
+span.partial-date input { /* year, month, day fields */
+    text-align: center;
+    width: 2.1em;
+}
+
+span.partial-date input:first-child { /* override above definition for the year field */
+    width: 3.6em!important;
 }

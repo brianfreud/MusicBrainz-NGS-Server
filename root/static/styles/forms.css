@@ -59,8 +59,3 @@ span.formerrors {
     font-weight: bold;
     font-size: 90%;
 }
-
-dl.properties label {
-    float: none;
-    width: auto;
-}
