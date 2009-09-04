@@ -92,6 +92,5 @@ MusicBrainz.editor = {
             sidebar = mbEditor.sidebar;
         mbEditor.$cache.init($);
         sidebar.init($);
-        sidebar.events.showEditFieldsOnClick($);
     }
 }));
