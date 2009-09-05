@@ -12,7 +12,9 @@
     </ol>
 </div>
 <div id="main">
+<p id="opera" style="display: none;">Note: 2 tests will always fail in Opera. If only 2 tests failed, in addOverlay and addOverlayThis, then Opera has passed.</p>
 </div>
+<div class="hidden simple-nested"><span>Foo Bar</span></div>
 <div id="testElements" class="hidden">
 <div id="1form-field-1" class="testElement"><select id="1select-element" type="select-one"><option id="1option-element-1" value="1" selected="selected">One</option><option id="1option-element-2" value="2">Two</option><option id="1option-element-3" value="3">Three</option></select></div>
 <div id="1form-field-2" class="testElement"><input type="text" id="1text-input-element" value="Test Text"/></div>

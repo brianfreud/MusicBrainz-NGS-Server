@@ -19,15 +19,22 @@
 
 $(document).ready(function ($) {
 
-// This works around the fact that some browsers do not return XHTML elements lowercased (ie, they ignore the standard).
-// Required any time .outerHTML() is used and element names are contained within the expectation string.
-function fixCase(expectString) {
-    if ($.browser.opera || $.browser.ie) {
-        return expectString.replace(/<\/?((abbr)|(address)|(area)|(b)|(base)|(bdo)|(blockquote)|(body)|(br)|(button)|(caption)|(cite)|(col)|(colgroup)|(dd)|(del)|(div)|(dfn)|(dl)|(dt)|(em)|(fieldset)|(form)|(h1)|(h2)|(h3)|(h4)|(h5)|(h6)|(head)|(hr)|(html)|(i)|(iframe)|(img)|(input)|(ins)|(kbd)|(label)|(legend)|(li)|(link)|(map)|(menu)|(meta)|(noscript)|(object)|(ol)|(optgroup)|(option)|(p)|(param)|(pre)|(q)|(samp)|(script)|(select)|(small)|(span)|(string)|(style)|(sub)|(sup)|(table)|(tbody)|(td)|(textarea)|(tfoot)|(th)|(thead)|(title)|(tr)|(ul)|(var)|(section)|(article)|(aside)|(hgroup)|(header)|(footer)|(nav)|(dialog)|(figure)|(video)|(audio)|(source)|(embed)|(mark)|(progress)|(meter)|(time)|(ruby)|(rt)|(rp)|(canvas)|(command)|(details)|(datalist)|(keygen)|(output))/g, function (a) { return a.toUpperCase(); });
-    } else {
-        return expectString;
+    // Get rid of the sidebar; there isn't one on the unit test page.
+    $(".bg").removeClass("bg");
+
+    if ($.browser.opera) {
+        $("#opera").show();
     }
-}
+
+    // This works around the fact that some browsers do not return XHTML elements lowercased (ie, they ignore the standard).
+    // Required any time .outerHTML() is used and element names are contained within the expectation string.
+    var fixCase = function (expectString) {
+        if ($.browser.opera || $.browser.ie) {
+            return expectString.replace(/<\/?((abbr)|(address)|(area)|(base)|(bdo)|(blockquote)|(body)|(br)|(button)|(b)|(caption)|(cite)|(col)|(colgroup)|(dd)|(del)|(div)|(dfn)|(dl)|(dt)|(em)|(fieldset)|(form)|(h1)|(h2)|(h3)|(h4)|(h5)|(h6)|(head)|(hr)|(html)|(iframe)|(img)|(input)|(ins)|(i)|(kbd)|(label)|(legend)|(li)|(link)|(map)|(menu)|(meta)|(noscript)|(object)|(ol)|(optgroup)|(option)|(param)|(pre)|(p)|(q)|(samp)|(script)|(select)|(small)|(span)|(string)|(style)|(sub)|(sup)|(table)|(tbody)|(td)|(textarea)|(tfoot)|(th)|(thead)|(title)|(tr)|(ul)|(var)|(section)|(article)|(aside)|(hgroup)|(header)|(footer)|(nav)|(dialog)|(figure)|(video)|(audio)|(source)|(embed)|(mark)|(progress)|(meter)|(time)|(ruby)|(rt)|(rp)|(canvas)|(command)|(details)|(datalist)|(keygen)|(output))/g, function (a) { return a.toUpperCase(); });
+        } else {
+            return expectString;
+        }
+    }
     module("QUnit");
         test("Self-test", function () {
             var actual = { a: 1 };
@@ -42,39 +49,51 @@ function fixCase(expectString) {
             ok( MusicBrainz, "MusicBrainz" );
         });
 
-    module("HTML Factory");
-        var htmlFactory = new HTML_Factory();
+    module("HTML Factory: Basic functionality");
         test("Basic requirements", function () {
-            ok( htmlFactory.basic, "basic" );
-            ok( htmlFactory.button, "button" );
-            ok( htmlFactory.close, "close" );
-            ok( htmlFactory.css, "css" );
-            ok( htmlFactory.dd, "dd" );
-            ok( htmlFactory.div, "div" );
-            ok( htmlFactory.fieldset, "fieldset" );
-            ok( htmlFactory.input, "input" );
-            ok( htmlFactory.label, "label" );
-            ok( htmlFactory.make, "make" );
-            ok( htmlFactory.select, "select" );
-            ok( htmlFactory.span, "span" );
+            ok( MusicBrainz.html().basic, "basic" );
+            ok( MusicBrainz.html().button, "button" );
+            ok( MusicBrainz.html().close, "close" );
+            ok( MusicBrainz.html().css, "css" );
+            ok( MusicBrainz.html().dd, "dd" );
+            ok( MusicBrainz.html().div, "div" );
+            ok( MusicBrainz.html().fieldset, "fieldset" );
+            ok( MusicBrainz.html().input, "input" );
+            ok( MusicBrainz.html().label, "label" );
+            ok( MusicBrainz.html().make, "make" );
+            ok( MusicBrainz.html().select, "select" );
+            ok( MusicBrainz.html().span, "span" );
             ok( MusicBrainz.text, "MusicBrainz.text" );
         });
         test("Instantation", function () {
-            same(typeof htmlFactory, 'object', 'constructor instantation');
+            same(typeof MusicBrainz.html(), 'object', 'constructor instantation');
         });
         test("css string access", function () {
-            same(htmlFactory.css.float.left, 'float:left;');
-            same(htmlFactory.css.float.right, 'float:right;');
-            same(htmlFactory.css.display.IB, 'display:inline-block;');
-            same(htmlFactory.css.display.none, 'display:none;');
+            same(MusicBrainz.html().css.float.left, 'float:left;');
+            same(MusicBrainz.html().css.float.right, 'float:right;');
+            same(MusicBrainz.html().css.display.IB, 'display:inline-block;');
+            same(MusicBrainz.html().css.display.none, 'display:none;');
         });
+        test("method chaining", function () {
+
+            same(MusicBrainz.html().div({
+                                        alt: 'altText',
+                                        cl: 'classText',
+                                        css: 'color:black;',
+                                        id: 'idText' })
+                                   .span('FooBar')
+                                   .close('div')
+                                   .basic('div')
+                                   .use('select', { id: 'test' })
+                                   .close('div').html, '<div alt="altText" class="classText" id="idText" style="color:black;" title="altText"><span>FooBar</span></div><div><select id="test" type="select-one"><option>[ Select One ]</option></select></div>');
+        });
+    module("HTML Factory: String generation functions");
         test("make", function () {
-            same(htmlFactory.make({ tag: 'div', close: false }), '<div>', 'Basic element');
-            same(htmlFactory.make({ tag: 'div', close: true }), '<div/>', 'Basic self closing element');
-            same(htmlFactory.make({
-                                    tag: 'div',
+            same(MusicBrainz.html().make({ tag: 'div', close: false }).html, '<div>', 'Basic element');
+            same(MusicBrainz.html().make({ tag: 'hr', close: true }).html, '<hr />', 'Basic self closing element');
+            same(MusicBrainz.html().make({
+                                    tag: 'foo',
                                     alt: 'altText',
-                                    checked: true,
                                     'class': 'classText',
                                     id: 'idText',
                                     style: 'styleText',
@@ -83,62 +102,171 @@ function fixCase(expectString) {
                                     title: 'titleText',
                                     type: 'typeText',
                                     value: 'valueText',
-                                    close: true }), '<div alt="altText" checked="checked" id="idText" size="sizeText" title="titleText" type="typeText"/>', 'Complex element');
+                                    close: true }).html, '<foo alt="altText" id="idText" size="sizeText" title="altText" type="typeText" />', 'Complex element');
         });
+        test("a", function () {
+            same(MusicBrainz.html().a().html, '<a></a>', 'Basic empty anchor element');
+            same(MusicBrainz.html().a({ ti: 'none' }).html, '<a tabindex="-1"></a>', 'Basic empty anchor element, no tabindex');
+            same(MusicBrainz.html().a({
+                                      accesskey: 'A',
+                                      alt: 'altText',
+                                      cl: 'classText',
+                                      css: 'styleText',
+                                      href: 'musicbrainz.org',
+                                      id: 'idText',
+                                      name: 'musicbrainz',
+                                      ti: 5,
+                                      val: 'valueText' }).html, '<a accesskey="A" alt="altText" class="classText" href="http://musicbrainz.org" id="idText" name="musicbrainz" style="styleText" tabindex="5" title="altText">valueText</a>', 'Complex anchor element');
+            same(MusicBrainz.html().a({
+                                      href: 'musicbrainz.org',
+                                      val: 'valueText' }).html, '<a href="http://musicbrainz.org">valueText</a>', 'Complex anchor element using http protocol');
+            same(MusicBrainz.html().a({
+                                      href: 'ftp://musicbrainz.org',
+                                      notHTTP: true,
+                                      val: 'valueText' }).html, '<a href="ftp://musicbrainz.org">valueText</a>', 'Complex anchor element not using http protocol');
+        });
+        test("abbr", function () {
+            same(MusicBrainz.html().abbr().html, "<abbr>", "element creation");
+        });
+        test("address", function () {
+            same(MusicBrainz.html().address().html, "<address>", "element creation");
+        });
+        test("area", function () {
+            same(MusicBrainz.html().area().html, "<area />", "element creation");
+         });
+        test("b", function () {
+            same(MusicBrainz.html().b().html, "<b>", "element creation");
+         });
         test("basic", function () {
-            same(htmlFactory.basic("div"), '<div>');
+            same(MusicBrainz.html().basic("div").html, '<div>');
         });
+        test("bdo", function () {
+            same(MusicBrainz.html().bdo().html, "<bdo>", "element creation");
+        });
+        test("blockquote", function () {
+            same(MusicBrainz.html().blockquote().html, "<blockquote>", "element creation");
+        });
+        test("br", function () {
+            same(MusicBrainz.html().br().html, "<br />", "element creation");
+         });
         test("button", function () {
-            same(htmlFactory.button({}), '<input tabindex="-1" type="button"/>', 'Basic button element');
-            same(htmlFactory.button({
+            same(MusicBrainz.html().button().html, '<input type="button" />', 'Basic button element');
+            same(MusicBrainz.html().button({ ti:'none' }).html, '<input tabindex="-1" type="button" />', 'Basic button element, no tabindex');
+            same(MusicBrainz.html().button({
                                       cl: 'classText',
                                       css: 'styleText',
                                       id: 'idText',
-                                      val: 'valueText' }), '<input class="classText" id="idText" style="styleText" tabindex="-1" type="button" value="valueText"/>', 'Complex button element');
+                                      val: 'valueText' }).html, '<input class="classText" id="idText" style="styleText" type="button" value="valueText" />', 'Complex button element');
+        });
+        test("canvas", function () {
+            same(MusicBrainz.html().canvas().html, "<canvas>", "element creation");
+         });
+        test("caption", function () {
+            same(MusicBrainz.html().caption().html, "<caption>", "element creation");
+        });
+        test("cite", function () {
+            same(MusicBrainz.html().cite().html, "<cite>", "element creation");
         });
         test("close", function () {
-            same(htmlFactory.close("div"), '</div>');
+            same(MusicBrainz.html().close("div").html, '</div>');
+        });
+        test("code", function () {
+            same(MusicBrainz.html().code().html, "<code>", "element creation");
+        });
+        test("col", function () {
+            same(MusicBrainz.html().col().html, "<col />", "element creation");
+         });
+        test("colgroup", function () {
+            same(MusicBrainz.html().colgroup().html, "<colgroup>", "element creation");
         });
         test("dd", function () {
-            same(htmlFactory.dd({}), '<dd>', 'Basic dd element');
-            same(htmlFactory.dd({
+            same(MusicBrainz.html().dd().html, '<dd>', 'Basic dd element');
+            same(MusicBrainz.html().dd({
                                   cl: 'classText',
                                   css: 'styleText',
-                                  id: 'idText' }), '<dd class="classText" id="idText" style="styleText">', 'Complex dd element');
+                                  id: 'idText' }).html, '<dd class="classText" id="idText" style="styleText">', 'Complex dd element');
+        });
+        test("del", function () {
+            same(MusicBrainz.html().del().html, "<del>", "element creation");
+        });
+        test("dfn", function () {
+            same(MusicBrainz.html().dfn().html, "<dfn>", "element creation");
         });
         test("div", function () {
-            same(htmlFactory.div({}), '<div>', 'Basic div element, implicitly non-hidden');
-            same(htmlFactory.div({}, false), '<div>', 'Basic div element, expressly non-hidden');
-            same(htmlFactory.div({
+            same(MusicBrainz.html().div().html, '<div>', 'Basic div element, implicitly non-hidden');
+            same(MusicBrainz.html().div({}, false).html, '<div>', 'Basic div element, expressly non-hidden');
+            same(MusicBrainz.html().div({
                                   alt: 'altText',
                                   cl: 'classText',
                                   css: 'color:black;',
-                                  id: 'idText' }), '<div alt="altText" class="classText" id="idText" style="color:black;" title="altText">', 'Complex div element');
-            same(htmlFactory.div({}, true), '<div style="display:none;">', 'Basic hidden div element');
-            same(htmlFactory.div({
+                                  id: 'idText' }).html, '<div alt="altText" class="classText" id="idText" style="color:black;" title="altText">', 'Complex div element');
+            same(MusicBrainz.html().div({}, true).html, '<div style="display:none;">', 'Basic hidden div element');
+            same(MusicBrainz.html().div({
                                   alt: 'altText',
                                   cl: 'classText',
                                   css: 'color:black;',
-                                  id: 'idText' }, true), '<div alt="altText" class="classText" id="idText" style="color:black;display:none;" title="altText">', 'Complex hidden div element');
+                                  id: 'idText' }, true).html, '<div alt="altText" class="classText" id="idText" style="color:black;display:none;" title="altText">', 'Complex hidden div element');
+        });
+        test("dl", function () {
+            same(MusicBrainz.html().dl().html, "<dl>", "element creation");
+        });
+        test("dt", function () {
+            same(MusicBrainz.html().dt().html, "<dt>", "element creation");
+        });
+        test("em", function () {
+            same(MusicBrainz.html().em().html, "<em>", "element creation");
         });
         test("fieldset", function () {
-            same(htmlFactory.fieldset({}), '<fieldset>', 'Basic fieldset element');
-            same(htmlFactory.fieldset({
+            same(MusicBrainz.html().fieldset().html, '<fieldset>', 'Basic fieldset element');
+            same(MusicBrainz.html().fieldset({
                                   cl: 'classText',
                                   css: 'styleText',
-                                  id: 'idText' }), '<fieldset class="classText" id="idText" style="styleText">', 'Complex fieldset element');
+                                  id: 'idText' }).html, '<fieldset class="classText" id="idText" style="styleText">', 'Complex fieldset element');
+        });
+        test("form", function () {
+            same(MusicBrainz.html().form().html, "<form>", "element creation");
+        });
+        test("h", function () {
+            same(MusicBrainz.html().h().end(), '<h1></h1>', 'basic invocation');
+            same(MusicBrainz.html().h({ val: 'test' }).end(), '<h1>test</h1>', 'default invocation');
+            same(MusicBrainz.html().h({ level: 1, val: 'test' }).end(), '<h1>test</h1>', 'level 1 invocation');
+            same(MusicBrainz.html().h({ level: 2, val: 'test' }).end(), '<h2>test</h2>', 'level 2 invocation');
+            same(MusicBrainz.html().h({ level: 3, val: 'test' }).end(), '<h3>test</h3>', 'level 3 invocation');
+            same(MusicBrainz.html().h({ level: 4, val: 'test' }).end(), '<h4>test</h4>', 'level 4 invocation');
+            same(MusicBrainz.html().h({ level: 5, val: 'test' }).end(), '<h5>test</h5>', 'level 5 invocation');
+            same(MusicBrainz.html().h({ level: 6, val: 'test' }).end(), '<h6>test</h6>', 'level 6 invocation');
+            same(MusicBrainz.html().h({ level: 0, val: 'test' }).end(), '<h1>test</h1>', 'level 0, handle invalid invocation');
+            same(MusicBrainz.html().h({ level: 7, val: 'test' }).end(), '<h1>test</h1>', 'level 7, handle invalid invocation');
+            same(MusicBrainz.html().h({ level: 3, id: 'foobar', val: 'test' }).end(), '<h3 id="foobar">test</h3>', 'complex case');
+        });
+        test("hr", function () {
+            same(MusicBrainz.html().hr().html, "<hr />", "element creation");
+         });
+        test("i", function () {
+            same(MusicBrainz.html().i().html, "<i>", "element creation");
+         });
+        test("iframe", function () {
+            same(MusicBrainz.html().iframe().html, "<iframe>", "element creation");
+        });
+        test("img", function () {
+            same(MusicBrainz.html().img().end(), '<img />', 'basic invocation');
+            same(MusicBrainz.html().img({ val: 'test' }).end(), '<img />', 'default invocation'); // with invalid attr passed
+            same(MusicBrainz.html().img({ src: 'http://musicbrainz.org/foo.png', alt: 'bar', id: 'foobar' }).end(), '<img alt="bar" id="foobar" src="http://musicbrainz.org/foo.png" title="bar" />', 'normal case');
+            same(MusicBrainz.html().img({ href: 'http://musicbrainz.org/foo.png', alt: 'bar', id: 'foobar' }).end(), '<img alt="bar" id="foobar" src="http://musicbrainz.org/foo.png" title="bar" />', 'handle wrong attr used');
+            same(MusicBrainz.html().img({ src: 'http://musicbrainz.org/foo.png', href: 'http://musicbrainz.org/pez.png', alt: 'bar', id: 'foobar' }).end(), '<img alt="bar" id="foobar" src="http://musicbrainz.org/foo.png" title="bar" />', 'handle both correct and wrong attr used');
         });
         test("input", function () {
-            same(htmlFactory.input({}), '<input type="text"/>', 'Basic input element, implied type text');
-            same(htmlFactory.input({
+            same(MusicBrainz.html().input().html, '<input type="text" />', 'Basic input element, implied type text');
+            same(MusicBrainz.html().input({ ti:'none' }).html, '<input tabindex="-1" type="text" />', 'Basic input element, implied type text, no tabindex');
+            same(MusicBrainz.html().input({
                                   cl: 'classText',
                                   css: 'styleText',
                                   'name': "nameText",
                                   size: '10',
                                   ti: '4',
                                   val: 'Test string',
-                                  id: 'idText' }), '<input class="classText" id="idText" name="nameText" size="10" style="styleText" tabindex="4" type="text" value="Test string"/>', 'Complex input element, type text (implied)');
-            same(htmlFactory.input({
+                                  id: 'idText' }).html, '<input class="classText" id="idText" name="nameText" size="10" style="styleText" tabindex="4" type="text" value="Test string" />', 'Complex input element, type text (implied)');
+            same(MusicBrainz.html().input({
                                   cl: 'classText',
                                   css: 'styleText',
                                   'name': "nameText",
@@ -146,8 +274,8 @@ function fixCase(expectString) {
                                   ti: '4',
                                   type: 'text',
                                   val: 'Test string',
-                                  id: 'idText' }), '<input class="classText" id="idText" name="nameText" size="10" style="styleText" tabindex="4" type="text" value="Test string"/>', 'Complex input element, type text (explicit)');
-            same(htmlFactory.input({
+                                  id: 'idText' }).html, '<input class="classText" id="idText" name="nameText" size="10" style="styleText" tabindex="4" type="text" value="Test string" />', 'Complex input element, type text (explicit)');
+            same(MusicBrainz.html().input({
                                   checked: 'yes',
                                   cl: 'classText',
                                   css: 'styleText',
@@ -155,38 +283,218 @@ function fixCase(expectString) {
                                   ti: '4',
                                   type: 'checkbox',
                                   val: 'Test',
-                                  id: 'idText' }), '<input checked="checked" class="classText" id="idText" name="nameText" style="styleText" tabindex="4" type="checkbox" value="Test"/>', 'Complex input element, type checkbox (explicit)');
+                                  id: 'idText' }).html, '<input checked="checked" class="classText" id="idText" name="nameText" style="styleText" tabindex="4" type="checkbox" value="Test" />', 'Complex input element, type checkbox (explicit)');
+        });
+        test("ins", function () {
+            same(MusicBrainz.html().ins().html, "<ins>", "element creation");
+        });
+        test("kbd", function () {
+            same(MusicBrainz.html().kbd().html, "<kbd>", "element creation");
         });
         test("label", function () {
-            same(htmlFactory.label({}), '<label></label>', 'Basic label element');
-            same(htmlFactory.label({
+            same(MusicBrainz.html().label().html, '<label></label>', 'Basic label element');
+            same(MusicBrainz.html().label({
                                      cl: 'classText',
                                      css: 'styleText',
                                      'for': 'forText',
-                                     id: 'idText' }), '<label class="classText" for="forText" id="idText" style="styleText"></label>', 'Complex label element');
+                                     id: 'idText' }).html, '<label class="classText" for="forText" id="idText" style="styleText"></label>', 'Complex label element');
+        });
+        test("legend", function () {
+            same(MusicBrainz.html().legend().html, "<legend>", "element creation");
+        });
+        test("li", function () {
+            same(MusicBrainz.html().li().html, "<li>", "element creation");
+        });
+        test("map", function () {
+            same(MusicBrainz.html().map().html, "<map>", "element creation");
+        });
+        test("menu", function () {
+            same(MusicBrainz.html().menu().html, "<menu>", "element creation");
+         });
+        test("object", function () {
+            same(MusicBrainz.html().object().html, "<object>", "element creation");
+        });
+        test("ol", function () {
+            same(MusicBrainz.html().ol().html, "<ol>", "element creation");
+        });
+        test("optgroup", function () {
+            same(MusicBrainz.html().optgroup().html, "<optgroup>", "element creation");
+        });
+        test("option", function () {
+            same(MusicBrainz.html().option().html, "<option>", "element creation");
+        });
+        test("p", function () {
+            same(MusicBrainz.html().p().html, "<p>", "element creation");
+        });
+        test("param", function () {
+            same(MusicBrainz.html().param().html, "<param />", "element creation");
+         });
+        test("pre", function () {
+            same(MusicBrainz.html().pre().html, "<pre>", "element creation");
+        });
+        test("q", function () {
+            same(MusicBrainz.html().q().html, "<q>", "element creation");
+        });
+        test("samp", function () {
+            same(MusicBrainz.html().samp().html, "<samp>", "element creation");
+        });
+        test("script", function () {
+            same(MusicBrainz.html().script().html, "<script>", "element creation");
         });
         test("select", function () {
-            same(htmlFactory.select({}), '<select type="select-one"><option>[ Select One ]</option></select>', 'Basic select element');
-            same(htmlFactory.select({
+            same(MusicBrainz.html().select().html, '<select type="select-one"><option>[ Select One ]</option></select>', 'Basic select element');
+            same(MusicBrainz.html().select({
                                       cl: 'classText',
                                       css: 'styleText',
-                                      id: 'idText' }), '<select class="classText" id="idText" style="styleText" type="select-one"><option>[ Select One ]</option></select>', 'Complex select element with default default option text');
-            same(htmlFactory.select({
+                                      id: 'idText' }).html, '<select class="classText" id="idText" style="styleText" type="select-one"><option>[ Select One ]</option></select>', 'Complex select element with default default option text');
+            same(MusicBrainz.html().select({
                                       cl: 'classText',
                                       css: 'styleText',
                                       textSelectOne: 'Custom Text!',
-                                      id: 'idText' }), '<select class="classText" id="idText" style="styleText" type="select-one"><option>[ Custom Text! ]</option></select>', 'Complex select element with custom default option text');
+                                      id: 'idText' }).html, '<select class="classText" id="idText" style="styleText" type="select-one"><option>[ Custom Text! ]</option></select>', 'Complex select element with custom default option text');
         });
+        test("small", function () {
+            same(MusicBrainz.html().small().html, "<small>", "element creation");
+         });
         test("span", function () {
-            same(htmlFactory.span({}), '<span>', 'Basic span element');
-            same(htmlFactory.span({
+            same(MusicBrainz.html().span('').html, '<span></span>', 'Basic empty span element (string mode)');
+            same(MusicBrainz.html().span().html, '<span></span>', 'Basic empty span element (object mode)');
+            same(MusicBrainz.html().span('test').html, '<span>test</span>', 'Basic span element with text content (string mode)');
+            same(MusicBrainz.html().span({ val: 'test' }).html, '<span>test</span>', 'Basic span element with text content (object mode)');
+            same(MusicBrainz.html().span('<input type="text"/>').html, '<span><input type="text"/></span>', 'Basic span element with html content (string mode)');
+            same(MusicBrainz.html().span({ val: '<input type="text"/>' }).html, '<span><input type="text"/></span>', 'Basic span element with html content (object mode)');
+            same(MusicBrainz.html().span({
                                   cl: 'classText',
                                   css: 'styleText',
-                                  id: 'idText' }), '<span class="classText" id="idText" style="styleText">', 'Complex span element');
+                                  id: 'idText' }).html, '<span class="classText" id="idText" style="styleText"></span>', 'Complex span element');
+        });
+        test("strong", function () {
+            same(MusicBrainz.html().strong().html, "<strong>", "element creation");
+         });
+        test("style", function () {
+            same(MusicBrainz.html().style().html, "<style>", "element creation");
+        });
+        test("sub", function () {
+            same(MusicBrainz.html().sub().html, "<sub>", "element creation");
+        });
+        test("sup", function () {
+            same(MusicBrainz.html().sup().html, "<sup>", "element creation");
+        });
+        test("table", function () {
+            same(MusicBrainz.html().table().html, "<table>", "element creation");
+        });
+        test("tbody", function () {
+            same(MusicBrainz.html().tbody().html, "<tbody>", "element creation");
+        });
+        test("td", function () {
+            same(MusicBrainz.html().td().html, "<td>", "element creation");
+        });
+        test("text", function () {
+            same(MusicBrainz.html().text('This is a test.').html, 'This is a test.', "text inclusion in a chain");
+        });
+        test("textarea", function () {
+            same(MusicBrainz.html().textarea().html, "<textarea>", "element creation");
+        });
+        test("tfoot", function () {
+            same(MusicBrainz.html().tfoot().html, "<tfoot>", "element creation");
+        });
+        test("th", function () {
+            same(MusicBrainz.html().th().html, "<th>", "element creation");
+        });
+        test("thead", function () {
+            same(MusicBrainz.html().thead().html, "<thead>", "element creation");
+        });
+        test("title", function () {
+            same(MusicBrainz.html().title().html, "<title>", "element creation");
+        });
+        test("tr", function () {
+            same(MusicBrainz.html().tr().html, "<tr>", "element creation");
+        });
+        test("tt", function () {
+            same(MusicBrainz.html().tt().html, "<tt>", "element creation");
+        });
+        test("ul", function () {
+            same(MusicBrainz.html().ul().html, "<ul>", "element creation");
+        });
+    module("HTML Factory: Utility functions");
+        test("addHTML()", function () {
+            same(MusicBrainz.html().addHTML('<test>Foo</test>').end(), '<test>Foo</test>', 'change of chain context from jQuery to MusicBrainz.html()');
+            same(MusicBrainz.html().span('Bar').addHTML('<test>Foo</test>').end(), '<span>Bar</span><test>Foo</test>', 'change of chain context from jQuery to MusicBrainz.html()');
+        });
+        test("end", function () {
+            same(MusicBrainz.html().text('This is a test.').end(), MusicBrainz.html().text('This is a test.').html);
+        });
+        test("use", function () {
+            same(MusicBrainz.html().use('a', { id: 'test' }).html, '<a id="test"></a>', 'indirect creation of a element');
+            same(MusicBrainz.html().use('dd', { id: 'test' }).html, '<dd id="test">', 'indirect creation of dd element');
+            same(MusicBrainz.html().use('div', { id: 'test' }).html, '<div id="test">', 'indirect creation of div element');
+            same(MusicBrainz.html().use('fieldset', { id: 'test' }).html, '<fieldset id="test">', 'indirect creation of fieldset element');
+            same(MusicBrainz.html().use('input', { id: 'test' }).html, '<input id="test" type="text" />', 'indirect creation of input type text element');
+            same(MusicBrainz.html().use('label', { id: 'test' }).html, '<label id="test"></label>', 'indirect creation of label element');
+            same(MusicBrainz.html().use('select', { id: 'test' }).html, '<select id="test" type="select-one"><option>[ Select One ]</option></select>', 'indirect creation of select element');
+            same(MusicBrainz.html().use('span', { id: 'test' }).html, '<span id="test"></span>', 'indirect creation of span element');
+        });
+    module("HTML Factory: jQuery integration");
+        test("outerHTMLtoMB", function () {
+            same($(".simple-nested").outerHTMLtoMB().end(), fixCase('<div class="hidden simple-nested"><span>Foo Bar</span></div>'), 'change of chain context from jQuery to MusicBrainz.html()');
+        });
+        test("innerHTMLtoMB", function () {
+            same($(".simple-nested").innerHTMLtoMB().end(), fixCase('<span>Foo Bar</span>'), 'change of chain context from jQuery to MusicBrainz.html()');
+        });
+        test("tojQuery", function () {
+            same(MusicBrainz.html().span('test').tojQuery().outerHTML(), fixCase('<span>test</span>'), 'change of chain context from MusicBrainz.html() to jQuery');
+        });
+        var resetHTML = $(".simple-nested").html();
+        test("after", function () {
+            MusicBrainz.html().span('test').after($(".simple-nested > span:first"));
+            same($(".simple-nested").html(), '<span>Foo Bar</span><span>test</span>');
+            $(".simple-nested").html(resetHTML);
+            same(MusicBrainz.html().span('test').after(".simple-nested > span:first", 1).parent().html(), '<span>Foo Bar</span><span>test</span>');
+            $(".simple-nested").html(resetHTML);
+        });
+        test("before", function () {
+            MusicBrainz.html().span('test').before(".simple-nested > span:first");
+            same($(".simple-nested").html(), '<span>test</span><span>Foo Bar</span>');
+            $(".simple-nested").html(resetHTML);
+            same(MusicBrainz.html().span('test').before(".simple-nested > span:first", 1).parent().html(), '<span>test</span><span>Foo Bar</span>');
+            $(".simple-nested").html(resetHTML);
+        });
+        test("append", function () {
+            MusicBrainz.html().span('test').append(".simple-nested > span:first");
+            same($(".simple-nested").html(), '<span>Foo Bar<span>test</span></span>');
+            $(".simple-nested").html(resetHTML);
+            same(MusicBrainz.html().span('test').append(".simple-nested > span:first", 1).parent().html(), '<span>Foo Bar<span>test</span></span>');
+            $(".simple-nested").html(resetHTML);
+        });
+        test("prepend", function () {
+            MusicBrainz.html().span('test').prepend(".simple-nested > span:first");
+            same($(".simple-nested").html(), '<span><span>test</span>Foo Bar</span>');
+            $(".simple-nested").html(resetHTML);
+            same(MusicBrainz.html().span('test').prepend(".simple-nested > span:first", 1).parent().html(), '<span><span>test</span>Foo Bar</span>');
+            $(".simple-nested").html(resetHTML);
+        });
+        test("insertInto", function () {
+            MusicBrainz.html().span('test').insertInto(".simple-nested > span:first");
+            same($(".simple-nested").html(), '<span><span>test</span></span>');
+            $(".simple-nested").html(resetHTML);
+            same(MusicBrainz.html().span('test').insertInto(".simple-nested > span:first", 1).parent().html(), '<span><span>test</span></span>');
+            $(".simple-nested").html(resetHTML);
+        });
+        test("replace", function () {
+            MusicBrainz.html().span('test').replace(".simple-nested > span:first");
+            same($(".simple-nested").html(), '<span>test</span>');
+            $(".simple-nested").html(resetHTML);
+            same(MusicBrainz.html().span('test').replace(".simple-nested > span:first", 1), '<span>Foo Bar</span>');
+            $(".simple-nested").html(resetHTML);
+        });
+        test("swap", function () {
+            MusicBrainz.html().div().text('test').close('div').swap(".simple-nested > span:first");
+            same($(".simple-nested").html(), '<div>test</div>');
+            $(".simple-nested").html(resetHTML);
         });
     module("mb_utility");
         test("Basic requirements", function () {
-            ok( MusicBrainz.html, "MusicBrainz.html" );
+            ok( MusicBrainz.html(), "MusicBrainz.html()" );
             ok( MusicBrainz.text, "MusicBrainz.text" );
             ok( $("#testElements"), 'Test form elements');
             ok( $("#sidebar"), 'Test form elements');
@@ -194,12 +502,17 @@ function fixCase(expectString) {
         test("addOverlay", function () {
             var $thisTestSet = $("#testElements .testElement").clone(),
                 doTestAndGetNewHTML = function (element) {
-                return MusicBrainz.utility.addOverlay($(element))
-                                          .parent()
-                                          .next()
-                                          .outerHTML();
-            };
+                    return MusicBrainz.utility.addOverlay($(element))
+                                              .parent()
+                                              .next()
+                                              .outerHTML();
+                };
             ok( $thisTestSet, 'Test form elements');
+            if ($.browser.opera) {
+                expect(17);
+            } else {
+                expect(16);
+            }
             $thisTestSet.children().each(function (i) {
                 switch (i) {
                     case 0: same(doTestAndGetNewHTML(this), fixCase('<div class="editable">One</div>'), 'Overlay on <select>'); break;
@@ -210,8 +523,7 @@ function fixCase(expectString) {
                     // Older versions of Opera treat the input type file security a little differently; while other browsers don't support a default 
                     // value from the HTML, some versions of Opera do, placing the security check at form submission time instead (a forced "are you 
                     // sure" prompt when submitting, if the input type file's default value has not been changed).
-                    case 5:
-                            var message = '<input>, type file';
+                    case 5: var message = '<input>, type file';
                             if ($.browser.opera) {
                                 message = message + '*Note: This test will fail on some versions of Opera.  This is not a bug.  If this test passes on Opera, the next must fail.';
                             }
@@ -235,12 +547,17 @@ function fixCase(expectString) {
         test("addOverlayThis", function () {
             var $thisTestSet = $("#testElements .testElement").clone(),
                 doTestAndGetNewHTML = function (element) {
-                return $(element).parent()
-                                 .next()
-                                 .outerHTML();
-            };
+                    return $(element).parent()
+                                     .next()
+                                     .outerHTML();
+                };
             ok( $thisTestSet, 'Test form elements');
             $thisTestSet.children().each(MusicBrainz.utility.addOverlayThis);
+            if ($.browser.opera) {
+                expect(17);
+            } else {
+                expect(16);
+            }
             $thisTestSet.children(":not(.editable)").each(function (i) {
                 switch (i) {
                     case 0: same(doTestAndGetNewHTML(this), fixCase('<div class="editable">One</div>'), '<select>'); break;
@@ -248,8 +565,7 @@ function fixCase(expectString) {
                     case 2: same(doTestAndGetNewHTML(this), fixCase('<div class="editable">Test Text</div>'), '<input>, type button'); break;
                     case 3: same(doTestAndGetNewHTML(this), fixCase('<div class="editable">true</div>'), '<input>, type checkbox, checked'); break;
                     case 4: same(doTestAndGetNewHTML(this), fixCase('<div class="editable">false</div>'), '<input>, type checkbox, unchecked'); break;
-                    case 5:
-                            var message = '<input>, type file';
+                    case 5: var message = '<input>, type file';
                             if ($.browser.opera) {
                                 message = message + '*Note: This test will fail on some versions of Opera.  This is not a bug.  If this test passes on Opera, the next must fail.';
                             }
@@ -274,6 +590,7 @@ function fixCase(expectString) {
             same(MusicBrainz.utility.getChildValues($("#testElements")), "Test Text");
         });
         test("getValue", function () {
+            expect(16);
             $("#testElements .testElement").children().each(function (i) {
                 switch (i) {
                     case 0: same(MusicBrainz.utility.getValue($(this)), 'One', '<select>'); break;
@@ -281,15 +598,7 @@ function fixCase(expectString) {
                     case 2: same(MusicBrainz.utility.getValue($(this)), 'Test Text', '<input>, type button'); break;
                     case 3: same(MusicBrainz.utility.getValue($(this)), true, '<input>, type checkbox, checked'); break;
                     case 4: same(MusicBrainz.utility.getValue($(this)), false, '<input>, type checkbox, unchecked'); break;
-                            var message = '<input>, type file';
-                            if ($.browser.opera) {
-                                message = message + '*Note: This test will fail on some versions of Opera.  This is not a bug.  If this test passes on Opera, the next must fail.';
-                            }
-                            same(MusicBrainz.utility.getValue($(this)), '[ Unknown ]', message);
-                            if ($.browser.opera) {
-                                same(MusicBrainz.utility.getValue($(this)), 'Filename.Test', '<input>, type file, version of test for older versions of Opera - if the above test failed, this one must pass.');
-                            }
-                            break;
+                    case 5: same(MusicBrainz.utility.getValue($(this)), '', '<input>, type file, value preset in the HTML (expects empty string)'); break;
                     case 6: same(MusicBrainz.utility.getValue($(this)), 'Test Text', '<input>, type hidden'); break;
                     case 7: same(MusicBrainz.utility.getValue($(this)), 'Test Text', '<input>, type image'); break;
                     case 8: same(MusicBrainz.utility.getValue($(this)), 'Test Text', '<input>, type password'); break;
@@ -327,7 +636,7 @@ function fixCase(expectString) {
         });
         test("events: showEditFieldsOnClick", function () {
             MusicBrainz.editor.sidebar.events.showEditFieldsOnClick($);
-            $("#sidebar").show();
+            $("#sidebar").show(); // Test uses :visible, so hidden test elements would incorrectly cause the tests to fail.
             same($("#sidebar").find('dd.editable:visible').length, 13, 'visible overlabel <dd>s, before a click on each');
             same($("#sidebar").find('dd.hidden:visible').length, 0, 'visible edit field <dd>s, before a click on each');
             same($("#sidebar").find(".editable").click().end().find('dd.editable:visible').length, 0, 'visible overlabel <dd>s, after a click on each');

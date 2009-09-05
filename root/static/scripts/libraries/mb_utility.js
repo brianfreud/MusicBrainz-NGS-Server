@@ -12,9 +12,9 @@
  */
 
 "use strict";
-
 /**
  * @description Generic utility functions.
+ * @memberOf MusicBrainz
  * @namespace
  */
 MusicBrainz.utility = {
@@ -28,42 +28,40 @@ MusicBrainz.utility = {
      * @see <a href="#addOverlayThis"/>
      **/
     addOverlay: function ($element, options) {
-        options = options || {};
-
+        options = options ? options : {};
         var $elementToOverlay = $element,
-            html = MusicBrainz.html,
-            textForUnknown = options.textForUnknown || MusicBrainz.text.UnknownPlaceholder,
+            elementValue,
+            textForUnknown = options.textForUnknown ? '[ ' + options.textForUnknown + ' ]' : MusicBrainz.text.UnknownPlaceholder,
             parentWrapped = false,
             $thisParent = $element.parent() || $element,
-            elementValue, wrapper;
-
+            wrapper;
         if ($element.is('button, input, select, textarea')) {
-            elementValue = MusicBrainz.utility.getValue($element);
+            elementValue = MusicBrainz.utility.getValue($element).toString();
+            elementValue = elementValue !== '' ? elementValue : textForUnknown;
             $elementToOverlay = $thisParent;
         } else {
-            elementValue = options.createOverlayText ? options.createOverlayText($element) : textForUnknown;
+            elementValue = options.createOverlayText ? options.createOverlayText($element) || textForUnknown : "";
         }
-        elementValue = elementValue || textForUnknown;
-
         wrapper = options.wrapper || $elementToOverlay[0].tagName.toLowerCase();
-        if ($elementToOverlay.parent().length === 0) { // .after() uses .parentNode.  This breaks in a shallow document fragment, so
+        if (!$elementToOverlay.parent().length) { // .after() uses .parentNode.  This breaks in a shallow document fragment, so
             $thisParent.wrap('<div id="temp_wrapper"></div>'); // wrap $thisParent to ensure that it has a valid parentNode.
             parentWrapped = true;
         }
-
-        $elementToOverlay.after(html[wrapper]({ cl: 'editable' }) + elementValue + html.close(wrapper));
-
+        MusicBrainz.html()
+                   .use(wrapper, { cl: 'editable' })
+                   .text(elementValue)
+                   .close(wrapper)
+                   .after($elementToOverlay);
         if (parentWrapped) {
             $("#temp_wrapper > *:first").unwrap(); // Remove the protective wrapper.
         }
-
         return $element;
     },
     /**
      * @description Interface wrapper for addOverlay; "this" is implicitly used as the target element, rather than (as in addOverlay) explicitly defined in $element.
      * @param {Object} [$eleInt] This variable is ignored.
      * @param {Object} [options] See <a href="#addOverlay"/>
-     * @see <a href="#addOverlay">addOverlay</a>
+     * @see <a href="#addOverlay"/>
      **/
     addOverlayThis: function ($eleInt, options) {
         return MusicBrainz.utility.addOverlay($(this), options || {});
