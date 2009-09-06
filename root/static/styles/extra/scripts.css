@@ -32,6 +32,10 @@ dl.properties dd > input { /* First-nested-level child input fields only, to exc
     width: 95%;
 }
 
+dd.editable div { /* Wrapped text within view-mode <dd>s should not inherit the line-height of the <dd>s themselves. */
+    line-height: normal;
+}
+
 span.partial-date input { /* year, month, day fields */
     text-align: center;
     width: 2.1em;

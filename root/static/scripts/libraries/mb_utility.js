@@ -49,7 +49,9 @@ MusicBrainz.utility = {
         }
         MusicBrainz.html()
                    .use(wrapper, { cl: 'editable' })
+                   .div()
                    .text(elementValue)
+                   .close('div')
                    .close(wrapper)
                    .after($elementToOverlay);
         if (parentWrapped) {
