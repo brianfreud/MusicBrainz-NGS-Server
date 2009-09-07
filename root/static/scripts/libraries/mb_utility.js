@@ -98,5 +98,8 @@ MusicBrainz.utility = {
             return $element.val();
         }
         return '';
+    },
+    padString: function (str) {
+        return ' ' + str + ' ';
     }
 };

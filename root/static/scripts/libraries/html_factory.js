@@ -133,15 +133,6 @@ if (method == 'replaceWith') console.log(method + "            " + oldHTML + "  
             display : {
                 IB   : display + ':inline-block;',
                 none : display + ':none;'
-            },
-            /**
-             * @name float
-             * @memberOf MusicBrainz.html.css
-             * @public
-             */
-            'float' : {
-                left  : 'float:left;',
-                right : 'float:right;'
             }
         };
     };
@@ -1390,9 +1381,10 @@ if (method == 'replaceWith') console.log(method + "            " + oldHTML + "  
      * @see MusicBrainz.html.close
      * @see MusicBrainz.html.make
      */
-    for (i = 0, loops = nonClosed.length; i < loops; i++) {
-        Inner_HTML.prototype[nonClosed[i]] = genericElement(nonClosed[i], 0);
-    }
+    loops = nonClosed.length - 1;
+    do {
+        Inner_HTML.prototype[nonClosed[loops]] = genericElement(nonClosed[loops], 0);
+    } while (loops--);
     /* Empty HTML elements without need for a dedicated function above. */
     /**
      * Generates the HTML for an area element.<br >
@@ -1454,9 +1446,10 @@ if (method == 'replaceWith') console.log(method + "            " + oldHTML + "  
      * @see MusicBrainz.html.close
      * @see MusicBrainz.html.make
      */
-    for (i = 0, loops = closed.length; i < loops; i++) {
-        Inner_HTML.prototype[closed[i]] = genericElement(closed[i], 1);
-    }
+    loops = nonClosed.length - 1;
+    do {
+        Inner_HTML.prototype[closed[loops]] = genericElement(closed[loops], 1);
+    } while (loops--);
     MusicBrainz.html = function () {
         return new Inner_HTML();
     };

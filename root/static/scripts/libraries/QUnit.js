@@ -3,19 +3,21 @@
  * 
  * http://docs.jquery.com/QUnit
  *
- * Copyright (c) 2008 John Resig, Jörn Zaefferer
+ * Copyright (c) 2008 John Resig, JÃ¶rn Zaefferer
  * Dual licensed under the MIT (MIT-LICENSE.txt)
  * and GPL (GPL-LICENSE.txt) licenses.
  *
- * $Id$
+ * $Id: testrunner.js 6173 2009-02-02 20:09:32Z jeresig $
  */
 
 (function($) {
+
 
 // Test for equality any JavaScript type.
 // Discussions and reference: http://philrathe.com/articles/equiv
 // Test suites: http://philrathe.com/tests/equiv
 // Author: Philippe Rathé <prathe@gmail.com>
+
 var equiv = function () {
 
     var innerEquiv; // the real equiv function
@@ -240,6 +242,21 @@ $.extend(window, {
 	same: function(a, b, message) {
 		push(equiv(a, b), a, b, message);
 	},
+	allSame: function(a, message) { // a should be an array
+		if (a instanceof Array) {
+			push(equiv.apply(undefined, a), a, message);
+		} else {
+			throw "allSame 1st argument must be an array";
+		}
+	},
+	notAllSame: function(a, message) { // a should be an array
+		if (a instanceof Array) {
+			push(!equiv.apply(undefined, a), a, message);
+		} else {
+			throw "notAllSame 1st argument must be an array";
+		}
+	},
+
 	QUnit: {
 		equiv: equiv,
 		ok: ok,
@@ -265,16 +282,6 @@ $.extend(window, {
 });
 
 $(window).load(function() {
-	
-	if (!$("#header, #banner, #userAgent, #tests").length) {
-		$('body').prepend(
-			'<h1 id="header">' + document.title + '</h1>' +
-			'<h2 id="banner"></h2>' +
-			'<h2 id="userAgent"></h2>' +
-			'<ol id="tests"></ol>'
-		);
-	}
-	
 	$('#userAgent').html(navigator.userAgent);
 	var head = $('<div class="testrunner-toolbar"><label for="filter-pass">Hide passed tests</label></div>').insertAfter("#userAgent");
 	$('<input type="checkbox" id="filter-pass" />').attr("disabled", true).prependTo(head).click(function() {
@@ -346,7 +353,7 @@ function runTest() {
 	synchronize(function() {
 		$('<p id="testresult" class="result"/>').html(['Tests completed in ',
 			+new Date - started, ' milliseconds.<br/>',
-			'<span class="bad">', config.stats.all - config.stats.bad, '</span> tests of <span class="all">', config.stats.all, '</span> passed, ', config.stats.bad,' failed.']
+			'<span class="bad">', config.stats.bad, '</span> tests of <span class="all">', config.stats.all, '</span> failed.']
 			.join(''))
 			.appendTo("body");
 		$("#banner").addClass(config.stats.bad ? "fail" : "pass");
@@ -381,7 +388,7 @@ function diff( clean, dirty ){
 
 function test(name, callback) {
 	if(config.currentModule)
-		name = config.currentModule + " module: <span>" + name + "</span>";
+		name = config.currentModule + " module: " + name;
 	var lifecycle = $.extend({
 		setup: function() {},
 		teardown: function() {}
@@ -389,8 +396,6 @@ function test(name, callback) {
 	
 	if ( !validTest(name) )
 		return;
-		
-	var testEnvironment = {};
 	
 	synchronize(function() {
 		config.assertions = [];
@@ -398,16 +403,20 @@ function test(name, callback) {
 		try {
 			if( !pollution )
 				saveGlobal();
-			lifecycle.setup.call(testEnvironment);
+			lifecycle.setup();
 		} catch(e) {
 			QUnit.ok( false, "Setup failed on " + name + ": " + e.message );
 		}
-	});
+	})
 	synchronize(function() {
 		try {
-			callback.call(testEnvironment);
+			callback();
 		} catch(e) {
-			fail("Test " + name + " died, exception and test follows", e, callback);
+			if( typeof console != "undefined" && console.error && console.warn ) {
+				console.error("Test " + name + " died, exception and test follows");
+				console.error(e);
+				console.warn(callback.toString());
+			}
 			QUnit.ok( false, "Died on test #" + (config.assertions.length + 1) + ": " + e.message );
 			// else next test will carry the responsibility
 			saveGlobal();
@@ -416,16 +425,20 @@ function test(name, callback) {
 	synchronize(function() {
 		try {
 			checkPollution();
-			lifecycle.teardown.call(testEnvironment);
+			lifecycle.teardown();
 		} catch(e) {
 			QUnit.ok( false, "Teardown failed on " + name + ": " + e.message );
 		}
-	});
+	})
 	synchronize(function() {
 		try {
 			reset();
 		} catch(e) {
-			fail("reset() failed, following Test " + name + ", exception and reset fn follows", e, reset);
+			if( typeof console != "undefined" && console.error && console.warn ) {
+				console.error("reset() failed, following Test " + name + ", exception and reset fn follows");
+				console.error(e);
+				console.warn(reset.toString());
+			}
 		}
 		
 		if(config.expected && config.expected != config.assertions.length) {
@@ -461,16 +474,6 @@ function test(name, callback) {
 			$("#filter-missing").attr("disabled", null);
 		}
 	});
-}
-
-function fail(message, exception, callback) {
-	if( typeof console != "undefined" && console.error && console.warn ) {
-		console.error(message);
-		console.error(exception);
-		console.warn(callback.toString());
-	} else if (window.opera && opera.postError) {
-		opera.postError(message, exception, callback.toString);
-	}
 }
 
 // call on start of module test to prepend name to all tests
@@ -658,7 +661,7 @@ function triggerEvent( elem, type, event ) {
 	};
 	function join( pre, arr, post ){
 		var s = jsDump.separator(),
-			base = jsDump.indent(),
+			base = jsDump.indent();
 			inner = jsDump.indent(1);
 		if( arr.join )
 			arr = arr.join( ',' + s + inner );

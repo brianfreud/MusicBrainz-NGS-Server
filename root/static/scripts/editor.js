@@ -22,7 +22,7 @@ MusicBrainz.editor = {
      * @description Stores static selectors.
      * @namespace
      */
-    $cache: {
+    cache: {
         /** 
          * @description Stores sidebar-specific collections of static selectors.
          */
@@ -31,7 +31,7 @@ MusicBrainz.editor = {
          * @description Initializes cache data for derived variables, onReady.
          **/
         init: function ($) {
-            var $sidebar = MusicBrainz.editor.$cache.$sidebar,
+            var $sidebar = MusicBrainz.editor.cache.$sidebar,
                 $sidebarDDs;
             /* Sidebar initiation */
             $sidebarDDs = $sidebar.$DDs = $('#sidebar dd');
@@ -50,7 +50,7 @@ MusicBrainz.editor = {
          **/
         init: function ($) {
             var mb = MusicBrainz,
-                $sidebar = mb.editor.$cache.$sidebar,
+                $sidebar = mb.editor.cache.$sidebar,
                 utility = mb.utility,
                 addOverlay = utility.addOverlay,
                 addOverlayThis = utility.addOverlayThis,
@@ -88,8 +88,12 @@ MusicBrainz.editor = {
     if (typeof notLive === 'undefined') { // Prevent self-initiation when loaded for unit-tests.
         var mbEditor = MusicBrainz.editor,
             sidebar = mbEditor.sidebar;
-        mbEditor.$cache.init($);
+        mbEditor.cache.init($);
         sidebar.init($);
         sidebar.events.showEditFieldsOnClick($);
+
+
+MusicBrainz.html().input({ id: 'foo' }).append(".content");
+
     }
 }));
