@@ -4,10 +4,8 @@
     <form action="[% c.req.uri %]" method="post">
         [% USE r = FormRenderer(form) %]
         [% INCLUDE 'release/sidebar.tt' editing=1 %]
-
-        <div class="content">
+        <div id="content">
             [%- INCLUDE 'forms/edit-note.tt' -%]
-            [% form_submit(l('Edit')) %]
         </div>
     </form>
 [%- END -%]

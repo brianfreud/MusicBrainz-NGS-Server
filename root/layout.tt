@@ -78,7 +78,7 @@
                 });
             </script>
             [%- IF edit -%]
-                <script type="text/javascript" src="/text_strings.js"></script>
+                <script type="text/javascript" src="/mbArrays.js"></script>
             [%- END -%]
             [%- FOREACH js IN page.js %]
                 <script type="text/javascript" src="/static/scripts/[% js %]"></script>

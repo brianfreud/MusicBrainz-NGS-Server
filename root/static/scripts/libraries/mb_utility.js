@@ -101,5 +101,8 @@ MusicBrainz.utility = {
     },
     padString: function (str) {
         return ' ' + str + ' ';
+    },
+    showError: function (error) {
+        (window.console ? console.debug : alert)("foo");
     }
 };

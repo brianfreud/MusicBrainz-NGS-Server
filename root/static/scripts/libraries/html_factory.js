@@ -35,7 +35,7 @@
         option        = 'option',
         title         = 'title',
         undef         = 'undefined',
-        i, loops,
+        i, loops, htmlStr,
         jQueryMethods = {
                         after: 'after',
                         append: 'append',
@@ -88,7 +88,6 @@
             var $element = $(element),
                 oldHTML = $element.parent().html(),
                 jQueryThis = $element[method](this[html]);
-if (method == 'replaceWith') console.log(method + "            " + oldHTML + "                  " + $element.parent().html())
             /* The folling conditional test for null will only ever resolve to false when using .replace(selector, 1) */
             return typeof jQueryScope !== undef && jQueryScope ? (jQueryThis.parent().html() !== null ? jQueryThis : oldHTML) : this;
         };
@@ -584,7 +583,7 @@ if (method == 'replaceWith') console.log(method + "            " + oldHTML + "  
             return this;
         },
         /**
-         * Alias to MusicBrainz.html().html; ends a chain and returns the html string.<br /><br />
+         * Similar to MusicBrainz.html().html; ends a chain and returns the html string.<br /><br />
          * <em>Note that this function can only end a MusicBrainz.html() chain.</em><br /><br />
          * Useful for more clearly documenting the end of a MusicBrainz.html() chain, rather than MusicBrainz.html().span('foo').html.
          *
@@ -602,7 +601,9 @@ if (method == 'replaceWith') console.log(method + "            " + oldHTML + "  
          * @see MusicBrainz.html.use
              */
         end: function () {
-            return this[html];
+            htmlStr = this[html];
+            delete this[html];
+            return htmlStr;
         },
         /**
          * Used to insert plaintext within an HTML string without breaking a chain.

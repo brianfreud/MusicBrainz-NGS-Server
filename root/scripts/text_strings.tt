@@ -2,9 +2,19 @@
  *   Displayed text                                                                         *
  ===========================================================================================*/
 MusicBrainz.text           = {
-       Unknown               : "[% l("Unknown") %]",
-       UnknownPlaceholder    : "[% l("[ Unknown ]") %]",
+       HasNameVariation      : "[% l("Credited using a variation on this name.") %]",
+       Loaded                : "[% l("Loaded:") %]",
+       MatchesFound          : "[% l("Matches found:") %]",
+       NoResultsFound        : "[% l("No results found.") %]",
+       NothingToLookUp       : "[% l("Nothing to look up!") %]",
+       Results               : "[% l("Results:") %]",
+       Searching             : "[% l("Searching&hellip;") %]",
+       Search                : "[% l("Search") %]",
        SelectOne             : "[% l("Select One") %]",
+       UnknownPlaceholder    : "[% l("[ Unknown ]") %]",
+                             };
+/*
+       Unknown               : "[% l("Unknown") %]",
        Type                  : "[% l("Type") %]",
        Name                  : "[% l("Name") %]",
        NameSort              : "[% l("Sort Name") %]",
@@ -36,7 +46,6 @@ MusicBrainz.text           = {
        RERemove              : "[% l("Remove release event") %]",
        AddTrack              : "[% l("Add Track") %]",
        Angle                 : "[% l("unbalanced angle bracket:") %]",
-       HasDiffArtistCredit   : "[% l("Credited using a variation on this name.") %]",
        ArtistCredit          : "[% l("Artist Credit") %]",
        ArtistJoiner          : "[% l("Join Phrase") %]",
        ArtistName            : "[% l("Artist Name") %]",
@@ -50,11 +59,6 @@ MusicBrainz.text           = {
        NoYear                : "[% l("No year is defined.") %]",
        NoMonth               : "[% l("No month is defined.") %]",
        ChronologicalDates    : "[% l("The start date must be earlier than the end date.") %]",
-       ArtistLookupNoResults : "[% l("No results found.") %]",
-       ArtistLookupSearching : "[% l("Searching&hellip;") %]",
-       ArtistLookupResults   : "[% l("Results:") %]",
-       ArtistLookupMatches   : "[% l("Matching artists:") %]",
-       ArtistLookupLoaded    : "[% l("Loaded:") %]",
        Braces                : "[% l("unbalanced brace:") %]",
        ButtonGuessAll        : "[% l("Guess All") %]",
        ButtonGuessCase       : "[% l("Guess Case") %]",
@@ -156,7 +160,6 @@ MusicBrainz.text           = {
        Lenticular            : "[% l("unbalanced lenticular bracket:") %]",
        LikelyACompilation    : "[% l("Based on the release title, this appears to be a Compilation. However, that is not the release type that is currently set.") %]",
        Loading               : "[% l("Page is loading") %]",
-       Loaded                : "[% l("Page loaded.") %]",
        LoadingJS             : "[% l("Loading JavaScript&hellip,") %]",
        Manipulators          : "[% l("Toggle track manipulation controls") %]",
        MarkupLanguage        : "[% l("Edit using markup language:") %]",
@@ -174,12 +177,10 @@ MusicBrainz.text           = {
        Parens                : "[% l("unbalanced parenthesis:") %]",
        PickGuideline         : "[% l("Please select a Style Guideline from the dropdown:") %]",
        PromptTitle           : "[% l("Caution!") %]",
-       Results               : "[% l("Showing results:") %]",
        Remove                : "[% l("Remove") %]",
        RemoveArtist          : "[% l("Click here to remove this artist.") %]",
        RemoveTrack           : "[% l("Click here to remove this track.") %]",
        RemoveMedium          : "[% l("Click here to remove this medium.") %]",
-       SearchArtist          : "[% l("Lookup Artist") %]",
        SelectFormat          : "[% l("Select Format") %]",
        ShortList             : "[% l("Short List") %]",
        ShowTrackArtists      : "[% l("Show Track Artists") %]",
@@ -220,4 +221,4 @@ MusicBrainz.text           = {
        yearIncludedB         : "[% l("This information should be included using Advanced Relationships, not in the title itself.") %]",
        YearMask              : "[% l("YYYY") %]",
        Yes                   : "[% l("Yes") %]",
-                             };
+*/

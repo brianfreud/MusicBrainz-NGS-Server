@@ -34,7 +34,7 @@ $(document).ready(function ($) {
         } else {
             return expectString;
         }
-    }
+    };
     module("QUnit");
         test("Self-test", function () {
             var actual = { a: 1 };
@@ -48,7 +48,32 @@ $(document).ready(function ($) {
             ok( $, "$" );
             ok( MusicBrainz, "MusicBrainz" );
         });
-
+    module("Cached data");
+        test("text strings", function () {
+            var textStrings = {
+                HasNameVariation      : "Credited using a variation on this name.",
+                Loaded                : "Loaded:",
+                MatchesFound          : "Matches found:",
+                NoResultsFound        : "No results found.",
+                NothingToLookUp       : "Nothing to look up!",
+                Results               : "Results:",
+                Searching             : "Searching&hellip;",
+                Search                : "Search",
+                SelectOne             : "Select One",
+                UnknownPlaceholder    : "[ Unknown ]",
+            };
+            for (i in textStrings) {
+                same(MusicBrainz.text[i], textStrings[i]);
+            }
+        });
+        test("image strings", function () {
+            var imageStrings = {
+                doingSomething: "/static/images/loading-small.gif"
+            };
+            for (i in imageStrings) {
+                same(MusicBrainz.images[i], imageStrings[i]);
+            }
+        });
     module("HTML Factory: Basic functionality");
         test("Basic requirements", function () {
             ok( MusicBrainz.html().basic, "basic" );
@@ -69,8 +94,6 @@ $(document).ready(function ($) {
             same(typeof MusicBrainz.html(), 'object', 'constructor instantation');
         });
         test("css string access", function () {
-            same(MusicBrainz.html().css.float.left, 'float:left;');
-            same(MusicBrainz.html().css.float.right, 'float:right;');
             same(MusicBrainz.html().css.display.IB, 'display:inline-block;');
             same(MusicBrainz.html().css.display.none, 'display:none;');
         });
@@ -520,8 +543,8 @@ $(document).ready(function ($) {
                     case 2: same(doTestAndGetNewHTML(this), fixCase('<div class="editable">Test Text</div>'), 'Overlay on <input>, type button'); break;
                     case 3: same(doTestAndGetNewHTML(this), fixCase('<div class="editable">true</div>'), 'Overlay on <input>, type checkbox, checked'); break;
                     case 4: same(doTestAndGetNewHTML(this), fixCase('<div class="editable">false</div>'), 'Overlay on <input>, type checkbox, unchecked'); break;
-                    // Older versions of Opera treat the input type file security a little differently; while other browsers don't support a default 
-                    // value from the HTML, some versions of Opera do, placing the security check at form submission time instead (a forced "are you 
+                    // Older versions of Opera treat the input type file security a little differently; while other browsers don't support a default
+                    // value from the HTML, some versions of Opera do, placing the security check at form submission time instead (a forced "are you
                     // sure" prompt when submitting, if the input type file's default value has not been changed).
                     case 5: var message = '<input>, type file';
                             if ($.browser.opera) {
@@ -614,25 +637,32 @@ $(document).ready(function ($) {
         });
     module("Inline editor: Selector cache");
         test("Sidebar init", function () {
-            same(MusicBrainz.editor.$cache.$sidebar, {}, '$sidebar cache is empty prior to initialization');
-            MusicBrainz.editor.$cache.init($);
-            same(typeof MusicBrainz.editor.$cache.$sidebar.$DDs, 'object', '$sidebar cache is not empty after initialization');
+            same(MusicBrainz.editor.cache.$sidebar, {}, '$sidebar cache is empty prior to initialization');
+            MusicBrainz.editor.cache.init($);
+            same(typeof MusicBrainz.editor.cache.$sidebar.$DDs, 'object', '$sidebar cache is not empty after initialization');
 /* This test will always fail, using same or equals, as the new jQuery objects are never precisely identical to the ones created during initiation.
-            same(MusicBrainz.editor.$cache.$sidebar, {
+            same(MusicBrainz.editor.cache.$sidebar, {
                                                      $DDs: $([]),
                                                      $DateDDs: $([]),
                                                      $InputDDs: $([]),
                                                      $SelectDDs: $([])
                                                      }, '$sidebar cache contains expected cached selector collections.'); */
         });
+    module("Inline editor: HTML cache");
+        test("init", function () {
+            same(typeof MusicBrainz.editor.cache.html.popups.lookup, 'string', "Lookup menu")
+        });
+        test("Generated HTML", function () {
+            same(MusicBrainz.editor.cache.html.popups.lookup, '<div id="lookup"><div class="center" id="status"><input id="btnSearch" tabindex="-1" type="button" value="Search" /><div class="bold" id="noInput" style="display:none;">Nothing to look up!</div><div class="bold" id="noResults" style="display:none;">No results found.</div><div class="bold" id="nowSearching" style="display:none;"><img alt="Searching&hellip;" src="/static/images/loading-small.gif" title="Searching&hellip;" /> Searching&hellip; </div></div><div id="info" style="display:none;"><span> Results: </span><span class="bold" id="matches"></span>, Matches found: <span class="bold" id="loaded"></span>, Loaded: <span id="resultsStart"></span> &ndash; <span id="resultsEnd"></span></div><div id="results" style="display:none;"> </div><div id="BottomControls" style="display:none;"><div style="float:left;display:none;"><input id="hasAC" tabindex="-1" type="checkbox" /><label for="hasAC"> Credited using a variation on this name. </label></div><div style="float:right;"><input id="btnAddNew" tabindex="-1" type="button" /></div><div id="addNewEntity" style="display:none;"> </div></div></div>', "Lookup menu HTML")
+        });
     module("Inline editor: Sidebar");
         test("init", function () {
             same($("#sidebar").find("dd").length, 15, '<dd> test elements  present before init');
             same($("#sidebar").find(".editable").length, 0, '<dd> elements with class editable present before init');
-            MusicBrainz.editor.$cache.init($);
+            MusicBrainz.editor.cache.init($);
             MusicBrainz.editor.sidebar.init($);
             same($("#sidebar").find("dd").length, 28, '<dd> test elements present after init'); // textarea and button dd's should be ignored, hence 28, not 30.
-            same($("#sidebar").find(".editable").length, 13, '<dd> elements with class editable present after init'); 
+            same($("#sidebar").find(".editable").length, 13, '<dd> elements with class editable present after init');
         });
         test("events: showEditFieldsOnClick", function () {
             MusicBrainz.editor.sidebar.events.showEditFieldsOnClick($);

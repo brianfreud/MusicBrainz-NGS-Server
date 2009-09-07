@@ -1,1 +1,4 @@
 [%- INCLUDE 'scripts/text_strings.tt' -%]
+MusicBrainz.images = {
+                     doingSomething: "/static/images/loading-small.gif"
+                     };
