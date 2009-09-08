@@ -2,7 +2,7 @@
  *   Displayed text                                                                         *
  ===========================================================================================*/
 MusicBrainz.text           = {
-       Error                 : "[% l("Error") %]",
+       Error                 : "[% l("An error has occurred.") %]",
        HasNameVariation      : "[% l("Credited using a variation on this name.") %]",
        Loaded                : "[% l("Loaded:") %]",
        MatchesFound          : "[% l("Matches found:") %]",

@@ -6,7 +6,9 @@
  * @namespace
  */
 MusicBrainz.cache = {
-    html         : {},
+    html         : {
+                   popups : {}
+                   },
     images       : {
                    warning : '/static/images/scripts/warning.png',
                    working : '/static/images/scripts/working.gif'
@@ -16,6 +18,6 @@ MusicBrainz.cache = {
                    limit  : 'limit=20',
                    query  : 'query=',
                    server : '/ajax/search'
-                   },
+                   }
 };
 
