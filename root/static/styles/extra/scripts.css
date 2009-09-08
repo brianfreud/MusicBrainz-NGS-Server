@@ -49,7 +49,7 @@ span.partial-date input:first-child {
     Popup Windows
 ---------------------------------- */
 
-div.popup { /* The main popup. */
+div.popup {
 	height: auto;
 	max-width: 400px;
 	min-height: 0;
@@ -58,7 +58,7 @@ div.popup { /* The main popup. */
 	width: auto;
 }
 
-div.shadow { /* Shadow layers */
+div.shadow {
 	height: 100%;
 	left: 1px;
 	margin: 0;
@@ -72,8 +72,7 @@ div.shadow { /* Shadow layers */
 	filter: alpha(opacity=60);
 }
 
-div.popupContents { /* The "contents" of the popup. */
-	background: #fff;  /* The "real" background color for the popup's contents. */
+div.popupContents {
 	border: 1px solid #aaa;
 	position: relative;
 }

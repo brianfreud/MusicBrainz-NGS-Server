@@ -1,3 +1,5 @@
+"use strict";
+
 [%- INCLUDE 'scripts/text_strings.tt' -%]
 /**
  * Stores global statics.
@@ -7,7 +9,9 @@
  */
 MusicBrainz.cache = {
     html         : {
-                   popups : {}
+                   popups: {
+                           lookup: {}
+                           }
                    },
     images       : {
                    warning : '/static/images/scripts/warning.png',

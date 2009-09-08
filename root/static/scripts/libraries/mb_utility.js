@@ -33,10 +33,10 @@ MusicBrainz.utility = {
     addOverlay: function ($element, options) {
         options = options ? options : {};
         var $elementToOverlay = $element,
+            textForUnknown    = options.textForUnknown ? '[ ' + options.textForUnknown + ' ]' : MusicBrainz.text.UnknownPlaceholder,
+            parentWrapped     = false,
+            $thisParent       = $element.parent() || $element,
             elementValue,
-            textForUnknown = options.textForUnknown ? '[ ' + options.textForUnknown + ' ]' : MusicBrainz.text.UnknownPlaceholder,
-            parentWrapped = false,
-            $thisParent = $element.parent() || $element,
             wrapper;
         if ($element.is('button, input, select, textarea')) {
             elementValue = MusicBrainz.utility.getValue($element).toString();
@@ -74,11 +74,12 @@ MusicBrainz.utility = {
      * Creates and attaches a lookup popup instance; will remove any existing lookup instance unless it would be removing the same one it would be creating.
      *
      * @param {Object} $self The jQuery-wrapped input element to attach the lookup to.
+     * @param {Object} entityType The type of entity to look up.
      **/
-    addLookup: function ($self) {
-        var hidden = 'hidden',
-            inputOffset = $self.offset(),
-            $oldLookup = $self.data('lookup'),
+    addLookup: function ($self, entityType) {
+        var hidden         = 'hidden',
+            inputOffset    = $self.offset(),
+            $oldLookup     = $self.data('lookup'),
             oldLookupPopup = $('#lookupPopup_parent'),
             oldStaticDivs,
             oldData;
@@ -88,9 +89,9 @@ MusicBrainz.utility = {
                 oldData.$input.removeData('lookup'); // Clear the old lookup's data from the input.
             }
             if (oldLookupPopup.length > 0) {
-                /* None of the next 6 lines is required.  However, they save a lot of wasted time in the following .remove(),
-                   where it is  doing recursive checks for non-existant events and jQuery data in static DOM nodes - approx
-                   160 ms.  This makes switching lookup popups much more responsive. */
+                /* None of the next 6 lines is required.  However, they save approx 160 ms in the following .remove(),
+                   where it is  doing recursive checks for non-existant events and jQuery data in static DOM nodes.
+                   This makes switching lookup popups much more responsive. */
                 oldStaticDivs = oldLookupPopup[0].getElementsByTagName('div');
                 oldLookupPopup[0].appendChild(document.getElementById('btnSearch'));
                 oldStaticDivs[16].removeChild(oldStaticDivs[17]); // The hasAC checkbox div
@@ -100,8 +101,9 @@ MusicBrainz.utility = {
                 /* End non-required code. */
                 oldLookupPopup.remove(); // Get rid of the old lookup.
             }
-            $(MusicBrainz.cache.html.popups.lookup).insertAfter($self) // Add the new lookup.
-                                                   .offset(inputOffset.bottom, inputOffset.left + 1, 0); // Position it flush to the input.
+            entityType = entityType === 'artist' ? entityType : 'generic';
+            $(MusicBrainz.cache.html.popups.lookup[entityType]).insertAfter($self) // Add the new lookup.
+                                                               .offset(inputOffset.bottom, inputOffset.left + 1, 0); // Position it flush to the input.
         } else {
             $oldLookup.$divs.filter(':not(#status)')
                             .addClass(hidden) // Hide any existing lookup results or status messages.
@@ -146,16 +148,16 @@ MusicBrainz.utility = {
      * Handles an entity lookup.
      **/
     doLookup: function () {
-        var hidden = 'hidden',
-            artist = 'artist',
-            label = 'label',
-            mbLookup = MusicBrainz.cache.lookup,
+        var artist    = 'artist',
+            hidden    = 'hidden',
+            label     = 'label',
+            mbLookup  = MusicBrainz.cache.lookup,
             mbUtility = MusicBrainz.utility,
             $self,
             $selfParent,
             $selfGrandParent,
             lookup,
-            lookupType,
+            type,
             searchStr,
             show = function ($ele) {
                 $ele.removeClass(hidden);
@@ -183,13 +185,13 @@ MusicBrainz.utility = {
                 hide($self.find('.search:first')); // Hide the search button.
                 lookup.$input.data('lookup', lookup); // Store lookup data on the associated input element.
                 $self.data('lookup', lookup); // Store lookup data on the lookup itself.
-                lookupType = lookup.$input.data('lookupType'); // Allow overriding the lookup type by pre-setting a .data() value on the input.
-                if (typeof lookupType !== 'undefined') {
-                    lookup.lookupType = lookupType;
+                type = lookup.$input.data('lookupType'); // Allow presetting the lookup type by setting a jQuery data value on the input.
+                if (typeof type !== 'undefined') {
+                    lookup.lookupType = type;
                 } else if (lookup.$input.hasClass(artist)) {
-                    lookup.lookupType = artist;
+                    lookup.type = artist;
                 } else if (lookup.$input.hasClass(label)) {
-                    lookup.lookupType = label;
+                    lookup.type = label;
                 } else {
                     throw 2;
                 }
@@ -204,31 +206,25 @@ MusicBrainz.utility = {
                        cache    : true,
                        type     : 'GET',
                        */
-                       data     : [mbLookup.type + lookup.lookupType, mbLookup.limit, mbLookup.query + window.escape(searchStr)].join('&'),
+                       data     : [mbLookup.type + type, mbLookup.limit, mbLookup.query + window.escape(searchStr)].join('&'),
                        dataType : 'json',
                        timeout  : 5000,
                        url      : mbLookup.server,
                        error    : function (/* request, errorType, errorThrown */) {
-                                      $('#lookup').find('.error:first')
-                                                  .removeClass(hidden); // Status: generic error
+                                      show($self.find('.error:first')); // Status: generic error
                                   },
-                       success  : function (data) {
-                                      console.log(data);
-
-
-                                  },
+                       success  : mbUtility.processLookup,
                        complete : function () {
-                                      $('#lookup').find('.search:last')
-                                                  .addClass(hidden); // Hide 'Searching...'.
+                                      hide($self.find('.search:last')); // Hide 'Searching...'.
                                   }
                        });
             }
         } catch (f) {
             switch (f) {
-                case 1: show($('#noInput')); break; // Status: nothing to look up
-                case 0: show($self.filter('.error:first')); break; // Status: generic error
-                case 2: mbUtility.showError('Lookup called on an unsupported entity type.'); break;
-                default: throw f;
+                case 1  : show($('#noInput')); break; // Status: nothing to look up
+                case 0  : show($self.filter('.error:first')); break; // Status: generic error
+                case 2  : mbUtility.showError('Lookup called on an unsupported entity type.'); break;
+                default : throw f;
             }
         }
     },
@@ -243,44 +239,46 @@ MusicBrainz.utility = {
          * @description Creates the HTML string for a lookup popup.
          **/
         lookup: function () {
-            var bold = 'bold',
-                div = 'div',
-                hidden = 'hidden',
-                results = 'results',
-                mbImages = MusicBrainz.cache.images,
-                unTrim = MusicBrainz.utility.unTrim,
-                text = MusicBrainz.text,
-                textGenericError = text.Error,
-                objGenericError = { alt: textGenericError, src: mbImages.warning },
+            var bold       = 'bold',
+                div        = 'div',
+                hidden     = 'hidden',
+                results    = 'results',
+                mbCache    = MusicBrainz.cache,
+                mbImages   = mbCache.images,
+                mbLookup   = mbCache.html.popups.lookup,
+                mbText     = MusicBrainz.text,
+                unTrim     = MusicBrainz.utility.unTrim,
+                textError  = mbText.Error,
+                objError   = { alt: textError, src: mbImages.warning },
                 lookupHTML = MusicBrainz.html()
                                               .div({ id: 'lookup' })
                                                   .div({ cl: 'center', id: 'status' })
                                                       .div({ cl: 'search' })
-                                                           .button({ id: 'btnSearch', ti: -1, val: text.Search })
+                                                           .button({ id: 'btnSearch', ti: -1, val: mbText.Search })
                                                       .close(div)
                                                       .div({ cl: 'error ' + hidden })
-                                                          .img(objGenericError)
-                                                          .span({ cl: 'bold', val: textGenericError })
+                                                          .img(objError)
+                                                          .span({ cl: 'bold', val: textError })
                                                       .close(div)
                                                       .div({ id: 'noInput', cl: 'error ' + hidden })
-                                                          .img(objGenericError)
-                                                          .span({ cl: 'bold', val: text.NothingToLookUp })
+                                                          .img(objError)
+                                                          .span({ cl: 'bold', val: mbText.NothingToLookUp })
                                                       .close(div)
                                                       .div({ id: 'noResults', cl: bold + ' ' + hidden })
-                                                          .img(objGenericError)
-                                                          .span({ cl: 'bold', val: text.NoResultsFound })
+                                                          .img(objError)
+                                                          .span({ cl: 'bold', val: mbText.NoResultsFound })
                                                       .close(div)
                                                       .div({ cl: hidden + ' search ' + bold })
-                                                          .img({ alt: text.Searching, src: mbImages.working })
-                                                          .span({ cl: 'bold', val: text.Searching })
+                                                          .img({ alt: mbText.Searching, src: mbImages.working })
+                                                          .span({ cl: 'bold', val: mbText.Searching })
                                                       .close(div)
                                                   .close(div)
                                                   .div({ id: 'info', cl: hidden })
-                                                      .span(unTrim(text.Results))
+                                                      .span(unTrim(mbText.Results))
                                                       .span({ id: 'matches', cl: bold })
-                                                      .text(',' + unTrim(text.MatchesFound))
+                                                      .text(',' + unTrim(mbText.MatchesFound))
                                                       .span({ id: 'loaded', cl: bold })
-                                                      .text(',' + unTrim(text.Loaded))
+                                                      .text(',' + unTrim(mbText.Loaded))
                                                       .span({ id: results + 'Start' })
                                                       .text(unTrim('&ndash;'))
                                                       .span({ id: results + 'End' })
@@ -289,7 +287,7 @@ MusicBrainz.utility = {
                                                   .div({ id: 'BottomControls', cl: hidden })
                                                       .div({ css: 'float:left;', cl: hidden })
                                                           .input({ id: 'hasAC', ti: -1, type: 'checkbox' })
-                                                          .label({ 'for': 'hasAC', val: unTrim(text.HasNameVariation) })
+                                                          .label({ 'for': 'hasAC', val: unTrim(mbText.HasNameVariation) })
                                                       .close(div)
                                                       .div({ css: 'float:right;' })
                                                           .button({ id: 'btnAddNew', ti: -1 })
@@ -302,22 +300,27 @@ MusicBrainz.utility = {
                                                                              .append(lookupHTML)
                                                                              .end()
                                                                              .outerHTML();
-            MusicBrainz.cache.html.popups.lookup = lookupHTML;
+            mbLookup.artist = lookupHTML;
+            mbLookup.generic = $(lookupHTML).find('#hasAC').parent().remove()
+                                            .end()         .end()
+                                            .outerHTML();
         },
         /**
          * @description Creates the HTML string for a popup window.
          *
          * @param {String} contentsID The ID to assign to the contents div within the window.
+         * @param {String} [bgColor] The css background color for the contents area of the popup; defaults to #fff.
          **/
-        popup: function (contentsID) {
+        popup: function (contentsID, bgColor) {
             var popupHTML = MusicBrainz.html().div({
                                                    cl: 'popup',
                                                    id: contentsID + '_parent'
                                                    })
                                                   .addHTML(MusicBrainz.cache.html.shadow)
                                                   .div({
-                                                       cl: 'popupContents',
-                                                       id: contentsID
+                                                       cl  : 'popupContents',
+                                                       css : 'background-color:' + (bgColor || '#fff') + ';',
+                                                       id  : contentsID
                                                        })
                                                   .close('div')
                                               .close('div')
@@ -326,13 +329,11 @@ MusicBrainz.utility = {
         },
         /**
          * @description Creates the HTML string for a div shadow.
-         *
-         * @param {String} [color] The css color to use for the shadow; defaults to #000.
          **/
-        shadow: function (color) {
-            var shadow = '',
+        shadow: function () {
+            var shadow   = '',
                 shadowCt = 6,
-                bgColor = 'background-color:' + (color || '#000') + ';';
+                bgColor  = 'background-color:#000;';
             do {
                 shadow = MusicBrainz.html()
                                     .div({ cl: 'shadow', css: bgColor })
@@ -342,6 +343,16 @@ MusicBrainz.utility = {
             } while (--shadowCt);
             MusicBrainz.cache.html.shadow = shadow;
         }
+    },
+    /**
+     * @description Logs a message to the FireBug or FireBug Lite console, if present, otherwise it alerts it.
+     *
+     * @param {String} error The message to be passed.
+     **/
+    processLookup: function (data, status) {
+        /* FOR TESTING OF THIS BRANCH ONLY */
+        MusicBrainz.utility.showError(data);
+        /* END TESTING STUFF */
     },
     /**
      * @description Logs a message to the FireBug or FireBug Lite console, if present, otherwise it alerts it.
@@ -367,24 +378,8 @@ MusicBrainz.utility = {
 $(function ($) {
     /* Initialize static HTML strings generated from per-session dynamic strings. */
     MusicBrainz.utility.makeHTML.shadow();
-    MusicBrainz.utility.makeHTML.lookup();
-});
+    delete MusicBrainz.utility.makeHTML.shadow;
 
-/**
- * Sets the disabled attribute on the current selection set.
- **/
-jQuery.fn.disable = function () {
-    return $(this).attr('disabled', 'disabled');
-};
-/**
- * Sets the readonly attribute on the current selection set.
- **/
-jQuery.fn.readonly = function () {
-    return $(this).attr('readonly', 'readonly');
-};
-/**
- * Clears the disabled and readonly attributes on the current selection set.
- **/
-jQuery.fn.enable = function () {
-    return $(this).removeAttr('disabled').removeAttr('readonly');
-};
+    MusicBrainz.utility.makeHTML.lookup();
+    delete MusicBrainz.utility.makeHTML.lookup;
+});

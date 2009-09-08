@@ -29,7 +29,7 @@ MusicBrainz.editor = {
         events: {
             showLookupOnClick: function ($) {
                 $('input.artist').live('click', function () {
-                    MusicBrainz.utility.addLookup($(this));
+                    MusicBrainz.utility.addLookup($(this), 'artist');
                     $(this).data('lookupType', 'artist'); // Saves the lookup having to do a (slower) class check to figure out the entity type.
                 });
             },
@@ -61,9 +61,9 @@ MusicBrainz.editor = {
             var $sidebar = MusicBrainz.editor.cache.$sidebar,
                 $sidebarDDs;
             /* Sidebar initiation */
-            $sidebarDDs = $sidebar.$DDs = $('#sidebar dd');
-            $sidebar.$DateDDs = $sidebarDDs.filter('.date');
-            $sidebar.$InputDDs = $sidebarDDs.filter(':has(input):not(.date)');
+            $sidebarDDs         = $sidebar.$DDs = $('#sidebar dd');
+            $sidebar.$DateDDs   = $sidebarDDs.filter('.date');
+            $sidebar.$InputDDs  = $sidebarDDs.filter(':has(input):not(.date)');
             $sidebar.$SelectDDs = $sidebarDDs.filter(':has(select)');
         }
     },
@@ -76,10 +76,10 @@ MusicBrainz.editor = {
          * @description Initializes sidebar functionality, onReady.
          **/
         init: function ($) {
-            var mb = MusicBrainz,
-                $sidebar = mb.editor.cache.$sidebar,
-                utility = mb.utility,
-                addOverlay = utility.addOverlay,
+            var mb             = MusicBrainz,
+                $sidebar       = mb.editor.cache.$sidebar,
+                utility        = mb.utility,
+                addOverlay     = utility.addOverlay,
                 addOverlayThis = utility.addOverlayThis,
                 getChildValues = utility.getChildValues;
             $sidebar.$DateDDs.each(function (i) {
@@ -109,11 +109,6 @@ MusicBrainz.editor = {
     }
 };
 
-
-
-
-
-
 /**
  * @description Initialize initial page-load functionality.
  */
@@ -121,22 +116,27 @@ $(function ($) {
     var mbEditor = MusicBrainz.editor,
         sidebar = mbEditor.sidebar,
         artist = mbEditor.artist;
+
     if (typeof notLive === 'undefined') { // Prevent self-initiation when loaded for unit-tests.
         mbEditor.cache.init($);
 
         /* Artist-specific */
         artist.events.showLookupOnClick($);
+        delete artist.events.showLookupOnClick;
+
         artist.events.doLookupOnClick($);
+        delete artist.events.doLookupOnClick;
 
         /* Sidebar-specific */
         sidebar.init($);
+        delete sidebar.init;
+
         sidebar.events.showEditFieldsOnClick($);
+        delete sidebar.events.showEditFieldsOnClick;
     }
 
-
-    /* DEBUG STUFF */
+    /* FOR TESTING OF THIS BRANCH ONLY */
     MusicBrainz.html().input({ id: 'foo', cl: 'artist' }).append('#content');
     MusicBrainz.html().input({ id: 'bar', cl: 'artist' }).append('#content');
-    /* END DEBUG STUFF */
-
+    /* END TESTING STUFF */
 });

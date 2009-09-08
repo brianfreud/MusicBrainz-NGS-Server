@@ -18,6 +18,7 @@
 "use strict";
 
 $(document).ready(function ($) {
+    var i;
 
     // Get rid of the sidebar; there isn't one on the unit test page.
     $(".bg").removeClass("bg");
@@ -60,7 +61,7 @@ $(document).ready(function ($) {
                 Searching             : "Searching&hellip;",
                 Search                : "Search",
                 SelectOne             : "Select One",
-                UnknownPlaceholder    : "[ Unknown ]",
+                UnknownPlaceholder    : "[ Unknown ]"
             };
             for (i in textStrings) {
                 same(MusicBrainz.text[i], textStrings[i]);
@@ -68,11 +69,32 @@ $(document).ready(function ($) {
         });
         test("image strings", function () {
             var imageStrings = {
-                doingSomething: "/static/images/loading-small.gif"
+                warning : '/static/images/scripts/warning.png',
+                working : '/static/images/scripts/working.gif'
             };
             for (i in imageStrings) {
-                same(MusicBrainz.images[i], imageStrings[i]);
+                same(MusicBrainz.cache.images[i], imageStrings[i]);
             }
+        });
+        test("lookup ws strings", function () {
+            var lookupStrings = {
+                   type   : 'type=',
+                   limit  : 'limit=20',
+                   query  : 'query=',
+                   server : '/ajax/search'
+            };
+            for (i in lookupStrings) {
+                same(MusicBrainz.cache.lookup[i], lookupStrings[i]);
+            }
+        });
+    module("HTML cache");
+        test("init", function () {
+            same(typeof MusicBrainz.cache.html.popups.lookup, 'string', "Lookup menu");
+        });
+        test("Generated HTML", function () {
+            same(MusicBrainz.cache.html.popups.lookup.artist, '<div class="popup" id="lookupPopup_parent"><div class="shadow" style="background-color: rgb(0, 0, 0);"><div class="shadow" style="background-color: rgb(0, 0, 0);"><div class="shadow" style="background-color: rgb(0, 0, 0);"><div class="shadow" style="background-color: rgb(0, 0, 0);"><div class="shadow" style="background-color: rgb(0, 0, 0);"><div class="shadow" style="background-color: rgb(0, 0, 0);"></div></div></div></div></div></div><div class="popupContents" id="lookupPopup"><div id="lookup"><div class="center" id="status"><div class="search"><input id="btnSearch" tabindex="-1" value="Search" type="button"></div><div class="error hidden"><img alt="An error has occurred." src="/static/images/scripts/warning.png" title="An error has occurred."><span class="bold">An error has occurred.</span></div><div class="error hidden" id="noInput"><img alt="An error has occurred." src="/static/images/scripts/warning.png" title="An error has occurred."><span class="bold">Nothing to look up!</span></div><div class="bold hidden" id="noResults"><img alt="An error has occurred." src="/static/images/scripts/warning.png" title="An error has occurred."><span class="bold">No results found.</span></div><div class="hidden search bold"><img alt="Searching…" src="/static/images/scripts/working.gif" title="Searching…"><span class="bold">Searching…</span></div></div><div class="hidden" id="info"><span> Results: </span><span class="bold" id="matches"></span>, Matches found: <span class="bold" id="loaded"></span>, Loaded: <span id="resultsStart"></span> – <span id="resultsEnd"></span></div><div class="hidden" id="results"> </div><div class="hidden" id="BottomControls"><div class="hidden" style="float: left;"><input id="hasAC" tabindex="-1" type="checkbox"><label for="hasAC"> Credited using a variation on this name. </label></div><div style="float: right;"><input id="btnAddNew" tabindex="-1" type="button"></div><div class="hidden" id="addNewEntity"> </div></div></div></div></div>', "Artist lookup menu HTML");
+            same(MusicBrainz.cache.html.popups.lookup.generic, '<div class="popup" id="lookupPopup_parent"><div class="shadow" style="background-color: rgb(0, 0, 0);"><div class="shadow" style="background-color: rgb(0, 0, 0);"><div class="shadow" style="background-color: rgb(0, 0, 0);"><div class="shadow" style="background-color: rgb(0, 0, 0);"><div class="shadow" style="background-color: rgb(0, 0, 0);"><div class="shadow" style="background-color: rgb(0, 0, 0);"></div></div></div></div></div></div><div class="popupContents" id="lookupPopup" style="background-color: rgb(255, 255, 255);"><div id="lookup"><div class="center" id="status"><div class="search"><input id="btnSearch" tabindex="-1" value="Search" type="button"></div><div class="error hidden"><img alt="An error has occurred." src="/static/images/scripts/warning.png" title="An error has occurred."><span class="bold">An error has occurred.</span></div><div class="error hidden" id="noInput"><img alt="An error has occurred." src="/static/images/scripts/warning.png" title="An error has occurred."><span class="bold">Nothing to look up!</span></div><div class="bold hidden" id="noResults"><img alt="An error has occurred." src="/static/images/scripts/warning.png" title="An error has occurred."><span class="bold">No results found.</span></div><div class="hidden search bold"><img alt="Searching…" src="/static/images/scripts/working.gif" title="Searching…"><span class="bold">Searching…</span></div></div><div class="hidden" id="info"><span> Results: </span><span class="bold" id="matches"></span>, Matches found: <span class="bold" id="loaded"></span>, Loaded: <span id="resultsStart"></span> – <span id="resultsEnd"></span></div><div class="hidden" id="results"> </div><div class="hidden" id="BottomControls"><div style="float: right;"><input id="btnAddNew" tabindex="-1" type="button"></div><div class="hidden" id="addNewEntity"> </div></div></div></div></div>', "Generic lookup menu HTML");
+            same(MusicBrainz.cache.html.shadow, '<div class="shadow" style="background-color:#000;"><div class="shadow" style="background-color:#000;"><div class="shadow" style="background-color:#000;"><div class="shadow" style="background-color:#000;"><div class="shadow" style="background-color:#000;"><div class="shadow" style="background-color:#000;"></div></div></div></div></div></div>', "Div shadow HTML");
         });
     module("HTML Factory: Basic functionality");
         test("Basic requirements", function () {
@@ -647,13 +669,6 @@ $(document).ready(function ($) {
                                                      $InputDDs: $([]),
                                                      $SelectDDs: $([])
                                                      }, '$sidebar cache contains expected cached selector collections.'); */
-        });
-    module("Inline editor: HTML cache");
-        test("init", function () {
-            same(typeof MusicBrainz.editor.cache.html.popups.lookup, 'string', "Lookup menu")
-        });
-        test("Generated HTML", function () {
-            same(MusicBrainz.editor.cache.html.popups.lookup, '<div id="lookup"><div class="center" id="status"><input id="btnSearch" tabindex="-1" type="button" value="Search" /><div class="bold" id="noInput" style="display:none;">Nothing to look up!</div><div class="bold" id="noResults" style="display:none;">No results found.</div><div class="bold" id="nowSearching" style="display:none;"><img alt="Searching&hellip;" src="/static/images/loading-small.gif" title="Searching&hellip;" /> Searching&hellip; </div></div><div id="info" style="display:none;"><span> Results: </span><span class="bold" id="matches"></span>, Matches found: <span class="bold" id="loaded"></span>, Loaded: <span id="resultsStart"></span> &ndash; <span id="resultsEnd"></span></div><div id="results" style="display:none;"> </div><div id="BottomControls" style="display:none;"><div style="float:left;display:none;"><input id="hasAC" tabindex="-1" type="checkbox" /><label for="hasAC"> Credited using a variation on this name. </label></div><div style="float:right;"><input id="btnAddNew" tabindex="-1" type="button" /></div><div id="addNewEntity" style="display:none;"> </div></div></div>', "Lookup menu HTML")
         });
     module("Inline editor: Sidebar");
         test("init", function () {
