@@ -2,6 +2,7 @@
  *   Displayed text                                                                         *
  ===========================================================================================*/
 MusicBrainz.text           = {
+       Error                 : "[% l("Error") %]",
        HasNameVariation      : "[% l("Credited using a variation on this name.") %]",
        Loaded                : "[% l("Loaded:") %]",
        MatchesFound          : "[% l("Matches found:") %]",
@@ -112,7 +113,6 @@ MusicBrainz.text           = {
        editing               : "[% l("Currently editing") %]",
        EditTitles            : "[% l("Edit all Titles") %]",
        Errors                : "[% l("Errors:") %]",
-       ErrorTitle            : "[% l("Error") %]",
        ESBeginA              : "[% l("The Edit Suite has been loaded.") %]",
        ESBeginB              : "[% l("Click any button on the left to begin.") %]",
        esGerman              : "[% l('SS was present in the input text here. Please note that Guess Case has no way to know if SS should become ss or ß when making it lowercase. Please double check the correct lowercased spelling of this word.') %]",

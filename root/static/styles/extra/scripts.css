@@ -38,9 +38,54 @@ dl.properties dd > input { /* First-nested-level child input fields only, to exc
 
 span.partial-date input { /* year, month, day fields */
     text-align: center;
-    width: 2.1em;
+    width: 2.1em!important; /* Need the !important to maintain rule when input is disabled. */
 }
 
-span.partial-date input:first-child { /* override above definition for the year field */
-    width: 3.6em!important;
+span.partial-date input:first-child {
+    width: 3.6em!important; /* override above definition for the year field */
+}
+
+/* ----------------------------------
+    Popup Windows
+---------------------------------- */
+
+div.popup { /* The main popup. */
+	height: auto;
+	max-width: 400px;
+	min-height: 0;
+	min-width: 0;
+	position: absolute;
+	width: auto;
+}
+
+div.shadow { /* Shadow layers */
+	height: 100%;
+	left: 1px;
+	margin: 0;
+	padding: 0;
+	position: absolute;
+	top: 1px;
+	width: 100%;
+	opacity: 0.6;
+	-khtml-opacity: 0.6;
+	-moz-opacity: 0.6;
+	filter: alpha(opacity=60);
+}
+
+div.popupContents { /* The "contents" of the popup. */
+	background: #fff;  /* The "real" background color for the popup's contents. */
+	border: 1px solid #aaa;
+	position: relative;
+}
+
+/* ----------------------------------
+    Lookup Popup
+---------------------------------- */
+
+#lookup {
+    padding: 3px 1em;
+}
+
+#status span {
+    padding-left: 0.5em;
 }

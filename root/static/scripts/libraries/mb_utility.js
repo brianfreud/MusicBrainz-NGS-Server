@@ -1,5 +1,5 @@
 /*jslint undef: true, browser: true*/
-/*global jQuery, $, MusicBrainz */
+/*global jQuery, $, MusicBrainz, window */
 
 /**
  * @fileOverview This file contains all utility functions used in MusicBrainz javascript code.
@@ -12,14 +12,17 @@
  */
 
 "use strict";
+
 /**
- * @description Generic utility functions.
+ * Generic utility functions.
+ *
  * @memberOf MusicBrainz
  * @namespace
  */
 MusicBrainz.utility = {
     /**
-     * @description Creates a text overlay over an element, using the plaintext value of the original element as the text source.
+     * Creates a text overlay over an element, using the plaintext value of the original element as the text source.
+     * 
      * @param {Object} $element A single jQuery-wrapped element over which to place an overlay.
      * @param {Function} [options.createOverlayText] A callback to create custom plaintext strings for use as the overlay text; if $element is not
      *        an &lt;input&gt; or a &lt;select&gt; and stringFormatter is omitted, an empty string will be returned.
@@ -58,7 +61,8 @@ MusicBrainz.utility = {
         return $element;
     },
     /**
-     * @description Interface wrapper for addOverlay; "this" is implicitly used as the target element, rather than (as in addOverlay) explicitly defined in $element.
+     * Interface wrapper for addOverlay; "this" is implicitly used as the target element, rather than (as in addOverlay) explicitly defined in $element.
+     * 
      * @param {Object} [$eleInt] This variable is ignored.
      * @param {Object} [options] See <a href="#addOverlay"/>
      * @see <a href="#addOverlay"/>
@@ -67,7 +71,8 @@ MusicBrainz.utility = {
         return MusicBrainz.utility.addOverlay($(this), options || {});
     },
     /**
-     * @description Returns a plaintext string based on the deliniated value(s) of text input(s) within a parent element.
+     * Returns a plaintext string based on the deliniated value(s) of text input(s) within a parent element.
+     * 
      * @param {Object} $inputs A single jQuery-wrapped parent element containing child inputs of type text.
      * @param {String} [joinSeparator] The separator to use between the values of each input; default is '&nbsp;&ndash;&nbsp;'.
      **/
@@ -79,8 +84,8 @@ MusicBrainz.utility = {
                                                        .join(typeof joinSeparator === 'undefined' ? '&nbsp;&ndash;&nbsp;' : joinSeparator);
     },
     /**
-     * @description Returns the plaintext value of an element; if $element is not an &lt;input&gt; of type text, or a &lt;select&gt;,
-     *              an empty string will be returned.
+     * Returns the plaintext value of an element; if $element is not an &lt;input&gt; of type text, or a &lt;select&gt;, an empty string will be returned.
+     * 
      * @param {Object} $element A single jQuery-wrapped element for which to return the plaintext value.
      **/
     getValue: function ($element) {
@@ -99,10 +104,93 @@ MusicBrainz.utility = {
         }
         return '';
     },
-    padString: function (str) {
-        return ' ' + str + ' ';
+    /**
+     * Generic HTML string 
+     *
+     * @memberOf MusicBrainz.utility
+     * @namespace
+     */
+    makeHTML: {
+        /**
+         * @description Creates the HTML string for a popup window
+         * 
+         * @param {String} contentsID The ID to assign to the contents div within the window.
+         **/
+        popup: function (contentsID) {
+            var popupHTML;
+            popupHTML = MusicBrainz.html().div({
+                                               cl: 'popup'
+                                               })
+                                              .addHTML(MusicBrainz.cache.html.shadow)
+                                              .div({
+                                                   cl: 'popupContents',
+                                                   id: contentsID
+                                                   })
+                                              .close('div')
+                                          .close('div')
+                                          .end();
+            return popupHTML;
+        },
+        /**
+         * @description Creates the HTML string for a div shadow.
+         * 
+         * @param {String} [color] The css color to use for the shadow; defaults to #000.
+         **/
+        shadow: function (color) {
+            var shadow = "",
+                shadowCt = 6,
+                bgColor = 'background-color:' + (color || '#000') + ';';
+            do {
+                shadow = MusicBrainz.html()
+                                    .div({ cl: 'shadow', css: bgColor })
+                                        .addHTML(shadow)
+                                    .close('div')
+                                    .end();
+            } while (--shadowCt);
+            MusicBrainz.cache.html.shadow = shadow;
+        }
     },
+    /**
+     * @description Logs a message to the FireBug or FireBug Lite console, if present, otherwise it alerts it.
+     * 
+     * @param {String} error The message to be passed.
+     **/
     showError: function (error) {
-        (window.console ? console.debug : alert)("foo");
+        (window.console ? console.debug : window.alert)(error);
+    },
+    /**
+     * @description Adds a space to either end of a string.
+     * 
+     * @param {String} str The string to be padded.
+     **/
+    unTrim: function (str) {
+        return ' ' + str + ' ';
     }
+};
+
+/**
+ * @description Initialize statics set on page-load.
+ */
+$(function ($) {
+    /* Define MusicBrainz.cache.html.shadow */
+    MusicBrainz.utility.makeHTML.shadow();
+});
+
+/**
+ * Sets the disabled attribute on the current selection set.
+ **/
+jQuery.fn.disable = function () {
+    return $(this).attr("disabled", "disabled");
+};
+/**
+ * Sets the readonly attribute on the current selection set.
+ **/
+jQuery.fn.readonly = function () {
+    return $(this).attr("readonly", "readonly");
+};
+/**
+ * Clears the disabled and readonly attributes on the current selection set.
+ **/
+jQuery.fn.enable = function () {
+    return $(this).removeAttr("disabled").removeAttr("readonly");
 };

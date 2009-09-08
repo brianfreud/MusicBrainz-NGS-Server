@@ -1,4 +1,21 @@
 [%- INCLUDE 'scripts/text_strings.tt' -%]
-MusicBrainz.images = {
-                     doingSomething: "/static/images/loading-small.gif"
-                     };
+/**
+ * Stores global statics.
+ *
+ * @memberOf MusicBrainz
+ * @namespace
+ */
+MusicBrainz.cache = {
+    html         : {},
+    images       : {
+                   warning : '/static/images/scripts/warning.png',
+                   working : '/static/images/scripts/working.gif'
+                   },
+    lookup       : {
+                   type   : 'type=',
+                   limit  : 'limit=20',
+                   query  : 'query=',
+                   server : '/ajax/search'
+                   },
+};
+
