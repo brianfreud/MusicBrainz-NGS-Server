@@ -18,7 +18,7 @@ MusicBrainz.text           = {
        ShowingMatches        : "[% l("Showing Matches:") %]",
        UnknownPlaceholder    : "[% l("[ Unknown ]") %]",
        LastResults           : "[% l("Last 10") %]",
-       NextResults           : "[% l("Next 10") %]",
+       NextResults           : "[% l("Next") %]",
                              };
 /*
        Unknown               : "[% l("Unknown") %]",

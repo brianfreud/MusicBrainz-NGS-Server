@@ -91,6 +91,8 @@ MusicBrainz.utility = {
                             .filter('.search:first').removeClass(hidden) // Re-show the search button.
                             .end()
                             .filter('#results').empty(); // Remove any old results
+            $oldLookup.$self.find('.error').addClass(hidden);
+            $("#btnShowNext").enable();
         }
     },
     /**
@@ -197,26 +199,25 @@ MusicBrainz.utility = {
                                       show($self.find('.error:first')); // Status: generic error
                                   },
                        success  : function (data, status) {
-                                      var resultCount = data.results.length;
+                                      var resultCount = data.results.length,
+                                          nextText;
                                       mbUtility.processLookup(data, status);
-                                      $("#results").removeClass('hidden')
-                                                   .find('.result')
-                                                   .slice(0, 10)
-                                                   .removeClass('hidden'); // Show the first 10 results.
-                                      $("#lookupInfo, #hasACDiv, #BottomControls").removeClass('hidden');
-                                      $("#btnAddNew").attr('value', MusicBrainz.text.addNew[type]);
-                                      $("#btnShowLast").attr('value', '« ' + MusicBrainz.text.LastResults).disable();
-                                      $("#btnShowNext").attr('value', MusicBrainz.text.NextResults + ' »');
-                                      if (resultCount < 10) {
-                                          $("#btnShowNext").disable();
-                                      }
                                       $.extend(lookup, {
                                                        resultsStart : 1,
                                                        resultsEnd   : resultCount > 10 ? 10 : resultCount,
                                                        justLoaded   : resultCount,
                                                        matches      : data.hits
                                                        });
-                                      MusicBrainz.utility.setLookupNumbers();
+                                      if (data.hits > 0) {
+                                          $("#results").removeClass('hidden')
+                                                       .find('.result')
+                                                       .slice(0, 10)
+                                                       .removeClass('hidden'); // Show the first 10 results.
+                                          $("#lookupInfo, #hasACDiv, #BottomControls").removeClass('hidden');
+                                          $("#btnAddNew").attr('value', MusicBrainz.text.addNew[type]);
+                                          mbUtility.setLookupLastNext();
+                                          mbUtility.setLookupNumbers();
+                                      }
                                   },
                        complete : function () {
                                       hide($self.find('.search:last')); // Hide 'Searching...'.
@@ -244,66 +245,65 @@ MusicBrainz.utility = {
          * @description Creates the HTML string for a lookup popup.
          **/
         lookup: function () {
-            var bold       = 'bold',
-                div        = 'div',
-                hidden     = 'hidden',
-                results    = 'results',
-                mbCache    = MusicBrainz.cache,
-                mbImages   = mbCache.images,
-                mbLookup   = mbCache.html.popups.lookup,
-                mbText     = MusicBrainz.text,
-                unTrim     = MusicBrainz.utility.unTrim,
-                textError  = mbText.Error,
-                objError   = { alt: textError, src: mbImages.warning },
-                lookupHTML = MusicBrainz.html()
-                                              .div({ id: 'lookup' })
-                                                  .div({ cl: 'center', id: 'status' })
-                                                      .div({ cl: 'search' })
-                                                           .button({ id: 'btnSearch', ti: -1, val: mbText.Search })
-                                                      .close(div)
-                                                      .div({ cl: 'error ' + hidden })
-                                                          .img(objError)
-                                                          .span({ cl: 'bold', val: textError })
-                                                      .close(div)
-                                                      .div({ id: 'noInput', cl: 'error ' + hidden })
-                                                          .img(objError)
-                                                          .span({ cl: 'bold', val: mbText.NothingToLookUp })
-                                                      .close(div)
-                                                      .div({ id: 'noResults', cl: bold + ' ' + hidden })
-                                                          .img(objError)
-                                                          .span({ cl: 'bold', val: mbText.NoResultsFound })
-                                                      .close(div)
-                                                      .div({ cl: hidden + ' search ' + bold })
-                                                          .img({ alt: mbText.Searching, src: mbImages.working })
-                                                          .span({ cl: 'bold', val: mbText.Searching })
-                                                      .close(div)
-                                                  .close(div)
-                                                  .div({ id: 'lookupInfo', cl: hidden })
-                                                      .text(unTrim(mbText.MatchesFound))
-                                                      .span({ id: 'matches', cl: bold })
-                                                      .text(',' + unTrim(mbText.Loaded))
-                                                      .span({ id: 'loaded', cl: bold })
-                                                      .text(',' + unTrim(mbText.ShowingMatches))
-                                                      .span({ id: results + 'Start', cl: bold })
-                                                      .text(unTrim('&ndash;'))
-                                                      .span({ id: results + 'End', cl: bold })
-                                                  .close(div)
-                                                  .div({ id: results, cl: hidden }).text(' ').close(div)
-                                                  .div({ id: 'hasACDiv', cl: hidden })
-                                                          .input({ id: 'hasAC', ti: -1, type: 'checkbox' })
-                                                          .label({ 'for': 'hasAC', val: unTrim(mbText.HasNameVariation) })
-                                                  .close(div)
-                                                  .div({ id: 'BottomControls', cl: hidden })
-                                                      .div({ css: 'padding-top:0.3em;display:inline-block;' })
-                                                          .button({ id: 'btnShowLast', ti: -1 })
-                                                          .button({ id: 'btnShowNext', ti: -1  })
-                                                          .button({ id: 'btnAddNew', ti: -1, css: 'position:absolute;right:1em;'  })
-                                                      .close(div)
-                                                  .close(div)
-                                                  .div({ id: 'addNewEntity' }).text(' ').close(div)
-                                                  .close(div)
-                                              .close(div)
-                                        .end();
+            var bold         = 'bold',
+                div          = 'div',
+                hidden       = 'hidden',
+                results      = 'results',
+                errorClasses = bold + ' error ' + hidden,
+                mbCache      = MusicBrainz.cache,
+                mbImages     = mbCache.images,
+                mbLookup     = mbCache.html.popups.lookup,
+                mbText       = MusicBrainz.text,
+                unTrim       = MusicBrainz.utility.unTrim,
+                textError    = mbText.Error,
+                objError     = { alt: textError, src: mbImages.warning },
+                lookupHTML   = MusicBrainz.html()
+                                                .div({ id: 'lookup' })
+                                                    .div({ cl: 'center', id: 'status' })
+                                                        .div({ cl: 'search' })
+                                                             .button({ id: 'btnSearch', ti: -1, val: mbText.Search })
+                                                        .close(div)
+                                                        .div({ cl: errorClasses })
+                                                            .img(objError)
+                                                            .span({ cl: 'bold', val: textError })
+                                                        .close(div)
+                                                        .div({ id: 'noInput', cl: errorClasses })
+                                                            .img(objError)
+                                                            .span({ cl: 'bold', val: mbText.NothingToLookUp })
+                                                        .close(div)
+                                                        .div({ id: 'noResults', cl: errorClasses })
+                                                            .img(objError)
+                                                            .span({ cl: 'bold', val: mbText.NoResultsFound })
+                                                        .close(div)
+                                                        .div({ cl: hidden + ' search ' + bold })
+                                                            .img({ alt: mbText.Searching, src: mbImages.working })
+                                                            .span({ cl: 'bold', val: mbText.Searching })
+                                                        .close(div)
+                                                    .close(div)
+                                                    .div({ id: 'lookupInfo', cl: hidden })
+                                                        .text(unTrim(mbText.MatchesFound))
+                                                        .span({ id: 'matches', cl: bold })
+                                                        .text(',' + unTrim(mbText.Loaded))
+                                                        .span({ id: 'loaded', cl: bold })
+                                                        .text(',' + unTrim(mbText.ShowingMatches))
+                                                        .span({ id: results + 'Start', cl: bold })
+                                                        .text(unTrim('&ndash;'))
+                                                        .span({ id: results + 'End', cl: bold })
+                                                    .close(div)
+                                                    .div({ id: results, cl: hidden }).text(' ').close(div)
+                                                    .div({ id: 'hasACDiv', cl: hidden, css: 'padding-top:.7em;' })
+                                                            .input({ id: 'hasAC', ti: -1, type: 'checkbox' })
+                                                            .label({ 'for': 'hasAC', val: unTrim(mbText.HasNameVariation) })
+                                                    .close(div)
+                                                    .div({ id: 'BottomControls', cl: hidden, css: 'padding-top:1em;' })
+                                                        .button({ id: 'btnShowLast', ti: -1 })
+                                                        .button({ id: 'btnShowNext', ti: -1  })
+                                                        .button({ id: 'btnAddNew', ti: -1, css: 'position:absolute;right:1em;'  })
+                                                    .close(div)
+                                                    .div({ id: 'addNewEntity' }).text(' ').close(div)
+                                                    .close(div)
+                                                .close(div)
+                                          .end();
             lookupHTML = $(MusicBrainz.utility.makeHTML.popup('lookupPopup')).find('.popupContents')
                                                                              .append(lookupHTML)
                                                                              .end()
@@ -365,7 +365,7 @@ MusicBrainz.utility = {
             processResult,
             results = [];
         if (data.hits === 0) {
-            $("#noResults").show(); // Status: no results
+            $("#noResults").removeClass('hidden'); // Status: no results
         } else {
             processResult = MusicBrainz.utility.processResult;
             for (i in data.results) if (data.results.hasOwnProperty(i)) {
@@ -432,6 +432,26 @@ MusicBrainz.utility = {
             if (oldLookupPopup.length > 0) {
                 oldLookupPopup.remove(); // Get rid of the old lookup.
             }
+    },
+    /**
+     * @description Sets the text for the 'last' and 'next' result traversal buttons.
+     **/
+    setLookupLastNext: function () {
+        var lookupData = $('#lookup').data('lookup'),
+            nextText;
+        $("#btnShowLast").attr('value', '« ' + MusicBrainz.text.LastResults);
+        if (lookupData.resultsStart < 11) {
+            $("#btnShowLast").disable();
+        }
+        if (lookupData.justLoaded < 10) {
+            $("#btnShowNext").attr('value',  MusicBrainz.text.NextResults + ' »').disable();
+        } else {
+            nextText = [MusicBrainz.text.NextResults,
+                        ' ',
+                        (lookupData.matches > 20 ? 10 : lookupData.matches - 10),
+                        ' »'].join("");
+            $("#btnShowNext").attr('value',  nextText);
+        }
     },
     /**
      * @description Updates the status bar counts for a lookup.
