@@ -2,17 +2,23 @@
  *   Displayed text                                                                         *
  ===========================================================================================*/
 MusicBrainz.text           = {
+       addNew                : {
+                               artist : "[% l("Add a new Artist.") %]",
+                               label  : "[% l("Add a new Label.") %]"
+                               },
        Error                 : "[% l("An error has occurred.") %]",
        HasNameVariation      : "[% l("Credited using a variation on this name.") %]",
        Loaded                : "[% l("Loaded:") %]",
        MatchesFound          : "[% l("Matches found:") %]",
        NoResultsFound        : "[% l("No results found.") %]",
        NothingToLookUp       : "[% l("Nothing to look up!") %]",
-       Results               : "[% l("Results:") %]",
        Searching             : "[% l("Searching&hellip;") %]",
        Search                : "[% l("Search") %]",
        SelectOne             : "[% l("Select One") %]",
+       ShowingMatches        : "[% l("Showing Matches:") %]",
        UnknownPlaceholder    : "[% l("[ Unknown ]") %]",
+       LastResults           : "[% l("Last 10") %]",
+       NextResults           : "[% l("Next 10") %]",
                              };
 /*
        Unknown               : "[% l("Unknown") %]",
@@ -38,7 +44,6 @@ MusicBrainz.text           = {
        DateFounded           : "[% l("Founded") %]",
        DateDissolved         : "[% l("Dissolved") %]",
        AddArtist             : "[% l("Click here to add another artist.") %]",
-       AddArtistNew          : "[% l("Add a new Artist") %]",
        AddArtistShort        : "[% l("Add another Artist&hellip;") %]",
        AddRE                 : "[% l("Add a release event") %]",
        AmazonCatalog         : "[% l("This would appear to be an Amazon ASIN, and not a catalog number. Please note that Amazon ASINs should not be entered here, but should instead be added as a release - url Advanced Relationship.") %]",

@@ -135,12 +135,8 @@ $(function ($) {
         delete sidebar.events.showEditFieldsOnClick;
     }
 
-    /* FOR TESTING OF THIS BRANCH ONLY */
+    /* FOR TESTING ONLY */
     MusicBrainz.html().input({ id: 'foo', cl: 'artist' }).append('#content');
     MusicBrainz.html().input({ id: 'bar', cl: 'artist' }).append('#content');
-
-
-
-
     /* END TESTING STUFF */
 });

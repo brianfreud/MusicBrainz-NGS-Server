@@ -22,6 +22,7 @@ MusicBrainz.cache = {
                    limit  : 'limit=20',
                    query  : 'query=',
                    server : '/ajax/search'
-                   }
+                   },
+    roundness    : "round 6px"
 };
 

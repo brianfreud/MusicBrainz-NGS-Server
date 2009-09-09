@@ -86,12 +86,11 @@ MusicBrainz.utility = {
             $(MusicBrainz.cache.html.popups.lookup[entityType]).insertAfter($self) // Add the new lookup.
                                                                .offset(inputOffset.bottom, inputOffset.left + 1, 0); // Position it flush to the input.
         } else {
-            $oldLookup.$divs.filter(':not(#status)')
-                            .addClass(hidden) // Hide any existing lookup results or status messages.
-                            .filter('#results').empty() // Remove any old results
-                                               .addClass(hidden) // Hide the results field.
+            $oldLookup.$divs.filter(':not(#status)').addClass(hidden) // Hide any existing lookup results or status messages.
                             .end()
-                            .filter('.search:first').removeClass(hidden); // Re-show the search button.
+                            .filter('.search:first').removeClass(hidden) // Re-show the search button.
+                            .end()
+                            .filter('#results').empty(); // Remove any old results
         }
     },
     /**
@@ -197,7 +196,28 @@ MusicBrainz.utility = {
                        error    : function (/* request, errorType, errorThrown */) {
                                       show($self.find('.error:first')); // Status: generic error
                                   },
-                       success  : mbUtility.processLookup,
+                       success  : function (data, status) {
+                                      var resultCount = data.results.length;
+                                      mbUtility.processLookup(data, status);
+                                      $("#results").removeClass('hidden')
+                                                   .find('.result')
+                                                   .slice(0, 10)
+                                                   .removeClass('hidden'); // Show the first 10 results.
+                                      $("#lookupInfo, #hasACDiv, #BottomControls").removeClass('hidden');
+                                      $("#btnAddNew").attr('value', MusicBrainz.text.addNew[type]);
+                                      $("#btnShowLast").attr('value', '« ' + MusicBrainz.text.LastResults).disable();
+                                      $("#btnShowNext").attr('value', MusicBrainz.text.NextResults + ' »');
+                                      if (resultCount < 10) {
+                                          $("#btnShowNext").disable();
+                                      }
+                                      $.extend(lookup, {
+                                                       resultsStart : 1,
+                                                       resultsEnd   : resultCount > 10 ? 10 : resultCount,
+                                                       justLoaded   : resultCount,
+                                                       matches      : data.hits
+                                                       });
+                                      MusicBrainz.utility.setLookupNumbers();
+                                  },
                        complete : function () {
                                       hide($self.find('.search:last')); // Hide 'Searching...'.
                                   }
@@ -258,26 +278,29 @@ MusicBrainz.utility = {
                                                           .span({ cl: 'bold', val: mbText.Searching })
                                                       .close(div)
                                                   .close(div)
-                                                  .div({ id: 'info', cl: hidden })
-                                                      .span(unTrim(mbText.Results))
+                                                  .div({ id: 'lookupInfo', cl: hidden })
+                                                      .text(unTrim(mbText.MatchesFound))
                                                       .span({ id: 'matches', cl: bold })
-                                                      .text(',' + unTrim(mbText.MatchesFound))
-                                                      .span({ id: 'loaded', cl: bold })
                                                       .text(',' + unTrim(mbText.Loaded))
-                                                      .span({ id: results + 'Start' })
+                                                      .span({ id: 'loaded', cl: bold })
+                                                      .text(',' + unTrim(mbText.ShowingMatches))
+                                                      .span({ id: results + 'Start', cl: bold })
                                                       .text(unTrim('&ndash;'))
-                                                      .span({ id: results + 'End' })
+                                                      .span({ id: results + 'End', cl: bold })
                                                   .close(div)
                                                   .div({ id: results, cl: hidden }).text(' ').close(div)
-                                                  .div({ id: 'BottomControls', cl: hidden })
-                                                      .div({ css: 'float:left;', cl: hidden })
+                                                  .div({ id: 'hasACDiv', cl: hidden })
                                                           .input({ id: 'hasAC', ti: -1, type: 'checkbox' })
                                                           .label({ 'for': 'hasAC', val: unTrim(mbText.HasNameVariation) })
+                                                  .close(div)
+                                                  .div({ id: 'BottomControls', cl: hidden })
+                                                      .div({ css: 'padding-top:0.3em;display:inline-block;' })
+                                                          .button({ id: 'btnShowLast', ti: -1 })
+                                                          .button({ id: 'btnShowNext', ti: -1  })
+                                                          .button({ id: 'btnAddNew', ti: -1, css: 'position:absolute;right:1em;'  })
                                                       .close(div)
-                                                      .div({ css: 'float:right;' })
-                                                          .button({ id: 'btnAddNew', ti: -1 })
-                                                      .close(div)
-                                                      .div({ id: 'addNewEntity', cl: hidden }).text(' ').close(div)
+                                                  .close(div)
+                                                  .div({ id: 'addNewEntity' }).text(' ').close(div)
                                                   .close(div)
                                               .close(div)
                                         .end();
@@ -351,7 +374,15 @@ MusicBrainz.utility = {
             }
             /* Done this way, you *can* pass an array of jQuery-wrapped objects to have them all appended with only a single DOM manipulation. */
             $.fn.append.apply($("#results"), results);
-$("#results").show()
+            $("#results .result").filter(":not(.rounded)")
+                                 .corner(MusicBrainz.cache.roundness)
+                                 .addClass('rounded')
+                                 .end()
+                                 .filter(":even")
+                                 .css("background-color","#F1F1F1")
+                                 .end()
+                                 .filter(":odd")
+                                 .css("background-color","#FEFEFE"); // Needs a slight tint so that .corner() + the css :hover can work.
         }
     },
     /**
@@ -361,14 +392,12 @@ $("#results").show()
     processResult: function (thisResult) {
         var isAllLatin = XRegExp("^\\p{InBasicLatin}|\\p{InLatin1Supplement}|\\p{InLatinExtendedAdditional}|\\p{InLatinExtendedA}|\\p{InLatinExtendedB}|\\p{InLatinExtendedC}|\\p{InLatinExtendedD}$"),
             result = MusicBrainz.html()
-                                .div({ cl: 'result' })
+                                .div({ cl: 'result hidden' })
                                     .div({ cl: 'resultName' })
-                                        .strong()
-                                            .span(thisResult.name )
-                                        .close('strong')
+                                            .span({ cl: 'namename', val: thisResult.name })
                                         .addHTML(!isAllLatin.test(thisResult.name) ? MusicBrainz.html()
                                                                                                 .em()
-                                                                                                    .span(' ( ' + thisResult.sort_name + ' )')
+                                                                                                    .span({ cl: 'sortname', val: ' ( ' + thisResult.sort_name + ' )' })
                                                                                                 .close('em')
                                                                                                 .end()
                                                                                   : '')
@@ -401,18 +430,43 @@ $("#results").show()
                 oldData.$input.removeData('lookup'); // Clear the old lookup's data from the input.
             }
             if (oldLookupPopup.length > 0) {
-                /* None of the next 6 lines is required.  However, they save approx 160 ms in the following .remove(),
-                   where it is  doing recursive checks for non-existant events and jQuery data in static DOM nodes.
-                   This makes switching lookup popups much more responsive. */
-                oldStaticDivs = oldLookupPopup[0].getElementsByTagName('div');
-                oldLookupPopup[0].appendChild(document.getElementById('btnSearch'));
-                oldStaticDivs[16].removeChild(oldStaticDivs[17]); // The hasAC checkbox div
-                oldStaticDivs[7].removeChild(oldStaticDivs[14]); // The results info div
-                oldStaticDivs[7].removeChild(oldStaticDivs[8]); // The current status div
-                oldLookupPopup[0].removeChild(oldStaticDivs[0]); // The shadow
-                /* End non-required code. */
                 oldLookupPopup.remove(); // Get rid of the old lookup.
             }
+    },
+    /**
+     * @description Updates the status bar counts for a lookup.
+     **/
+    setLookupNumbers: function () {
+        var mbUtility = MusicBrainz.utility;
+        mbUtility.setLookupMatches();
+        mbUtility.setLookupLoaded();
+        mbUtility.setLookupVisibleMatches();
+    },
+    /**
+     * @description Sets the 'loaded' text contents for lookup popup window results.
+     **/
+    setLookupLoaded: function () {
+        var lookupData = $('#lookup').data('lookup');
+        lookupData.loadedResults = (parseInt(lookupData.loadedResults, 10) || 0) + parseInt(lookupData.justLoaded, 10);
+        $("#loaded").text(lookupData.loadedResults);
+    },
+    /**
+     * @description Sets the 'matches found' text contents for lookup popup window results.
+     **/
+    setLookupMatches: function () {
+        var lookupData = $('#lookup').data('lookup');
+        $("#matches").text(lookupData.matches);
+    },
+    /**
+     * @description Sets the 'start' and 'end' text contents for lookup popup window results.
+     *
+     * @param {String|Int} [start] The start value.
+     * @param {String|Int} [end] The end value.
+     **/
+    setLookupVisibleMatches: function (start, end) {
+        var lookupData = $('#lookup').data('lookup');
+        $("#resultsStart").text(start || lookupData.resultsStart);
+        $("#resultsEnd").text(end || lookupData.resultsEnd);
     },
     /**
      * @description Logs a message to the FireBug or FireBug Lite console, if present, otherwise it alerts it.

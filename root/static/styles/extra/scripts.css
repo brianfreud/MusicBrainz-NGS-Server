@@ -89,24 +89,33 @@ div.popupContents {
     padding-left: 0.5em;
 }
 
-#results {
- width: 100%;
+/* ----------------------------------
+    Lookup Results
+---------------------------------- */
+
+#lookupInfo {
+    padding: 0.4em 0;
 }
 
 div.result {
- padding: 0.5em 1em;
- margin: 2px 0;
+    cursor: pointer;
+    margin: 2px 0;
+    padding: 0.5em 1em;
 }
 
 div.result:hover {
- background-color: #FFCD78!important;
+    background-color: #FFCD78!important;
 }
 
 span.namename {
- font-size: 106%;
- font-weight: bold;
+    font-size: 106%;
+    font-weight: bold;
+}
+
+span.sortname {
+    font-style: italic;
 }
 
 div.disambiguation {
- padding: 1px 0 0 1em;
+    padding: 1px 0 0 1em;
 }
