@@ -88,6 +88,9 @@ MusicBrainz.utility = {
         } else {
             $oldLookup.$divs.filter(':not(#status)')
                             .addClass(hidden) // Hide any existing lookup results or status messages.
+                            .filter('#results').empty() // Remove any old results
+                                               .addClass(hidden) // Hide the results field.
+                            .end()
                             .filter('.search:first').removeClass(hidden); // Re-show the search button.
         }
     },
@@ -198,7 +201,8 @@ MusicBrainz.utility = {
                        complete : function () {
                                       hide($self.find('.search:last')); // Hide 'Searching...'.
                                   }
-                       });
+                       }
+                );
             }
         } catch (f) {
             switch (f) {
@@ -276,7 +280,7 @@ MusicBrainz.utility = {
                                                       .div({ id: 'addNewEntity', cl: hidden }).text(' ').close(div)
                                                   .close(div)
                                               .close(div)
-                                              .end();
+                                        .end();
             lookupHTML = $(MusicBrainz.utility.makeHTML.popup('lookupPopup')).find('.popupContents')
                                                                              .append(lookupHTML)
                                                                              .end()
@@ -293,7 +297,8 @@ MusicBrainz.utility = {
          * @param {String} [bgColor] The css background color for the contents area of the popup; defaults to #fff.
          **/
         popup: function (contentsID, bgColor) {
-            var popupHTML = MusicBrainz.html().div({
+            var popupHTML = MusicBrainz.html()
+                                              .div({
                                                    cl: 'popup',
                                                    id: contentsID + '_parent'
                                                    })
@@ -305,7 +310,7 @@ MusicBrainz.utility = {
                                                        })
                                                   .close('div')
                                               .close('div')
-                                              .end();
+                                       .end();
             return popupHTML;
         },
         /**
@@ -318,7 +323,7 @@ MusicBrainz.utility = {
             do {
                 shadow = MusicBrainz.html()
                                     .div({ cl: 'shadow', css: bgColor })
-                                        .addHTML(shadow)
+                                    .addHTML(shadow)
                                     .close('div')
                                     .end();
             } while (--shadowCt);
@@ -326,15 +331,65 @@ MusicBrainz.utility = {
         }
     },
     /**
-     * @description Logs a message to the FireBug or FireBug Lite console, if present, otherwise it alerts it.
+     * @description Processes the results from a error-free lookup.
      *
-     * @param {String} error The message to be passed.
+     * @param {Object} data The json request results, passed automatically from $.ajax().
+     * @param {Object} status The ajax request status, passed automatically from $.ajax().
      **/
     processLookup: function (data, status) {
-        /* FOR TESTING OF THIS BRANCH ONLY */
-        MusicBrainz.utility.showError(data);
-        /* END TESTING STUFF */
+        var i,
+            thisResult,
+            processResult,
+            results = [];
+        if (data.hits === 0) {
+            $("#noResults").show(); // Status: no results
+        } else {
+            processResult = MusicBrainz.utility.processResult;
+            for (i in data.results) if (data.results.hasOwnProperty(i)) {
+                thisResult = data.results[i];
+                results.push(processResult(thisResult));
+            }
+            /* Done this way, you *can* pass an array of jQuery-wrapped objects to have them all appended with only a single DOM manipulation. */
+            $.fn.append.apply($("#results"), results);
+$("#results").show()
+        }
     },
+    /**
+     * @description Processes a single lookup result.
+     * @param {Object} thisResult The lookup result to process.
+     */
+    processResult: function (thisResult) {
+        var isAllLatin = XRegExp("^\\p{InBasicLatin}|\\p{InLatin1Supplement}|\\p{InLatinExtendedAdditional}|\\p{InLatinExtendedA}|\\p{InLatinExtendedB}|\\p{InLatinExtendedC}|\\p{InLatinExtendedD}$"),
+            result = MusicBrainz.html()
+                                .div({ cl: 'result' })
+                                    .div({ cl: 'resultName' })
+                                        .strong()
+                                            .span(thisResult.name )
+                                        .close('strong')
+                                        .addHTML(!isAllLatin.test(thisResult.name) ? MusicBrainz.html()
+                                                                                                .em()
+                                                                                                    .span(' ( ' + thisResult.sort_name + ' )')
+                                                                                                .close('em')
+                                                                                                .end()
+                                                                                  : '')
+                                    .close('div')
+                                    .addHTML(thisResult.comment ? MusicBrainz.html()
+                                                                             .div({ cl: 'disambiguation' })
+                                                                                 .span(thisResult.comment)
+                                                                             .close('div')
+                                                                             .end()
+                                                                : '')
+                                .close('div')
+                                .tojQuery()
+                                .data("MusicBrainz", {
+                                                     comment  : thisResult.comment,
+                                                     gid      : thisResult.gid,
+                                                     name     : thisResult.name,
+                                                     sortname : thisResult.sort_name,
+                                                     rowid    : thisResult.id
+                                                     });
+        return result;
+    },	
     /**
      * Removes any existing lookup popup(s).
      */
