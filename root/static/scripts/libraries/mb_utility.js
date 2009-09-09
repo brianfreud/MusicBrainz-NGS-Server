@@ -1,14 +1,19 @@
 /*jslint undef: true, browser: true*/
-/*global jQuery, $, MusicBrainz, window */
+/*global jQuery, $, MusicBrainz, window, XRegExp */
 
 /**
  * @fileOverview This file contains all utility functions used in MusicBrainz javascript code.
  * @author Brian Schweitzer (BrianFreud) brian.brianschweitzer@gmail.com
  * @requires html_factory.js
+ * @requires jquery.corner.js
+ * @requires jquery.enableDisable.js
+ * @requires jquery.enhancedOffset.js
  * @requires jquery.js
+ * @requires jquery.outerHTML.js
  * @requires jquery.selectboxes.js
  * @requires jquery.unwrap.js
  * @requires text_strings.js
+ * @requires XRegExp
  */
 
 'use strict';
@@ -77,9 +82,9 @@ MusicBrainz.utility = {
      * @param {Object} entityType The type of entity to look up.
      **/
     addLookup: function ($self, entityType) {
-        var hidden         = 'hidden',
-            inputOffset    = $self.offset(),
-            $oldLookup     = $self.data('lookup');
+        var hidden      = 'hidden',
+            inputOffset = $self.offset(),
+            $oldLookup  = $self.data('lookup');
         if (typeof $oldLookup === 'undefined') { // Don't create more than one lookup at a time for the same input.
             MusicBrainz.utility.removeLookups();
             entityType = entityType === 'artist' ? entityType : 'generic';
@@ -96,41 +101,7 @@ MusicBrainz.utility = {
         }
     },
     /**
-     * Returns a plaintext string based on the deliniated value(s) of text input(s) within a parent element.
-     *
-     * @param {Object} $inputs A single jQuery-wrapped parent element containing child inputs of type text.
-     * @param {String} [joinSeparator] The separator to use between the values of each input; default is '&nbsp;&ndash;&nbsp;'.
-     **/
-    getChildValues: function ($inputs, joinSeparator) {
-        return $('input[type=text][value!=""]', $inputs).map(function () {
-                                                                 return this.value;
-                                                        })
-                                                       .get()
-                                                       .join(typeof joinSeparator === 'undefined' ? '&nbsp;&ndash;&nbsp;' : joinSeparator);
-    },
-    /**
-     * Returns the plaintext value of an element; if $element is not an &lt;input&gt; of type text, or a &lt;select&gt;, an empty string will be returned.
-     *
-     * @param {Object} $element A single jQuery-wrapped element for which to return the plaintext value.
-     **/
-    getValue: function ($element) {
-        if ($element.is('select')) {
-            return $element.selectedTexts()[0];
-        } else if ($element.is('input')) {
-            if ($element.is('[type=radio],[type=checkbox]')) {
-                return $element.attr('checked');
-            } else {
-                return $element.val();
-            }
-        } else if ($element.is('textarea')) {
-            return $element.html();
-        } else if ($element.is('button')) {
-            return $element.val();
-        }
-        return '';
-    },
-    /**
-     * Handles an entity lookup.
+     * Handles an initial entity lookup.
      **/
     doLookup: function () {
         var artist    = 'artist',
@@ -199,8 +170,7 @@ MusicBrainz.utility = {
                                       show($self.find('.error:first')); // Status: generic error
                                   },
                        success  : function (data, status) {
-                                      var resultCount = data.results.length,
-                                          nextText;
+                                      var resultCount = data.results.length;
                                       mbUtility.processLookup(data, status);
                                       $.extend(lookup, {
                                                        resultsStart : 1,
@@ -233,6 +203,40 @@ MusicBrainz.utility = {
                 default : throw f;
             }
         }
+    },
+    /**
+     * Returns a plaintext string based on the deliniated value(s) of text input(s) within a parent element.
+     *
+     * @param {Object} $inputs A single jQuery-wrapped parent element containing child inputs of type text.
+     * @param {String} [joinSeparator] The separator to use between the values of each input; default is '&nbsp;&ndash;&nbsp;'.
+     **/
+    getChildValues: function ($inputs, joinSeparator) {
+        return $('input[type=text][value!=""]', $inputs).map(function () {
+                                                                 return this.value;
+                                                        })
+                                                       .get()
+                                                       .join(typeof joinSeparator === 'undefined' ? '&nbsp;&ndash;&nbsp;' : joinSeparator);
+    },
+    /**
+     * Returns the plaintext value of an element; if $element is not an &lt;input&gt; of type text, or a &lt;select&gt;, an empty string will be returned.
+     *
+     * @param {Object} $element A single jQuery-wrapped element for which to return the plaintext value.
+     **/
+    getValue: function ($element) {
+        if ($element.is('select')) {
+            return $element.selectedTexts()[0];
+        } else if ($element.is('input')) {
+            if ($element.is('[type=radio],[type=checkbox]')) {
+                return $element.attr('checked');
+            } else {
+                return $element.val();
+            }
+        } else if ($element.is('textarea')) {
+            return $element.html();
+        } else if ($element.is('button')) {
+            return $element.val();
+        }
+        return '';
     },
     /**
      * Generic HTML string
@@ -368,9 +372,11 @@ MusicBrainz.utility = {
             $("#noResults").removeClass('hidden'); // Status: no results
         } else {
             processResult = MusicBrainz.utility.processResult;
-            for (i in data.results) if (data.results.hasOwnProperty(i)) {
-                thisResult = data.results[i];
-                results.push(processResult(thisResult));
+            for (i in data.results) {
+                if (data.results.hasOwnProperty(i)) {
+                    thisResult = data.results[i];
+                    results.push(processResult(thisResult));
+                }
             }
             /* Done this way, you *can* pass an array of jQuery-wrapped objects to have them all appended with only a single DOM manipulation. */
             $.fn.append.apply($("#results"), results);
@@ -390,7 +396,7 @@ MusicBrainz.utility = {
      * @param {Object} thisResult The lookup result to process.
      */
     processResult: function (thisResult) {
-        var isAllLatin = XRegExp("^\\p{InBasicLatin}|\\p{InLatin1Supplement}|\\p{InLatinExtendedAdditional}|\\p{InLatinExtendedA}|\\p{InLatinExtendedB}|\\p{InLatinExtendedC}|\\p{InLatinExtendedD}$"),
+        var isAllLatin = new XRegExp("^\\p{InBasicLatin}|\\p{InLatin1Supplement}|\\p{InLatinExtendedAdditional}|\\p{InLatinExtendedA}|\\p{InLatinExtendedB}|\\p{InLatinExtendedC}|\\p{InLatinExtendedD}$"),
             result = MusicBrainz.html()
                                 .div({ cl: 'result hidden' })
                                     .div({ cl: 'resultName' })
@@ -424,7 +430,7 @@ MusicBrainz.utility = {
      */
     removeLookups: function () {
         var oldLookupPopup = $('#lookupPopup_parent'),
-            oldStaticDivs,
+            oldData;
             oldData = $('#lookup').data('lookup'); // Only present if an old lookup actually ran a search.
             if (typeof oldData !== 'undefined') {
                 oldData.$input.removeData('lookup'); // Clear the old lookup's data from the input.
@@ -443,15 +449,14 @@ MusicBrainz.utility = {
         if (lookupData.resultsStart < 11) {
             $("#btnShowLast").disable();
         }
+        nextText = MusicBrainz.text.NextResults;
         if (lookupData.justLoaded < 10) {
-            $("#btnShowNext").attr('value',  MusicBrainz.text.NextResults + ' »').disable();
+            $("#btnShowNext").disable();
         } else {
-            nextText = [MusicBrainz.text.NextResults,
-                        ' ',
-                        (lookupData.matches > 20 ? 10 : lookupData.matches - 10),
-                        ' »'].join("");
-            $("#btnShowNext").attr('value',  nextText);
+            nextText += ' ' + (lookupData.matches > 20 ? 10 : lookupData.matches - 10);
         }
+        nextText += ' »';
+        $("#btnShowNext").attr('value',  nextText);
     },
     /**
      * @description Updates the status bar counts for a lookup.

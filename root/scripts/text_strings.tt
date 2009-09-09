@@ -8,17 +8,17 @@ MusicBrainz.text           = {
                                },
        Error                 : "[% l("An error has occurred.") %]",
        HasNameVariation      : "[% l("Credited using a variation on this name.") %]",
+       LastResults           : "[% l("Last 10") %]",
        Loaded                : "[% l("Loaded:") %]",
        MatchesFound          : "[% l("Matches found:") %]",
+       NextResults           : "[% l("Next") %]",
        NoResultsFound        : "[% l("No results found.") %]",
        NothingToLookUp       : "[% l("Nothing to look up!") %]",
        Searching             : "[% l("Searching&hellip;") %]",
        Search                : "[% l("Search") %]",
        SelectOne             : "[% l("Select One") %]",
        ShowingMatches        : "[% l("Showing Matches:") %]",
-       UnknownPlaceholder    : "[% l("[ Unknown ]") %]",
-       LastResults           : "[% l("Last 10") %]",
-       NextResults           : "[% l("Next") %]",
+       UnknownPlaceholder    : "[% l("[ Unknown ]") %]"
                              };
 /*
        Unknown               : "[% l("Unknown") %]",
