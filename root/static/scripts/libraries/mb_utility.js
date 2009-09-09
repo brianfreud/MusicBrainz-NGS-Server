@@ -79,28 +79,9 @@ MusicBrainz.utility = {
     addLookup: function ($self, entityType) {
         var hidden         = 'hidden',
             inputOffset    = $self.offset(),
-            $oldLookup     = $self.data('lookup'),
-            oldLookupPopup = $('#lookupPopup_parent'),
-            oldStaticDivs,
-            oldData;
+            $oldLookup     = $self.data('lookup');
         if (typeof $oldLookup === 'undefined') { // Don't create more than one lookup at a time for the same input.
-            oldData = $('#lookup').data('lookup'); // Only present if an old lookup actually ran a search.
-            if (typeof oldData !== 'undefined') {
-                oldData.$input.removeData('lookup'); // Clear the old lookup's data from the input.
-            }
-            if (oldLookupPopup.length > 0) {
-                /* None of the next 6 lines is required.  However, they save approx 160 ms in the following .remove(),
-                   where it is  doing recursive checks for non-existant events and jQuery data in static DOM nodes.
-                   This makes switching lookup popups much more responsive. */
-                oldStaticDivs = oldLookupPopup[0].getElementsByTagName('div');
-                oldLookupPopup[0].appendChild(document.getElementById('btnSearch'));
-                oldStaticDivs[16].removeChild(oldStaticDivs[17]); // The hasAC checkbox div
-                oldStaticDivs[7].removeChild(oldStaticDivs[14]); // The results info div
-                oldStaticDivs[7].removeChild(oldStaticDivs[8]); // The current status div
-                oldLookupPopup[0].removeChild(oldStaticDivs[0]); // The shadow
-                /* End non-required code. */
-                oldLookupPopup.remove(); // Get rid of the old lookup.
-            }
+            MusicBrainz.utility.removeLookups();
             entityType = entityType === 'artist' ? entityType : 'generic';
             $(MusicBrainz.cache.html.popups.lookup[entityType]).insertAfter($self) // Add the new lookup.
                                                                .offset(inputOffset.bottom, inputOffset.left + 1, 0); // Position it flush to the input.
@@ -353,6 +334,30 @@ MusicBrainz.utility = {
         /* FOR TESTING OF THIS BRANCH ONLY */
         MusicBrainz.utility.showError(data);
         /* END TESTING STUFF */
+    },
+    /**
+     * Removes any existing lookup popup(s).
+     */
+    removeLookups: function () {
+        var oldLookupPopup = $('#lookupPopup_parent'),
+            oldStaticDivs,
+            oldData = $('#lookup').data('lookup'); // Only present if an old lookup actually ran a search.
+            if (typeof oldData !== 'undefined') {
+                oldData.$input.removeData('lookup'); // Clear the old lookup's data from the input.
+            }
+            if (oldLookupPopup.length > 0) {
+                /* None of the next 6 lines is required.  However, they save approx 160 ms in the following .remove(),
+                   where it is  doing recursive checks for non-existant events and jQuery data in static DOM nodes.
+                   This makes switching lookup popups much more responsive. */
+                oldStaticDivs = oldLookupPopup[0].getElementsByTagName('div');
+                oldLookupPopup[0].appendChild(document.getElementById('btnSearch'));
+                oldStaticDivs[16].removeChild(oldStaticDivs[17]); // The hasAC checkbox div
+                oldStaticDivs[7].removeChild(oldStaticDivs[14]); // The results info div
+                oldStaticDivs[7].removeChild(oldStaticDivs[8]); // The current status div
+                oldLookupPopup[0].removeChild(oldStaticDivs[0]); // The shadow
+                /* End non-required code. */
+                oldLookupPopup.remove(); // Get rid of the old lookup.
+            }
     },
     /**
      * @description Logs a message to the FireBug or FireBug Lite console, if present, otherwise it alerts it.
