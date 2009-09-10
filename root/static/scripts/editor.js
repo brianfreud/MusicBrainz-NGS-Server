@@ -17,6 +17,7 @@
  * @description Contains all functionality for the inline editor.
  * @namespace
  */
+
 MusicBrainz.editor = {
     /**
      * @description Stores artist-specific statics.
@@ -27,17 +28,6 @@ MusicBrainz.editor = {
          * @description Stores artist-specific event bindings.
          */
         events: {
-            showLookupOnClick: function ($) {
-                $('input.artist').live('click', function () {
-                    MusicBrainz.utility.addLookup($(this), 'artist');
-                    $(this).data('lookupType', 'artist'); // Saves the lookup having to do a (slower) class check to figure out the entity type.
-                });
-            },
-            doLookupOnClick: function ($) {
-                $('#btnSearch').live('click', function () {
-                    MusicBrainz.utility.doLookup();
-                });
-            }
         }
     },
     /**
@@ -121,11 +111,7 @@ $(function ($) {
         mbEditor.cache.init($);
 
         /* Artist-specific */
-        artist.events.showLookupOnClick($);
-        delete artist.events.showLookupOnClick;
-
-        artist.events.doLookupOnClick($);
-        delete artist.events.doLookupOnClick;
+        $('input.artist').addMBLookup('artist');
 
         /* Sidebar-specific */
         sidebar.init($);
@@ -139,4 +125,5 @@ $(function ($) {
     MusicBrainz.html().input({ id: 'foo', cl: 'artist' }).append('#content');
     MusicBrainz.html().input({ id: 'bar', cl: 'artist' }).append('#content');
     /* END TESTING STUFF */
-});
+
+}(jQuery));

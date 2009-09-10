@@ -4,6 +4,10 @@
     Generic classes
 ---------------------------------- */
 
+.bold {
+    font-weight: 700;
+}
+
 .editable {
     cursor: text;
 }
@@ -12,9 +16,6 @@
     display: none;
 }
 
-.bold {
-    font-weight: 700;
-}
 
 /* ----------------------------------
     Sidebar

@@ -19,10 +19,23 @@ MusicBrainz.cache = {
                    },
     lookup       : {
                    type   : 'type=',
-                   limit  : 'limit=20',
+                   limit  : 'limit=',
+                   offset : 'offset=',
                    query  : 'query=',
                    server : '/ajax/search'
                    },
-    roundness    : "round 6px"
+    roundness    : "round 6px",
+    scripts      : {
+/*
+                   latinBasic              : '\\p{InBasicLatin}',
+                   latin1Suppliment        : '\\p{InLatin1Supplement}',
+                   latinExtendedAdditional : '\\p{InLatinExtendedAdditional}',
+                   latinExtendedA          : '\\p{InLatinExtendedA}',
+                   latinExtendedB          : '\\p{InLatinExtendedB}',
+                   latinExtendedC          : '\\p{InLatinExtendedC}',
+                   latinExtendedD          : '\\p{InLatinExtendedD}',
+*/
+                   latinAll                : '\\p{InBasicLatin}|\\p{InLatin1Supplement}|\\p{InLatinExtendedAdditional}|\\p{InLatinExtendedA}' +
+                                             '\\p{InLatinExtendedB}|\\p{InLatinExtendedC}|\\p{InLatinExtendedD}'
+                   }
 };
-
