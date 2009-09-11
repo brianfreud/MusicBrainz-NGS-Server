@@ -47,7 +47,7 @@ MusicBrainz.utility = {
      **/
     addEntity: function(type) {
         // TODO: PORT
-        alert("Not implemented yet.");
+        alert('Not implemented yet.');
     },
     /**
      * Creates and attaches a lookup popup instance; will remove any existing lookup instance.
@@ -110,7 +110,7 @@ MusicBrainz.utility = {
                 if (typeof self.lookupData === 'undefined') {
                     $(mbCacheHTML.popups.lookup[type === 'artist' ? type : 'generic']).insertAfter($element)
                                                                                        .offset(inputOffset.bottom, inputOffset.left + 1, 0)
-                                                                                       .bind("outerClick", removeLookup);
+                                                                                       .bind('outerClick', removeLookup);
                     $('#' + elements.resultsContainer, lookupContext).bind('click', function (e) {
                         resultData = $(e.target).parents('.' + elements.results).data('MusicBrainz');
                         resultData.type = type;
@@ -218,7 +218,7 @@ MusicBrainz.utility = {
                                                                          : '')
                                          .close('div')
                                    .tojQuery()
-                                   .data("MusicBrainz", {
+                                   .data('MusicBrainz', {
                                                         comment  : thisResult.comment,
                                                         gid      : thisResult.gid,
                                                         name     : thisResult.name,
@@ -602,7 +602,7 @@ MusicBrainz.utility = {
      */
     resolveLookup: function (data) {
         // TODO: PORT
-        alert("Not implemented yet.");
+        alert('Not implemented yet.');
     },
     /**
      * Remove class 'hidden' from a jQuery element.
