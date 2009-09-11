@@ -105,7 +105,7 @@ $(function ($) {
         mbEditor.cache.init($);
 
         /* Artist-specific */
-        $('input.artist').addMBLookup('artist');
+        $('input.artist').addMBLookup('artist', true);
 
         /* Sidebar-specific */
         sidebar.init($);
