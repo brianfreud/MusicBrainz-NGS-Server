@@ -290,7 +290,7 @@ MusicBrainz.utility = {
                     });
                 }
             },
-            init = function ($element, type) {
+            initNew = function ($element, type) {
             var $thisLookup,
                 $thisLookupParent;
                 type = type || $element.data('lookupType');
@@ -336,21 +336,23 @@ MusicBrainz.utility = {
                 },
                 nextResults: function () {
                     $('#' + elements.buttonNext, lookupContext).live('click', function () {
-                        if (self.lookupData.resultsEnd === self.lookupData.loaded && self.lookupData.loaded < self.lookupData.matches) {
-                            self.lookupData.getData(10);
+                        var lookupData = self.lookupData;
+                        if (lookupData.resultsEnd === lookupData.loaded && lookupData.loaded < lookupData.matches) {
+                            lookupData.getData(10);
                         } else {
-                            self.lookupData.setDisplays(10);
+                            lookupData.setDisplays(10);
                         }
                     });
                     return this;
                 },
                 startSearch: function () {
                     $('#' + elements.buttonSearch, lookupContext).live('click', function () {
-                        hide(self.lookupData.$divs.find('.search:first')); // Hide the search button's div.
-                        if (self.getValue(self.lookupData.$input).length === 0) {
+                        var lookupData = self.lookupData;
+                        hide(lookupData.$divs.find('.search:first')); // Hide the search button's div.
+                        if (self.getValue(lookupData.$input).length === 0) {
                             show($('#noInput')); // Status: nothing to look up
                         } else {
-                            self.lookupData.getData(1);
+                            lookupData.getData(1);
                         }
                     });
                     return this;
@@ -422,7 +424,7 @@ MusicBrainz.utility = {
                                                 .outerHTML();
         };
         if (arguments.length !== 0) {
-            return init($element, type);
+            return initNew($element, type);
         } else {
             if (!mbCacheHTML.popups.lookup.artist) { // Prevent reinitialization.
                 makeHTML();
