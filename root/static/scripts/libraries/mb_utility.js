@@ -408,16 +408,13 @@ MusicBrainz.utility = {
                                                         .div({ id: elements.buttonContainer, cl: classes.hidden	, css: 'padding-top:1em;' })
                                                             .button({ id: elements.buttonLast, ti: -1 })
                                                             .button({ id: elements.buttonNext, ti: -1  })
-                                                            .button({ id: elements.buttonAddNew, ti: -1, css: 'position:absolute;right:1em;'  })
+                                                            .button({ id: elements.buttonAddNew, ti: -1, css: MusicBrainz.cache.css.buttonRight  })
                                                         .close(div)
                                                         .div({ id: elements.addNewContainer }).close(div)
                                                         .close(div)
                                                     .close(div)
                                               .end();
-                lookupHTML = $(self.makeHTML.popup('lookupPopup')).find('.popupContents')
-                                                                  .append(lookupHTML)
-                                                                  .end()
-                                                                  .outerHTML();
+                lookupHTML = self.makeHTML.popup('lookupPopup', lookupHTML);
                 mbLookup.artist = lookupHTML;
                 mbLookup.generic = $(lookupHTML).find('#hasAC').parent().remove()
                                                 .end()         .end()
@@ -551,9 +548,11 @@ MusicBrainz.utility = {
          * Creates the HTML string for a popup window.
          *
          * @param {String} contentsID The ID to assign to the contents div within the window.
+         * @param {String} [contents] HTML to insert as the popup's contents.
          * @param {String} [bgColor] The css background color for the contents area of the popup; defaults to #fff.
          **/
-        popup: function (contentsID, bgColor) {
+        popup: function (contentsID, contents, bgColor) {
+            contents = contents || '';
             var popupHTML = MusicBrainz.html()
                                               .div({
                                                    cl: 'popup',
@@ -567,6 +566,7 @@ MusicBrainz.utility = {
                                                        css : 'background-color:' + (bgColor || '#fff') + ';',
                                                        id  : contentsID
                                                        })
+                                                      .addHTML(contents)
                                                   .close('div')
                                               .close('div')
                                        .end();

@@ -8,6 +8,9 @@
  * @namespace
  */
 MusicBrainz.cache = {
+    css          : {
+                   buttonRight: 'position:absolute;right:1em;'
+                   },
     html         : {
                    popups: {
                            lookup: {}
