@@ -1,5 +1,11 @@
 /*jslint undef: true, browser: true*/
 /*global jQuery, $, MusicBrainz, notLive, window */
+/*members $DDs, $DateDDs, $InputDDs, $SelectDDs, $sidebar, add, addClass, 
+    addMBLookup, addOverlay, addOverlayThis, append, bind, cache, cl, 
+    closest, createOverlayText, each, editor, events, filter, find, 
+    getChildValues, html, id, init, input, parents, prev, show, 
+    showEditFieldsOnClick, sidebar, target, utility
+*/
 
 /**
  * @fileOverview This file contains all functions to initialize and run the MusicBrainz inline editor.
@@ -19,17 +25,6 @@
  */
 
 MusicBrainz.editor = {
-    /**
-     * @description Stores artist-specific statics.
-     * @namespace
-     */
-    artist: {
-        /**
-         * @description Stores artist-specific event bindings.
-         */
-        events: {
-        }
-    },
     /**
      * @description Stores editor-specific statics.
      * @namespace
@@ -104,8 +99,7 @@ MusicBrainz.editor = {
  */
 $(function ($) {
     var mbEditor = MusicBrainz.editor,
-        sidebar = mbEditor.sidebar,
-        artist = mbEditor.artist;
+        sidebar = mbEditor.sidebar;
 
     if (typeof notLive === 'undefined') { // Prevent self-initiation when loaded for unit-tests.
         mbEditor.cache.init($);

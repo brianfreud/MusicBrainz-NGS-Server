@@ -102,6 +102,7 @@ div.result {
     cursor: pointer;
     margin: 2px 0;
     padding: 0.5em 1em;
+    z-index: 1000;
 }
 
 div.result:hover {
