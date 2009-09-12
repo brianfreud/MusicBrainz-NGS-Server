@@ -29,7 +29,7 @@
                         },
         closed        = [/* XHTML 1.1 */ 'area','br','col','hr','param' /* HTML 5 */ /* ,'embed' */],
         nonClosed     = [/* XHTML 1.1 */
-                        'abbr','address','bdo','blockquote','caption','cite','code','colgroup','dd','del','dfn','dl','dt',
+                        'abbr','address','bdo','blockquote','caption','cite','code','colgroup','dd','del','dfn','div','dl','dt',
                         'em','fieldset','form','iframe','ins','kbd','legend','li','map','object','ol','optgroup','option',
                         'p','pre','q','samp','script','style','sub', 'sup','table','tbody','td','textarea','tfoot','th',
                         'thead','title','tr','tt','ul', /* redefined in HTML 5 */ 'b','i','menu','small','strong',
@@ -87,8 +87,8 @@
     createAttributeStringIfDefined = function (args) {
         return function (arg, attr, override) {
             args = args || {};
-            var thisKeyname = args[arg];
-            return typeof thisKeyname === 'undefined' ? '' : (thisKeyname ? [' ', attr || arg, '="', override || thisKeyname, '"'].join('') : '');
+            var value = args[arg];
+            return typeof value === 'undefined' ? '' : (value ? [' ', attr || arg, '="', override || value, '"'].join('') : '');
         };
     },
     /**
@@ -236,6 +236,7 @@
                         localCreateAttributeStringIfDefined('cl', 'class'),
                         localCreateAttributeStringIfDefined('colspan'),
                         localCreateAttributeStringIfDefined('for'),
+                        localCreateAttributeStringIfDefined('headers'),
                         localCreateAttributeStringIfDefined('href'),
                         localCreateAttributeStringIfDefined('hreflang'),
                         localCreateAttributeStringIfDefined('id'),
@@ -371,27 +372,6 @@
          */
         close: function (tag) {
             return this.basic('/' + tag);
-        },
-        /**
-         * Generates the HTML for a div element.
-         *
-         * @name div
-         * @methodOf MusicBrainz.html
-         * @example MusicBrainz.html().div({ cl: 'foo', id: 'bar' })
-         * @param {Object} [args] The attributes to be added to the &lt;div&gt; string being formed.
-         * @param {String} [args.alt] The "alt" and "title" attributes.
-         * @param {String} [args.cl] The "class" attribute.
-         * @param {String} [args.css] The "style" attribute.
-         * @param {String} [args.id] The "id" attribute.
-         * @param {Boolean} [hide] Create this element with "display: none" set.
-         * @see MusicBrainz.html.close
-         * @see MusicBrainz.html.make
-         */
-        div: function (args, hide) {
-            var obj = makeTagObj('div');
-            args = args || {};
-            args.css = (typeof args.css !== 'undefined' ? args.css : '') + (typeof hide !== 'undefined' && hide ? this.css.display.none : '');
-            return this.make(obj, args);
         },
         /**
          * Generates the HTML for a heading element.
@@ -1442,7 +1422,7 @@
      * @see MusicBrainz.html.close
      * @see MusicBrainz.html.make
      */
-    loops = nonClosed.length - 1;
+    loops = closed.length - 1;
     do {
         Inner_HTML.prototype[closed[loops]] = genericElement(closed[loops], 1);
     } while (loops--);

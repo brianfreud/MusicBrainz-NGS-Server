@@ -51,17 +51,30 @@ $(document).ready(function ($) {
         });
     module("Cached data");
         test("text strings", function () {
+                same(MusicBrainz.text.addNew.artist, "Add a new Artist.");
+                same(MusicBrainz.text.addNew.label, "Add a new Label.");
+                same(MusicBrainz.text.ArtistEditor.Credit, "Artist Credit");
+                same(MusicBrainz.text.ArtistEditor.Joiner, "Join Phrase");
+                same(MusicBrainz.text.ArtistEditor.Name, "Artist Name");
+                same(MusicBrainz.text.ArtistEditor.Remove, "Remove Artist");
             var textStrings = {
-                HasNameVariation      : "Credited using a variation on this name.",
-                Loaded                : "Loaded:",
-                MatchesFound          : "Matches found:",
-                NoResultsFound        : "No results found.",
-                NothingToLookUp       : "Nothing to look up!",
-                Results               : "Results:",
-                Searching             : "Searching&hellip;",
-                Search                : "Search",
-                SelectOne             : "Select One",
-                UnknownPlaceholder    : "[ Unknown ]"
+               AddArtistShort        : "Add another Artist&hellip;",
+               Done                  : "Done",
+               Error                 : "An error has occurred.",
+               HasNameVariation      : "Credited using a variation on this name.",
+               LastResults           : "Last 10",
+               Loaded                : "Loaded:",
+               MatchesFound          : "Matches found:",
+               NextResults           : "Next",
+               NoResultsFound        : "No results found.",
+               NothingToLookUp       : "Nothing to look up!",
+               RemoveArtist          : "Click here to remove this artist.",
+               Searching             : "Searching&hellip;",
+               Search                : "Search",
+               SelectOne             : "Select One",
+               ShowingMatches        : "Showing Matches:",
+               TrackArtists          : "Artists for Track:",
+               UnknownPlaceholder    : "[ Unknown ]"
             };
             for (i in textStrings) {
                 same(MusicBrainz.text[i], textStrings[i]);
@@ -79,7 +92,7 @@ $(document).ready(function ($) {
         test("lookup ws strings", function () {
             var lookupStrings = {
                    type   : 'type=',
-                   limit  : 'limit=20',
+                   limit  : 'limit=',
                    query  : 'query=',
                    server : '/ajax/search'
             };
@@ -93,7 +106,7 @@ $(document).ready(function ($) {
         });
         test("Generated HTML", function () {
             same(MusicBrainz.cache.html.popups.lookup.artist, '<div class="popup" id="lookupPopup_parent"><div class="shadow" style="background-color: rgb(0, 0, 0);"><div class="shadow" style="background-color: rgb(0, 0, 0);"><div class="shadow" style="background-color: rgb(0, 0, 0);"><div class="shadow" style="background-color: rgb(0, 0, 0);"><div class="shadow" style="background-color: rgb(0, 0, 0);"><div class="shadow" style="background-color: rgb(0, 0, 0);"></div></div></div></div></div></div><div class="popupContents" id="lookupPopup"><div id="lookup"><div class="center" id="status"><div class="search"><input id="btnSearch" tabindex="-1" value="Search" type="button"></div><div class="error hidden"><img alt="An error has occurred." src="/static/images/scripts/warning.png" title="An error has occurred."><span class="bold">An error has occurred.</span></div><div class="error hidden" id="noInput"><img alt="An error has occurred." src="/static/images/scripts/warning.png" title="An error has occurred."><span class="bold">Nothing to look up!</span></div><div class="bold hidden" id="noResults"><img alt="An error has occurred." src="/static/images/scripts/warning.png" title="An error has occurred."><span class="bold">No results found.</span></div><div class="hidden search bold"><img alt="Searching…" src="/static/images/scripts/working.gif" title="Searching…"><span class="bold">Searching…</span></div></div><div class="hidden" id="info"><span> Results: </span><span class="bold" id="matches"></span>, Matches found: <span class="bold" id="loaded"></span>, Loaded: <span id="resultsStart"></span> – <span id="resultsEnd"></span></div><div class="hidden" id="results"> </div><div class="hidden" id="BottomControls"><div class="hidden" style="float: left;"><input id="hasAC" tabindex="-1" type="checkbox"><label for="hasAC"> Credited using a variation on this name. </label></div><div style="float: right;"><input id="btnAddNew" tabindex="-1" type="button"></div><div class="hidden" id="addNewEntity"> </div></div></div></div></div>', "Artist lookup menu HTML");
-            same(MusicBrainz.cache.html.popups.lookup.generic, '<div class="popup" id="lookupPopup_parent"><div class="shadow" style="background-color: rgb(0, 0, 0);"><div class="shadow" style="background-color: rgb(0, 0, 0);"><div class="shadow" style="background-color: rgb(0, 0, 0);"><div class="shadow" style="background-color: rgb(0, 0, 0);"><div class="shadow" style="background-color: rgb(0, 0, 0);"><div class="shadow" style="background-color: rgb(0, 0, 0);"></div></div></div></div></div></div><div class="popupContents" id="lookupPopup" style="background-color: rgb(255, 255, 255);"><div id="lookup"><div class="center" id="status"><div class="search"><input id="btnSearch" tabindex="-1" value="Search" type="button"></div><div class="error hidden"><img alt="An error has occurred." src="/static/images/scripts/warning.png" title="An error has occurred."><span class="bold">An error has occurred.</span></div><div class="error hidden" id="noInput"><img alt="An error has occurred." src="/static/images/scripts/warning.png" title="An error has occurred."><span class="bold">Nothing to look up!</span></div><div class="bold hidden" id="noResults"><img alt="An error has occurred." src="/static/images/scripts/warning.png" title="An error has occurred."><span class="bold">No results found.</span></div><div class="hidden search bold"><img alt="Searching…" src="/static/images/scripts/working.gif" title="Searching…"><span class="bold">Searching…</span></div></div><div class="hidden" id="info"><span> Results: </span><span class="bold" id="matches"></span>, Matches found: <span class="bold" id="loaded"></span>, Loaded: <span id="resultsStart"></span> – <span id="resultsEnd"></span></div><div class="hidden" id="results"> </div><div class="hidden" id="BottomControls"><div style="float: right;"><input id="btnAddNew" tabindex="-1" type="button"></div><div class="hidden" id="addNewEntity"> </div></div></div></div></div>', "Generic lookup menu HTML");
+            same(MusicBrainz.cache.html.popups.lookup.generic, fixCase('<div class="popup" id="lookupPopup_parent"><div class="shadow" style="background-color: rgb(0, 0, 0);"><div class="shadow" style="background-color: rgb(0, 0, 0);"><div class="shadow" style="background-color: rgb(0, 0, 0);"><div class="shadow" style="background-color: rgb(0, 0, 0);"><div class="shadow" style="background-color: rgb(0, 0, 0);"><div class="shadow" style="background-color: rgb(0, 0, 0);"></div></div></div></div></div></div><div class="popupContents" id="lookupPopup" style="background-color: rgb(255, 255, 255);"><div id="lookup"><div class="center" id="status"><div class="search"><input id="btnSearch" tabindex="-1" value="Search" type="button"></div><div class="error hidden"><img alt="An error has occurred." src="/static/images/scripts/warning.png" title="An error has occurred."><span class="bold">An error has occurred.</span></div><div class="error hidden" id="noInput"><img alt="An error has occurred." src="/static/images/scripts/warning.png" title="An error has occurred."><span class="bold">Nothing to look up!</span></div><div class="bold hidden" id="noResults"><img alt="An error has occurred." src="/static/images/scripts/warning.png" title="An error has occurred."><span class="bold">No results found.</span></div><div class="hidden search bold"><img alt="Searching…" src="/static/images/scripts/working.gif" title="Searching…"><span class="bold">Searching…</span></div></div><div class="hidden" id="info"><span> Results: </span><span class="bold" id="matches"></span>, Matches found: <span class="bold" id="loaded"></span>, Loaded: <span id="resultsStart"></span> – <span id="resultsEnd"></span></div><div class="hidden" id="results"> </div><div class="hidden" id="BottomControls"><div style="float: right;"><input id="btnAddNew" tabindex="-1" type="button"></div><div class="hidden" id="addNewEntity"> </div></div></div></div></div>'), "Generic lookup menu HTML");
             same(MusicBrainz.cache.html.shadow, '<div class="shadow" style="background-color:#000;"><div class="shadow" style="background-color:#000;"><div class="shadow" style="background-color:#000;"><div class="shadow" style="background-color:#000;"><div class="shadow" style="background-color:#000;"><div class="shadow" style="background-color:#000;"></div></div></div></div></div></div>', "Div shadow HTML");
         });
     module("HTML Factory: Basic functionality");
@@ -492,49 +505,49 @@ $(document).ready(function ($) {
         var resetHTML = $(".simple-nested").html();
         test("after", function () {
             MusicBrainz.html().span('test').after($(".simple-nested > span:first"));
-            same($(".simple-nested").html(), '<span>Foo Bar</span><span>test</span>');
+            same($(".simple-nested").html(), fixCase('<span>Foo Bar</span><span>test</span>'));
             $(".simple-nested").html(resetHTML);
-            same(MusicBrainz.html().span('test').after(".simple-nested > span:first", 1).parent().html(), '<span>Foo Bar</span><span>test</span>');
+            same(MusicBrainz.html().span('test').after(".simple-nested > span:first", 1).parent().html(), fixCase('<span>Foo Bar</span><span>test</span>'));
             $(".simple-nested").html(resetHTML);
         });
         test("before", function () {
             MusicBrainz.html().span('test').before(".simple-nested > span:first");
-            same($(".simple-nested").html(), '<span>test</span><span>Foo Bar</span>');
+            same($(".simple-nested").html(), fixCase('<span>test</span><span>Foo Bar</span>'));
             $(".simple-nested").html(resetHTML);
-            same(MusicBrainz.html().span('test').before(".simple-nested > span:first", 1).parent().html(), '<span>test</span><span>Foo Bar</span>');
+            same(MusicBrainz.html().span('test').before(".simple-nested > span:first", 1).parent().html(), fixCase('<span>test</span><span>Foo Bar</span>'));
             $(".simple-nested").html(resetHTML);
         });
         test("append", function () {
             MusicBrainz.html().span('test').append(".simple-nested > span:first");
-            same($(".simple-nested").html(), '<span>Foo Bar<span>test</span></span>');
+            same($(".simple-nested").html(), fixCase('<span>Foo Bar<span>test</span></span>'));
             $(".simple-nested").html(resetHTML);
-            same(MusicBrainz.html().span('test').append(".simple-nested > span:first", 1).parent().html(), '<span>Foo Bar<span>test</span></span>');
+            same(MusicBrainz.html().span('test').append(".simple-nested > span:first", 1).parent().html(), fixCase('<span>Foo Bar<span>test</span></span>'));
             $(".simple-nested").html(resetHTML);
         });
         test("prepend", function () {
             MusicBrainz.html().span('test').prepend(".simple-nested > span:first");
-            same($(".simple-nested").html(), '<span><span>test</span>Foo Bar</span>');
+            same($(".simple-nested").html(), fixCase('<span><span>test</span>Foo Bar</span>'));
             $(".simple-nested").html(resetHTML);
-            same(MusicBrainz.html().span('test').prepend(".simple-nested > span:first", 1).parent().html(), '<span><span>test</span>Foo Bar</span>');
+            same(MusicBrainz.html().span('test').prepend(".simple-nested > span:first", 1).parent().html(), fixCase('<span><span>test</span>Foo Bar</span>'));
             $(".simple-nested").html(resetHTML);
         });
         test("insertInto", function () {
             MusicBrainz.html().span('test').insertInto(".simple-nested > span:first");
-            same($(".simple-nested").html(), '<span><span>test</span></span>');
+            same($(".simple-nested").html(), fixCase('<span><span>test</span></span>'));
             $(".simple-nested").html(resetHTML);
-            same(MusicBrainz.html().span('test').insertInto(".simple-nested > span:first", 1).parent().html(), '<span><span>test</span></span>');
+            same(MusicBrainz.html().span('test').insertInto(".simple-nested > span:first", 1).parent().html(), fixCase('<span><span>test</span></span>'));
             $(".simple-nested").html(resetHTML);
         });
         test("replace", function () {
             MusicBrainz.html().span('test').replace(".simple-nested > span:first");
-            same($(".simple-nested").html(), '<span>test</span>');
+            same($(".simple-nested").html(), fixCase('<span>test</span>'));
             $(".simple-nested").html(resetHTML);
-            same(MusicBrainz.html().span('test').replace(".simple-nested > span:first", 1), '<span>Foo Bar</span>');
+            same(MusicBrainz.html().span('test').replace(".simple-nested > span:first", 1), fixCase('<span>Foo Bar</span>'));
             $(".simple-nested").html(resetHTML);
         });
         test("swap", function () {
             MusicBrainz.html().div().text('test').close('div').swap(".simple-nested > span:first");
-            same($(".simple-nested").html(), '<div>test</div>');
+            same($(".simple-nested").html(), fixCase('<div>test</div>'));
             $(".simple-nested").html(resetHTML);
         });
     module("mb_utility");
@@ -674,8 +687,8 @@ $(document).ready(function ($) {
         test("init", function () {
             same($("#sidebar").find("dd").length, 15, '<dd> test elements  present before init');
             same($("#sidebar").find(".editable").length, 0, '<dd> elements with class editable present before init');
-            MusicBrainz.editor.cache.init($);
-            MusicBrainz.editor.sidebar.init($);
+            MusicBrainz.editor.cache.init(jQuery);
+            MusicBrainz.editor.sidebar.init(jQuery);
             same($("#sidebar").find("dd").length, 28, '<dd> test elements present after init'); // textarea and button dd's should be ignored, hence 28, not 30.
             same($("#sidebar").find(".editable").length, 13, '<dd> elements with class editable present after init');
         });

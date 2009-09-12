@@ -23,7 +23,6 @@
  * @description Contains all functionality for the inline editor.
  * @namespace
  */
-
 MusicBrainz.editor = {
     /**
      * @description Stores artist-editor-specific functionality.
@@ -45,7 +44,10 @@ MusicBrainz.editor = {
                 var aeditor  = this.baseName,
                     html = MusicBrainz.html().tr({ cl: aeditor + '-Artist' }),
                     makeCell = function (type, args, invoke) {
-                        html.td({ cl: aeditor + '-cell-' + type });
+                        html.td({
+                                cl      : aeditor + '-cell-' + type,
+                                headers : [aeditor, '-Col-', type, ' ', aeditor, '-Header-', type].join('')
+                                });
                         if (!invoke) {
                             html.input({
                                        cl      : aeditor + '-' + type + (type === 'Name' ? ' artist' : ''),
@@ -61,7 +63,7 @@ MusicBrainz.editor = {
                 makeCell('Remove', { cl: aeditor + '-Artist-Remove pointer icon editorIcons removeable' }, 'div');
                 makeCell('Name', { val: artist.name, colspan: includeAC ? '' : 3 });
                 if (includeAC) {
-                    makeCell('Remove', { cl: aeditor + '-AC-Remove pointer icon editorIcons removeable' }, 'div');
+                    makeCell('Credit', { cl: aeditor + '-AC-Remove pointer icon editorIcons removeable' }, 'div');
                     makeCell('Credit', { val: artist.credit });
                 }
                 makeCell('Joiner', { val: artist.joiner});
@@ -102,12 +104,13 @@ MusicBrainz.editor = {
                     makeCell = function (type, colspan, hide) {
                         colspan = colspan || '';
                         html.th({
-                                cl: hide ? 'hidden' : '',
-                                colspan: colspan
+                                cl      : hide ? 'hidden' : '',
+                                colspan : colspan,
+                                id      : aeditor + header + '-' + type
                                 })
                                 .span({
                                       cl  : 'bold',
-                                      id  : aeditor + header + '-' + type,
+                                      id  : aeditor + header + '-span-' + type,
                                       val : mbText[aeditor][type]
                                       })
                                   .close('span')
@@ -161,6 +164,9 @@ MusicBrainz.editor = {
                 });
                 /* Click on a 'open artist editor' icon. */
                 $('div.makeAE').live('click', function () {
+                    if (typeof MusicBrainz.utility.lookupData !== 'undefined') { // User clicked to open an artist 
+                        MusicBrainz.utility.lookupData.removeLookup();                        // editor while a lookup was open.
+                    }
                     var $input = $(this).prev()
                                         .addClass('ArtistEditor-Name');
                     $(this).remove();
@@ -170,7 +176,7 @@ MusicBrainz.editor = {
                                                                  .insertAfter($input)
                                                                  .find('.ArtistEditor-Name:first')
                                                                  .swap($input)
-                                                                 .replaceWith(MusicBrainz.html().textarea().close('textarea').end());
+                                                                 .replaceWith(MusicBrainz.html().textarea({ cl: 'artist' }).close('textarea').end());
                 });
 
                 /* Extend MusicBrainz.html().input() to auto-add the artist-editor icon if the 'artist' class will be an attr of the new input. */
@@ -287,6 +293,7 @@ MusicBrainz.editor = {
  * @description Initialize initial page-load functionality.
  */
 $(function ($) {
+console.log(document.readyState);
     var mbEditor = MusicBrainz.editor,
         sidebar = mbEditor.sidebar;
 

@@ -319,8 +319,9 @@ MusicBrainz.utility = {
                                                $popupContents  : $thisLookupParent,
                                                $popupContainer : $thisLookupParent.parent(),
                                                offset          : 0,
-                                               getData         : getData, // Store a reference to the private function.
-                                               setDisplays     : setDisplays // Store a reference to the private function.
+                                               getData         : getData,
+                                               setDisplays     : setDisplays,
+                                               removeLookup    : removeLookup
                                                };
             },
             enableButton = {
@@ -459,9 +460,9 @@ MusicBrainz.utility = {
      * @see <a href="#addOverlayThis"/>
      **/
     addOverlay: function ($element, options) {
-        options = options ? options : {};
+        options = options || {};
         var $elementToOverlay = $element,
-            textForUnknown    = options.textForUnknown ? '[ ' + options.textForUnknown + ' ]' : MusicBrainz.text.UnknownPlaceholder,
+            textForUnknown    = options.textForUnknown || MusicBrainz.text.UnknownPlaceholder,
             parentWrapped     = false,
             $thisParent       = $element.parent() || $element,
             elementValue,
