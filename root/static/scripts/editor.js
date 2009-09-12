@@ -157,16 +157,14 @@ MusicBrainz.editor = {
                 $('.makeAE').live('click', function () {
                     var $input = $(this).prev()
                                         .addClass('ArtistEditor-Name');
-                    if ($input.is('.artist:not(> .ArtistEditor-cell-Name)')) { // Check that the input isn't already inside an artist editor.
-                        $(this).remove();
-                        $(MusicBrainz.editor.cache.html.ArtistEditor).find('#ArtistEditor-Contents')
-                                                                     .append($(MusicBrainz.editor.artist.editor.addArtist()))
-                                                                     .end()
-                                                                     .insertAfter($input)
-                                                                     .find('.ArtistEditor-Name:first')
-                                                                     .swap($input)
-                                                                     .replaceWith(MusicBrainz.html().textarea().close('textarea').end());
-                    }
+                    $(this).remove();
+                    $(MusicBrainz.editor.cache.html.ArtistEditor).find('#ArtistEditor-Contents')
+                                                                 .append($(MusicBrainz.editor.artist.editor.addArtist()))
+                                                                 .end()
+                                                                 .insertAfter($input)
+                                                                 .find('.ArtistEditor-Name:first')
+                                                                 .swap($input)
+                                                                 .replaceWith(MusicBrainz.html().textarea().close('textarea').end());
                 });
 
                 /* Extend MusicBrainz.html().input() to auto-add the artist-editor icon if the 'artist' class will be an attr of the new input. */
