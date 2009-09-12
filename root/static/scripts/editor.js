@@ -1,6 +1,12 @@
 /*jslint undef: true, browser: true*/
 /*global jQuery, $, MusicBrainz, notLive, window */
-
+/*members $DDs, $DateDDs, $InputDDs, $SelectDDs, $sidebar, AddArtistShort, ArtistEditor, Done, RemoveArtist, add, addArtist, 
+    addClass, addMBLookup, addOverlay, addOverlayThis, after, alt, append, artist, baseName, bind, br, button, buttonRight, cache, call, cl, close, 
+    closest, col, colspan, constructor, createOverlayText, credit, css, div, each, editor, end, events, filter, find, getChildValues, html, id, init, 
+    input, insertAfter, joiner, length, live, makeHTML, name, next, parent, parents, popup, prev, prototype, remove, replaceWith, show, 
+    showEditFieldsOnClick, sidebar, span, swap, table, target, tbody, td, test, text, textarea, th, thead, tr, updateDisplayedFields, use, 
+    utility, val
+*/
 /**
  * @fileOverview This file contains all functions to initialize and run the MusicBrainz inline editor.
  * @author Brian Schweitzer (BrianFreud) brian.brianschweitzer@gmail.com

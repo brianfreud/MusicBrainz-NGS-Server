@@ -1,15 +1,11 @@
 /*jslint bitwise: true, browser: true, eqeqeq: true, immed: true, newcap: true, nomen: true,
          onevar: true, plusplus: false, regexp: false, rhino: true,  strict: true, undef: true */
-/*global MusicBrainz, $, jQuery, parseInt */
-/*members IB, SelectOne, a, accesskey, addHTML, after, alt, append, 
-    basic, before, button, call, checked, cl, close, css, display, div, end, 
-    fn, for, h, hasOwnProperty, href, hreflang, html, id, img, 
-    innerHTMLtoMB, input, insertInto, join, label, length, level, make, 
-    name, none, notHTTP, option, outerHTML, outerHTMLtoMB, parent, prepend, 
-    prototype, rel, replace, rev, select, size, span, src, swap, tag, 
-    target, text, textSelectOne, ti, title, tojQuery, type, use, val
+/*global MusicBrainz, $, jQuery, window */
+/*members IB, SelectOne, a, accesskey, addHTML, after, alt, append, basic, before, button, call, checked, cl, close, constructor, css, 
+    display, div, end, fn, for, h, hasOwnProperty, href, hreflang, html, id, img, innerHTMLtoMB, input, insertInto, join, label, length, level, make, 
+    name, none, notHTTP, option, outerHTML, outerHTMLtoMB, parent, parseInt, prepend, prototype, rel, replace, rev, select, size, span, src, swap, 
+    tag, target, text, textSelectOne, ti, title, tojQuery, type, use, val
 */
-
 /**
  * @fileOverview An HTML string factory.
  * @author Brian Schweitzer (BrianFreud) brian.brianschweitzer@gmail.com
@@ -413,7 +409,7 @@
          */
         h: function (args) {
             args = args || {};
-            var level = parseInt(args.level, 10);
+            var level = window.parseInt(args.level, 10);
             level = 'h' + (level > 0 && level < 7 ? level : 1);
             return this.make(makeTagObj(level), args)
                        .text(args.val || '')
@@ -1452,7 +1448,7 @@
     } while (loops--);
     MusicBrainz.html = function () {
         MusicBrainz.html.constructor = Inner_HTML;
-        return new Inner_HTML;
+        return new Inner_HTML();
     };
 }());
 

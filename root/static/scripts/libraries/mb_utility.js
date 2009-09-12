@@ -1,18 +1,18 @@
 /*jslint undef: true, browser: true*/
 /*global jQuery, $, MusicBrainz, window, XRegExp */
-/*members $divs, $input, $popupContainer, $popupContents, Error, HasNameVariation, LastResults, Loaded, MatchesFound, NextResults, 
+/*members $divs, $input, $popupContainer, $popupContents, AC, Error, HasNameVariation, LastResults, Loaded, MatchesFound, NextResults, 
     NoResultsFound, NothingToLookUp, Search, Searching, ShowingMatches, UnknownPlaceholder, add, addClass, addEntity, addHTML, addLookup, 
-    addMBLookup, addNew, addNewContainer, addOverlay, addOverlayThis, after, ajax, alert, alt, append, apply, artist, attr, beforeSend, bind, bottom, 
+    addMBLookup, addNew, addNewContainer, addOverlay, addOverlayThis, after, ajax, alert, alt, append, apply, artist, attr, beforeSend, bind, bold, 
     button, buttonAddNew, buttonContainer, buttonLast, buttonNext, buttonSearch, cache, cl, close, comment, complete, console, corner, 
     createOverlayText, css, data, dataType, debug, disable, div, em, end, error, errorNoInput, errorNoResults, escape, filter, find, fn, for, 
-    generic, get, getChildValues, getData, getValue, gid, hasACCheckbox, hasACContainer, hasClass, hasOwnProperty, hits, html, id, images, img, 
-    infoContainer, input, insertAfter, is, join, label, lastResults, latinAll, left, length, limit, live, loaded, lookup, lookupData, 
-    lookupPopup, makeHTML, map, matches, name, nextResults, offset, outerHTML, parent, parents, popup, popups, prototype, push, query, 
-    remove, removeClass, resolveLookup, results, resultsContainer, resultsDisplayed, resultsDisplayedEnd, resultsDisplayedStart, 
-    resultsEnd, resultsLoaded, resultsMatches, resultsStart, roundness, rowid, scripts, selectedTexts, server, setDisplays, shadow, showError, 
-    showingEnd, showingLoaded, showingMatches, showingStart, slice, sort_name, sortname, span, src, startSearch, stopImmediatePropagation, 
-    success, tagName, target, test, text, textForUnknown, ti, timeout, toLowerCase, toString, tojQuery, traversalButtons, type, unTrim, unwrap, 
-    url, use, utility, val, value, warning, working, wrap, wrapper, bold, hidden, showElements, hideElements, AC
+    generic, get, getChildValues, getData, getValue, gid, hasACCheckbox, hasACContainer, hasClass, hasOwnProperty, hidden, hideElements, hits, 
+    html, id, images, img, infoContainer, input, insertAfter, is, join, label, lastResults, latinAll, left, length, limit, live, loaded, lookup, 
+    lookupData, lookupPopup, makeHTML, map, matches, name, nextResults, offset, outerHTML, parent, parents, popup, popups, position, prototype, 
+    push, query, remove, removeClass, resolveLookup, results, resultsContainer, resultsDisplayed, resultsDisplayedEnd, 
+    resultsDisplayedStart, resultsEnd, resultsLoaded, resultsMatches, resultsStart, roundness, rowid, scripts, selectedTexts, server, 
+    setDisplays, shadow, showElements, showError, showingEnd, showingLoaded, showingMatches, showingStart, slice, sort_name, sortname, span, src, 
+    startSearch, stopImmediatePropagation, success, tagName, target, test, text, textForUnknown, ti, timeout, toLowerCase, toString, tojQuery, top, 
+    traversalButtons, type, unTrim, unwrap, url, use, utility, val, value, warning, working, wrap, wrapper
 */
 /**
  * @fileOverview This file contains all utility functions used in MusicBrainz javascript code.
@@ -112,7 +112,7 @@ MusicBrainz.utility = {
                 if (typeof self.lookupData === 'undefined') {
                     $(mbCacheHTML.popups.lookup[type === 'artist' && canHaveAC ? 'artist' : 'generic']).insertAfter($element)
                                                                                                        .position({ top: '-=1', left: inputPosition.left + 1 }, 0)
-                                                                                                       .bind('outerClick', removeLookup)
+                                                                                                       .bind('outerClick', removeLookup);
                     $('#' + elements.resultsContainer, lookupContext).bind('click', function (e) {
                         resultData = $(e.target).parents('.' + elements.results).data('MusicBrainz');
                         resultData.type = type;
