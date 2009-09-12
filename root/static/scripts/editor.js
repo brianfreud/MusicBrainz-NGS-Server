@@ -92,7 +92,7 @@ MusicBrainz.editor = {
                                                                  id  : aeditor + header + '-Remove'
                                                                  })
                                                            .close('span')
-                                                       .close('th');
+                                                       .close('th'),
                     makeCell = function (type, colspan, hide) {
                         colspan = colspan || '';
                         html.th({
@@ -115,6 +115,7 @@ MusicBrainz.editor = {
                     .tbody({ id: aeditor + '-Contents' })
                     .close('tbody')
                     .close('table')
+                    .br()
                     .close('div')
                     .button({
                             id  : aeditor + '-Done',
@@ -135,15 +136,14 @@ MusicBrainz.editor = {
                     MusicBrainz.editor.artist.editor.updateDisplayedFields();
                 });
                 /* Click on a 'remove artist' icon. */
-                $('.ArtistEditor-Artist-Remove').live('click', function () {
+                $('div.ArtistEditor-Artist-Remove').live('click', function () {
                     $(this).parents('tr').remove();
                     MusicBrainz.editor.artist.editor.updateDisplayedFields();
                 });
                 /* Click on a 'remove artist credit' icon. */
-                $('.ArtistEditor-AC-Remove').live('click', function () {
+                $('div.ArtistEditor-AC-Remove').live('click', function () {
                     var $thisTD = $(this).parent();
                     $thisTD.next().remove();
-//                    $thisTD.prev().attr('colspan', 3);
                     $thisTD.remove();
                     MusicBrainz.editor.artist.editor.updateDisplayedFields();
                 });
@@ -154,7 +154,7 @@ MusicBrainz.editor = {
                     $('#artistEditor_parent').remove();
                 });
                 /* Click on a 'open artist editor' icon. */
-                $('.makeAE').live('click', function () {
+                $('div.makeAE').live('click', function () {
                     var $input = $(this).prev()
                                         .addClass('ArtistEditor-Name');
                     $(this).remove();
@@ -285,20 +285,21 @@ $(function ($) {
         sidebar = mbEditor.sidebar;
 
     if (typeof notLive === 'undefined') { // Prevent self-initiation when loaded for unit-tests.
+        /* Initialize the editor cache. */
         mbEditor.cache.init($);
 
-        /* Artist-specific */
+        /* Add lookups to artist input fields. */
         $('input.artist').addMBLookup('artist', true);
 
         /* Add the Artist editor trigger icon buttons. */
         $('.artist:not(> .ArtistEditor-cell-Name)').after(MusicBrainz.html().div({ cl: 'pointer icon addable' }).close('div').end());
 
+        /* Initialize the artist editor. */
+        MusicBrainz.editor.artist.editor.init();
+
         /* Sidebar-specific */
         sidebar.init($);
-
         sidebar.events.showEditFieldsOnClick();
-
-        MusicBrainz.editor.artist.editor.init();
     }
 
     /* FOR TESTING ONLY */
@@ -307,12 +308,5 @@ $(function ($) {
     MusicBrainz.html().div().input({ id: 'pez', cl: 'artist' }).close('div').append('#content');
     MusicBrainz.html().div().input({ id: 'zap', cl: 'artist' }).close('div').append('#content');
     /* END TESTING STUFF */
-
-
-// $("#foo"))
-
-
-
-// $(')
 
 }(jQuery));
