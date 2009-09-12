@@ -1,12 +1,11 @@
 /*jslint bitwise: true, browser: true, eqeqeq: true, immed: true, newcap: true, nomen: true,
          onevar: true, plusplus: false, regexp: false, rhino: true,  strict: true, undef: true */
-/*global MusicBrainz, $, jQuery, parseInt */
-/*members a, addHTML, after, append, basic, before, button, call, cl, close, display, div, end, 
-          float, fn, for, h, hasOwnProperty, href, html, IB, id, img, innerHTMLtoMB, input, 
-          insertInto, join, label, left, length, level, make, none, notHTTP, outerHTML, 
-          outerHTMLtoMB, prepend, prototype, rel, replace, rev, right, select, SelectOne, 
-          size, span, src, swap, tag, target, text, ti, tojQuery, type, use, val */
-
+/*global MusicBrainz, $, jQuery, window */
+/*members IB, SelectOne, a, accesskey, addHTML, after, alt, append, basic, before, button, call, checked, cl, close, constructor, css, 
+    display, div, end, fn, for, h, hasOwnProperty, href, hreflang, html, id, img, innerHTMLtoMB, input, insertInto, join, label, length, level, make, 
+    name, none, notHTTP, option, outerHTML, outerHTMLtoMB, parent, parseInt, prepend, prototype, rel, replace, rev, select, size, span, src, swap, 
+    tag, target, text, textSelectOne, ti, title, tojQuery, type, use, val
+*/
 /**
  * @fileOverview An HTML string factory.
  * @author Brian Schweitzer (BrianFreud) brian.brianschweitzer@gmail.com
@@ -19,37 +18,21 @@
 "use strict";
 
 (function () {
-    var accesskey     = 'accesskey',
-        alt           = 'alt',
-        checked       = 'checked',
-        close         = 'close',
-        css           = 'css',
-        display       = 'display',
-        emptyString   = '',
-        href          = 'href',
-        hreflang      = href + 'lang',
-        html          = 'html',
-        make          = 'make',
-        name          = 'name',
-        none          = 'none',
-        option        = 'option',
-        title         = 'title',
-        undef         = 'undefined',
-        i, loops,
+    var i, loops, htmlStr,
         jQueryMethods = {
                         after: 'after',
                         append: 'append',
                         before: 'before',
-                        insertInto: html,
+                        insertInto: 'html',
                         prepend: 'prepend',
                         'replace': 'replaceWith'
                         },
         closed        = [/* XHTML 1.1 */ 'area','br','col','hr','param' /* HTML 5 */ /* ,'embed' */],
         nonClosed     = [/* XHTML 1.1 */
-                        'abbr','address','bdo','blockquote','caption','cite','code','colgroup','dd','del','dfn','dl','dt',
-                        'em','fieldset','form','iframe','ins','kbd','legend','li','map','object','ol','optgroup',option,
+                        'abbr','address','bdo','blockquote','caption','cite','code','colgroup','dd','del','dfn','div','dl','dt',
+                        'em','fieldset','form','iframe','ins','kbd','legend','li','map','object','ol','optgroup','option',
                         'p','pre','q','samp','script','style','sub', 'sup','table','tbody','td','textarea','tfoot','th',
-                        'thead',title,'tr','tt','ul', /* redefined in HTML 5 */ 'b','i','menu','small','strong',
+                        'thead','title','tr','tt','ul', /* redefined in HTML 5 */ 'b','i','menu','small','strong',
                         /* HTML 5  */ /* 'article','aside','audio',*/ 'canvas' /*,'command','datalist','details','dialog','eventsource',
                         'figure','footer','header','hgroup','keygen','mark','meter','nav','output','progress','rp','rt','ruby','section',
                         'source','time','video' */],
@@ -70,10 +53,10 @@
      */
     genericElement = function (element, closeVal) {
         return function (args) {
-            args = args || {};
+            args        = args || {};
             args.tag    = element;
-            args[close] = closeVal;
-            return this[make].call(this, args);
+            args.close  = closeVal;
+            return this.make.call(this, args);
         };
     },
     /**
@@ -85,28 +68,27 @@
      */
     genericjQueryMethod = function (method) {
         return function (element, jQueryScope) {
-            var $element = $(element),
-                oldHTML = $element.parent().html(),
-                jQueryThis = $element[method](this[html]);
-if (method == 'replaceWith') console.log(method + "            " + oldHTML + "                  " + $element.parent().html())
+            var $element   = $(element),
+                oldHTML    = $element.parent().html(),
+                jQueryThis = $element[method](this.html);
             /* The folling conditional test for null will only ever resolve to false when using .replace(selector, 1) */
-            return typeof jQueryScope !== undef && jQueryScope ? (jQueryThis.parent().html() !== null ? jQueryThis : oldHTML) : this;
+            return typeof jQueryScope !== 'undefined' && jQueryScope ? (jQueryThis.parent().html() !== null ? jQueryThis : oldHTML) : this;
         };
     },
     /**
      * Used internally to create the standardized string for a single attribute of an element.
      *
-     * @example isDef('foo', 'id')
+     * @example createAttributeStringIfDefined('foo', 'id')
      * @param {Object} [args] The attributes object containing the properties to be used for HTML string formation.
      * @param {String} arg The value of the attribute key being tested.
      * @param {String} [attr] The attribute name; defaults to the value of arg.
      * @param {String} [override] An attribute value to use in place of the one passed via the attributes.
      */
-    isDef = function (args) {
+    createAttributeStringIfDefined = function (args) {
         return function (arg, attr, override) {
             args = args || {};
-            var thisKeyname = args[arg];
-            return typeof thisKeyname === undef ? emptyString : (thisKeyname ? [' ', attr || arg, '="', override || thisKeyname, '"'].join(emptyString) : emptyString);
+            var value = args[arg];
+            return typeof value === 'undefined' ? '' : (value ? [' ', attr || arg, '="', override || value, '"'].join('') : '');
         };
     },
     /**
@@ -124,24 +106,15 @@ if (method == 'replaceWith') console.log(method + "            " + oldHTML + "  
          * @name css
          * @memberOf MusicBrainz.html
          */
-        this[css] = {
+        this.css = {
             /**
              * @name display
              * @memberOf MusicBrainz.html.css
              * @public
              */
             display : {
-                IB   : display + ':inline-block;',
-                none : display + ':none;'
-            },
-            /**
-             * @name float
-             * @memberOf MusicBrainz.html.css
-             * @public
-             */
-            'float' : {
-                left  : 'float:left;',
-                right : 'float:right;'
+                IB   : 'display:inline-block;',
+                none : 'display:none;'
             }
         };
     };
@@ -247,36 +220,39 @@ if (method == 'replaceWith') console.log(method + "            " + oldHTML + "  
          */
         make: function (args, originalArgs) {
             args = args || {};
-            var localIsDef = isDef(args),
+            var localCreateAttributeStringIfDefined = createAttributeStringIfDefined(args),
                 coreSource = originalArgs || args;
             /* Set core W3C element properties. */
-            args[alt] = args[title] = coreSource[alt];
+            args.alt  = args.title = coreSource.alt;
             args.cl   = coreSource.cl;
-            args[css] = coreSource[css];
+            args.css  = coreSource.css;
             args.id   = coreSource.id;
             /* Generate the HTML string. */
-            this[html] = [(this[html] || emptyString),
+            this.html = [(this.html || ''),
                         '<' + args.tag,
-                        localIsDef(accesskey),
-                        localIsDef(alt),
-                        localIsDef(checked, checked, checked),
-                        localIsDef('cl', 'class'),
-                        localIsDef('for'),
-                        localIsDef(href),
-                        localIsDef(hreflang),
-                        localIsDef('id'),
-                        localIsDef(name),
-                        localIsDef('rel'),
-                        localIsDef('rev'),
-                        localIsDef('size'),
-                        localIsDef('src'),
-                        localIsDef(css, 'style'),
-                        localIsDef('ti', 'tabindex'),
-                        localIsDef('target'),
-                        localIsDef(title),
-                        localIsDef('type'),
-                        localIsDef('val', 'value'),
-                        (args[close] ? ' />' : '>')].join(emptyString);
+                        localCreateAttributeStringIfDefined('accesskey'),
+                        localCreateAttributeStringIfDefined('alt'),
+                        localCreateAttributeStringIfDefined('checked', 'checked', 'checked'),
+                        localCreateAttributeStringIfDefined('cl', 'class'),
+                        localCreateAttributeStringIfDefined('colspan'),
+                        localCreateAttributeStringIfDefined('for'),
+                        localCreateAttributeStringIfDefined('headers'),
+                        localCreateAttributeStringIfDefined('href'),
+                        localCreateAttributeStringIfDefined('hreflang'),
+                        localCreateAttributeStringIfDefined('id'),
+                        localCreateAttributeStringIfDefined('name'),
+                        localCreateAttributeStringIfDefined('rel'),
+                        localCreateAttributeStringIfDefined('rev'),
+                        localCreateAttributeStringIfDefined('size'),
+                        localCreateAttributeStringIfDefined('span'),
+                        localCreateAttributeStringIfDefined('src'),
+                        localCreateAttributeStringIfDefined('css', 'style'),
+                        localCreateAttributeStringIfDefined('ti', 'tabindex'),
+                        localCreateAttributeStringIfDefined('target'),
+                        localCreateAttributeStringIfDefined('title'),
+                        localCreateAttributeStringIfDefined('type'),
+                        localCreateAttributeStringIfDefined('val', 'value'),
+                        (args.close ? ' />' : '>')].join('');
             return this;
         },
 
@@ -309,21 +285,27 @@ if (method == 'replaceWith') console.log(method + "            " + oldHTML + "  
          */
         a: function (args) {
             args = args || {};
-            var urlPrefix = args.notHTTP ? emptyString : 'http://',
+            var urlPrefix = args.notHTTP ? '' : 'http://',
                 obj = {
                       tag    : 'a',
-                      href   : args[href] ? urlPrefix + args[href] : emptyString,
+                      href   : args.href ? urlPrefix + args.href : '',
                       rel    : args.rel,
                       rev    : args.rev,
                       target : args.target,
-                      ti     : args.ti === none ? '-1' : args.ti
+                      ti     : args.ti === 'none' ? '-1' : args.ti
                       };
-            obj[name]      = args[name];
-            obj[accesskey] = args[accesskey];
-            obj[hreflang]  = args[hreflang] ? urlPrefix + args[hreflang] : emptyString;
-            return this[make](obj, args)
-                       .text(args.val || emptyString)
-                       [close]('a');
+            obj.name      = args.name;
+            obj.accesskey = args.accesskey;
+            obj.hreflang  = args.hreflang ? urlPrefix + args.hreflang : '';
+            if (typeof args === 'string') {
+                return this.basic('span')
+                           .text(args)
+                           .close('span');
+            } else {
+                return this.make(obj, args)
+                           .text(args.val || '')
+                           .close('a');
+            }
         },
         /**
          * Generates the HTML for a simple element with no attributes, such as &lt;textarea&gt;.
@@ -336,7 +318,7 @@ if (method == 'replaceWith') console.log(method + "            " + oldHTML + "  
          * @see MusicBrainz.html.make
          */
         basic: function (tag) {
-            return this[make](makeTagObj(tag));
+            return this.make(makeTagObj(tag));
         },
         /**
          * Generates the HTML for a button-type input (which is removed from the tab index).</br />
@@ -362,14 +344,21 @@ if (method == 'replaceWith') console.log(method + "            " + oldHTML + "  
             var obj = {
                       cl   : args.cl,
                       id   : args.id,
-                      ti   : args.ti === none ? '-1' : args.ti,
+                      ti   : args.ti === 'none' ? '-1' : args.ti,
                       type : 'button',
                       val  : args.val
                       };
-            obj[accesskey] = args[accesskey];
-            obj[alt]       = obj[title] = args[alt];
-            obj[css]       = args[css];
-            return this.input(obj);
+            obj.accesskey = args.accesskey;
+            obj.alt       = obj.title = args.alt;
+            obj.css       = args.css;
+            if (typeof args === 'string') {
+                return this.input({
+                                  type: 'button',
+                                  val: args
+                                  });
+            } else {
+                return this.input(obj);
+            }
         },
         /**
          * Generates the HTML for a simple closing element, such as &lt;/textarea&gt;.
@@ -383,27 +372,6 @@ if (method == 'replaceWith') console.log(method + "            " + oldHTML + "  
          */
         close: function (tag) {
             return this.basic('/' + tag);
-        },
-        /**
-         * Generates the HTML for a div element.
-         *
-         * @name div
-         * @methodOf MusicBrainz.html
-         * @example MusicBrainz.html().div({ cl: 'foo', id: 'bar' })
-         * @param {Object} [args] The attributes to be added to the &lt;div&gt; string being formed.
-         * @param {String} [args.alt] The "alt" and "title" attributes.
-         * @param {String} [args.cl] The "class" attribute.
-         * @param {String} [args.css] The "style" attribute.
-         * @param {String} [args.id] The "id" attribute.
-         * @param {Boolean} [hide] Create this element with "display: none" set.
-         * @see MusicBrainz.html.close
-         * @see MusicBrainz.html.make
-         */
-        div: function (args, hide) {
-            var obj = makeTagObj('div');
-            args = args || {};
-            args[css] = (typeof args[css] !== undef ? args[css] : emptyString) + (typeof hide !== undef && hide ? this[css][display][none] : emptyString);
-            return this[make](obj, args);
         },
         /**
          * Generates the HTML for a heading element.
@@ -421,11 +389,11 @@ if (method == 'replaceWith') console.log(method + "            " + oldHTML + "  
          */
         h: function (args) {
             args = args || {};
-            var level = parseInt(args.level, 10);
+            var level = window.parseInt(args.level, 10);
             level = 'h' + (level > 0 && level < 7 ? level : 1);
-            return this[make](makeTagObj(level), args)
-                       .text(args.val || emptyString)
-                       [close](level);
+            return this.make(makeTagObj(level), args)
+                       .text(args.val || '')
+                       .close(level);
         },
         /**
          * Generates the HTML for an img element.
@@ -444,13 +412,12 @@ if (method == 'replaceWith') console.log(method + "            " + oldHTML + "  
          */
         img: function (args) {
             args = args || {};
-            args.src = args.src || args.href; // Gracefully handle the url accidentally being passed via the wrong attr.
             var obj = {
                       tag   : 'img',
-                      src   : args.src,
+                      src   : typeof args === 'string' ? args : args.src || args.href, 
                       close : 1
                       };
-            return this[make](obj, args);
+            return this.make(obj, args);
         },
         /**
          * Generates the HTML for an input element.
@@ -478,15 +445,15 @@ if (method == 'replaceWith') console.log(method + "            " + oldHTML + "  
             var obj = {
                       tag   : 'input',
                       size  : args.size,
-                      ti    : args.ti === none ? '-1' : args.ti,
+                      ti    : args.ti === 'none' ? '-1' : args.ti,
                       type  : args.type || 'text',
                       val   : args.val
                       };
-            obj[accesskey] = args[accesskey];
-            obj[checked]   = args[checked];
-            obj[close]     = 1;
-            obj[name]      = args[name];
-            return this[make](obj, args);
+            obj.accesskey = args.accesskey;
+            obj.checked   = args.checked;
+            obj.close     = 1;
+            obj.name      = args.name;
+            return this.make(obj, args);
         },
         /**
          * Generates the HTML for a label element.
@@ -511,10 +478,10 @@ if (method == 'replaceWith') console.log(method + "            " + oldHTML + "  
                       tag       : 'label',
                       'for'     : args['for']
                       };
-            obj[accesskey] = args[accesskey];
-            return this[make](obj, args)
-                       .text(args.val || emptyString)
-                       [close]('label');
+            obj.accesskey = args.accesskey;
+            return this.make(obj, args)
+                       .text(args.val || '')
+                       .close('label');
         },
         /**
          * Generates the HTML for an unpopulated select element with a default "[ Select One ]" option.
@@ -532,19 +499,17 @@ if (method == 'replaceWith') console.log(method + "            " + oldHTML + "  
          * @see MusicBrainz.html.make
          */
         select: function (args) {
-            var textSelectOne = 'textSelectOne',
-                select = 'select';
             args = args || {};
-            return this[make]({
-                             tag   : select,
-                             type  : select + '-one'
+            return this.make({
+                             tag   : 'select',
+                             type  : 'select-one'
                              }, args)
-                       [option]({
-                             val   : emptyString
-                             })
-                       .text('[ ' + (args[textSelectOne] ? args[textSelectOne] : MusicBrainz.text.SelectOne) + ' ]')
-                       [close](option)
-                       [close](select);
+                       .option({
+                               val   : ''
+                               })
+                       .text('[ ' + (args.textSelectOne ? args.textSelectOne : MusicBrainz.text.SelectOne) + ' ]')
+                       .close('option')
+                       .close('select');
         },
         /**
          * Generates the HTML for a span element.
@@ -563,9 +528,9 @@ if (method == 'replaceWith') console.log(method + "            " + oldHTML + "  
          */
         span: function (args) {
             args = args || {};
-            return this[make](makeTagObj('span'), args)
-                       .text(typeof args === 'string' ? args : args.val || emptyString)
-                       [close]('span');
+            return this.make(makeTagObj('span'), args)
+                       .text(typeof args === 'string' ? args : args.val || '')
+                       .close('span');
         },
 
         /* UTILITY FUNCTIONS */
@@ -589,11 +554,11 @@ if (method == 'replaceWith') console.log(method + "            " + oldHTML + "  
          * @see MusicBrainz.html.use
              */
         addHTML: function (newHTML) {
-            this[html] = (this[html] || emptyString) + (newHTML || emptyString);
+            this.html = (this.html || '') + (newHTML || '');
             return this;
         },
         /**
-         * Alias to MusicBrainz.html().html; ends a chain and returns the html string.<br /><br />
+         * Similar to MusicBrainz.html().html; ends a chain and returns the html string.<br /><br />
          * <em>Note that this function can only end a MusicBrainz.html() chain.</em><br /><br />
          * Useful for more clearly documenting the end of a MusicBrainz.html() chain, rather than MusicBrainz.html().span('foo').html.
          *
@@ -611,7 +576,9 @@ if (method == 'replaceWith') console.log(method + "            " + oldHTML + "  
          * @see MusicBrainz.html.use
              */
         end: function () {
-            return this[html];
+            htmlStr = this.html;
+            delete this.html;
+            return htmlStr;
         },
         /**
          * Used to insert plaintext within an HTML string without breaking a chain.
@@ -623,7 +590,7 @@ if (method == 'replaceWith') console.log(method + "            " + oldHTML + "  
          * @see MusicBrainz.html.make
          */
         text: function (text) {
-            this[html] = (this[html] || emptyString) + (text || emptyString);
+            this.html = (this.html || '') + (text || '');
             return this;
         },
         /**
@@ -670,7 +637,7 @@ if (method == 'replaceWith') console.log(method + "            " + oldHTML + "  
          * @see MusicBrainz.html.use
          */
         tojQuery: function () {
-            return $(this[html]);
+            return $(this.html);
         },
         /**
          * Allows access to element creation methods when the method name to be accessed is stored as a string.<br /><br />
@@ -1390,9 +1357,10 @@ if (method == 'replaceWith') console.log(method + "            " + oldHTML + "  
      * @see MusicBrainz.html.close
      * @see MusicBrainz.html.make
      */
-    for (i = 0, loops = nonClosed.length; i < loops; i++) {
-        Inner_HTML.prototype[nonClosed[i]] = genericElement(nonClosed[i], 0);
-    }
+    loops = nonClosed.length - 1;
+    do {
+        Inner_HTML.prototype[nonClosed[loops]] = genericElement(nonClosed[loops], 0);
+    } while (loops--);
     /* Empty HTML elements without need for a dedicated function above. */
     /**
      * Generates the HTML for an area element.<br >
@@ -1454,10 +1422,12 @@ if (method == 'replaceWith') console.log(method + "            " + oldHTML + "  
      * @see MusicBrainz.html.close
      * @see MusicBrainz.html.make
      */
-    for (i = 0, loops = closed.length; i < loops; i++) {
-        Inner_HTML.prototype[closed[i]] = genericElement(closed[i], 1);
-    }
+    loops = closed.length - 1;
+    do {
+        Inner_HTML.prototype[closed[loops]] = genericElement(closed[loops], 1);
+    } while (loops--);
     MusicBrainz.html = function () {
+        MusicBrainz.html.constructor = Inner_HTML;
         return new Inner_HTML();
     };
 }());
