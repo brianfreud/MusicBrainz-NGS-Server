@@ -25,68 +25,80 @@ MusicBrainz.editor = {
      */
     artist: {
         editor: {
+            baseName: 'ArtistEditor',
             /**
              * Adds an artist row to an artist editor popup.
+             * @param {Object} [artist] Artist data to populate the fields
+             * @param {Object} [artist.name] The artist's name.
+             * @param {Object} [artist.credit] The artist credit
+             * @param {Object} [artist.joiner] The join phrase
+             * @param {Bool} [includeAC] Should the artist credit fields be included; defaults to false.
              */
-            addArtist: function (artist) {
+            addArtist: function (artist, includeAC) {
                 artist = artist || {};
-                var aeditor  = 'ArtistEditor',
+                var aeditor  = this.baseName,
                     html = MusicBrainz.html().tr({ cl: aeditor + '-Artist' }),
                     makeCell = function (type, args, invoke) {
                         html.td({ cl: aeditor + '-cell-' + type });
                         if (!invoke) {
                             html.input({
-                                       cl  : 'bold ' + aeditor + '-' + type,
-                                       val : args || ''
-                                       });
+                                       cl      : aeditor + '-' + type + (type === 'Name' ? ' artist' : ''),
+                                       colspan : args.colspan || '',
+                                       val     : args.val || ''
+                                       }, true);
                         } else {
                             html.use(invoke, args);
+                            html.close(invoke);
                         }
                         html.close('td');
                     };
-                makeCell('Remove', { cl: aeditor + '-Remove' }, 'param');
-                makeCell('Name', artist.name);
-                makeCell('Remove', { cl: aeditor + '-HasAC', type: 'checkbox' }, 'input');
-                makeCell('Credit', artist.credit);
-                makeCell('Joiner', artist.joiner);
+                makeCell('Remove', { cl: aeditor + '-Artist-Remove pointer icon editorIcons removeable' }, 'div');
+                makeCell('Name', { val: artist.name, colspan: includeAC ? '' : 3 });
+                if (includeAC) {
+                    makeCell('Remove', { cl: aeditor + '-AC-Remove pointer icon editorIcons removeable' }, 'div');
+                    makeCell('Credit', { val: artist.credit });
+                }
+                makeCell('Joiner', { val: artist.joiner});
                 return html.close('tr').end();
             },
             /**
-             * Creates the HTML for an artist editor popup.
+             * Initializes events and HTML for an artist editor popup.
              */
             init: function () {
-                var edHTMLCache = MusicBrainz.editor.cache.html,
-                    mbText   = MusicBrainz.text,
-                    aeditor  = 'ArtistEditor',
-                    header   = '-Header',
-                    html     = MusicBrainz.html().div().table({ id: aeditor })
-                                                           .caption()
-                                                               .strong()
-                                                                   .span(mbText.TrackArtists + '&nbsp;')
-                                                                   .span({ id: aeditor + '-TrackTitle' })
-                                                               .close('strong')
-                                                           .close('caption')
-                                                           .col({ id: aeditor + '-Col-Remove' })
-                                                           .col({ id: aeditor + '-Col-Name' })
-                                                           .col({
-                                                                cl: 'hidden',
-                                                                id: aeditor + '-Col-Credit',
-                                                                span: 2
-                                                                })
-                                                           .col({ id: aeditor + '-Col-Joiner' })
-                                                           .thead()
-                                                           .tr({ id: aeditor + header })
-                                                               .th()
-                                                                   .span({
-                                                                         alt : mbText.RemoveArtist,
-                                                                         cl  : 'bold',
-                                                                         id  : aeditor + header + '-Remove'
-                                                                         })
-                                                                     .close('span')
-                                                                 .close('th');
-                    makeCell = function (type, colspan) {
+                /* Create the HTML. */
+                var aeditor  = this.baseName,
+                    edHTMLCache = MusicBrainz.editor.cache.html,
+                    mbText = MusicBrainz.text,
+                    header = '-Header',
+                    mbHTML = MusicBrainz.html,
+                    originalInput,
+                    html   = mbHTML().div().table({ id: aeditor })
+                                               .col({ id: aeditor + '-Col-Remove' })
+                                               .col({
+                                                    id: aeditor + '-Col-Name'
+                                                    })
+                                               .col({
+                                                    cl: 'hidden',
+                                                    id: aeditor + '-Col-Credit',
+                                                    span: 2
+                                                    })
+                                               .col({ id: aeditor + '-Col-Joiner' })
+                                               .thead()
+                                                   .tr({ id: aeditor + header })
+                                                       .th()
+                                                           .span({
+                                                                 alt : mbText.RemoveArtist,
+                                                                 cl  : 'bold',
+                                                                 id  : aeditor + header + '-Remove'
+                                                                 })
+                                                           .close('span')
+                                                       .close('th');
+                    makeCell = function (type, colspan, hide) {
                         colspan = colspan || '';
-                        html.th({ colspan: colspan })
+                        html.th({
+                                cl: hide ? 'hidden' : '',
+                                colspan: colspan
+                                })
                                 .span({
                                       cl  : 'bold',
                                       id  : aeditor + header + '-' + type,
@@ -96,7 +108,7 @@ MusicBrainz.editor = {
                               .close('th');
                     };
                 makeCell('Name');
-                makeCell('Credit', 2);
+                makeCell('Credit', 2, true);
                 makeCell('Joiner');
                 html.close('tr')
                     .close('thead')
@@ -105,14 +117,93 @@ MusicBrainz.editor = {
                     .close('table')
                     .close('div')
                     .button({
+                            id  : aeditor + '-Done',
+                            val : mbText.Done
+                            })
+                    .button({
                             css : MusicBrainz.cache.css.buttonRight,
                             id  : aeditor + '-AddAnother',
                             val : mbText.AddArtistShort
-                            })
-                    .br()
-                    .br()
+                            });
                 edHTMLCache[aeditor] = MusicBrainz.utility.makeHTML.popup('artistEditor', html.end(), '#F1F1F1');
+
+                /* Set the events. */
+
+                /* Click on a 'add another artist' icon. */
+                $('#ArtistEditor-AddAnother').live('click', function () {
+                    $('#ArtistEditor-Contents').append($(MusicBrainz.editor.artist.editor.addArtist()));
+                    MusicBrainz.editor.artist.editor.updateDisplayedFields();
+                });
+                /* Click on a 'remove artist' icon. */
+                $('.ArtistEditor-Artist-Remove').live('click', function () {
+                    $(this).parents('tr').remove();
+                    MusicBrainz.editor.artist.editor.updateDisplayedFields();
+                });
+                /* Click on a 'remove artist credit' icon. */
+                $('.ArtistEditor-AC-Remove').live('click', function () {
+                    var $thisTD = $(this).parent();
+                    $thisTD.next().remove();
+//                    $thisTD.prev().attr('colspan', 3);
+                    $thisTD.remove();
+                    MusicBrainz.editor.artist.editor.updateDisplayedFields();
+                });
+                /* Click on a 'close artist editor' (aka 'Done') button. */
+                $('#ArtistEditor-Done').live('click', function () {
+                    // TODO: PORT
+                    alert('Not implemented yet.');
+                    $('#artistEditor_parent').remove();
+                });
+                /* Click on a 'open artist editor' icon. */
+                $('.makeAE').live('click', function () {
+                    var $input = $(this).prev()
+                                        .addClass('ArtistEditor-Name');
+                    if ($input.is('.artist:not(> .ArtistEditor-cell-Name)')) { // Check that the input isn't already inside an artist editor.
+                        $(this).remove();
+                        $(MusicBrainz.editor.cache.html.ArtistEditor).find('#ArtistEditor-Contents')
+                                                                     .append($(MusicBrainz.editor.artist.editor.addArtist()))
+                                                                     .end()
+                                                                     .insertAfter($input)
+                                                                     .find('.ArtistEditor-Name:first')
+                                                                     .swap($input)
+                                                                     .replaceWith(MusicBrainz.html().textarea().close('textarea').end());
+                    }
+                });
+
+                /* Extend MusicBrainz.html().input() to auto-add the artist-editor icon if the 'artist' class will be an attr of the new input. */
+                originalInput = mbHTML.constructor.prototype.input;
+                mbHTML.constructor.prototype.input = function (args, suppress) {
+                    if (typeof suppress === 'undefined' || suppress === false) {
+                        if (typeof args !== 'undefined' && args.cl && /(?:^|\s)artist(?:\s|$)/.test(args.cl)) {
+                            return originalInput.call(this, args).div({ cl: 'makeAE pointer icon addable' }).close('div');
+                        }
+                    }
+                    return originalInput.call(this, args);
+                };
                 delete MusicBrainz.editor.artist.editor.init;
+            },
+            updateDisplayedFields: function () {
+                var editorContext = $('#ArtistEditor')[0],
+                    $removeArtistButtons = $('div.ArtistEditor-Remove', editorContext),
+                    $joinPhraseFields = $('input.ArtistEditor-Joiner', editorContext),
+                    $joinPhraseLabel = $('#ArtistEditor-Header-Joiner', editorContext),
+                    $ArtistCreditLabel = $('#ArtistEditor-Header-Credit', editorContext),
+                    $ArtistCreditFields = $('div.ArtistEditor-AC-Remove', editorContext);
+                if ($removeArtistButtons.length === 1) {
+                    $removeArtistButtons.css('display', 'none');
+                } else {
+                    $removeArtistButtons.show();
+                }
+                if ($joinPhraseFields.length === 1) {
+                    $joinPhraseFields.add($joinPhraseLabel).css('display', 'none');
+                } else {
+                    $joinPhraseFields.add($joinPhraseLabel).show();
+                    $joinPhraseFields.filter(':last').css('display', 'none');
+                }
+                if ($ArtistCreditFields.length === 0) {
+                    $ArtistCreditLabel.css('display', 'none');
+                } else {
+                    $ArtistCreditLabel.show();
+                }
             }
         }
     },
@@ -173,7 +264,7 @@ MusicBrainz.editor = {
          * @description Stores sidebar-specific event bindings.
          */
         events: {
-            showEditFieldsOnClick: function ($) {
+            showEditFieldsOnClick: function () {
                 $('#sidebar').bind('click', function (e) {
                     if ($(e.target).parents('dl')) { // Don't toggle if the click wasn't within a dl.
                         $(e.target).closest('.editable')
@@ -201,23 +292,29 @@ $(function ($) {
         /* Artist-specific */
         $('input.artist').addMBLookup('artist', true);
 
+        /* Add the Artist editor trigger icon buttons. */
+        $('.artist:not(> .ArtistEditor-cell-Name)').after(MusicBrainz.html().div({ cl: 'pointer icon addable' }).close('div').end());
+
         /* Sidebar-specific */
         sidebar.init($);
 
-        sidebar.events.showEditFieldsOnClick($);
+        sidebar.events.showEditFieldsOnClick();
 
         MusicBrainz.editor.artist.editor.init();
     }
 
     /* FOR TESTING ONLY */
-    MusicBrainz.html().input({ id: 'foo', cl: 'artist' }).append('#content');
-    MusicBrainz.html().input({ id: 'bar', cl: 'artist' }).append('#content');
+    MusicBrainz.html().div().input({ id: 'foo', cl: 'artist' }).close('div').append('#content');
+    MusicBrainz.html().div().input({ id: 'bar', cl: 'artist' }).close('div').append('#content');
+    MusicBrainz.html().div().input({ id: 'pez', cl: 'artist' }).close('div').append('#content');
+    MusicBrainz.html().div().input({ id: 'zap', cl: 'artist' }).close('div').append('#content');
     /* END TESTING STUFF */
 
 
-$("#foo").after($(MusicBrainz.editor.cache.html.ArtistEditor))
+// $("#foo"))
 
-$('#ArtistEditor-Contents').append($(MusicBrainz.editor.artist.editor.addArtist()))
-$('#ArtistEditor-TrackTitle').text("Foooo Barrrr");
+
+
+// $(')
 
 }(jQuery));

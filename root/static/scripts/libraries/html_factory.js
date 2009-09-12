@@ -1451,7 +1451,8 @@
         Inner_HTML.prototype[closed[loops]] = genericElement(closed[loops], 1);
     } while (loops--);
     MusicBrainz.html = function () {
-        return new Inner_HTML();
+        MusicBrainz.html.constructor = Inner_HTML;
+        return new Inner_HTML;
     };
 }());
 

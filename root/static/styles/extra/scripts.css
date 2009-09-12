@@ -1,5 +1,9 @@
 @charset "UTF-8";
 
+span, div, a, dt, dd {
+    text-rendering: optimizeLegibility;
+}
+
 /* ----------------------------------
     Generic classes
 ---------------------------------- */
@@ -16,6 +20,9 @@
     display: none;
 }
 
+.pointer {
+    cursor: pointer;
+}
 
 /* ----------------------------------
     Sidebar
@@ -120,4 +127,73 @@ span.sortname {
 
 div.disambiguation {
     padding: 1px 0 0 1em;
+}
+
+#lookupPopup_parent {
+    z-index: 200;
+}
+
+/* ----------------------------------
+    Artist Editor
+---------------------------------- */
+
+#ArtistEditor {
+    padding: 0.8em 0.5em;
+}
+
+.ArtistEditor-Name {
+    width: 97.9%;
+    min-width: 22em;
+}
+
+.ArtistEditor-Credit {
+    margin-right: 0.4em;
+    width: 16em;
+}
+
+.ArtistEditor-Joiner {
+    width: 6.5em;
+}
+
+#artistEditor_parent {
+    z-index: 100;
+}
+
+#ArtistEditor-Done {
+    margin: 0 0 0.8em 1em;
+}
+
+/* ----------------------------------
+    Icons
+---------------------------------- */
+
+.icon {
+    height: 16px;
+    width: 16px;
+    display: inline-block;
+}
+
+/* Editor icon pack */
+.editorIcons {
+    background: transparent url(/static/images/icon/editor.png) no-repeat;
+}
+
+/* Icon: X (gray) */
+.removeable {
+    background-position: 0 -198px;
+}
+
+/* Icon: X (red) */
+.removeable:hover {
+    background-position: 0 -264px;
+}
+
+/* Icon: + (gray) */
+.addable {
+    background: transparent url(/static/images/icon/plus.grey.png) no-repeat;
+}
+
+/* Icon: + (green) */
+.addable:hover {
+    background-image: url(/static/images/icon/plus.green.png)!important;
 }

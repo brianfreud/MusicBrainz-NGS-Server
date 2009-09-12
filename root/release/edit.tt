@@ -1,4 +1,4 @@
-[% extra_js = 'jquery/jquery.corner.js jquery/jquery.enableDisable.js jquery/jquery.enhancedOffset.js jquery/jquery.outerClick.js jquery/jquery.outerHTML.js jquery/jquery.selectboxes.js jquery/jquery.unwrap.js libraries/html_factory.js libraries/mb_utility.js libraries/XRegExp.js libraries/XRegExp.Unicode.js jquery/jquery.backports.js editor.js' %]
+[% extra_js = 'jquery/jquery.corner.js jquery/jquery.enableDisable.js jquery/jquery.enhancedOffset.js jquery/jquery.outerClick.js jquery/jquery.swap.js jquery/jquery.outerHTML.js jquery/jquery.selectboxes.js jquery/jquery.unwrap.js libraries/html_factory.js libraries/mb_utility.js libraries/XRegExp.js libraries/XRegExp.Unicode.js jquery/jquery.backports.js editor.js' %]
 [% extra_css = 'scripts.css' %]
 [%- WRAPPER 'layout.tt' edit=1 -%]
     <form action="[% c.req.uri %]" method="post">

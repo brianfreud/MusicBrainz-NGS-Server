@@ -56,8 +56,10 @@ MusicBrainz.utility = {
      *
      * @param {Object} [$element] The jQuery-wrapped input element to attach the lookup to.
      * @param {Object} [type] The lookup type to instantiate.
+     * @param {Bool} [canHaveAC] Only applies to type == artist; can the artist have an AC?
      **/
-    addLookup: function ($element, type) {
+    addLookup: function ($element, type, canHaveAC) {
+        canHaveAC = canHaveAC || false;
         var self = this,
             mbCache        = MusicBrainz.cache,
             mbText         = MusicBrainz.text,
@@ -105,16 +107,16 @@ MusicBrainz.utility = {
                 }
             },
             createLookup = function (type) {
-                var inputOffset = $element.offset(),
+                var inputPosition = $element.position(),
                     resultData;
                 if (typeof self.lookupData === 'undefined') {
-                    $(mbCacheHTML.popups.lookup[type === 'artist' ? type : 'generic']).insertAfter($element)
-                                                                                       .offset(inputOffset.bottom, inputOffset.left + 1, 0)
-                                                                                       .bind('outerClick', removeLookup);
+                    $(mbCacheHTML.popups.lookup[type === 'artist' && canHaveAC ? 'artist' : 'generic']).insertAfter($element)
+                                                                                                       .position({ top: '-=1', left: inputPosition.left + 1 }, 0)
+                                                                                                       .bind('outerClick', removeLookup)
                     $('#' + elements.resultsContainer, lookupContext).bind('click', function (e) {
                         resultData = $(e.target).parents('.' + elements.results).data('MusicBrainz');
                         resultData.type = type;
-                        if (type === 'artist') {
+                        if (type === 'artist' && canHaveAC) {
                             resultData.AC = self.getValue($('#' + elements.hasACCheckbox));
                         }
                         resultData.$input = lookupData.$input;
@@ -408,7 +410,7 @@ MusicBrainz.utility = {
                                                         .div({ id: elements.buttonContainer, cl: classes.hidden	, css: 'padding-top:1em;' })
                                                             .button({ id: elements.buttonLast, ti: -1 })
                                                             .button({ id: elements.buttonNext, ti: -1  })
-                                                            .button({ id: elements.buttonAddNew, ti: -1, css: MusicBrainz.cache.css.buttonRight  })
+                                                            .button({ id: elements.buttonAddNew, ti: -1, css: 'position:absolute;right:1em;'  })
                                                         .close(div)
                                                         .div({ id: elements.addNewContainer }).close(div)
                                                         .close(div)
@@ -433,12 +435,13 @@ MusicBrainz.utility = {
                  * Allows attaching MusicBrainz lookups from a jQuery chain.
                  * 
                  * @param {String} [type] The entity type to be looked up.
+                 * @param {Bool} [canHaveAC] Only applies to type == artist; can the artist have an AC?
                  * @public
                  **/
-                jQuery.fn.addMBLookup = function (type) {
+                jQuery.fn.addMBLookup = function (type, canHaveAC) {
                     $(this).live('click', function (e) {
                         e.stopImmediatePropagation(); // Prevent the outerClick event closing a newly created lookup.
-                        MusicBrainz.utility.addLookup($(this), type);
+                        MusicBrainz.utility.addLookup($(this), type, canHaveAC);
                     });
                     return this;
                 };
