@@ -457,7 +457,7 @@ MusicBrainz.utility = {
      *        an &lt;input&gt; or a &lt;select&gt; and stringFormatter is omitted, an empty string will be returned.
      * @param {String} [options.textForUnknown] The text to use for overlaying fields which currently have no defined value; default text is stored in MusicBrainz.text.Unknown.
      * @param {String} [options.wrapper] Type of element to use to enclose the overlay; by default, $element's enclosing element type will be used.
-     * @see <a href="#addOverlayThis"/>
+     * @see MusicBrainz.utility.addOverlayThis
      **/
     addOverlay: function ($element, options) {
         options = options || {};
@@ -494,7 +494,7 @@ MusicBrainz.utility = {
      *
      * @param {Object} [$eleInt] This variable is ignored.
      * @param {Object} [options] See <a href="#addOverlay"/>
-     * @see <a href="#addOverlay"/>
+     * @see MusicBrainz.utility.addOverlay
      **/
     addOverlayThis: function ($eleInt, options) {
         return MusicBrainz.utility.addOverlay($(this), options || {});
@@ -504,6 +504,7 @@ MusicBrainz.utility = {
      *
      * @param {Object} $inputs A single jQuery-wrapped parent element containing child inputs of type text.
      * @param {String} [joinSeparator] The separator to use between the values of each input; default is '&nbsp;&ndash;&nbsp;'.
+     * @see MusicBrainz.utility.getValue
      **/
     getChildValues: function ($inputs, joinSeparator) {
         return $('input[type=text][value!=""]', $inputs).map(function () {
@@ -516,6 +517,7 @@ MusicBrainz.utility = {
      * Returns the plaintext value of an element; if $element is not an &lt;input&gt; of type text, or a &lt;select&gt;, an empty string will be returned.
      *
      * @param {Object} $element A single jQuery-wrapped element for which to return the plaintext value.
+     * @see MusicBrainz.utility.getChildValues
      **/
     getValue: function ($element) {
         if ($element.is('select')) {
@@ -556,6 +558,9 @@ MusicBrainz.utility = {
          * @param {String} [bgColor] The css background color for the contents area of the popup; defaults to #fff.
          **/
         popup: function (contentsID, contents, bgColor) {
+            if (typeof contentsID === 'undefined') {
+                MusicBrainz.utility.showError('contentsID must be specified.');
+            } 
             contents = contents || '';
             var popupHTML = MusicBrainz.html()
                                               .div({
@@ -591,6 +596,7 @@ MusicBrainz.utility = {
                                     .end();
             } while (--shadowCt);
             MusicBrainz.cache.html.shadow = shadow;
+            delete MusicBrainz.utility.makeHTML.shadow;
         }
     },
     /**
@@ -619,12 +625,14 @@ MusicBrainz.utility = {
         return $ele.removeClass('hidden');
     },
     /**
-     * Logs a message to the FireBug or FireBug Lite console, if present, otherwise it alerts it.
+     * Logs an error message to the FireBug or FireBug Lite console, if present.
      *
      * @param {String} error The message to be passed.
      **/
     showError: function (error) {
-        (window.console ? console.debug : window.alert)(error);
+        if (window.console) {
+            console.debug(error);
+        }
     },
     /**
      * Adds a space to either end of a string.
@@ -644,9 +652,7 @@ $(function ($) {
 
     /* Initialize static HTML strings generated from per-session dynamic strings. */
     mbUtility.makeHTML.shadow();
-    delete mbUtility.makeHTML.shadow;
 
     /* Initialize the HTML string and events for lookups. */
     mbUtility.addLookup();
-
 }(jQuery));

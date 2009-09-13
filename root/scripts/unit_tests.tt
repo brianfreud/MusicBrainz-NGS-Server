@@ -59,8 +59,9 @@
 <script type="text/javascript" src="/static/scripts/jquery/jquery.outerHTML.js"></script>
 <script type="text/javascript" src="/static/scripts/jquery/jquery.selectboxes.js"></script>
 <script type="text/javascript" src="/static/scripts/jquery/jquery.unwrap.js"></script>
-<script type="text/javascript" src="/static/scripts/libraries/mb_utility.js"></script>
+<script type="text/javascript" src="/static/scripts/jquery/jquery.enableDisable.js"></script>
 <script type="text/javascript" src="/static/scripts/editor.js"></script>
+<script type="text/javascript" src="/static/scripts/libraries/mb_utility.js"></script>
 <script type="text/javascript" src="/static/scripts/libraries/QUnit.js"></script>
 <script type="text/javascript" src="/static/scripts/unittests.js"></script>
 [% END %]

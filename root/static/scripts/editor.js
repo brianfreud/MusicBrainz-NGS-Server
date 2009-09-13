@@ -1,19 +1,8 @@
 /*jslint undef: true, browser: true*/
 /*global jQuery, $, MusicBrainz, notLive, window */
-/*members $DDs, $DateDDs, $InputDDs, $SelectDDs, $sidebar, AddArtistShort, ArtistEditor, Done, RemoveArtist, add, addArtist, 
-    addClass, addMBLookup, addOverlay, addOverlayThis, after, alt, append, artist, baseName, bind, br, button, buttonRight, cache, call, cl, close, 
-    closest, col, colspan, constructor, createOverlayText, credit, css, div, each, editor, end, events, filter, find, getChildValues, html, id, init, 
-    input, insertAfter, joiner, length, live, makeHTML, name, next, parent, parents, popup, prev, prototype, remove, replaceWith, show, 
-    showEditFieldsOnClick, sidebar, span, swap, table, target, tbody, td, test, text, textarea, th, thead, tr, updateDisplayedFields, use, 
-    utility, val
-*/
 /**
  * @fileOverview This file contains all functions to initialize and run the MusicBrainz inline editor.
  * @author Brian Schweitzer (BrianFreud) brian.brianschweitzer@gmail.com
- * @requires html_factory.js
- * @requires jquery.js
- * @requires jquery.selectboxes.js
- * @requires jquery.jquery.js
  * @requires mb_utilities.js
  */
 
@@ -242,7 +231,6 @@ MusicBrainz.editor = {
             $sidebar.$DateDDs   = $sidebarDDs.filter('.date');
             $sidebar.$InputDDs  = $sidebarDDs.filter(':has(input):not(.date)');
             $sidebar.$SelectDDs = $sidebarDDs.filter(':has(select)');
-            delete MusicBrainz.editor.cache.init;
         }
     },
     /**
@@ -253,7 +241,7 @@ MusicBrainz.editor = {
         /**
          * @description Initializes sidebar functionality, onReady.
          **/
-        init: function ($) {
+        init: function () {
             var mb             = MusicBrainz,
                 $sidebar       = mb.editor.cache.$sidebar,
                 utility        = mb.utility,
@@ -293,33 +281,37 @@ MusicBrainz.editor = {
  * @description Initialize initial page-load functionality.
  */
 $(function ($) {
-console.log(document.readyState);
-    var mbEditor = MusicBrainz.editor,
-        sidebar = mbEditor.sidebar;
+    if (jQuery.readyList.length > 1) { // Ensure that this loads *after* everything else also running at document ready.
+        jQuery.readyList.push(arguments.callee);
+    } else {
+        var mbEditor = MusicBrainz.editor,
+            sidebar = mbEditor.sidebar;
 
-    if (typeof notLive === 'undefined') { // Prevent self-initiation when loaded for unit-tests.
-        /* Initialize the editor cache. */
-        mbEditor.cache.init($);
+        if (typeof notLive === 'undefined') { // Prevent self-initiation when loaded for unit-tests.
+            /* Initialize the editor cache. */
+            mbEditor.cache.init($);
+            delete mbEditor.cache.init;
+    
+            /* Add lookups to artist input fields. */
+            $('input.artist').addMBLookup('artist', true);
+    
+            /* Add the Artist editor trigger icon buttons. */
+            $('.artist:not(> .ArtistEditor-cell-Name)').after(MusicBrainz.html().div({ cl: 'pointer icon addable' }).close('div').end());
+    
+            /* Initialize the artist editor. */
+            mbEditor.artist.editor.init();
+    
+            /* Sidebar-specific */
+            sidebar.init($);
+            sidebar.events.showEditFieldsOnClick();
 
-        /* Add lookups to artist input fields. */
-        $('input.artist').addMBLookup('artist', true);
+            /* FOR TESTING ONLY */
+            MusicBrainz.html().div().input({ id: 'foo', cl: 'artist' }).close('div').append('#content');
+            MusicBrainz.html().div().input({ id: 'bar', cl: 'artist' }).close('div').append('#content');
+            MusicBrainz.html().div().input({ id: 'pez', cl: 'artist' }).close('div').append('#content');
+            MusicBrainz.html().div().input({ id: 'zap', cl: 'artist' }).close('div').append('#content');
+            /* END TESTING STUFF */
 
-        /* Add the Artist editor trigger icon buttons. */
-        $('.artist:not(> .ArtistEditor-cell-Name)').after(MusicBrainz.html().div({ cl: 'pointer icon addable' }).close('div').end());
-
-        /* Initialize the artist editor. */
-        MusicBrainz.editor.artist.editor.init();
-
-        /* Sidebar-specific */
-        sidebar.init($);
-        sidebar.events.showEditFieldsOnClick();
+        }
     }
-
-    /* FOR TESTING ONLY */
-    MusicBrainz.html().div().input({ id: 'foo', cl: 'artist' }).close('div').append('#content');
-    MusicBrainz.html().div().input({ id: 'bar', cl: 'artist' }).close('div').append('#content');
-    MusicBrainz.html().div().input({ id: 'pez', cl: 'artist' }).close('div').append('#content');
-    MusicBrainz.html().div().input({ id: 'zap', cl: 'artist' }).close('div').append('#content');
-    /* END TESTING STUFF */
-
 }(jQuery));
