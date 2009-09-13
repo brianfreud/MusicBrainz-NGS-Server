@@ -918,6 +918,17 @@
      * @see MusicBrainz.html.make
      */
     /**
+     * Generates the HTML for a div element.
+     *
+     * @methodOf MusicBrainz.html
+     * @name div
+     * @example MusicBrainz.html().div({ cl: 'foo', id: 'bar' })
+     * @param {Object} [args] The attributes to be added to the &lt;dl&gt; string being formed.
+     * @param [args.*] Note that the attributes passed to this function are *not* filtered; if an invalid attribute is defined, it will be added the the HTML string.
+     * @see MusicBrainz.html.close
+     * @see MusicBrainz.html.make
+     */
+    /**
      * Generates the HTML for a dl element.
      *
      * @methodOf MusicBrainz.html

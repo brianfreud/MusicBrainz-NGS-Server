@@ -534,7 +534,7 @@ MusicBrainz.utility = {
         return '';
     },
     /**
-     * Apply class 'hidden' to a jQuery element.
+     * Apply class 'hidden' to a jQuery element or elements.
      *
      * @param {jQuery} $ele The element(s) to hide.
      */
@@ -611,7 +611,7 @@ MusicBrainz.utility = {
         alert('Not implemented yet.');
     },
     /**
-     * Remove class 'hidden' from a jQuery element.
+     * Remove class 'hidden' from a jQuery element or elements.
      *
      * @param {jQuery} $ele The element(s) to unhide.
      */
