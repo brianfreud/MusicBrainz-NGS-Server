@@ -21,11 +21,12 @@ MusicBrainz.cache = {
                    working : '/static/images/scripts/working.gif'
                    },
     lookup       : {
-                   type   : 'type=',
-                   limit  : 'limit=',
-                   offset : 'offset=',
-                   query  : 'query=',
-                   server : '/ajax/search'
+                   type       : 'type=',
+                   limit      : 'limit=',
+                   offset     : 'offset=',
+                   query      : 'query=',
+                   selectors  : [],
+                   server     : '/ajax/search'
                    },
     roundness    : "round 6px",
     scripts      : {

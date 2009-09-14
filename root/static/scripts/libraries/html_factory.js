@@ -17,6 +17,7 @@
 
 "use strict";
 
+/* @private */
 (function () {
     var i, loops, htmlStr,
         jQueryMethods = {
@@ -41,6 +42,7 @@
      *
      * @example makeTagObj('div')
      * @param {String} tagName The value to assign to the tag key.
+     * @inner
      */
     makeTagObj = function (tagName) {
         return { tag: tagName };
@@ -50,6 +52,7 @@
      *
      * @example genericElement('tt')
      * @param {String} element The element being created.
+     * @inner
      */
     genericElement = function (element, closeVal) {
         return function (args) {
@@ -65,6 +68,7 @@
      * @example genericjQueryMethod('append')
      * @param {String} method The method being invoked.
      * @param {Bool} [jQueryScope] Optionally return the target's jQuery scope rather than the MusicBrainz.html() scope.
+     * @inner
      */
     genericjQueryMethod = function (method) {
         return function (element, jQueryScope) {
@@ -83,6 +87,7 @@
      * @param {String} arg The value of the attribute key being tested.
      * @param {String} [attr] The attribute name; defaults to the value of arg.
      * @param {String} [override] An attribute value to use in place of the one passed via the attributes.
+     * @inner
      */
     createAttributeStringIfDefined = function (args) {
         return function (arg, attr, override) {
@@ -132,8 +137,10 @@
          * @param {String} [args.alt] The "alt" attribute.
          * @param {String} [args.checked] The "checked" attribute.
          * @param {String} [args.cl] The "class" attribute.
+         * @param {String} [args.colspan] The "colspan" attribute.
          * @param {String} [args.css] The "style" attribute.
          * @param {String} [args.for] The "for" attribute.
+         * @param {String} [args.headers] The "headers" attribute.
          * @param {String} [args.href] The "href" attribute.
          * @param {String} [args.hreflang] The "hreflang" attribute.
          * @param {String} [args.id] The "id" attribute.
@@ -141,6 +148,7 @@
          * @param {String} [args.rel] The "rel" attribute.
          * @param {String} [args.rev] The "rev" attribute.
          * @param {String} [args.size] The "size" attribute.
+         * @param {String} [args.span] The "span" attribute.
          * @param {String} [args.src] The "src" attribute.
          * @param {String} [args.ti] The "tabindex" attribute.
          * @param {String} [args.target] The "target" attribute.
@@ -552,7 +560,8 @@
          * @see MusicBrainz.html.prepend
          * @see MusicBrainz.html.tojQuery
          * @see MusicBrainz.html.use
-             */
+         * @function
+         */
         addHTML: function (newHTML) {
             this.html = (this.html || '') + (newHTML || '');
             return this;
@@ -574,7 +583,8 @@
          * @see MusicBrainz.html.prepend
          * @see MusicBrainz.html.tojQuery
          * @see MusicBrainz.html.use
-             */
+         * @function
+         */
         end: function () {
             htmlStr = this.html;
             delete this.html;
@@ -588,6 +598,7 @@
          * @param {String} [text] The text to append to the HTML string being formed.
          * @see MusicBrainz.html.close
          * @see MusicBrainz.html.make
+         * @function
          */
         text: function (text) {
             this.html = (this.html || '') + (text || '');
@@ -613,6 +624,7 @@
          * @see MusicBrainz.html.prepend
          * @see MusicBrainz.html.tojQuery
          * @see MusicBrainz.html.use
+         * @function
          */
         swap: function (element) {
             var $element = $(element),
@@ -635,6 +647,7 @@
          * @see MusicBrainz.html.insertInto
          * @see MusicBrainz.html.prepend
          * @see MusicBrainz.html.use
+         * @function
          */
         tojQuery: function () {
             return $(this.html);
@@ -658,6 +671,7 @@
          * @see MusicBrainz.html.replace
          * @see MusicBrainz.html.swap
          * @see MusicBrainz.html.tojQuery
+         * @function
          */
         use: function (eleName, args) {
             return this[eleName].call(this, args);
@@ -684,6 +698,7 @@
      * @see MusicBrainz.html.swap
      * @see MusicBrainz.html.tojQuery
      * @see MusicBrainz.html.use
+     * @function
      */
     /**
      * Insert the current HTML string into the DOM .after() the specified element.

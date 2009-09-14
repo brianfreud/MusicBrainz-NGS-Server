@@ -1,11 +1,14 @@
 /** 
  * Based on outerHTML functions from http://brandonaaron.net/blog/2007/06/17/jquery-snippets-outerhtml
  * Originally by Brandon Aaron, with multi-document support added by Brian Grinstead, 
- * and a <script> workaround for http://dev.jquery.com/ticket/4801 from Al.
+ * and a &lt;script&gt; workaround for http://dev.jquery.com/ticket/4801 from Al.
+ *
+ * Note that element tags will be returned however the browser gives them; this means divs will be XHTML-standards
+ * compliant on Firefox ("&lt;div&gt;"), but non-compliant on Opera or IE ("&lt;DIV&gt;").
+ *
+ * @name jQuery.fn.outerHTML
+ * @function
  */
-
-// Note that element tags will be returned however the browser gives them; this means divs will be XHTML-standards
-// compliant on Firefox ("<div>"), but non-compliant on Opera or IE ("<DIV>").
 
 $.fn.outerHTML = function (s) {
     if (this.find("script").length === 0) {

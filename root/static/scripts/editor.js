@@ -14,24 +14,31 @@
  */
 MusicBrainz.editor = {
     /**
-     * @description Stores artist-editor-specific functionality.
+     * @description Stores artist-specific functionality.
      * @namespace
      */
     artist: {
+        /**
+         * @description Stores artist-editor-specific functionality.
+         * @namespace
+         */
         editor: {
             baseName: 'ArtistEditor',
             /**
              * Adds an artist row to an artist editor popup.
+             * @name MusicBrainz.editor.artist.editor.addArtistRow
              * @param {Object} [artist] Artist data to populate the fields
              * @param {Object} [artist.name] The artist's name.
              * @param {Object} [artist.credit] The artist credit
              * @param {Object} [artist.joiner] The join phrase
              * @param {Bool} [includeAC] Should the artist credit fields be included; defaults to false.
+             * @function
              */
-            addArtist: function (artist, includeAC) {
+            addArtistRow: function (artist, includeAC) {
                 artist = artist || {};
                 var aeditor  = this.baseName,
                     html = MusicBrainz.html().tr({ cl: aeditor + '-Artist' }),
+                    /** @inner */
                     makeCell = function (type, args, invoke) {
                         html.td({
                                 cl      : aeditor + '-cell-' + type,
@@ -60,6 +67,9 @@ MusicBrainz.editor = {
             },
             /**
              * Initializes events and HTML for an artist editor popup.
+             * @name MusicBrainz.editor.artist.editor.init
+             * @function
+             * @ignore
              */
             init: function () {
                 /* Create the HTML. */
@@ -90,6 +100,7 @@ MusicBrainz.editor = {
                                                                  })
                                                            .close('span')
                                                        .close('th'),
+                    /** @inner */
                     makeCell = function (type, colspan, hide) {
                         colspan = colspan || '';
                         html.th({
@@ -130,7 +141,7 @@ MusicBrainz.editor = {
 
                 /* Click on a 'add another artist' icon. */
                 $('#ArtistEditor-AddAnother').live('click', function () {
-                    $('#ArtistEditor-Contents').append($(MusicBrainz.editor.artist.editor.addArtist()));
+                    $('#ArtistEditor-Contents').append($(MusicBrainz.editor.artist.editor.addArtistRow()));
                     MusicBrainz.editor.artist.editor.updateDisplayedFields();
                 });
                 /* Click on a 'remove artist' icon. */
@@ -147,29 +158,45 @@ MusicBrainz.editor = {
                 });
                 /* Click on a 'close artist editor' (aka 'Done') button. */
                 $('#ArtistEditor-Done').live('click', function () {
-                    // TODO: PORT
+                    // TODO
                     alert('Not implemented yet.');
+                    $(MusicBrainz.cache.lookup.selectors.join(',') + ', textarea.ArtistEditor').enable();
                     $('#artistEditor_parent').remove();
                 });
                 /* Click on a 'open artist editor' icon. */
                 $('div.makeAE').live('click', function () {
+                    var mbUtility = MusicBrainz.utility,
+                        mbEditor = MusicBrainz.editor,
+                        $input = $(this).prev()
+                                        .addClass('ArtistEditor-Name'),
+                        $replacementTextarea = MusicBrainz.html()
+                                                          .textarea({ cl: 'artist ArtistEditor' })
+                                                          .close('textarea')
+                                                          .tojQuery()
+                                                          .readonly(),
+                        $artistContents = $(mbEditor.artist.editor.addArtistRow()).enable();
+                        $lookupInputs = $(MusicBrainz.cache.lookup.selectors.join(',') + ', textarea.ArtistEditor');
                     if (typeof MusicBrainz.utility.lookupData !== 'undefined') { // User clicked to open an artist 
-                        MusicBrainz.utility.lookupData.removeLookup();                        // editor while a lookup was open.
+                        MusicBrainz.utility.lookupData.removeLookup();           // editor while a lookup was open.
                     }
-                    var $input = $(this).prev()
-                                        .addClass('ArtistEditor-Name');
                     $(this).remove();
-                    $(MusicBrainz.editor.cache.html.ArtistEditor).find('#ArtistEditor-Contents')
-                                                                 .append($(MusicBrainz.editor.artist.editor.addArtist()))
+                    $(mbEditor.cache.html.ArtistEditor).find('#ArtistEditor-Contents')
+                                                                 .append($artistContents)
                                                                  .end()
                                                                  .insertAfter($input)
                                                                  .find('.ArtistEditor-Name:first')
                                                                  .swap($input)
-                                                                 .replaceWith(MusicBrainz.html().textarea({ cl: 'artist' }).close('textarea').end());
+                                                                 .replaceWith($replacementTextarea)
+                                                                 .add($lookupInputs)
+                                                                 .disable();
                 });
 
-                /* Extend MusicBrainz.html().input() to auto-add the artist-editor icon if the 'artist' class will be an attr of the new input. */
+                /** @ignore */
                 originalInput = mbHTML.constructor.prototype.input;
+                /**
+                  * Extend MusicBrainz.html().input() to auto-add the artist-editor icon if the 'artist' class will be an attr of the new input.
+                  * @ignore
+                  */
                 mbHTML.constructor.prototype.input = function (args, suppress) {
                     if (typeof suppress === 'undefined' || suppress === false) {
                         if (typeof args !== 'undefined' && args.cl && /(?:^|\s)artist(?:\s|$)/.test(args.cl)) {
@@ -180,6 +207,11 @@ MusicBrainz.editor = {
                 };
                 delete MusicBrainz.editor.artist.editor.init;
             },
+            /**
+             * Updates the display status of all fields with a conditional visability status within an artist editor.
+             * @name MusicBrainz.editor.artist.editor.updateDisplayedFields
+             * @function
+             */
             updateDisplayedFields: function () {
                 var editorContext = $('#ArtistEditor')[0],
                     $removeArtistButtons = $('div.ArtistEditor-Remove', editorContext),
@@ -239,7 +271,9 @@ MusicBrainz.editor = {
      */
     sidebar: {
         /**
-         * @description Initializes sidebar functionality, onReady.
+         * Initializes sidebar functionality, onReady.
+         * @function
+         * @ignore
          **/
         init: function () {
             var mb             = MusicBrainz,
@@ -260,8 +294,14 @@ MusicBrainz.editor = {
         },
         /**
          * @description Stores sidebar-specific event bindings.
+         * @namespace
          */
         events: {
+            /**
+             * Enables the onclick event for hiding displayed text and revealing an edit field.
+             * @function
+             * @ignore
+             **/
             showEditFieldsOnClick: function () {
                 $('#sidebar').bind('click', function (e) {
                     if ($(e.target).parents('dl')) { // Don't toggle if the click wasn't within a dl.
@@ -279,6 +319,7 @@ MusicBrainz.editor = {
 
 /**
  * @description Initialize initial page-load functionality.
+ * @ignore
  */
 $(function ($) {
     if (jQuery.readyList.length > 1) { // Ensure that this loads *after* everything else also running at document ready.

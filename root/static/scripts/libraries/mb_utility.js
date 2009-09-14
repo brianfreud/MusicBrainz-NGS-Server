@@ -1,19 +1,5 @@
 /*jslint undef: true, browser: true*/
 /*global jQuery, $, MusicBrainz, window, XRegExp */
-/*members $divs, $input, $popupContainer, $popupContents, AC, Error, HasNameVariation, LastResults, Loaded, MatchesFound, NextResults, 
-    NoResultsFound, NothingToLookUp, Search, Searching, ShowingMatches, UnknownPlaceholder, add, addClass, addEntity, addHTML, addLookup, 
-    addMBLookup, addNew, addNewContainer, addOverlay, addOverlayThis, after, ajax, alert, alt, append, apply, artist, attr, beforeSend, bind, bold, 
-    button, buttonAddNew, buttonContainer, buttonLast, buttonNext, buttonSearch, cache, cl, close, comment, complete, console, corner, 
-    createOverlayText, css, data, dataType, debug, disable, div, em, end, error, errorNoInput, errorNoResults, escape, filter, find, fn, for, 
-    generic, get, getChildValues, getData, getValue, gid, hasACCheckbox, hasACContainer, hasClass, hasOwnProperty, hidden, hideElements, hits, 
-    html, id, images, img, infoContainer, input, insertAfter, is, join, label, lastResults, latinAll, left, length, limit, live, loaded, lookup, 
-    lookupData, lookupPopup, makeHTML, map, matches, name, nextResults, offset, outerHTML, parent, parents, popup, popups, position, prototype, 
-    push, query, remove, removeClass, resolveLookup, results, resultsContainer, resultsDisplayed, resultsDisplayedEnd, 
-    resultsDisplayedStart, resultsEnd, resultsLoaded, resultsMatches, resultsStart, roundness, rowid, scripts, selectedTexts, server, 
-    setDisplays, shadow, showElements, showError, showingEnd, showingLoaded, showingMatches, showingStart, slice, sort_name, sortname, span, src, 
-    startSearch, stopImmediatePropagation, success, tagName, target, test, text, textForUnknown, ti, timeout, toLowerCase, toString, tojQuery, top, 
-    traversalButtons, type, unTrim, unwrap, url, use, utility, val, value, warning, working, wrap, wrapper
-*/
 /**
  * @fileOverview This file contains all utility functions used in MusicBrainz javascript code.
  * @author Brian Schweitzer (BrianFreud) brian.brianschweitzer@gmail.com
@@ -50,9 +36,9 @@ MusicBrainz.utility = {
         alert('Not implemented yet.');
     },
     /**
-     * Creates and attaches a lookup popup instance; will remove any existing lookup instance.
-     * Call once with no parameters to initialize.  Afterwards, call either with only the jQuery-wrapped
-     * element, or (faster), with both the jQuery-wrapped element and the type, to instantiate a lookup.
+     * Creates and attaches a lookup popup instance; will remove any existing lookup instance.  Call
+     * once with no parameters to initialize.  Use $($element).addMBLookup(type, canHaveAC) to create
+     * new lookup instances; direct access of addEntity($element, type, canHaveAC) is unsupported.
      *
      * @param {Object} [$element] The jQuery-wrapped input element to attach the lookup to.
      * @param {Object} [type] The lookup type to instantiate.
@@ -97,15 +83,17 @@ MusicBrainz.utility = {
             lookupData,
             show = self.showElements,
             hide = self.hideElements,
+            /** @inner */
             removeLookup = function () {
                 if (self.lookupData) {
                     var $popupToRemove = self.lookupData.$popupContainer;
                     $popupToRemove.css('display','none');
-                    $('.removable', lookupContext).html('');
-                    $popupToRemove.remove();
+                    $('.removable', lookupContext).html(''); // Speeds up the .remove() by pre-emptying nodes which have only
+                    $popupToRemove.remove();                 // children without any attached events or jQuery data().
                     delete self.lookupData;
                 }
             },
+            /** @inner */
             createLookup = function (type) {
                 var inputPosition = $element.position(),
                     resultData;
@@ -129,28 +117,34 @@ MusicBrainz.utility = {
                 }
             },
             setData = {
+                /** @inner */
                 resultsDisplayedStart: function (number) {
                     lookupData.resultsStart = number || 1;
                     return this;
                 },
+                /** @inner */
                 resultsDisplayedEnd: function (number) {
                     lookupData.resultsEnd = number || 10;
                     return this;
                 },
+                /** @inner */
                 resultsLoaded: function (number) {
                     lookupData.loaded = (lookupData.loaded || 0) + (number || 0);
                     return this;
                 },
+                /** @inner */
                 resultsMatches: function (number) {
                     lookupData.matches = (number || 0);
                     return this;
                 }
             },
             setDisplay = {
+                /** @inner */
                 buttonLast: function () {
                     $('#' + elements.buttonLast, lookupContext).attr('value', '« ' + mbText.LastResults);
                     return this;
                 },
+                /** @inner */
                 buttonNext: function () {
                     var nextText = mbText.NextResults + ' ',
                         remainingResults = (lookupData.matches - lookupData.resultsEnd);
@@ -163,6 +157,7 @@ MusicBrainz.utility = {
                     $('#' + elements.buttonNext, lookupContext).attr('value',  nextText);
                     return this;
                 },
+                /** @inner */
                 resultsDisplayed: function (start) {
                     var matches = lookupData.matches,
                         numberStart = (lookupData.resultsStart || 0) + start,
@@ -177,20 +172,24 @@ MusicBrainz.utility = {
                     show($results.slice(numberStart - 1, numberEnd));
                     return this;
                 },
+                /** @inner */
                 resultsLoaded: function () {
                     $('#' + elements.showingLoaded, lookupContext).text(lookupData.loaded);
                     return this;
                 },
+                /** @inner */
                 resultsMatches: function () {
                     $('#' + elements.showingMatches, lookupContext).text(lookupData.matches);
                     return this;
                 },
+                /** @inner */
                 traversalButtons: function () {
                     $('#' + elements.buttonLast, lookupContext)[lookupData.resultsStart > 1 ? 'enable' : 'disable']();
                     $('#' + elements.buttonNext, lookupContext)[lookupData.resultsEnd < lookupData.matches ? 'enable' : 'disable']();
                     return this;
                 }
             },
+            /** @inner */
             setDisplays = function (start) {
                 setDisplay.resultsDisplayed(start)
                           .resultsLoaded()
@@ -199,6 +198,7 @@ MusicBrainz.utility = {
                           .buttonLast()
                           .buttonNext();
             },
+            /** @inner */
             processResult = function (thisResult) {
                 var isAllLatin = new XRegExp('^' + MusicBrainz.cache.scripts.latinAll + '$');
                 return MusicBrainz.html()
@@ -228,6 +228,7 @@ MusicBrainz.utility = {
                                                         rowid    : thisResult.id
                                                         });
             },	
+            /** @inner */
             processResults = function (data) {
                 if (data.hits === 0) {
                     show($('#' + elements.errorNoResults, lookupContext)); // Status: no results
@@ -245,6 +246,7 @@ MusicBrainz.utility = {
                                                        .end().filter(':odd').css('background-color','#FEFEFE');
                 }
             },
+            /** @inner */
             getData = function (display) {
                 var mbLookup = mbCache.lookup;
                 $('#' + elements.buttonLast + ', #' + elements.buttonNext, lookupContext).disable();
@@ -263,12 +265,15 @@ MusicBrainz.utility = {
                            dataType   : 'json',
                            timeout    : 5000,
                            url        : mbLookup.server,
+                                        /** @inner */
                            beforeSend : function () {
                                             show(lookupData.$divs.find('.search:last')); // Show 'Searching...'.
                                         },
+                                        /** @inner */
                            error      : function (/* data, status */) {
                                             show(lookupData.$divs.filter('.error:first'));
                                         },
+                                        /** @inner */
                            success    : function (data/* , status */) {
                                             lookupData.offset += 20;
                                             setData.resultsLoaded(data.results.length)
@@ -286,12 +291,14 @@ MusicBrainz.utility = {
                                             show($('#' + elements.buttonContainer, lookupContext));
                                             $('#' + elements.buttonAddNew, lookupContext).attr('value', mbText.addNew[type]);
                                         },
+                                        /** @inner */
                            complete   : function () {
                                             hide(lookupData.$divs.find('.search:last')); // Hide 'Searching...'.
                            }
                     });
                 }
             },
+            /** @inner */
             initNew = function ($element, type) {
             var $thisLookup,
                 $thisLookupParent;
@@ -325,18 +332,21 @@ MusicBrainz.utility = {
                                                };
             },
             enableButton = {
+                /** @inner */
                 addEntity: function () {
                     $('#' + elements.buttonAddNew, lookupContext).live('click', function () {
                         self.addEntity(type);
                     });
                     return this;
                 },
+                /** @inner */
                 lastResults: function () {
                     $('#' + elements.buttonLast, lookupContext).live('click', function () {
                         self.lookupData.setDisplays(-10);
                     });
                     return this;
                 },
+                /** @inner */
                 nextResults: function () {
                     $('#' + elements.buttonNext, lookupContext).live('click', function () {
                         var lookupData = self.lookupData;
@@ -348,6 +358,7 @@ MusicBrainz.utility = {
                     });
                     return this;
                 },
+                /** @inner */
                 startSearch: function () {
                     $('#' + elements.buttonSearch, lookupContext).live('click', function () {
                         var lookupData = self.lookupData;
@@ -361,6 +372,7 @@ MusicBrainz.utility = {
                     return this;
                 }
             },
+            /** @inner */
             makeHTML = function () {
                 var div          = 'div',
                     mbImages     = mbCache.images,
@@ -433,13 +445,15 @@ MusicBrainz.utility = {
                             .nextResults()
                             .startSearch();
                 /**
-                 * Allows attaching MusicBrainz lookups from a jQuery chain.
+                 * Attach MusicBrainz lookup capability to the current element selection.
                  * 
                  * @param {String} [type] The entity type to be looked up.
                  * @param {Bool} [canHaveAC] Only applies to type == artist; can the artist have an AC?
                  * @public
                  **/
                 jQuery.fn.addMBLookup = function (type, canHaveAC) {
+                    MusicBrainz.cache.lookup.selectors.push($(this).selector);
+                    /** @inner */
                     $(this).live('click', function (e) {
                         e.stopImmediatePropagation(); // Prevent the outerClick event closing a newly created lookup.
                         MusicBrainz.utility.addLookup($(this), type, canHaveAC);
@@ -536,7 +550,7 @@ MusicBrainz.utility = {
         return '';
     },
     /**
-     * Apply class 'hidden' to a jQuery element or elements.
+     * Add class 'hidden' to a jQuery element or elements.
      *
      * @param {jQuery} $ele The element(s) to hide.
      */
@@ -583,6 +597,7 @@ MusicBrainz.utility = {
         },
         /**
          * Creates the HTML string for a div shadow.
+         * @ignore
          **/
         shadow: function () {
             var shadow   = '',
@@ -635,7 +650,7 @@ MusicBrainz.utility = {
         }
     },
     /**
-     * Adds a space to either end of a string.
+     * Adds a space to each end of a string.
      *
      * @param {String} str The string to be padded.
      **/
@@ -646,6 +661,7 @@ MusicBrainz.utility = {
 
 /**
  * Initialize statics set on page-load.
+ * @ignore
  */
 $(function ($) {
     var mbUtility = MusicBrainz.utility;

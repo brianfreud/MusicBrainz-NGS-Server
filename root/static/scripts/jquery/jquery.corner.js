@@ -19,14 +19,16 @@
  *  width:   width of the effect; in the case of rounded corners this is the radius.
  *           specify this value using the px suffix such as 10px (and yes, it must be pixels).
  *
- * @name corner
- * @type jQuery
- * @param String options Options which control the corner style
+ * @name jQuery.fn.corner
+ * @function
+ * @param {String} options Options which control the corner style
  * @cat Plugins/Corner
  * @return jQuery
  * @author Dave Methvin (http://methvin.com/jquery/jq-corner.html)
  * @author Mike Alsup   (http://jquery.malsup.com/corner/)
  */
+
+/* @private */
 (function ($) {
 
     var expr = (function () {

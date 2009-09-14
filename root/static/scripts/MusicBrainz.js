@@ -14,3 +14,25 @@
  * @namespace
  */
 var MusicBrainz = {};
+
+/**
+ * @class
+ * @name jQuery
+ * @exports $ as jQuery
+ * @description The <a href="http://docs.jquery.com/">jQuery</a> library
+ */
+
+/**
+ * @name jQuery.event
+ * @constructor
+ */
+
+/**
+ * @name jQuery.event.special
+ * @constructor
+ */
+
+/**
+ * @name jQuery.fn
+ * @constructor
+ */

@@ -1,3 +1,5 @@
+/*global jQuery */
+
 /**
  * jQuery custom event "outerClick".
  * @author David Brockman Smoliansky http://littleroom.se/
@@ -18,7 +20,7 @@
 
 // Modified 2009-08-17 Brian Schweitzer (BrianFreud): Fixed the teardown to teardown properly, to unbind the object rather than triggering a jQuery lib error.
 
-/*global jQuery */
+/** @private */
 (function ($, elements, OUTER_CLICK) {
         /**
 	 * Check if the event should be fired.
@@ -33,7 +35,10 @@
             }
         }
     }
-
+    /**
+     * @name jQuery.event.special.outerClick
+     * @function
+     */
     $.event.special[OUTER_CLICK] = {
 
         setup: function () {
@@ -59,6 +64,8 @@
     /**
 	 * Event helper outerClick
 	 * 
+         * @name jQuery.fn.outerClick
+         * @function
 	 * @param  {Function} [fn]  A function to bind to the outerClick event on each of the matched elements.
 	 *                          If fn is omitted the event is triggered.
 	 * @return {jQuery}         Returns the jQuery object.

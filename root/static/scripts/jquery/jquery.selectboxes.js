@@ -2,7 +2,6 @@
 /*global jQuery, $*/
 
 /*
- *
  * Copyright (c) 2006-2009 Sam Collett (http://www.texotela.co.uk)
  * Dual licensed under the MIT (http://www.opensource.org/licenses/mit-license.php)
  * and GPL (http://www.opensource.org/licenses/gpl-license.php) licenses.
@@ -16,14 +15,15 @@
  *
  */
 
+/** @private */
 (function ($) {
 
     /**
  * Adds (single/multiple) options to a select box (or series of select boxes)
  *
- * @name     addOption
  * @author   Sam Collett (http://www.texotela.co.uk)
- * @type     jQuery
+ * @returns     {jQuery}
+ * @function
  * @example  $("#myselect").addOption("Value", "Text"); // add single value (will be selected)
  * @example  $("#myselect").addOption("Value 2", "Text 2", false); // add single value (won't be selected)
  * @example  $("#myselect").addOption({"foo":"bar","bar":"baz"}, false); // add multiple values, but don't select
@@ -32,6 +32,7 @@
  *
  */
     $.fn.addOption = function () {
+        /** ignore */
         var add = function (el, v, t, sO) {
             var option, newOption = true;
             // create cache
@@ -100,6 +101,7 @@
             }
         }
         this.each(
+        /** ignore */
         function () {
             if (this.nodeName.toLowerCase() != "select") {
                 return;
@@ -118,9 +120,10 @@
     /**
  * Add options via ajax
  *
- * @name     ajaxAddOption
+ * @name     jQuery.fn.ajaxAddOption
  * @author   Sam Collett (http://www.texotela.co.uk)
- * @type     jQuery
+ * @returns     {jQuery}
+ * @function
  * @param    String url      Page to get options from (must be valid JSON)
  * @param    Object params   (optional) Any parameters to send with the request
  * @param    Boolean select  (optional) Select the added options, default true
@@ -142,6 +145,7 @@
             select = true;
         }
         this.each(
+        /** inner */
         function () {
             var el = this;
             $.getJSON(url, params, function (r) {
@@ -162,9 +166,10 @@
     /**
  * Removes an option (by value or index) from a select box (or series of select boxes)
  *
- * @name     removeOption
+ * @name     jQuery.fn.removeOption
  * @author   Sam Collett (http://www.texotela.co.uk)
- * @type     jQuery
+ * @returns     {jQuery}
+ * @function
  * @param    String|RegExp|Number what  Option to remove
  * @param    Boolean selectedOnly       (optional) Remove only if it has been selected (default false)   
  * @example  $("#myselect").removeOption("Value"); // remove by value
@@ -202,6 +207,7 @@
             return this;
         }
         this.each(
+        /** inner */
         function () {
             if (this.nodeName.toLowerCase() != "select") {
                 return;
@@ -255,9 +261,10 @@
     /**
  * Sort options (ascending or descending) in a select box (or series of select boxes)
  *
- * @name     sortOptions
+ * @name     jQuery.fn.sortOptions
  * @author   Sam Collett (http://www.texotela.co.uk)
- * @type     jQuery
+ * @returns     {jQuery}
+ * @function
  * @param    Boolean ascending   (optional) Sort ascending (true/undefined), or descending (false)
  * @example  // ascending
  * $("#myselect").sortOptions(); // or $("#myselect").sortOptions(true);
@@ -270,6 +277,7 @@
         var sel = $(this).selectedValues();
         var a = typeof(ascending) == "undefined" ? true : !!ascending;
         this.each(
+        /** inner */
         function () {
             if (this.nodeName.toLowerCase() != "select") {
                 return;
@@ -289,6 +297,7 @@
             }
             // sort items in array
             sA.sort(
+            /** inner */
             function (o1, o2) {
                 // option text is made lowercase for case insensitive sorting
                 var o1t = o1.t.toLowerCase(),
@@ -315,10 +324,11 @@
     /**
  * Selects an option by value
  *
- * @name     selectOptions
+ * @name     jQuery.fn.selectOptions
  * @author   Mathias Bank (http://www.mathias-bank.de), original function
  * @author   Sam Collett (http://www.texotela.co.uk), addition of regular expression matching
- * @type     jQuery
+ * @returns     {jQuery}
+ * @function
  * @param    String|RegExp|Array value  Which options should be selected
  * can be a string or regular expression, or an array of strings / regular expressions
  * @param    Boolean clear  Clear existing selected options, default false
@@ -343,6 +353,7 @@
             return this;
         }
         this.each(
+        /** inner */
         function () {
             if (this.nodeName.toLowerCase() != "select") {
                 return this;
@@ -375,9 +386,10 @@
     /**
  * Copy options to another select
  *
- * @name     copyOptions
+ * @name     jQuery.fn.copyOptions
  * @author   Sam Collett (http://www.texotela.co.uk)
- * @type     jQuery
+ * @returns     {jQuery}
+ * @function
  * @param    String to  Element to copy to
  * @param    String which  (optional) Specifies which options should be copied - 'all' or 'selected'. Default is 'selected'
  * @example  $("#myselect").copyOptions("#myselect2"); // copy selected options from 'myselect' to 'myselect2'
@@ -391,6 +403,7 @@
             return this;
         }
         this.each(
+        /** inner */
         function () {
             if (this.nodeName.toLowerCase() != "select") {
                 return this;
@@ -411,9 +424,10 @@
     /**
  * Checks if a select box has an option with the supplied value
  *
- * @name     containsOption
+ * @name     jQuery.fn.containsOption
  * @author   Sam Collett (http://www.texotela.co.uk)
- * @type     Boolean|jQuery
+ * @returns     {Boolean|jQuery}
+ * @function
  * @param    String|RegExp value  Which value to check for. Can be a string or regular expression
  * @param    Function fn          (optional) Function to apply if an option with the given value is found.
  * Use this if you don't want to break the chaining
@@ -432,6 +446,7 @@
             return fT == "function" ? this : found;
         }
         this.each(
+        /** inner */
         function () {
             if (this.nodeName.toLowerCase() != "select") {
                 return this;
@@ -468,15 +483,17 @@
     /**
  * Returns values which have been selected
  *
- * @name     selectedValues
+ * @name     jQuery.fn.selectedValues
  * @author   Sam Collett (http://www.texotela.co.uk)
- * @type     Array
+ * @returns     {Array}
+ * @function
  * @example  $("#myselect").selectedValues();
  *
  */
     $.fn.selectedValues = function () {
         var v = [];
         this.selectedOptions().each(
+        /** inner */
         function () {
             v[v.length] = this.value;
         });
@@ -486,15 +503,17 @@
     /**
  * Returns text which has been selected
  *
- * @name     selectedTexts
+ * @name     jQuery.fn.selectedTexts
  * @author   Sam Collett (http://www.texotela.co.uk)
- * @type     Array
+ * @returns     {Array}
+ * @function
  * @example  $("#myselect").selectedTexts();
  *
  */
     $.fn.selectedTexts = function () {
         var t = [];
         this.selectedOptions().each(
+        /** inner */
         function () {
             t[t.length] = this.text;
         });
@@ -504,9 +523,10 @@
     /**
  * Returns options which have been selected
  *
- * @name     selectedOptions
+ * @name     jQuery.fn.selectedOptions
  * @author   Sam Collett (http://www.texotela.co.uk)
- * @type     jQuery
+ * @returns     {jQuery}
+ * @function
  * @example  $("#myselect").selectedOptions();
  *
  */
