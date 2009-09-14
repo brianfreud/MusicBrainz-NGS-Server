@@ -120,6 +120,7 @@ has 'labels' => (
         elements => 'all_labels',
         push => 'add_label',
         clear => 'clear_labels',
+        count => 'label_count',
     }
 );
 
@@ -133,6 +134,7 @@ has 'mediums' => (
         elements => 'all_mediums',
         push => 'add_medium',
         clear => 'clear_mediums',
+        count => 'medium_count',
     }
 );
 

@@ -1,11 +1,12 @@
 package MusicBrainz::Server::Edit;
 use Moose;
 
+use Carp qw( croak );
 use DateTime;
 use MooseX::AttributeHelpers;
 use MusicBrainz::Server::Edit::Exceptions;
 use MusicBrainz::Server::Entity::Types;
-use MusicBrainz::Server::Types qw( :edit_status );
+use MusicBrainz::Server::Types qw( :edit_status :vote $AUTO_EDITOR_FLAG );
 
 has 'c' => (
     isa => 'Object',
@@ -69,7 +70,7 @@ has 'data' => (
 has 'auto_edit' => (
     isa => 'Bool',
     is => 'rw',
-    default => sub { shift->edit_auto_edit }
+    default => 0,
 );
 
 has 'edit_notes' => (
@@ -95,7 +96,7 @@ has 'votes' => (
             votes_for_editor => sub {
                 my ($self, $body, $editor_id) = @_;
                 $body->($self, sub { $_->editor_id == $editor_id });
-            }
+            },
         }
     }
 );
@@ -120,10 +121,20 @@ sub editor_may_vote
                    $editor->accepted_edits > 10;
 }
 
+sub edit_auto_edit { 0 };
+
 sub edit_type { die 'Not implemented' }
 sub edit_name { '' }
-sub edit_auto_edit { return }
 sub edit_voting_period { DateTime::Duration->new(days => 7) }
+
+sub can_approve
+{
+    my ($self, $privs) = @_;
+    return
+         $self->is_open
+      && $self->edit_auto_edit
+      && ($privs & $AUTO_EDITOR_FLAG);
+}
 
 =head2 related_entities
 
@@ -148,6 +159,19 @@ the value.
 =cut
 
 sub alter_edit_pending { return {} }
+
+sub adjust_edit_pending
+{
+    my ($self, $adjust) = @_;
+
+    my $to_inc = $self->alter_edit_pending;
+    while( my ($model_name, $ids) = each %$to_inc) {
+        my $model = $self->c->model($model_name);
+        $model->does('MusicBrainz::Server::Data::Editable')
+            or croak "Model must do MusicBrainz::Server::Data::Editable";
+        $model->adjust_edit_pending($adjust, @$ids);
+    }
+}
 
 =head2 models
 

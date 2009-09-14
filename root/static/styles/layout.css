@@ -616,3 +616,7 @@ dl.properties dt {
 dl.properties dd {
     width: 65%;
 }
+
+span.mp {
+    background: #FFFFCC;
+}

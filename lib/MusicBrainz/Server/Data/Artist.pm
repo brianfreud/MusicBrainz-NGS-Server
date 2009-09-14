@@ -20,7 +20,7 @@ use MusicBrainz::Server::Data::Utils qw(
 extends 'MusicBrainz::Server::Data::CoreEntity';
 with 'MusicBrainz::Server::Data::AnnotationRole' => { type => 'artist' };
 with 'MusicBrainz::Server::Data::AliasRole' => { type => 'artist' };
-with 'MusicBrainz::Server::Data::Role::Name' => { name_table => 'artist_name' };
+with 'MusicBrainz::Server::Data::NameRole' => { name_table => 'artist_name' };
 with 'MusicBrainz::Server::Data::CoreEntityCache' => { prefix => 'artist' };
 with 'MusicBrainz::Server::Data::Editable' => { table => 'artist' };
 with 'MusicBrainz::Server::Data::RatingRole' => { type => 'artist' };
@@ -135,7 +135,7 @@ sub delete
     # XXX Checks to see if artist is in use (core entities that depend on this artist)
     return unless $can_delete;
 
-    $self->c->model('Relationship')->delete('artist', @artist_ids);
+    $self->c->model('Relationship')->delete_entities('artist', @artist_ids);
     $self->annotation->delete(@artist_ids);
     $self->alias->delete(@artist_ids);
     $self->tags->delete(@artist_ids);
@@ -159,7 +159,7 @@ sub merge
     $self->annotation->merge($new_id, @old_ids);
     $self->c->model('ArtistCredit')->merge_artists($new_id, @old_ids);
     $self->c->model('Edit')->merge_entities('artist', $new_id, @old_ids);
-    $self->c->model('Relationship')->merge('artist', $new_id, @old_ids);
+    $self->c->model('Relationship')->merge_entities('artist', $new_id, @old_ids);
 
     $self->_delete_and_redirect_gids('artist', $new_id, @old_ids);
     return 1;

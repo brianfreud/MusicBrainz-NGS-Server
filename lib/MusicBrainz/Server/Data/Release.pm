@@ -13,7 +13,7 @@ use MusicBrainz::Server::Data::Utils qw(
 
 extends 'MusicBrainz::Server::Data::CoreEntity';
 with 'MusicBrainz::Server::Data::AnnotationRole' => { type => 'release' };
-with 'MusicBrainz::Server::Data::Role::Name' => { name_table => 'release_name' };
+with 'MusicBrainz::Server::Data::NameRole' => { name_table => 'release_name' };
 with 'MusicBrainz::Server::Data::Editable' => { table => 'release' };
 with 'MusicBrainz::Server::Data::BrowseRole';
 
@@ -67,7 +67,7 @@ sub _entity_class
 sub load
 {
     my ($self, @objs) = @_;
-    load_subobjects($self, 'release', @objs);
+    return load_subobjects($self, 'release', @objs);
 }
 
 sub find_by_artist
@@ -146,6 +146,7 @@ sub delete
     my ($self, @releases) = @_;
     my @release_ids = map { $_->id } @releases;
     $self->c->model('Collection')->delete_releases(@release_ids);
+    $self->c->model('Relationship')->delete_entities('release', @release_ids);
     $self->annotation->delete(@release_ids);
     $self->remove_gid_redirects(@release_ids);
     my $sql = Sql->new($self->c->mb->dbh);
@@ -162,7 +163,7 @@ sub merge
     $self->c->model('Collection')->merge_releases($new_id, @old_ids);
     $self->c->model('ReleaseLabel')->merge_releases($new_id, @old_ids);
     $self->c->model('Edit')->merge_entities('release', $new_id, @old_ids);
-    $self->c->model('Relationship')->merge('release', $new_id, @old_ids);
+    $self->c->model('Relationship')->merge_entities('release', $new_id, @old_ids);
 
     # XXX merge release attributes
 

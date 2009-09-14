@@ -194,12 +194,12 @@ INSERT INTO medium (id, release, position, tracklist, format, name) VALUES (2, 1
 
 TRUNCATE track CASCADE;
 
-INSERT INTO track (id, recording, tracklist, position, name, artist_credit)
-    VALUES (1, 1, 1, 1, 1, 2);
+INSERT INTO track (id, recording, tracklist, position, name, artist_credit, length)
+    VALUES (1, 1, 1, 1, 1, 2, 123456);
 
 INSERT INTO track_name (id, name) VALUES (2, 'Track 2');
-INSERT INTO track (id, recording, tracklist, position, name, artist_credit)
-    VALUES (2, 1, 1, 2, 2, 2);
+INSERT INTO track (id, recording, tracklist, position, name, artist_credit, length)
+    VALUES (2, 1, 1, 2, 2, 2, 123456);
 
 INSERT INTO track_name (id, name) VALUES (3, 'Track 3');
 INSERT INTO track (id, recording, tracklist, position, name, artist_credit)
@@ -450,6 +450,13 @@ INSERT INTO recording_tag (tag, recording, count) VALUES (1, 1, 2);
 INSERT INTO release_group_tag (tag, release_group, count) VALUES (1, 1, 2);
 INSERT INTO work_tag (tag, work, count) VALUES (1, 1, 2);
 
+TRUNCATE cdtoc CASCADE;
+INSERT INTO cdtoc (id, discid, freedbid, trackcount, leadoutoffset, trackoffset) VALUES
+    (1, 'tLGBAiCflG8ZI6lFcOt87vXjEcI-', '5908ea07', 7, 171327,
+     ARRAY[150,22179,49905,69318,96240,121186,143398]);
+INSERT INTO medium_cdtoc (id, medium, cdtoc) VALUES
+    (1, 3, 1), (2, 5, 1);
+
 -- Restart sequences
 ALTER SEQUENCE gender_id_seq RESTART 3;
 ALTER SEQUENCE artist_id_seq RESTART 10;
@@ -465,6 +472,8 @@ ALTER SEQUENCE label_name_id_seq RESTART 5;
 ALTER SEQUENCE release_name_id_seq RESTART 5;
 ALTER SEQUENCE track_name_id_seq RESTART 20;
 ALTER SEQUENCE work_name_id_seq RESTART 2;
+
+ALTER SEQUENCE tag_id_seq RESTART 100;
 
 SET client_min_messages TO 'NOTICE';
 

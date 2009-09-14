@@ -12,7 +12,7 @@ use MusicBrainz::Server::Data::Utils qw(
 
 extends 'MusicBrainz::Server::Data::CoreEntity';
 with 'MusicBrainz::Server::Data::AnnotationRole' => { type => 'work' };
-with 'MusicBrainz::Server::Data::Role::Name' => { name_table => 'work_name' };
+with 'MusicBrainz::Server::Data::NameRole' => { name_table => 'work_name' };
 with 'MusicBrainz::Server::Data::RatingRole' => { type => 'work' };
 with 'MusicBrainz::Server::Data::TagRole' => { type => 'work' };
 with 'MusicBrainz::Server::Data::Editable' => { table => 'work' };
@@ -97,7 +97,7 @@ sub update
 sub delete
 {
     my ($self, $work) = @_;
-    $self->c->model('Relationship')->delete('work', $work->id);
+    $self->c->model('Relationship')->delete_entities('work', $work->id);
     $self->annotation->delete($work->id);
     $self->tags->delete($work->id);
     $self->rating->delete($work->id);
@@ -115,7 +115,7 @@ sub merge
     $self->tags->merge($new_id, @old_ids);
     $self->rating->merge($new_id, @old_ids);
     $self->c->model('Edit')->merge_entities('work', $new_id, @old_ids);
-    $self->c->model('Relationship')->merge('work', $new_id, @old_ids);
+    $self->c->model('Relationship')->merge_entities('work', $new_id, @old_ids);
 
     $self->_delete_and_redirect_gids('work', $new_id, @old_ids);
     return 1;

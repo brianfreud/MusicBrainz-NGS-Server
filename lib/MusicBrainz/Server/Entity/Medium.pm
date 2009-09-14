@@ -1,6 +1,7 @@
 package MusicBrainz::Server::Entity::Medium;
 
 use Moose;
+use MooseX::AttributeHelpers;
 use MusicBrainz::Server::Entity::Types;
 
 extends 'MusicBrainz::Server::Entity::Entity';
@@ -51,6 +52,18 @@ sub format_name
     my ($self) = @_;
     return $self->format ? $self->format->name : undef;
 }
+
+has 'cdtocs' => (
+    is => 'rw',
+    isa => 'ArrayRef[MediumCDTOC]',
+    lazy => 1,
+    default => sub { [] },
+    metaclass => 'Collection::Array',
+    provides => {
+        elements => 'all_cdtocs',
+        push => 'add_cdtoc',
+    }
+);
 
 __PACKAGE__->meta->make_immutable;
 no Moose;
