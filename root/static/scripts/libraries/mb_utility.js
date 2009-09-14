@@ -80,10 +80,12 @@ MusicBrainz.utility = {
                     $labelDateEnd.html(mbText.DateEnd);
             }
         });
-// addEntity-button-create
-// addEntity-button-cancel
-
-
+        $("#addEntity-button-create", addEntityContext).bind("click", function () {
+            alert('Not implemented yet');
+        });
+        $("#addEntity-button-cancel", addEntityContext).bind("click", function () {
+            alert('Not implemented yet');
+        });
 
     },
     /**
@@ -468,7 +470,6 @@ MusicBrainz.utility = {
                                                             .span({ id: elements.showingEnd, cl: classes.bold })
                                                         .close(div)
                                                         .div({ id: elements.resultsContainer, cl: classes.hidden }).close(div)
-                                                        .div({ id: elements.addNewContainer }).close(div)
                                                         .div({ id: elements.hasACContainer, cl: classes.hidden, css: 'padding-top:.7em;' })
                                                             .input({ id: elements.hasACCheckbox, ti: -1, type: 'checkbox' })
                                                             .label({ 'for': elements.hasACCheckbox, val: unTrim(mbText.HasNameVariation) })
@@ -478,6 +479,7 @@ MusicBrainz.utility = {
                                                             .button({ id: elements.buttonNext, ti: -1  })
                                                             .button({ id: elements.buttonAddNew, ti: -1, cl: 'rightAlignedButton' })
                                                         .close(div)
+                                                        .div({ id: elements.addNewContainer }).close(div)
                                                         .close(div)
                                                     .close(div)
                                               .end();
