@@ -615,6 +615,41 @@ MusicBrainz.utility = {
         }
     },
     /**
+     * Maps one array to another using the provided function.
+     *
+     * @author Tom Duff         : 1983-11-13 : Original concept and C implementation
+     * @author Jeff Greenberg   : 2001-02    : Original JavaScript implementation
+     * @author anonymous        : 2001       : Fast Duff's Device
+     * @author Andrew King      : 2002-08    : Faster Duff's Device for WebSiteOptimization.com
+     * @author Andrew B. King   : 2003-04-12 : bug fix for iterations < 8
+     * @author Brian Schweitzer : 2009-08    : Minor additional optimization
+     * @author Brian Schweitzer : 2009-09-13 : Specific function implementation
+     */
+    map: function (inputArray, functionToRun) {
+        var i = inputArray.length,
+            n = i % 8,
+            newArray = new Array(i - 1);
+        if (n > 0) {
+            do {
+                newArray[--i] = functionToRun.call(this, inputArray[i], i);
+            } while (--n);
+        }
+        n = 0 | (i / 8);
+        if (n > 0) {
+            do {
+                newArray[--i] = functionToRun.call(this, inputArray[i], i);
+                newArray[--i] = functionToRun.call(this, inputArray[i], i);
+                newArray[--i] = functionToRun.call(this, inputArray[i], i);
+                newArray[--i] = functionToRun.call(this, inputArray[i], i);
+                newArray[--i] = functionToRun.call(this, inputArray[i], i);
+                newArray[--i] = functionToRun.call(this, inputArray[i], i);
+                newArray[--i] = functionToRun.call(this, inputArray[i], i);
+                newArray[--i] = functionToRun.call(this, inputArray[i], i);
+            } while (--n);
+        }
+        return newArray;
+    },
+    /**
      * Handles a lookup result's selection.
      *
      * @param {Object} data The data for the selected lookup result.

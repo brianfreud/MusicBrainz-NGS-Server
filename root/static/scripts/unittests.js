@@ -712,6 +712,13 @@ $(document).ready(function ($) {
         test("unTrim", function () {
             same(MusicBrainz.utility.unTrim('Test String'), ' Test String ');
         });
+        test("map", function () {
+            same(MusicBrainz.utility.map(['m','u','s','i','c','b','r','a','i','n','z'], function (input) { return input.toUpperCase(); }).join(''), 'MUSICBRAINZ', 'Basic functionality');
+            same(MusicBrainz.utility.map(['m','u','s','i','c','b','r','a','i','n','z'], function (input, i) { if (i % 2) { return input.toUpperCase() } else { return input } }).join(''), 'mUsIcBrAiNz', 'Utilizing the passed position parameter');
+            var grandma = 9, notMyGrandma = 'spaghetti';
+            // This sources from a #jquery joke about the speed of this function. :)  It tests abusing the function with a string, rather than an array.
+            same(MusicBrainz.utility.map('mygrandma', function () {return notMyGrandma[--grandma];}).join(""), 'spaghetti', 'Turn mygrandma into spaghetti; input: grandma; output');
+        });
     var $testObject2 = $('<input>');
     var $testObject3 = $('<input>');
     module("jquery.enableDisable");
