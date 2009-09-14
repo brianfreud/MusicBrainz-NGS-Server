@@ -1,22 +1,5 @@
 /*jslint white: false, plusplus: false, bitwise: false, onevar: true, browser: true, rhino: true, undef: true, nomen: true, eqeqeq: true, regexp: true, strict: true, newcap: true, immed: true */
 /*global jQuery, $, MusicBrainz, window, XRegExp */
-/*members $divs, $input, $popupContainer, $popupContents, AC, Comment, Country, DateDissolved, DateEnd, DateFounded, DateOfBirth, DateOfDeath, 
-    DatePeriod, DateStart, DatesNote1, DatesNote2, Error, Gender, HasNameVariation, LabelCode, LastResults, Loaded, MatchesFound, Name, 
-    NextResults, NoResultsFound, NothingToLookUp, Search, Searching, ShowingMatches, SortName, Type, UnknownPlaceholder, add, addClass, 
-    addEntity, addHTML, addLookup, addMBLookup, addNew, addNewContainer, addNewEntity, addOverlay, addOverlayThis, after, ajax, alt, append, 
-    apply, artist, attr, beforeSend, bind, bold, br, button, buttonAddNew, buttonContainer, buttonLast, buttonNext, buttonSearch, cache, call, cl, 
-    close, comment, complete, console, corner, countries, createOverlayText, css, data, dataType, dd, debug, disable, div, dl, dt, em, end, error, 
-    errorNoInput, errorNoResults, escape, fieldset, filter, find, fn, for, gender, generic, get, getChildValues, getData, getValue, gid, 
-    hasACCheckbox, hasACContainer, hasClass, hasOwnProperty, hidden, hide, hideElements, hits, html, id, images, img, infoContainer, input, 
-    insertAfter, is, join, label, lastResults, latinAll, left, legend, length, limit, live, loaded, lookup, lookupData, lookupPopup, makeHTML, 
-    map, matches, name, nextResults, offset, option, options, outerHTML, parent, parents, popup, popups, position, prototype, push, query, 
-    remove, removeClass, removeLookup, resolveLookup, results, resultsContainer, resultsDisplayed, resultsDisplayedEnd, 
-    resultsDisplayedStart, resultsEnd, resultsLoaded, resultsMatches, resultsStart, roundness, rowid, scripts, select, selectedTexts, 
-    selector, selectors, server, setDisplays, shadow, showElements, showError, showingEnd, showingLoaded, showingMatches, showingStart, 
-    slice, sort_name, sortname, span, src, startSearch, stopImmediatePropagation, success, tagName, target, test, text, 
-    textForUnknown, ti, timeout, toLowerCase, toString, tojQuery, top, traversalButtons, type, unTrim, unbind, unwrap, url, use, utility, val, 
-    value, warning, working, wrap, wrapper
-*/
 /**
  * @fileOverview This file contains all utility functions used in MusicBrainz javascript code.
  * @author Brian Schweitzer (BrianFreud) brian.brianschweitzer@gmail.com
