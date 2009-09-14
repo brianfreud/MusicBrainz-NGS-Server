@@ -9,17 +9,17 @@
 "use strict";
 
 /**
- * @description Contains all functionality for the inline editor.
+ * Contains all functionality for the inline editor.
  * @namespace
  */
 MusicBrainz.editor = {
     /**
-     * @description Stores artist-specific functionality.
+     * Stores artist-specific functionality.
      * @namespace
      */
     artist: {
         /**
-         * @description Stores artist-editor-specific functionality.
+         * Stores artist-editor-specific functionality.
          * @namespace
          */
         editor: {
@@ -174,10 +174,10 @@ MusicBrainz.editor = {
                                                           .close('textarea')
                                                           .tojQuery()
                                                           .readonly(),
-                        $artistContents = $(mbEditor.artist.editor.addArtistRow()).enable();
+                        $artistContents = $(mbEditor.artist.editor.addArtistRow()).enable(),
                         $lookupInputs = $(MusicBrainz.cache.lookup.selectors.join(',') + ', textarea.ArtistEditor');
-                    if (typeof MusicBrainz.utility.lookupData !== 'undefined') { // User clicked to open an artist 
-                        MusicBrainz.utility.lookupData.removeLookup();           // editor while a lookup was open.
+                    if (typeof mbUtility.lookupData !== 'undefined') { // User clicked to open an artist 
+                        mbUtility.lookupData.removeLookup();           // editor while a lookup was open.
                     }
                     $(this).remove();
                     $(mbEditor.cache.html.ArtistEditor).find('#ArtistEditor-Contents')
@@ -239,21 +239,21 @@ MusicBrainz.editor = {
         }
     },
     /**
-     * @description Stores editor-specific statics.
+     * Stores editor-specific statics.
      * @namespace
      */
     cache: {
         /**
-         * @description Stores sidebar-specific collections of static selectors.
+         * Stores sidebar-specific collections of static selectors.
          */
         $sidebar: {},
         /**
-         * @description Stores dynamically generated, then static, HTML strings.
+         * Stores dynamically generated, then static, HTML strings.
          */
         html: {
         },
         /**
-         * @description Initializes cache data for derived variables, onReady.
+         * Initializes cache data for derived variables, onReady.
          **/
         init: function ($) {
             var $sidebar = MusicBrainz.editor.cache.$sidebar,
@@ -266,7 +266,7 @@ MusicBrainz.editor = {
         }
     },
     /**
-     * @description Stores sidebar-specific functionality.
+     * Stores sidebar-specific functionality.
      * @namespace
      */
     sidebar: {
@@ -293,7 +293,7 @@ MusicBrainz.editor = {
             delete MusicBrainz.editor.sidebar.init;
         },
         /**
-         * @description Stores sidebar-specific event bindings.
+         * Stores sidebar-specific event bindings.
          * @namespace
          */
         events: {
@@ -318,7 +318,7 @@ MusicBrainz.editor = {
 };
 
 /**
- * @description Initialize initial page-load functionality.
+ * Initialize initial page-load functionality.
  * @ignore
  */
 $(function ($) {

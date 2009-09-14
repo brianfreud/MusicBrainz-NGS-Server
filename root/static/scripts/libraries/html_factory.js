@@ -502,7 +502,8 @@
          * @param {String} [args.cl] The "class" attribute.
          * @param {String} [args.css] The "style" attribute.
          * @param {String} [args.id] The "id" attribute.
-         * @param {String} [args.text.SelectOne] The text to use for the "nothing selected" option; default text is stored in MusicBrainz.text.SelectOne.
+         * @param {String} [args.textSelectOne] The text to use for the "nothing selected" option; default text is stored in MusicBrainz.text.SelectOne.
+         * @param {String} [args.options] Additional options to include after the default.
          * @see MusicBrainz.html.close
          * @see MusicBrainz.html.make
          */
@@ -517,6 +518,7 @@
                                })
                        .text('[ ' + (args.textSelectOne ? args.textSelectOne : MusicBrainz.text.SelectOne) + ' ]')
                        .close('option')
+                       .addHTML(args.options || '')
                        .close('select');
         },
         /**

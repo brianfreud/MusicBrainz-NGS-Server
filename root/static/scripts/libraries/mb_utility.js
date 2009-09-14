@@ -1,5 +1,22 @@
-/*jslint undef: true, browser: true*/
+/*jslint white: false, plusplus: false, bitwise: false, onevar: true, browser: true, rhino: true, undef: true, nomen: true, eqeqeq: true, regexp: true, strict: true, newcap: true, immed: true */
 /*global jQuery, $, MusicBrainz, window, XRegExp */
+/*members $divs, $input, $popupContainer, $popupContents, AC, Comment, Country, DateDissolved, DateEnd, DateFounded, DateOfBirth, DateOfDeath, 
+    DatePeriod, DateStart, DatesNote1, DatesNote2, Error, Gender, HasNameVariation, LabelCode, LastResults, Loaded, MatchesFound, Name, 
+    NextResults, NoResultsFound, NothingToLookUp, Search, Searching, ShowingMatches, SortName, Type, UnknownPlaceholder, add, addClass, 
+    addEntity, addHTML, addLookup, addMBLookup, addNew, addNewContainer, addNewEntity, addOverlay, addOverlayThis, after, ajax, alt, append, 
+    apply, artist, attr, beforeSend, bind, bold, br, button, buttonAddNew, buttonContainer, buttonLast, buttonNext, buttonSearch, cache, call, cl, 
+    close, comment, complete, console, corner, countries, createOverlayText, css, data, dataType, dd, debug, disable, div, dl, dt, em, end, error, 
+    errorNoInput, errorNoResults, escape, fieldset, filter, find, fn, for, gender, generic, get, getChildValues, getData, getValue, gid, 
+    hasACCheckbox, hasACContainer, hasClass, hasOwnProperty, hidden, hide, hideElements, hits, html, id, images, img, infoContainer, input, 
+    insertAfter, is, join, label, lastResults, latinAll, left, legend, length, limit, live, loaded, lookup, lookupData, lookupPopup, makeHTML, 
+    map, matches, name, nextResults, offset, option, options, outerHTML, parent, parents, popup, popups, position, prototype, push, query, 
+    remove, removeClass, removeLookup, resolveLookup, results, resultsContainer, resultsDisplayed, resultsDisplayedEnd, 
+    resultsDisplayedStart, resultsEnd, resultsLoaded, resultsMatches, resultsStart, roundness, rowid, scripts, select, selectedTexts, 
+    selector, selectors, server, setDisplays, shadow, showElements, showError, showingEnd, showingLoaded, showingMatches, showingStart, 
+    slice, sort_name, sortname, span, src, startSearch, stopImmediatePropagation, success, tagName, target, test, text, 
+    textForUnknown, ti, timeout, toLowerCase, toString, tojQuery, top, traversalButtons, type, unTrim, unbind, unwrap, url, use, utility, val, 
+    value, warning, working, wrap, wrapper
+*/
 /**
  * @fileOverview This file contains all utility functions used in MusicBrainz javascript code.
  * @author Brian Schweitzer (BrianFreud) brian.brianschweitzer@gmail.com
@@ -31,14 +48,48 @@ MusicBrainz.utility = {
      *
      * @param {String} type The entity type to be added.
      **/
-    addEntity: function(type) {
-        // TODO: PORT
-        alert('Not implemented yet.');
+    addEntity: function (type) {
+        var addEntityContext = $('#addEntity')[0];
+        $('#status, #lookupInfo, #results, #BottomControls', addEntityContext).hide();
+        $('#addNewEntity', addEntityContext).html(MusicBrainz.utility.makeHTML.addNewEntity(type));
+        $('#lookupPopup_parent', addEntityContext).unbind('outerClick'); // Don't let a click outside of the form cause the user to lose the form.
+        $("#addEntity-type-artist", addEntityContext).bind("change", function () {          // Based on the artist type, show or hide the gender
+            var $labelDateStart = $('#addEntity-date-start-year-label', addEntityContext),  // field and set the date field label texts.
+                $labelDateEnd   = $('#addEntity-date-end-year-label', addEntityContext),
+                mbText = MusicBrainz.text,
+                setGenderVisibility = function (showOrHide) {
+                    $('#addEntity-gender', addEntityContext).add('#addEntity-gender-label', addEntityContext).parent()[showOrHide]();
+                    if (showOrHide === 'hide') {
+                        $('#addEntity-gender', addEntityContext).val('');
+                    }
+                };
+            switch ($(this).val()) {
+                case "1": // Person
+                    setGenderVisibility('show');
+                    $labelDateStart.html(mbText.DateOfBirth);
+                    $labelDateEnd.html(mbText.DateOfDeath);
+                    break;
+                case "2": // Group
+                    setGenderVisibility('hide');
+                    $labelDateStart.html(mbText.DateFounded);
+                    $labelDateEnd.html(mbText.DateDissolved);
+                    break;
+                default: // [ Select One ]
+                    setGenderVisibility('hide');
+                    $labelDateStart.html(mbText.DateStart);
+                    $labelDateEnd.html(mbText.DateEnd);
+            }
+        });
+// addEntity-button-create
+// addEntity-button-cancel
+
+
+
     },
     /**
      * Creates and attaches a lookup popup instance; will remove any existing lookup instance.  Call
      * once with no parameters to initialize.  Use $($element).addMBLookup(type, canHaveAC) to create
-     * new lookup instances; direct access of addEntity($element, type, canHaveAC) is unsupported.
+     * new lookup instances; direct access of addLookup($element, type, canHaveAC) is unsupported.
      *
      * @param {Object} [$element] The jQuery-wrapped input element to attach the lookup to.
      * @param {Object} [type] The lookup type to instantiate.
@@ -87,7 +138,7 @@ MusicBrainz.utility = {
             removeLookup = function () {
                 if (self.lookupData) {
                     var $popupToRemove = self.lookupData.$popupContainer;
-                    $popupToRemove.css('display','none');
+                    $popupToRemove.css('display', 'none');
                     $('.removable', lookupContext).html(''); // Speeds up the .remove() by pre-emptying nodes which have only
                     $popupToRemove.remove();                 // children without any attached events or jQuery data().
                     delete self.lookupData;
@@ -242,8 +293,8 @@ MusicBrainz.utility = {
                     }
                     $.prototype.append.apply($('#results', lookupContext), $resultsArr);
                     $('.' + elements.results, resultsContext).filter(':not(.rounded)').corner(MusicBrainz.cache.roundness).addClass('rounded')
-                                                       .end().filter(':even').css('background-color','#F1F1F1')
-                                                       .end().filter(':odd').css('background-color','#FEFEFE');
+                                                       .end().filter(':even').css('background-color', '#F1F1F1')
+                                                       .end().filter(':odd').css('background-color', '#FEFEFE');
                 }
             },
             /** @inner */
@@ -321,21 +372,22 @@ MusicBrainz.utility = {
                 lookupContext = $thisLookup[0]; // Store the DOM context of the lookup popup.
                 resultsContext = $('#' + elements.resultsContainer, lookupContext)[0]; // Store the DOM context of the results div.
                 lookupData = self.lookupData = {
-                                               $input          : $element,
                                                $divs           : $('div', lookupContext),
-                                               $popupContents  : $thisLookupParent,
-                                               $popupContainer : $thisLookupParent.parent(),
-                                               offset          : 0,
                                                getData         : getData,
+                                               $input          : $element,
+                                               offset          : 0,
+                                               $popupContainer : $thisLookupParent.parent(),
+                                               $popupContents  : $thisLookupParent,
+                                               removeLookup    : removeLookup,
                                                setDisplays     : setDisplays,
-                                               removeLookup    : removeLookup
+                                               type            : type
                                                };
             },
             enableButton = {
                 /** @inner */
                 addEntity: function () {
                     $('#' + elements.buttonAddNew, lookupContext).live('click', function () {
-                        self.addEntity(type);
+                        self.addEntity(self.lookupData.type);
                     });
                     return this;
                 },
@@ -416,6 +468,7 @@ MusicBrainz.utility = {
                                                             .span({ id: elements.showingEnd, cl: classes.bold })
                                                         .close(div)
                                                         .div({ id: elements.resultsContainer, cl: classes.hidden }).close(div)
+                                                        .div({ id: elements.addNewContainer }).close(div)
                                                         .div({ id: elements.hasACContainer, cl: classes.hidden, css: 'padding-top:.7em;' })
                                                             .input({ id: elements.hasACCheckbox, ti: -1, type: 'checkbox' })
                                                             .label({ 'for': elements.hasACCheckbox, val: unTrim(mbText.HasNameVariation) })
@@ -423,9 +476,8 @@ MusicBrainz.utility = {
                                                         .div({ id: elements.buttonContainer, cl: classes.hidden	, css: 'padding-top:1em;' })
                                                             .button({ id: elements.buttonLast, ti: -1 })
                                                             .button({ id: elements.buttonNext, ti: -1  })
-                                                            .button({ id: elements.buttonAddNew, ti: -1, css: 'position:absolute;right:1em;'  })
+                                                            .button({ id: elements.buttonAddNew, ti: -1, cl: 'rightAlignedButton' })
                                                         .close(div)
-                                                        .div({ id: elements.addNewContainer }).close(div)
                                                         .close(div)
                                                     .close(div)
                                               .end();
@@ -558,19 +610,128 @@ MusicBrainz.utility = {
         return $ele.addClass('hidden');
     },
     /**
-     * Generic HTML strings
+     * Generic HTML string creation functions
      *
      * @memberOf MusicBrainz.utility
      * @namespace
      */
     makeHTML: {
         /**
+         * Creates the HTML string for an Add new entity form.
+         * @param {String} entityType The type of add entity form to create.
+         * @example MusicBrainz.utility.makeHTML.addNewEntity('artist')
+         */
+        addNewEntity: function (entityType) {
+            var ae = 'addEntity',
+                start = '-start', 
+                end = '-end',
+                mbText = MusicBrainz.text,
+                html,
+                /** inner */
+                makeDT = function (fieldName, forID) {
+                    html.dt()
+                            .label({
+                                   cl    : 'bold',
+                                   'for' : forID,
+                                   id    : forID + '-label',
+                                   val   : fieldName
+                                   })
+                            .close('dt');
+                },
+                /** inner */
+                makeDD = function (ddHTML) {
+                    html.dd()
+                            .addHTML(ddHTML)
+                        .close('dd');
+                },
+                /** inner */
+                makeInputField = function (fieldName, inputID) {
+                    makeDT(fieldName, ae + '-' + inputID);
+                    makeDD(MusicBrainz.html().input({ id: ae + '-' + inputID }).end());
+                },
+                /** inner */
+                makeSelectField = function (fieldName, selectID, selectHTML) {
+                    makeDT(fieldName, selectID);
+                    makeDD(selectHTML);
+                },
+                /** inner */
+                makeDateFields = function (fieldName, startOrEnd) {
+                    var dash = '&nbsp;&ndash;&nbsp;',
+                        date = '-date';
+                    makeDT(fieldName, ae + date + startOrEnd + '-year');
+                    makeDD(MusicBrainz.html().span({ cl: 'partial-date',
+                                                     val: MusicBrainz.html().input({ id: ae + date + startOrEnd + '-year' })
+                                                                            .text(dash)
+                                                                            .input({ id: ae + date + startOrEnd + '-month' })
+                                                                            .text(dash)
+                                                                            .input({ id: ae + date + startOrEnd + '-day' }).end()
+                                                   }).end());
+                };
+            html = MusicBrainz.html()
+                                    .div({ css : 'position:relative;float:left;border:1px solid #ccc;' })
+                                        .addHTML(MusicBrainz.cache.html.shadow)
+                                        .div({ id: 'addEntity' })
+                                            .fieldset()
+                                                .legend({ cl: 'bold' })
+                                                    .span(mbText.addNew[entityType])
+                                                .close('legend')
+                                                .dl();
+            makeInputField(mbText.Name, 'name');
+            makeInputField(mbText.SortName, 'sortname');
+            makeInputField(mbText.Comment, 'comment');
+            makeSelectField(mbText.Type, ae + '-type-' + entityType, this.select.type(entityType, ae + '-type-' + entityType));
+            if (entityType === 'artist') {
+                makeSelectField(mbText.Gender, ae + '-gender', this.select.gender(ae + '-gender'));
+            }
+            makeSelectField(mbText.Country, ae + '-country', this.select.countries(ae + '-country'));
+            if (entityType === 'label') {
+                makeDT(mbText.LabelCode, ae + '-lc');
+                html.dd()
+                        .span('LC - ')
+                        .input({
+                               cl : ae + '-lc bold',
+                               id : ae + '-lc'
+                               })
+                    .close('dd');
+            }
+            html.close('dl').close('fieldset')
+                .fieldset()
+                    .legend({ cl: 'bold' })
+                        .span(mbText.DatePeriod)
+                    .close('legend')
+                    .em()
+                        .span(mbText.DatesNote1).br()
+                        .span({
+                              css : 'white-space:nowrap;',
+                              val : mbText.DatesNote2
+                              })
+                    .close('em')
+                    .dl();
+            makeDateFields(mbText.DateStart, start);
+            makeDateFields(mbText.DateEnd, end);
+            html.close('dl').close('fieldset')
+                .div({ css : 'text-align:center;' })
+                    .button({
+                            css : 'margin-right:0.5em;',
+                            id  : ae + '-button-create',
+                            val : mbText.Create[entityType]
+                            })
+                    .button({
+                            css : 'margin-left:0.5em;',
+                            id  : ae + '-button-cancel',
+                            val : mbText.Cancel
+                            })
+                .close('div')
+                .close('div').close('div');
+            return html.end();
+        },
+        /**
          * Creates the HTML string for a popup window.
          *
          * @param {String} contentsID The ID to assign to the contents div within the window.
          * @param {String} [contents] HTML to insert as the popup's contents.
          * @param {String} [bgColor] The css background color for the contents area of the popup; defaults to #fff.
-         **/
+         */
         popup: function (contentsID, contents, bgColor) {
             if (typeof contentsID === 'undefined') {
                 MusicBrainz.utility.showError('contentsID must be specified.');
@@ -596,9 +757,82 @@ MusicBrainz.utility = {
             return popupHTML;
         },
         /**
+         * HTML string creation functions to create selects.
+         * @namespace
+         */
+        select : {
+            /**
+             * Creates the HTML string for a country select list.
+             * 
+             * @param {String} [id] The id to assign to the select.
+             * @example MusicBrainz.utility.makeHTML.select.countries('foo')
+             */
+            countries: function (id) {
+                var optionsHTML = MusicBrainz.html();
+                MusicBrainz.utility.map(MusicBrainz.cache.countries, function (country) {
+                    optionsHTML.option({
+                                       cl: 'country-' + country[2],
+                                       val: country[0]
+                                       })
+                               .text(country[1])
+                               .close('option');
+                });
+                return MusicBrainz.html()
+                                  .select({
+                                          id: id || '',
+                                          options: optionsHTML.end()
+                                          })
+                                  .end();
+            },
+            /**
+             * Creates the HTML string for a gender list.
+             * 
+             * @param {String} [id] The id to assign to the select.
+             * @example MusicBrainz.utility.makeHTML.select.gender('foo')
+             */
+            gender: function (id) {
+                return this.generic(MusicBrainz.cache.artist.gender, id);
+            },
+            /**
+             * Creates the HTML string for a select list.
+             * 
+             * @param {String} cacheObject The MusicBrainz.cache list from which to source data.
+             * @param {String} [id] The id to assign to the select.
+             * @example MusicBrainz.utility.makeHTML.select.generic(MusicBrainz.cache.artist.type, 'foo')
+             */
+            generic: function (cacheObject, id) {
+                var listHTML = MusicBrainz.html(),
+                    listData = cacheObject,
+                    i;
+                for (i in listData) {
+                    if (listData.hasOwnProperty(i)) {
+                        listHTML.option({ val: i })
+                               .text(listData[i])
+                               .close('option');
+                    }
+                }
+                return MusicBrainz.html()
+                                  .select({
+                                          id: id || '',
+                                          options: listHTML.end()
+                                          })
+                                  .end();
+            },
+            /**
+             * Creates the HTML string for a type list.
+             * 
+             * @param {String} entityType The entity type.
+             * @param {String} [id] The id to assign to the select.
+             * @example MusicBrainz.utility.makeHTML.select.type('artist', 'foo')
+             */
+            type: function (entityType, id) {
+                return this.generic(MusicBrainz.cache[entityType].type, id);
+            }
+        },
+        /**
          * Creates the HTML string for a div shadow.
          * @ignore
-         **/
+         */
         shadow: function () {
             var shadow   = '',
                 shadowCt = 6,
@@ -706,4 +940,5 @@ $(function ($) {
 
     /* Initialize the HTML string and events for lookups. */
     mbUtility.addLookup();
+
 }(jQuery));

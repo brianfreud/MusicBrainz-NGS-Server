@@ -24,6 +24,11 @@ span, div, a, dt, dd {
     cursor: pointer;
 }
 
+.rightAlignedButton {
+    position: absolute;
+    right: 1em;
+}
+
 /* ----------------------------------
     Sidebar
 ---------------------------------- */
@@ -106,7 +111,6 @@ div.popupContents {
 }
 
 div.result {
-    min-width: 25em; /* Avoid wrapping in Opera 9.6 and gecko-1.9 */
     cursor: pointer;
     margin: 2px 0;
     padding: 0.5em 1em;
@@ -132,6 +136,14 @@ div.disambiguation {
 
 #lookupPopup_parent {
     z-index: 200;
+}
+
+#lookupPopup {
+    float: left; /* Avoids #lookupInfo no-wrapping out of the lookup. */
+}
+
+#lookupInfo {
+    white-space: nowrap;
 }
 
 /* ----------------------------------
@@ -175,6 +187,49 @@ textarea.artist {
     overflow: hidden;
     padding: 2px;
     font-size: 12.5px;
+}
+
+/* ----------------------------------
+    Add new entity within lookup
+---------------------------------- */
+
+#addNewEntity {
+    float: left;
+    height: 100%;
+    left: 0;
+    position: absolute;
+    width: 100%;
+}
+
+#addNewEntity dt label {
+    clear: both;
+    float: left;
+    line-height: 100%;
+    padding-right: 3%;
+    padding-top: 4px;
+    text-align: right;
+    width: 29%;
+}
+
+#addNewEntity dd {
+   float: left;
+   margin: 0 0 0.5em 0.25em;
+   width: 66%;
+}
+
+#addNewEntity fieldset:first-child input {
+    width: 100%;
+}
+
+#addEntity {
+    background-color: #fff;
+    float: left;
+    padding: 0.8em;
+    position: relative;
+}
+
+input.addEntity-lc {
+    width: 50% !important;
 }
 
 /* ----------------------------------

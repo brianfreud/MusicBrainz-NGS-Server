@@ -37,7 +37,7 @@ $(function ($) {
     }
 } (jQuery));
 
-// Fix for http://dev.jquery.com/ticket/5209
+// Fix for http://dev.jquery.com/ticket/5209 (this is also now in 1.3.3 nightly)
 jQuery.extend({
 	// Handle when the DOM is ready
 	ready: function() {
@@ -49,11 +49,13 @@ jQuery.extend({
 			// If there are functions bound, to execute
 			if ( jQuery.readyList ) {
 				// Execute all of them
-                                var readyList = jQuery.readyList;
-				while( readyList.length) {
-					readyList[0].call( document, jQuery );
-					readyList.splice(0,1);
-				};
+				var fn, i = 0;
+				while ( (fn = jQuery.readyList[ i++ ]) ) {
+					fn.call( document, jQuery );
+				}
+
+				// Reset the list of functions
+				jQuery.readyList = null;
 			}
 
 			// Trigger any bound ready events
